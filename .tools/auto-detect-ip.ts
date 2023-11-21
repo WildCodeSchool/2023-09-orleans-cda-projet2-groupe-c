@@ -1,11 +1,17 @@
 import { BunFile } from 'bun';
 import os from 'node:os';
 
-const networkInterfaces = os.networkInterfaces();
-const { en0 } = networkInterfaces;
+const NETWORK_INTERFACE = process.env.NETWORK_INTERFACE;
 
-if (en0) {
-  const ipv4 = en0.find((ip) => ip.family === 'IPv4');
+if (!NETWORK_INTERFACE)
+  throw new Error('NETWORK_INTERFACE env variable is not set');
+
+const networkInterfaces = os.networkInterfaces();
+
+const networkInterface = networkInterfaces[NETWORK_INTERFACE];
+
+if (networkInterface) {
+  const ipv4 = networkInterface.find((ip) => ip.family === 'IPv4');
 
   if (ipv4) {
     const envFile = Bun.file('./.env.local');
@@ -46,4 +52,32 @@ if (en0) {
 
     process.exit(0);
   }
+} else {
+  console.error(`Network interface "${NETWORK_INTERFACE}" not found.`);
+
+  const networkInterfaceData = [];
+
+  for (const networkInterface in networkInterfaces) {
+    const ips = networkInterfaces[networkInterface];
+    if (ips) {
+      for (const ip of ips) {
+        if (!ip.internal && ip.family === 'IPv4') {
+          networkInterfaceData.push({
+            name: networkInterface,
+            ip: ip.address,
+          });
+        }
+      }
+    }
+  }
+
+  console.error(
+    'Suggested network interfaces:',
+    networkInterfaceData.map((i) => `\n-> "${i.name}" - ${i.ip}`).join(''),
+  );
+  console.error(
+    'Please set the NETWORK_INTERFACE env variable with the desired network interface name.',
+  );
+
+  process.exit(1);
 }
