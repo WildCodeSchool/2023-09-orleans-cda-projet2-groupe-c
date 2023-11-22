@@ -11,7 +11,7 @@ export default {
         'dark-hard': '#111214',
         'dark-medium': '#1c1c1f',
         'dark-light': '#272721',
-        ' dark-ulta-light': '#3c4045',
+        'dark-ulta-light': '#3c4045',
         'light-hard': '#eae3e3',
         'light-medium': '#f4efef',
         'light-light': '#fcfcfc',
