@@ -5,8 +5,6 @@ import type { SomeInterface, User } from '@app/types';
 
 import ThemeSwitcher from '@/components/ThemeSwitcher';
 
-import '../globals.css';
-
 export default function Home() {
   const [someData, setSomeData] = useState<SomeInterface>({
     someProperty: 'someValue',
