@@ -3,6 +3,10 @@ import { useEffect, useState } from 'react';
 import { useDisclosure } from '@app/frontend-shared';
 import type { SomeInterface, User } from '@app/types';
 
+import ThemeSwitcher from '@/components/ThemeSwitcher';
+
+import '../globals.css';
+
 export default function Home() {
   const [someData, setSomeData] = useState<SomeInterface>({
     someProperty: 'someValue',
@@ -43,7 +47,10 @@ export default function Home() {
         gap: '1rem',
       }}
     >
-      <span>{'Coucou'}</span>
+      <h1 className='text-primary font-title dark:text-light-medium dark:bg-dark-medium text-3xl  underline'>
+        {'Hello world!'}
+      </h1>
+      <ThemeSwitcher />
 
       <span>{`${someData.someProperty}`}</span>
 
