@@ -238,6 +238,8 @@ module.exports = {
             ],
           },
         ],
+        'unicorn/no-array-callback-reference': 'off',
+        '@typescript-eslint/unbound-method': 'off',
       },
     },
     {
