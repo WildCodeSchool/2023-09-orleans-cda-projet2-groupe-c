@@ -72,7 +72,7 @@ export async function up(db: Kysely<Database>): Promise<void> {
     .addColumn('biography', 'text')
     .addColumn('account_github', 'varchar(255)')
     .addColumn('role', sql`enum('user', 'admin')`)
-    .addColumn('email', 'varchar(255)', (col) => col.notNull())
+    .addColumn('email', 'varchar(255)', (col) => col.unique().notNull())
     .addColumn('password', 'varchar(255)', (col) => col.notNull())
     .addColumn('email_verified_at', 'date')
     .addColumn('activate_code', 'varchar(6)')
