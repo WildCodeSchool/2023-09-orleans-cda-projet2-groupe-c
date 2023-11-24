@@ -76,6 +76,10 @@ export type UserActionTable = {
   canceled_at: Date;
 };
 
+export type Profile = Selectable<ProfileTable>;
+export type NewProfile = Insertable<ProfileTable>;
+export type ProfileUpdate = Updateable<ProfileTable>;
+
 export type User = Selectable<UserTable>;
 export type NewUser = Insertable<UserTable>;
 export type UserUpdate = Updateable<UserTable>;
@@ -116,6 +120,7 @@ export type UserAction = Selectable<UserActionTable>;
 export type NewUserAction = Insertable<UserActionTable>;
 export type UserActionUpdate = Updateable<UserActionTable>;
 export interface Database {
+  profile: ProfileTable;
   user: UserTable;
   picture: PictureTable;
   hobby: HobbyTable;
