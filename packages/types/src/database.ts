@@ -24,9 +24,9 @@ export type UserTable = {
   email: string;
   password: string;
   email_verified_at?: Date;
-  activate_code?: Date;
+  activation_code?: Date;
   activate_at?: Date;
-  city_id: number;
+  city_id?: number;
 };
 
 export type PictureTable = {
@@ -48,7 +48,7 @@ export type CityTable = {
 
 export type MessageTable = {
   id: Generated<number>;
-  content: string;
+  content?: string;
   sent_at: Date;
   conversation_id: number;
   sender_id: number;

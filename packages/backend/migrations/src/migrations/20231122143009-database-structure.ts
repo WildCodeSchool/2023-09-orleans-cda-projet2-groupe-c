@@ -75,7 +75,7 @@ export async function up(db: Kysely<Database>): Promise<void> {
     .addColumn('email', 'varchar(255)', (col) => col.unique().notNull())
     .addColumn('password', 'varchar(255)', (col) => col.notNull())
     .addColumn('email_verified_at', 'datetime')
-    .addColumn('activate_code', 'varchar(6)')
+    .addColumn('activation_code', 'varchar(6)')
     .addColumn('activate_at', 'datetime')
     .addColumn('city_id', 'integer', (col) =>
       col.references('city.id').onDelete('cascade'),
