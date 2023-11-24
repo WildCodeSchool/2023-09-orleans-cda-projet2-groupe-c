@@ -7,9 +7,9 @@ import type { Database } from '@app/types';
 export async function up(db: Kysely<Database>): Promise<void> {
   // Migration code that update the database to the desired state.
   await db.schema
-    .createTable('category')
+    .createTable('hobby_category')
     .addColumn('id', 'int2', (col) =>
-      col.autoIncrement().primaryKey().notNull(),
+      col.autoIncrement().primaryKey().unsigned().notNull(),
     )
     .addColumn('name', 'varchar(50)', (col) => col.notNull())
     .addColumn('logo_path', 'varchar(255)', (col) => col.notNull())
@@ -18,7 +18,7 @@ export async function up(db: Kysely<Database>): Promise<void> {
   await db.schema
     .createTable('technology')
     .addColumn('id', 'int2', (col) =>
-      col.autoIncrement().primaryKey().notNull(),
+      col.autoIncrement().primaryKey().unsigned().notNull(),
     )
     .addColumn('name', 'varchar(50)', (col) => col.notNull())
     .addColumn('logo_path', 'varchar(255)', (col) => col.notNull())
@@ -27,7 +27,7 @@ export async function up(db: Kysely<Database>): Promise<void> {
   await db.schema
     .createTable('language')
     .addColumn('id', 'int2', (col) =>
-      col.autoIncrement().primaryKey().notNull(),
+      col.autoIncrement().primaryKey().unsigned().notNull(),
     )
     .addColumn('name', 'varchar(50)', (col) => col.notNull())
     .addColumn('logo_path', 'varchar(255)', (col) => col.notNull())
@@ -36,7 +36,7 @@ export async function up(db: Kysely<Database>): Promise<void> {
   await db.schema
     .createTable('picture')
     .addColumn('id', 'integer', (col) =>
-      col.autoIncrement().primaryKey().notNull(),
+      col.autoIncrement().primaryKey().unsigned().notNull(),
     )
     .addColumn('logo_path', 'varchar(255)')
     .execute();
@@ -44,7 +44,7 @@ export async function up(db: Kysely<Database>): Promise<void> {
   await db.schema
     .createTable('hobby')
     .addColumn('id', 'int2', (col) =>
-      col.autoIncrement().primaryKey().notNull(),
+      col.autoIncrement().primaryKey().unsigned().notNull(),
     )
     .addColumn('name', 'varchar(50)', (col) => col.notNull())
     .addColumn('category_id', 'integer', (col) =>
@@ -55,7 +55,7 @@ export async function up(db: Kysely<Database>): Promise<void> {
   await db.schema
     .createTable('city')
     .addColumn('id', 'integer', (col) =>
-      col.autoIncrement().primaryKey().notNull(),
+      col.autoIncrement().primaryKey().unsigned().notNull(),
     )
     .addColumn('name', 'varchar(255)', (col) => col.notNull())
     .addColumn('coordinates', sql`point`)
@@ -68,15 +68,15 @@ export async function up(db: Kysely<Database>): Promise<void> {
     )
     .addColumn('name', 'varchar(100)')
     .addColumn('birthdate', 'date')
-    .addColumn('gender', sql`enum('man', 'woman', 'no-binary')`)
+    .addColumn('gender', sql`enum('man', 'woman', 'non-binary')`)
     .addColumn('biography', 'text')
     .addColumn('account_github', 'varchar(255)')
-    .addColumn('role', sql`enum('user', 'admin')`)
+    .addColumn('role', sql`enum('user', 'admin')`, (col) => col.notNull())
     .addColumn('email', 'varchar(255)', (col) => col.unique().notNull())
     .addColumn('password', 'varchar(255)', (col) => col.notNull())
-    .addColumn('email_verified_at', 'date')
+    .addColumn('email_verified_at', 'datetime')
     .addColumn('activate_code', 'varchar(6)')
-    .addColumn('activate_at', 'date')
+    .addColumn('activate_at', 'datetime')
     .addColumn('city_id', 'integer', (col) =>
       col.references('city.id').onDelete('cascade'),
     )
@@ -85,71 +85,71 @@ export async function up(db: Kysely<Database>): Promise<void> {
   await db.schema
     .createTable('technology_user')
     .addColumn('id', 'integer', (col) =>
-      col.autoIncrement().primaryKey().notNull(),
+      col.autoIncrement().primaryKey().unsigned().notNull(),
     )
     .addColumn('order', 'integer')
     .addColumn('user_id', 'integer', (col) =>
-      col.references('user.id').onDelete('cascade'),
+      col.references('user.id').onDelete('cascade').unsigned().notNull(),
     )
     .addColumn('technology_id', 'integer', (col) =>
-      col.references('technology.id').onDelete('cascade'),
+      col.references('technology.id').onDelete('cascade').unsigned().notNull(),
     )
     .execute();
 
   await db.schema
     .createTable('language_user')
     .addColumn('id', 'integer', (col) =>
-      col.autoIncrement().primaryKey().notNull(),
+      col.autoIncrement().primaryKey().unsigned().notNull(),
     )
     .addColumn('order', 'integer')
     .addColumn('user_id', 'integer', (col) =>
-      col.references('user.id').onDelete('cascade'),
+      col.references('user.id').onDelete('cascade').unsigned().notNull(),
     )
     .addColumn('language_id', 'integer', (col) =>
-      col.references('language.id').onDelete('cascade'),
+      col.references('language.id').onDelete('cascade').unsigned().notNull(),
     )
     .execute();
 
   await db.schema
     .createTable('picture_user')
     .addColumn('id', 'integer', (col) =>
-      col.autoIncrement().primaryKey().notNull(),
+      col.autoIncrement().primaryKey().unsigned().notNull(),
     )
     .addColumn('order', 'integer')
     .addColumn('user_id', 'integer', (col) =>
-      col.references('user.id').onDelete('cascade'),
+      col.references('user.id').onDelete('cascade').unsigned().notNull(),
     )
     .addColumn('picture_id', 'integer', (col) =>
-      col.references('picture.id').onDelete('cascade'),
+      col.references('picture.id').onDelete('cascade').unsigned().notNull(),
     )
     .execute();
 
   await db.schema
     .createTable('hobby_user')
     .addColumn('id', 'integer', (col) =>
-      col.autoIncrement().primaryKey().notNull(),
+      col.autoIncrement().primaryKey().unsigned().notNull(),
     )
     .addColumn('order', 'integer')
     .addColumn('user_id', 'integer', (col) =>
-      col.references('user.id').onDelete('cascade'),
+      col.references('user.id').onDelete('cascade').unsigned(),
     )
     .addColumn('hobby_id', 'integer', (col) =>
-      col.references('hobby.id').onDelete('cascade'),
+      col.references('hobby.id').onDelete('cascade').unsigned(),
     )
     .execute();
 
   await db.schema
     .createTable('user_action')
     .addColumn('id', 'integer', (col) =>
-      col.autoIncrement().primaryKey().notNull(),
+      col.autoIncrement().primaryKey().unsigned().notNull(),
     )
     .addColumn('initiator_id', 'integer', (col) =>
-      col.references('user.id').onDelete('cascade'),
+      col.references('user.id').onDelete('cascade').unsigned().notNull(),
     )
     .addColumn('receiver_id', 'integer', (col) =>
-      col.references('user.id').onDelete('cascade'),
+      col.references('user.id').onDelete('cascade').unsigned().notNull(),
     )
-    .addColumn('like_at', 'datetime')
+    .addColumn('liked_at', 'datetime')
     .addColumn('superlike_at', 'datetime')
     .addColumn('next_at', 'datetime')
     .addColumn('canceled_at', 'datetime')
@@ -158,15 +158,15 @@ export async function up(db: Kysely<Database>): Promise<void> {
   await db.schema
     .createTable('message')
     .addColumn('id', 'integer', (col) =>
-      col.autoIncrement().primaryKey().notNull(),
+      col.autoIncrement().primaryKey().unsigned().notNull(),
     )
     .addColumn('content', 'text')
     .addColumn('sent_at', 'datetime', (col) => col.notNull())
     .addColumn('conversation_id', 'integer', (col) =>
-      col.references('user_action.id').onDelete('cascade'),
+      col.references('user_action.id').onDelete('cascade').unsigned().notNull(),
     )
     .addColumn('sender_id', 'integer', (col) =>
-      col.references('user.id').onDelete('cascade'),
+      col.references('user.id').onDelete('cascade').unsigned().notNull(),
     )
     .execute();
 }
@@ -185,5 +185,5 @@ export async function down(db: Kysely<Database>): Promise<void> {
   await db.schema.dropTable('picture').ifExists().execute();
   await db.schema.dropTable('language').ifExists().execute();
   await db.schema.dropTable('technology').ifExists().execute();
-  await db.schema.dropTable('category').ifExists().execute();
+  await db.schema.dropTable('hobby_category').ifExists().execute();
 }

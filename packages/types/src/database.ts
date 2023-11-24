@@ -16,33 +16,40 @@ export type IntermediateTable = {
 export type UserTable = {
   id: Generated<number>;
   name?: string;
-  birthdate?: string;
+  birthdate?: Date;
   gender?: string;
   biography?: string;
   account_github?: string;
-  role?: string;
+  role: string;
   email: string;
   password: string;
-  email_verified_at?: string;
-  activate_code?: string;
-  activate_at?: string;
+  email_verified_at?: Date;
+  activate_code?: Date;
+  activate_at?: Date;
   city_id: number;
 };
 
-export interface PictureTable extends Omit<ProfileTable, 'name'> {}
+export type PictureTable = {
+  id: Generated<number>;
+  logo_path?: string;
+};
 
-export interface HobbyTable extends Omit<ProfileTable, 'logo_path'> {
+export type HobbyTable = {
+  id: Generated<number>;
+  name: string;
   category_id: number;
-}
+};
 
-export interface CityTable extends Omit<ProfileTable, 'name'> {
+export type CityTable = {
+  id: Generated<number>;
+  name: string;
   coordinates: number;
-}
+};
 
 export type MessageTable = {
   id: Generated<number>;
   content: string;
-  sent_at: string;
+  sent_at: Date;
   conversation_id: number;
   sender_id: number;
 };
@@ -63,10 +70,10 @@ export type UserActionTable = {
   id: Generated<number>;
   initiator_id: number;
   receiver_id: number;
-  like_at: string;
-  superlike_at: string;
-  next_at: string;
-  canceled_at: string;
+  liked_at: Date;
+  superlike_at: Date;
+  next_at: Date;
+  canceled_at: Date;
 };
 
 export type User = Selectable<UserTable>;
