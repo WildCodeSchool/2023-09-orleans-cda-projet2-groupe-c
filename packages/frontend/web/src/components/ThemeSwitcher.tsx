@@ -16,7 +16,7 @@ export default function ThemeSwitcher() {
 
   return (
     <div
-      className='dark:bg-dark-ulta-light bg-light-light active:shadow-secondary dark:active:shadow-dark-medium relative inline-block h-8 w-8 rounded-full duration-200 active:translate-y-[2px] active:shadow-inner sm:h-14 sm:w-14'
+      className='dark:bg-dark-ulta-light bg-light-light active:shadow-secondary dark:active:shadow-dark-medium relative inline-block h-8 w-8 rounded-full shadow-md duration-200 active:translate-y-[2px] active:shadow-inner sm:h-14 sm:w-14'
       onClick={toggleDarkMode}
     >
       <DarkIcone className='text-light-light absolute h-4 w-4 translate-x-[55%] translate-y-2 sm:h-6 sm:w-6 sm:translate-x-4 sm:translate-y-4' />
