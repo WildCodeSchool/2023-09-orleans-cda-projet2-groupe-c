@@ -78,7 +78,7 @@ export async function up(db: Kysely<Database>): Promise<void> {
     .addColumn('activation_code', 'varchar(6)')
     .addColumn('activate_at', 'datetime')
     .addColumn('city_id', 'integer', (col) =>
-      col.references('city.id').onDelete('cascade'),
+      col.references('city.id').onDelete('cascade').unsigned(),
     )
     .execute();
 

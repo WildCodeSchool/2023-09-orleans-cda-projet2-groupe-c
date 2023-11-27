@@ -1,5 +1,10 @@
 import type { Generated, Insertable, Selectable, Updateable } from 'kysely';
 
+export type Point = {
+  x: number;
+  y: number;
+};
+
 export type ProfileTable = {
   //technology, language, category
   id: Generated<number>;
@@ -43,7 +48,7 @@ export type HobbyTable = {
 export type CityTable = {
   id: Generated<number>;
   name: string;
-  coordinates: number;
+  coordinates: Point;
 };
 
 export type MessageTable = {
