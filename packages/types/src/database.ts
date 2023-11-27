@@ -6,7 +6,7 @@ export type Point = {
 };
 
 export type ProfileTable = {
-  //technology, language, category
+  //technology, language, hobby_category
   id: Generated<number>;
   name: string;
   logo_path?: string;
@@ -25,7 +25,7 @@ export type UserTable = {
   gender?: string;
   biography?: string;
   account_github?: string;
-  role: string;
+  role: 'user' | 'admin';
   email: string;
   password: string;
   email_verified_at?: Date;
