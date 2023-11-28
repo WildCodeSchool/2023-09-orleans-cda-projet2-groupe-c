@@ -48,9 +48,7 @@ export async function up(db: Kysely<Database>): Promise<void> {
         col.autoIncrement().primaryKey().unsigned().notNull(),
       )
       .addColumn('name', 'varchar(50)', (col) => col.notNull())
-      .addColumn('hobby_category_id', 'integer', (col) =>
-        col.unsigned().notNull(),
-      )
+      .addColumn('hobby_category_id', 'int2', (col) => col.unsigned().notNull())
       .addForeignKeyConstraint(
         'hobby_category_id_fk',
         ['hobby_category_id'],
@@ -103,8 +101,8 @@ export async function up(db: Kysely<Database>): Promise<void> {
         col.autoIncrement().primaryKey().unsigned().notNull(),
       )
       .addColumn('order', 'integer', (col) => col.unsigned())
-      .addColumn('user_id', 'integer', (col) => col.unsigned().notNull())
-      .addColumn('technology_id', 'integer', (col) => col.unsigned().notNull())
+      .addColumn('user_id', 'int4', (col) => col.unsigned().notNull())
+      .addColumn('technology_id', 'int2', (col) => col.unsigned().notNull())
       .addForeignKeyConstraint(
         'user_id_fk',
         ['user_id'],
@@ -127,10 +125,10 @@ export async function up(db: Kysely<Database>): Promise<void> {
         col.autoIncrement().primaryKey().unsigned().notNull(),
       )
       .addColumn('order', 'integer', (col) => col.unsigned())
-      .addColumn('user_id', 'integer', (col) => col.unsigned().notNull())
-      .addColumn('language_id', 'integer', (col) => col.unsigned().notNull())
+      .addColumn('user_id', 'int4', (col) => col.unsigned().notNull())
+      .addColumn('language_id', 'int2', (col) => col.unsigned().notNull())
       .addForeignKeyConstraint(
-        'user_id_fk',
+        'language_user_id_fk',
         ['user_id'],
         'user',
         ['id'],
@@ -151,10 +149,10 @@ export async function up(db: Kysely<Database>): Promise<void> {
         col.autoIncrement().primaryKey().unsigned().notNull(),
       )
       .addColumn('order', 'integer', (col) => col.unsigned())
-      .addColumn('user_id', 'integer', (col) => col.unsigned().notNull())
+      .addColumn('user_id', 'int4', (col) => col.unsigned().notNull())
       .addColumn('picture_id', 'integer', (col) => col.unsigned().notNull())
       .addForeignKeyConstraint(
-        'user_id_fk',
+        'picture_user_id_fk',
         ['user_id'],
         'user',
         ['id'],
@@ -175,10 +173,10 @@ export async function up(db: Kysely<Database>): Promise<void> {
         col.autoIncrement().primaryKey().unsigned().notNull(),
       )
       .addColumn('order', 'integer', (col) => col.unsigned())
-      .addColumn('user_id', 'integer', (col) => col.unsigned())
-      .addColumn('hobby_id', 'integer', (col) => col.unsigned())
+      .addColumn('user_id', 'int4', (col) => col.unsigned())
+      .addColumn('hobby_id', 'int2', (col) => col.unsigned())
       .addForeignKeyConstraint(
-        'user_id_fk',
+        'hobby_user_id_fk',
         ['user_id'],
         'user',
         ['id'],
@@ -198,8 +196,12 @@ export async function up(db: Kysely<Database>): Promise<void> {
       .addColumn('id', 'integer', (col) =>
         col.autoIncrement().primaryKey().unsigned().notNull(),
       )
-      .addColumn('initiator_id', 'integer', (col) => col.unsigned().notNull())
-      .addColumn('receiver_id', 'integer', (col) => col.unsigned().notNull())
+      .addColumn('initiator_id', 'int4', (col) => col.unsigned().notNull())
+      .addColumn('receiver_id', 'int4', (col) => col.unsigned().notNull())
+      .addColumn('liked_at', 'datetime')
+      .addColumn('superlike_at', 'datetime')
+      .addColumn('next_at', 'datetime')
+      .addColumn('canceled_at', 'datetime')
       .addForeignKeyConstraint(
         'initiator_id_fk',
         ['initiator_id'],
@@ -214,10 +216,6 @@ export async function up(db: Kysely<Database>): Promise<void> {
         ['id'],
         (callBack) => callBack.onDelete('cascade'),
       )
-      .addColumn('liked_at', 'datetime')
-      .addColumn('superlike_at', 'datetime')
-      .addColumn('next_at', 'datetime')
-      .addColumn('canceled_at', 'datetime')
       .execute();
 
     await trx.schema
@@ -230,7 +228,7 @@ export async function up(db: Kysely<Database>): Promise<void> {
       .addColumn('conversation_id', 'integer', (col) =>
         col.unsigned().notNull(),
       )
-      .addColumn('sender_id', 'integer', (col) => col.unsigned().notNull())
+      .addColumn('sender_id', 'int4', (col) => col.unsigned().notNull())
       .addForeignKeyConstraint(
         'conversation_id_fk',
         ['conversation_id'],
