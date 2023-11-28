@@ -7,40 +7,38 @@ import UserIcon from './icons/UserIcon';
 
 function NavBar() {
   return (
-    <nav className='bg-light-hard dark:bg-dark-hard flex w-full items-center p-3 sm:p-6'>
-      <div className='flex items-center gap-2'>
-        <Logo className='text-secondary dark:text-light-light mb-1 h-8 w-8 sm:h-11 sm:w-11' />
-        <div>
-          <span className='text-secondary dark:text-light-light font-title text-xl sm:text-3xl'>
+    <nav className='bg-light-hard dark:bg-dark-hard relative flex w-full items-center p-3 shadow-md'>
+      <div className='absolute flex items-center gap-2 pl-2'>
+        <Logo className='text-secondary dark:text-light-light logo-size' />
+        <div className='mt-1 text-xl md:text-3xl'>
+          <span className='text-secondary dark:text-light-light font-title '>
             {'TIN'}
           </span>
-          <span className='text-primary font-title text-xl sm:text-3xl'>
-            {'DEV'}
-          </span>
+          <span className='text-primary font-title'>{'DEV'}</span>
         </div>
       </div>
-      <div className='flex grow justify-end sm:justify-center sm:pr-5'>
-        <div className='px-1 sm:px-8'>
-          <div className='dark:bg-dark-ulta-light bg-light-light active:shadow-secondary dark:active:shadow-dark-medium relative inline-block h-8 w-8 rounded-full shadow-md duration-200 active:translate-y-[2px] active:shadow-inner sm:h-14 sm:w-14'>
-            <UserIcon className='text-secondary dark:text-light-light absolute h-4 w-4 translate-x-[55%] translate-y-2 sm:h-6 sm:w-6 sm:translate-x-[72%] sm:translate-y-4' />
+      <div className='flex grow justify-end lg:justify-center'>
+        <div className='flex items-center px-1 md:px-2 lg:px-24'>
+          <div className='dark:bg-dark-ulta-light bg-light-light active:shadow-secondary dark:active:shadow-dark-medium flex h-8 w-8 items-center justify-center rounded-full shadow-md duration-200 active:translate-y-[2px] active:shadow-inner md:h-10 md:w-10'>
+            <UserIcon className='text-secondary dark:text-light-light h-4 w-4 md:h-6 md:w-6' />
           </div>
         </div>
-        <div className='px-1 sm:px-8'>
-          <div className='dark:bg-dark-ulta-light bg-light-light active:shadow-secondary dark:active:shadow-dark-medium relative inline-block h-8 w-8 rounded-full shadow-md duration-200 active:translate-y-[2px] active:shadow-inner sm:h-14 sm:w-14'>
-            <LikeIcon className='text-primary absolute h-5 w-5 translate-x-[35%] translate-y-[35%] sm:h-7 sm:w-7 sm:translate-x-[53%] sm:translate-y-4' />
+        <div className='flex items-center px-1 md:px-2 lg:px-24'>
+          <div className='dark:bg-dark-ulta-light bg-light-light active:shadow-secondary dark:active:shadow-dark-medium flex h-8 w-8 items-center justify-center rounded-full shadow-md duration-200 active:translate-y-[2px] active:shadow-inner md:h-10 md:w-10'>
+            <LikeIcon className='text-primary h-5 w-5 md:h-6 md:w-6' />
           </div>
         </div>
-        <div className='px-1 sm:px-0'>
-          <div className='dark:bg-dark-ulta-light bg-light-light active:shadow-secondary dark:active:shadow-dark-medium relative inline-block h-8 w-8 rounded-full shadow-md duration-200 active:translate-y-[2px] active:shadow-inner sm:hidden sm:h-14 sm:w-14'>
-            <MessageIcon className='text-secondary dark:text-light-light absolute h-4 w-4 translate-x-[55%] translate-y-2' />
+        <div className='flex items-center px-1 md:px-2 lg:px-0'>
+          <div className='dark:bg-dark-ulta-light bg-light-light active:shadow-secondary dark:active:shadow-dark-medium flex h-8 w-8 items-center justify-center rounded-full shadow-md duration-200 active:translate-y-[2px] active:shadow-inner md:h-10 md:w-10 lg:hidden'>
+            <MessageIcon className='text-secondary dark:text-light-light h-4 w-4 md:h-5 md:w-5' />
           </div>
         </div>
-        <div className='px-1 sm:px-0'>
-          <div className='dark:bg-dark-ulta-light bg-light-light active:shadow-secondary dark:active:shadow-dark-medium relative inline-block h-8 w-8 rounded-full shadow-md duration-200 active:translate-y-[2px] active:shadow-inner sm:hidden sm:h-14 sm:w-14'>
-            <FilterIcon className='text-secondary dark:text-light-light absolute h-3 w-3 translate-x-[85%] translate-y-[85%]' />
+        <div className='flex items-center px-1 md:px-2 lg:px-0'>
+          <div className='dark:bg-dark-ulta-light bg-light-light active:shadow-secondary dark:active:shadow-dark-medium flex h-8 w-8 items-center justify-center rounded-full shadow-md duration-200 active:translate-y-[2px] active:shadow-inner md:h-10 md:w-10 lg:hidden'>
+            <FilterIcon className='text-secondary dark:text-light-light h-3 w-3 md:h-4 md:w-4' />
           </div>
         </div>
-        <div className='px-1 sm:px-8'>
+        <div className='flex items-center px-1 md:px-2 lg:px-24'>
           <ThemeSwitcher />
         </div>
       </div>

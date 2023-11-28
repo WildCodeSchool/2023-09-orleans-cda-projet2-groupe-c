@@ -4,6 +4,12 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer utilities {
+  .logo-size {
+    width: clamp(24px, 4vw, 40px);
+  }
+}
+
 body {
   height: 100dvh;
   width: 100dvw;
@@ -12,9 +18,9 @@ body {
 }
 
 .dark {
-  background-color: #1c1c1f; 
+  background-color: #1c1c1f;
 }
 
 .light {
-  background-color: #f4efef; 
+  background-color: #f4efef;
 }
