@@ -47,8 +47,15 @@ export async function up(db: Kysely<Database>): Promise<void> {
       col.autoIncrement().primaryKey().unsigned().notNull(),
     )
     .addColumn('name', 'varchar(50)', (col) => col.notNull())
-    .addColumn('category_id', 'integer', (col) =>
-      col.references('category.id').onDelete('cascade').notNull(),
+    .addColumn('hobby_category_id', 'integer', (col) =>
+      col.unsigned().notNull(),
+    )
+    .addForeignKeyConstraint(
+      'hobby_category_id_fk',
+      ['hobby_category_id'],
+      'hobby_category',
+      ['id'],
+      (callBack) => callBack.onDelete('cascade'),
     )
     .execute();
 
@@ -71,14 +78,21 @@ export async function up(db: Kysely<Database>): Promise<void> {
     .addColumn('gender', sql`enum('man', 'woman', 'non-binary')`)
     .addColumn('biography', 'text')
     .addColumn('account_github', 'varchar(255)')
-    .addColumn('role', sql`enum('user', 'admin')`, (col) => col.notNull())
+    .addColumn('role', sql`enum('user', 'admin')`, (col) =>
+      col.defaultTo('user').notNull(),
+    )
     .addColumn('email', 'varchar(255)', (col) => col.unique().notNull())
     .addColumn('password', 'varchar(255)', (col) => col.notNull())
     .addColumn('email_verified_at', 'datetime')
     .addColumn('activation_code', 'varchar(6)')
     .addColumn('activate_at', 'datetime')
-    .addColumn('city_id', 'integer', (col) =>
-      col.references('city.id').onDelete('cascade').unsigned(),
+    .addColumn('city_id', 'integer', (col) => col.unsigned())
+    .addForeignKeyConstraint(
+      'city_id_fk',
+      ['city_id'],
+      'city',
+      ['id'],
+      (callBack) => callBack.onDelete('cascade'),
     )
     .execute();
 
@@ -87,12 +101,22 @@ export async function up(db: Kysely<Database>): Promise<void> {
     .addColumn('id', 'integer', (col) =>
       col.autoIncrement().primaryKey().unsigned().notNull(),
     )
-    .addColumn('order', 'integer')
-    .addColumn('user_id', 'integer', (col) =>
-      col.references('user.id').onDelete('cascade').unsigned().notNull(),
+    .addColumn('order', 'integer', (col) => col.unsigned())
+    .addColumn('user_id', 'integer', (col) => col.unsigned().notNull())
+    .addColumn('technology_id', 'integer', (col) => col.unsigned().notNull())
+    .addForeignKeyConstraint(
+      'user_id_fk',
+      ['user_id'],
+      'user',
+      ['id'],
+      (callBack) => callBack.onDelete('cascade'),
     )
-    .addColumn('technology_id', 'integer', (col) =>
-      col.references('technology.id').onDelete('cascade').unsigned().notNull(),
+    .addForeignKeyConstraint(
+      'technology_id_fk',
+      ['technology_id'],
+      'technology',
+      ['id'],
+      (callBack) => callBack.onDelete('cascade'),
     )
     .execute();
 
@@ -101,12 +125,22 @@ export async function up(db: Kysely<Database>): Promise<void> {
     .addColumn('id', 'integer', (col) =>
       col.autoIncrement().primaryKey().unsigned().notNull(),
     )
-    .addColumn('order', 'integer')
-    .addColumn('user_id', 'integer', (col) =>
-      col.references('user.id').onDelete('cascade').unsigned().notNull(),
+    .addColumn('order', 'integer', (col) => col.unsigned())
+    .addColumn('user_id', 'integer', (col) => col.unsigned().notNull())
+    .addColumn('language_id', 'integer', (col) => col.unsigned().notNull())
+    .addForeignKeyConstraint(
+      'user_id_fk',
+      ['user_id'],
+      'user',
+      ['id'],
+      (callBack) => callBack.onDelete('cascade'),
     )
-    .addColumn('language_id', 'integer', (col) =>
-      col.references('language.id').onDelete('cascade').unsigned().notNull(),
+    .addForeignKeyConstraint(
+      'language_id_fk',
+      ['language_id'],
+      'language',
+      ['id'],
+      (callBack) => callBack.onDelete('cascade'),
     )
     .execute();
 
@@ -115,12 +149,22 @@ export async function up(db: Kysely<Database>): Promise<void> {
     .addColumn('id', 'integer', (col) =>
       col.autoIncrement().primaryKey().unsigned().notNull(),
     )
-    .addColumn('order', 'integer')
-    .addColumn('user_id', 'integer', (col) =>
-      col.references('user.id').onDelete('cascade').unsigned().notNull(),
+    .addColumn('order', 'integer', (col) => col.unsigned())
+    .addColumn('user_id', 'integer', (col) => col.unsigned().notNull())
+    .addColumn('picture_id', 'integer', (col) => col.unsigned().notNull())
+    .addForeignKeyConstraint(
+      'user_id_fk',
+      ['user_id'],
+      'user',
+      ['id'],
+      (callBack) => callBack.onDelete('cascade'),
     )
-    .addColumn('picture_id', 'integer', (col) =>
-      col.references('picture.id').onDelete('cascade').unsigned().notNull(),
+    .addForeignKeyConstraint(
+      'picture_id_fk',
+      ['picture_id'],
+      'picture',
+      ['id'],
+      (callBack) => callBack.onDelete('cascade'),
     )
     .execute();
 
@@ -129,12 +173,22 @@ export async function up(db: Kysely<Database>): Promise<void> {
     .addColumn('id', 'integer', (col) =>
       col.autoIncrement().primaryKey().unsigned().notNull(),
     )
-    .addColumn('order', 'integer')
-    .addColumn('user_id', 'integer', (col) =>
-      col.references('user.id').onDelete('cascade').unsigned(),
+    .addColumn('order', 'integer', (col) => col.unsigned())
+    .addColumn('user_id', 'integer', (col) => col.unsigned())
+    .addColumn('hobby_id', 'integer', (col) => col.unsigned())
+    .addForeignKeyConstraint(
+      'user_id_fk',
+      ['user_id'],
+      'user',
+      ['id'],
+      (callBack) => callBack.onDelete('cascade'),
     )
-    .addColumn('hobby_id', 'integer', (col) =>
-      col.references('hobby.id').onDelete('cascade').unsigned(),
+    .addForeignKeyConstraint(
+      'hobby_id_fk',
+      ['hobby_id'],
+      'hobby',
+      ['id'],
+      (callBack) => callBack.onDelete('cascade'),
     )
     .execute();
 
@@ -143,11 +197,21 @@ export async function up(db: Kysely<Database>): Promise<void> {
     .addColumn('id', 'integer', (col) =>
       col.autoIncrement().primaryKey().unsigned().notNull(),
     )
-    .addColumn('initiator_id', 'integer', (col) =>
-      col.references('user.id').onDelete('cascade').unsigned().notNull(),
+    .addColumn('initiator_id', 'integer', (col) => col.unsigned().notNull())
+    .addColumn('receiver_id', 'integer', (col) => col.unsigned().notNull())
+    .addForeignKeyConstraint(
+      'initiator_id_fk',
+      ['initiator_id'],
+      'user',
+      ['id'],
+      (callBack) => callBack.onDelete('cascade'),
     )
-    .addColumn('receiver_id', 'integer', (col) =>
-      col.references('user.id').onDelete('cascade').unsigned().notNull(),
+    .addForeignKeyConstraint(
+      'receiver_id_fk',
+      ['receiver_id'],
+      'user',
+      ['id'],
+      (callBack) => callBack.onDelete('cascade'),
     )
     .addColumn('liked_at', 'datetime')
     .addColumn('superlike_at', 'datetime')
@@ -162,11 +226,21 @@ export async function up(db: Kysely<Database>): Promise<void> {
     )
     .addColumn('content', 'text')
     .addColumn('sent_at', 'datetime', (col) => col.notNull())
-    .addColumn('conversation_id', 'integer', (col) =>
-      col.references('user_action.id').onDelete('cascade').unsigned().notNull(),
+    .addColumn('conversation_id', 'integer', (col) => col.unsigned().notNull())
+    .addColumn('sender_id', 'integer', (col) => col.unsigned().notNull())
+    .addForeignKeyConstraint(
+      'conversation_id_fk',
+      ['conversation_id'],
+      'user_action',
+      ['id'],
+      (callBack) => callBack.onDelete('cascade'),
     )
-    .addColumn('sender_id', 'integer', (col) =>
-      col.references('user.id').onDelete('cascade').unsigned().notNull(),
+    .addForeignKeyConstraint(
+      'sender_id_fk',
+      ['sender_id'],
+      'user',
+      ['id'],
+      (callBack) => callBack.onDelete('cascade'),
     )
     .execute();
 }

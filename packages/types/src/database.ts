@@ -9,7 +9,7 @@ export type ProfileTable = {
   //technology, language, hobby_category
   id: Generated<number>;
   name: string;
-  logo_path?: string;
+  logo_path: string;
 };
 
 export type IntermediateTable = {
@@ -42,7 +42,7 @@ export type PictureTable = {
 export type HobbyTable = {
   id: Generated<number>;
   name: string;
-  category_id: number;
+  hobby_category_id: number;
 };
 
 export type CityTable = {
