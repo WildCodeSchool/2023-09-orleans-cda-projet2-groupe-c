@@ -9,6 +9,7 @@ export async function up(db: Kysely<Database>): Promise<void> {
   await db.transaction().execute(async (trx) => {
     await trx.schema
       .createTable('hobby_category')
+      .ifNotExists()
       .addColumn('id', 'int2', (col) =>
         col.autoIncrement().primaryKey().unsigned().notNull(),
       )
@@ -18,6 +19,7 @@ export async function up(db: Kysely<Database>): Promise<void> {
 
     await trx.schema
       .createTable('technology')
+      .ifNotExists()
       .addColumn('id', 'int2', (col) =>
         col.autoIncrement().primaryKey().unsigned().notNull(),
       )
@@ -27,6 +29,7 @@ export async function up(db: Kysely<Database>): Promise<void> {
 
     await trx.schema
       .createTable('language')
+      .ifNotExists()
       .addColumn('id', 'int2', (col) =>
         col.autoIncrement().primaryKey().unsigned().notNull(),
       )
@@ -36,6 +39,7 @@ export async function up(db: Kysely<Database>): Promise<void> {
 
     await trx.schema
       .createTable('picture')
+      .ifNotExists()
       .addColumn('id', 'integer', (col) =>
         col.autoIncrement().primaryKey().unsigned().notNull(),
       )
@@ -44,6 +48,7 @@ export async function up(db: Kysely<Database>): Promise<void> {
 
     await trx.schema
       .createTable('hobby')
+      .ifNotExists()
       .addColumn('id', 'int2', (col) =>
         col.autoIncrement().primaryKey().unsigned().notNull(),
       )
@@ -60,6 +65,7 @@ export async function up(db: Kysely<Database>): Promise<void> {
 
     await trx.schema
       .createTable('city')
+      .ifNotExists()
       .addColumn('id', 'integer', (col) =>
         col.autoIncrement().primaryKey().unsigned().notNull(),
       )
@@ -69,6 +75,7 @@ export async function up(db: Kysely<Database>): Promise<void> {
 
     await trx.schema
       .createTable('user')
+      .ifNotExists()
       .addColumn('id', 'int4', (col) =>
         col.autoIncrement().primaryKey().unsigned().notNull(),
       )
@@ -97,6 +104,7 @@ export async function up(db: Kysely<Database>): Promise<void> {
 
     await trx.schema
       .createTable('technology_user')
+      .ifNotExists()
       .addColumn('id', 'integer', (col) =>
         col.autoIncrement().primaryKey().unsigned().notNull(),
       )
@@ -121,6 +129,7 @@ export async function up(db: Kysely<Database>): Promise<void> {
 
     await trx.schema
       .createTable('language_user')
+      .ifNotExists()
       .addColumn('id', 'integer', (col) =>
         col.autoIncrement().primaryKey().unsigned().notNull(),
       )
@@ -145,6 +154,7 @@ export async function up(db: Kysely<Database>): Promise<void> {
 
     await trx.schema
       .createTable('picture_user')
+      .ifNotExists()
       .addColumn('id', 'integer', (col) =>
         col.autoIncrement().primaryKey().unsigned().notNull(),
       )
@@ -169,6 +179,7 @@ export async function up(db: Kysely<Database>): Promise<void> {
 
     await trx.schema
       .createTable('hobby_user')
+      .ifNotExists()
       .addColumn('id', 'integer', (col) =>
         col.autoIncrement().primaryKey().unsigned().notNull(),
       )
@@ -193,6 +204,7 @@ export async function up(db: Kysely<Database>): Promise<void> {
 
     await trx.schema
       .createTable('user_action')
+      .ifNotExists()
       .addColumn('id', 'integer', (col) =>
         col.autoIncrement().primaryKey().unsigned().notNull(),
       )
@@ -220,6 +232,7 @@ export async function up(db: Kysely<Database>): Promise<void> {
 
     await trx.schema
       .createTable('message')
+      .ifNotExists()
       .addColumn('id', 'integer', (col) =>
         col.autoIncrement().primaryKey().unsigned().notNull(),
       )
