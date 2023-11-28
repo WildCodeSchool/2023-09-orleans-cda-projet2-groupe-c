@@ -43,7 +43,7 @@ export default function Home() {
       }}
     >
       <h1 className='text-primary font-title dark:text-light-medium dark:bg-dark-medium text-3xl  underline'>
-        {'Hello world!'}
+        {'Hello world'}
       </h1>
       <span>{`${someData.someProperty}`}</span>
 
