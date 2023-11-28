@@ -1,5 +1,9 @@
 import type { Generated, Insertable, Selectable, Updateable } from 'kysely';
 
+export type Gender = 'male' | 'female' | 'non-binary';
+
+export type Role = 'user' | 'admin';
+
 export type Point = {
   x: number;
   y: number;
@@ -22,10 +26,10 @@ export type UserTable = {
   id: Generated<number>;
   name?: string;
   birthdate?: Date;
-  gender?: string;
+  gender?: Gender;
   biography?: string;
   account_github?: string;
-  role: 'user' | 'admin';
+  role: Role;
   email: string;
   password: string;
   email_verified_at?: Date;
