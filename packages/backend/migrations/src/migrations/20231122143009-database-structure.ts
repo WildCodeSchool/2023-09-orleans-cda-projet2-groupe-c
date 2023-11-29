@@ -70,7 +70,7 @@ export async function up(db: Kysely<Database>): Promise<void> {
         col.autoIncrement().primaryKey().unsigned().notNull(),
       )
       .addColumn('name', 'varchar(255)', (col) => col.notNull())
-      .addColumn('coordinates', sql`point`)
+      .addColumn('coordinates', sql`point`, (col) => col.notNull())
       .execute();
 
     await trx.schema
