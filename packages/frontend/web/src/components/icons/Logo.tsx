@@ -1,13 +1,6 @@
 export default function Logo({ className }: { readonly className: string }) {
   return (
-    <svg
-      className={className}
-      width='41'
-      height='40'
-      viewBox='0 0 41 40'
-      fill='currentColor'
-      xmlns='http://www.w3.org/2000/svg'
-    >
+    <svg className={className} width='41' height='40' viewBox='0 0 41 40'>
       <path
         d='M7.74332 23.1057C7.74332 19.2954 11.9209 15.1197 11.9209 15.1197L19.3148 7.75993C18.5282 6.85519 15.8713 4.24536 10.8197 4.24536C4.70189 4.24536 -0.0175781 8.94306 -0.0175781 14.3367C-0.0175781 19.7304 3.74052 23.2971 3.74052 23.2971L9.56119 29.2649C8.80958 28.1166 7.74332 26.0114 7.74332 23.1057Z'
         fill='currentColor'
