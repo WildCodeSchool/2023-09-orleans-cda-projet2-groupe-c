@@ -29,7 +29,7 @@ export default function HomeButtons() {
       transition={{ duration: 0.5 }}
       className='mb-5 flex w-full flex-col items-center gap-8'
     >
-      <Button word='Login' path='#' isOutline={false} />
+      <Button word='Login' path='/login' isOutline={false} />
       <Button word='Register' path='#' isOutline />
 
       <p className='text-light-hard max-w-[500px] text-sm'>
