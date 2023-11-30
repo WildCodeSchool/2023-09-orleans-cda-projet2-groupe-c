@@ -1,7 +1,7 @@
 import { Outlet } from 'react-router-dom';
 
 import { sentences } from '../components/home/random-sentence';
-import Logo from '../components/svg/Logo';
+import Logo from '../components/icons/LogoHome';
 
 // Select a random sentence from the array "sentences"
 const randomSentence: string =
