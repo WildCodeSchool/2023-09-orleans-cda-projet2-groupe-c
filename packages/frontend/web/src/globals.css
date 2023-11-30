@@ -4,13 +4,8 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  height: 100dvh;
-  width: 100dvw;
-  margin: 0;
-  padding: 0;
-}
-
-input::placeholder {
-  color: #9c89a2;
+@layer base {
+  input::placeholder {
+    color: #9c89a2;
+  }
 }
