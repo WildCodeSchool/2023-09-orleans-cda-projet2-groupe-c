@@ -8,11 +8,6 @@
   "dependencies": {
     "@app/backend-shared": "workspace:*"
   },
-  "devDependencies": {
-    "@app/types": "workspace:*",
-    "bun-types": "latest",
-    "commander": "^11.1.0"
-  },
   "peerDependencies": {
     "typescript": "^5.0.0"
   }

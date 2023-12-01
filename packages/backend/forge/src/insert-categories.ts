@@ -5,58 +5,55 @@ await db
   .values([
     {
       name: 'art',
-      logo_path: '/packages/frontend/web/public/uploads/categories/art.svg',
+      logo_path: '/uploads/categories/art.svg',
     },
     {
       name: 'cooking',
-      logo_path: '/packages/frontend/web/public/uploads/categories/cooking.svg',
+      logo_path: '/uploads/categories/cooking.svg',
     },
     {
       name: 'dancing',
-      logo_path: '/packages/frontend/web/public/uploads/categories/dancing.svg',
+      logo_path: '/uploads/categories/dancing.svg',
     },
     {
       name: 'gaming',
-      logo_path: '/packages/frontend/web/public/uploads/categories/gaming.svg',
+      logo_path: '/uploads/categories/gaming.svg',
     },
     {
       name: 'gardening',
-      logo_path:
-        '/packages/frontend/web/public/uploads/categories/gardening.svg',
+      logo_path: '/uploads/categories/gardening.svg',
     },
     {
       name: 'hiking',
-      logo_path: '/packages/frontend/web/public/uploads/categories/hiking.svg',
+      logo_path: '/uploads/categories/hiking.svg',
     },
     {
       name: 'music',
-      logo_path: '/packages/frontend/web/public/uploads/categories/music.svg',
+      logo_path: '/uploads/categories/music.svg',
     },
     {
       name: 'outings',
-      logo_path: '/packages/frontend/web/public/uploads/categories/outings.svg',
+      logo_path: '/uploads/categories/outings.svg',
     },
     {
       name: 'photography',
-      logo_path:
-        '/packages/frontend/web/public/uploads/categories/photography.svg',
+      logo_path: '/uploads/categories/photography.svg',
     },
     {
       name: 'reading',
-      logo_path: '/packages/frontend/web/public/uploads/categories/reading.svg',
+      logo_path: '/uploads/categories/reading.svg',
     },
     {
       name: 'sports',
-      logo_path: '/packages/frontend/web/public/uploads/categories/sports.svg',
+      logo_path: '/uploads/categories/sports.svg',
     },
     {
       name: 'traveling',
-      logo_path:
-        '/packages/frontend/web/public/uploads/categories/traveling.svg',
+      logo_path: '/uploads/categories/traveling.svg',
     },
     {
       name: 'writing',
-      logo_path: '/packages/frontend/web/public/uploads/categories/writing.svg',
+      logo_path: '/uploads/categories/writing.svg',
     },
   ])
   .execute();

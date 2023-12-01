@@ -2,22 +2,22 @@ import type { Generated, Insertable, Selectable, Updateable } from 'kysely';
 
 export interface BaseTable {
   id: Generated<number>;
+  name: string;
   logo_path: string;
 }
 
-export interface TechnologyTable extends BaseTable {
-  name: string;
-}
+export interface TechnologyTable extends BaseTable {}
 
-export interface LanguageTable extends BaseTable {
-  name: string;
-}
+export interface LanguageTable extends BaseTable {}
 
-export interface HobbyCategoryTable extends BaseTable {
-  name: string;
-}
+export interface HobbyCategoryTable extends BaseTable {}
 
-export type PictureTable = BaseTable;
+export interface PictureTable {
+  id: Generated<number>;
+  order?: number;
+  picture_path: string;
+  user_id: number;
+}
 
 export type Gender = 'male' | 'female' | 'non-binary';
 
@@ -78,10 +78,6 @@ export interface LanguageUserTable extends IntermediateTable {
   language_id: number;
 }
 
-export interface PictureUserTable extends IntermediateTable {
-  picture_id: number;
-}
-
 export interface HobbyUserTable extends IntermediateTable {
   hobby_id: number;
 }
@@ -136,10 +132,6 @@ export type LanguageUser = Selectable<LanguageUserTable>;
 export type NewLanguageUser = Insertable<LanguageUserTable>;
 export type LanguageUserUpdate = Updateable<LanguageUserTable>;
 
-export type PictureUser = Selectable<PictureUserTable>;
-export type NewPictureUser = Insertable<PictureUserTable>;
-export type PictureUserUpdate = Updateable<PictureUserTable>;
-
 export type HobbyUser = Selectable<HobbyUserTable>;
 export type NewHobbyUser = Insertable<HobbyUserTable>;
 export type HobbyUserUpdate = Updateable<HobbyUserTable>;
@@ -159,7 +151,6 @@ export interface Database {
   message: MessageTable;
   technology_user: TechnologyUserTable;
   language_user: LanguageUserTable;
-  picture_user: PictureUserTable;
   hobby_user: HobbyUserTable;
   user_action: UserActionTable;
 }
