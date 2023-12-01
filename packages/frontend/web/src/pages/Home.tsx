@@ -3,7 +3,9 @@ import { useEffect, useState } from 'react';
 import { useDisclosure } from '@app/frontend-shared';
 import type { SomeInterface, User } from '@app/types';
 
-import ThemeSwitcher from '@/components/ThemeSwitcher';
+import { useTheme } from '@/components/ThemeProvider';
+
+// import ThemeProvider from '@/components/ThemeProvider';
 
 export default function Home() {
   const [someData, setSomeData] = useState<SomeInterface>({
@@ -32,6 +34,7 @@ export default function Home() {
       abortController.abort();
     };
   }, []);
+  const { theme, setTheme } = useTheme();
 
   return (
     <div
@@ -48,8 +51,16 @@ export default function Home() {
       <h1 className='text-primary font-title dark:text-light-medium dark:bg-dark-medium text-3xl  underline'>
         {'Hello world!'}
       </h1>
-      <ThemeSwitcher />
-
+      {/* <ThemeProvider /> */}
+      <button
+        type='button'
+        onClick={() => {
+          // Use setTheme to change the theme
+          setTheme(theme === 'dark' ? 'light' : 'dark');
+        }}
+      >
+        {'Toggle Theme'}
+      </button>
       <span>{`${someData.someProperty}`}</span>
 
       <button
