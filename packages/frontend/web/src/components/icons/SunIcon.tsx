@@ -1,8 +1,4 @@
-export default function LightIcon({
-  className,
-}: {
-  readonly className: string;
-}) {
+export default function SunIcon({ className }: { readonly className: string }) {
   return (
     <svg
       className={className}

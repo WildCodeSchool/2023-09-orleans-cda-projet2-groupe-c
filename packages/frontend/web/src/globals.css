@@ -31,7 +31,7 @@
 }
 
 @layer utilities {
-  .logo-size {
+  .w-clamp {
     width: clamp(24px, 4vw, 40px);
   }
 }

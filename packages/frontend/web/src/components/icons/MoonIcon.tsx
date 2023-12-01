@@ -1,4 +1,4 @@
-export default function DarkIcon({
+export default function MoonIcon({
   className,
 }: {
   readonly className: string;

@@ -1,4 +1,8 @@
-export default function Logo({ className }: { readonly className: string }) {
+export default function LogoIcon({
+  className,
+}: {
+  readonly className: string;
+}) {
   return (
     <svg className={className} width='41' height='40' viewBox='0 0 41 40'>
       <path
