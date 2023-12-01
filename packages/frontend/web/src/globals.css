@@ -4,9 +4,36 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  height: 100dvh;
-  width: 100dvw;
-  margin: 0;
-  padding: 0;
+@layer base {
+  :root {
+    --primary: #eb0573;
+    --secondary: #3f436a;
+    --light-hard: #eae3e3;
+    --light-medium: #f4efef;
+    --light-light: #fcfcfc;
+    --divider-dark: #4D4F58;
+    --moon: 0;
+    --sun: 1;
+  }
+
+  .dark {
+    --primary: #bd0069;
+    --secondary: #fcfcfe;
+    --light-hard: #111214;
+    --light-medium: #1c1c1f;
+    --light-light: #272721;
+    --divider-dark: #CCCED7;
+    --moon: 1;
+    --sun: 0;
+  }
+
+  body {
+    @apply bg-light-medium;
+  }
+}
+
+@layer utilities {
+  .w-clamp {
+    width: clamp(24px, 4vw, 40px);
+  }
 }

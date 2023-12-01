@@ -14,8 +14,7 @@ type ThemeProviderState = {
   setTheme: (theme: Theme) => void;
 };
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
-const ThemeProviderContext = createContext<ThemeProviderState | undefined>(
+const themeProviderContext = createContext<ThemeProviderState | undefined>(
   undefined,
 );
 
@@ -62,15 +61,15 @@ export function ThemeProvider({
   );
 
   return (
-    <ThemeProviderContext.Provider {...props} value={value}>
+    <themeProviderContext.Provider {...props} value={value}>
       {children}
-    </ThemeProviderContext.Provider>
+    </themeProviderContext.Provider>
   );
 }
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const useTheme = () => {
-  const context = useContext(ThemeProviderContext);
+  const context = useContext(themeProviderContext);
 
   if (!context) throw new Error('useTheme must be used within a ThemeProvider');
 
