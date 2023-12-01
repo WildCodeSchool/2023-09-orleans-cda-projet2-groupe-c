@@ -4,6 +4,8 @@ import { sql } from 'kysely';
 import { db } from '@app/backend-shared';
 import type { SomeInterface } from '@app/types';
 
+import { register } from './register';
+
 const router = express.Router();
 
 router.get('/', async (_request, response) => {
@@ -23,5 +25,7 @@ router.get('/some-route', (_request, response) => {
 
   return response.json(value);
 });
+
+router.use('/register', register);
 
 export default router;
