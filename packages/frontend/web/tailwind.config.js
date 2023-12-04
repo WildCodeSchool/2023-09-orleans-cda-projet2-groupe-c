@@ -9,7 +9,7 @@ export default {
         secondary: 'var(--secondary)',
         'light-hard': 'var(--light-hard)',
         'light-medium': 'var(--light-medium)',
-        'light-light': 'var(--light-light)',
+        light: 'var(--light)',
         'dark-ulta-light': '#3c4045',
         'divider-dark': '#4d4f58',
         placeholder: '#9c89a2',
