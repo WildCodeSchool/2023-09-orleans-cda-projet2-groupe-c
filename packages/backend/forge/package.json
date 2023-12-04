@@ -3,7 +3,7 @@
   "type": "module",
   "scripts": {
     "database:down": "bun run ./src/delete-all-data",
-    "database:up": "bun run ./src/insert-all-data"
+    "database:up": "bun run ./src/insert-categories"
   },
   "dependencies": {
     "@app/backend-shared": "workspace:*"
