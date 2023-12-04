@@ -257,6 +257,7 @@ module.exports = {
     {
       files: ['**/*.ts'],
       rules: {
+        'react-refresh/only-export-components': 'off',
         'unicorn/filename-case': [
           'error',
           {

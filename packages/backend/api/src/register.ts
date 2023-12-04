@@ -8,27 +8,28 @@ register.get('/users', async (req, res) => {
   const users = await db.selectFrom('user').selectAll().execute();
   return res.json(users);
 });
-/* register.post('/', async (_req, res) => { */
-//
-/*   const name = 'Greg0';
-  const email = 'Greg0@mama.com';
-  const password = '123456';
-  const role = 'user'; */
-/*   const insertUsers = await db
+register.post('/', async (req, res) => {
+  const { name, birthdate, gender, biography, role, email, password } =
+    req.body;
+
+  const insertUsers = await db
     .insertInto('user')
     .values({
       name,
+      birthdate,
+      gender,
+      biography,
       role,
       email,
       password,
     })
-    .execute(); */
-/*  for (const insertUser of insertUsers) {
+    .execute();
+  for (const insertUser of insertUsers) {
     console.log(insertUser.insertId);
-  } */
-/*   return res.json({
+  }
+  return res.json({
     ok: true,
-  }); */
-/* }); */
+  });
+});
 
 export { register };
