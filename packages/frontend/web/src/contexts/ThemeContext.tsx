@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/strict-boolean-expressions */
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 
 type Theme = 'system' | 'light' | 'dark';
@@ -26,7 +25,7 @@ export function ThemeContext({
 }: ThemeProviderProps) {
   const [theme, setTheme] = useState<Theme>(() => {
     const storedTheme = localStorage.getItem(storageKey);
-    return storedTheme ? (storedTheme as Theme) : defaultTheme;
+    return storedTheme ?? '' ? (storedTheme as Theme) : defaultTheme;
   });
 
   useEffect(() => {
