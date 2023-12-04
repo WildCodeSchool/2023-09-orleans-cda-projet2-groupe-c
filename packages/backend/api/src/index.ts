@@ -8,10 +8,21 @@ const app = express();
 
 const HOST = process.env.BACKEND_HOST ?? 'localhost';
 const PORT = process.env.BACKEND_PORT ?? 3000;
+const FRONTEND_HOST = process.env.FRONTEND_HOST ?? 'localhost';
+const FRONTEND_PORT = process.env.FRONTEND_PORT ?? 'localhost';
+const COOKIE_SECRET = process.env.COOKIE_SECRET;
 
 app.use(express.json());
-app.use(cors());
-app.use(cookieParser());
+
+// autorize the frontend to make requests to the backend
+app.use(
+  cors({
+    origin: `http://${FRONTEND_HOST}:${FRONTEND_PORT}`,
+    credentials: true,
+  }),
+);
+
+app.use(cookieParser(COOKIE_SECRET));
 
 app.use('/api', router);
 

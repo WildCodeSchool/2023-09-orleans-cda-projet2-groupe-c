@@ -1,10 +1,14 @@
 import { motion } from 'framer-motion';
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import type { FormEvent } from 'react';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
+
+import { useAuth } from '@/contexts/AuthContext';
 
 import Button from '../Button';
-import PasswordNotVisible from '../svg/PasswordNotVisible';
-import PasswordVisible from '../svg/PasswordVisible';
+import VisiblePassword from './VisiblePassword';
+
+const API_URL = import.meta.env.VITE_API_URL;
 
 // Variant animation for the container
 const containerVariants = {
@@ -25,15 +29,53 @@ const containerVariants = {
 };
 
 export default function Login() {
-  const [password, setPassword] = useState('');
-  const [isVisible, setIsVisible] = useState(false);
+  const [email, setEmail] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+  const [isVisible, setIsVisible] = useState<boolean>(false);
+  const { isLoading, isLoggedIn, setIsLoggedIn } = useAuth();
+  const navigate = useNavigate();
 
-  const handlePasswordClick = (event) => {
+  // Submit the login form
+  const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setIsVisible(!isVisible);
+
+    try {
+      // Send the request to the API
+      const res = await fetch(`${API_URL}/auth/login`, {
+        method: 'POST',
+        credentials: 'include', // Send cookies
+        headers: {
+          'content-type': 'application/json',
+        },
+        body: JSON.stringify({
+          email,
+          password,
+        }),
+      });
+
+      // Convert the response to json
+      const data = (await res.json()) as {
+        isLoggedIn: boolean;
+      };
+
+      // If the user is logged in, set the state to true and redirect to the home page
+      if (data.isLoggedIn) {
+        setIsLoggedIn(true);
+        navigate('/');
+      }
+    } catch (error) {
+      throw new Error(`Failed to login: ${String(error)}`);
+    }
   };
 
-  return (
+  // If the user is already logged in, redirect to the home page
+  if (isLoggedIn) {
+    return <Navigate to='/' />;
+  }
+
+  return isLoading ? (
+    <p>{`Loading...`}</p>
+  ) : (
     <motion.div
       variants={containerVariants}
       initial='hidden'
@@ -41,7 +83,7 @@ export default function Login() {
       className='mb-10 flex w-full flex-col items-center gap-8 lg:mb-24'
     >
       <div className='w-full max-w-[500px]'>
-        <form action='' className='flex flex-col items-start gap-4'>
+        <form onSubmit={onSubmit} className='flex flex-col items-start gap-4'>
           <div className='mb-5 flex w-full flex-col gap-4'>
             <div>
               <label htmlFor='email'>
@@ -58,15 +100,16 @@ export default function Login() {
                       fill='white'
                     />
                   </svg>
-                  <p className='text-base'>
-                    {`Email`}
-                    <span>{`*`}</span>
-                  </p>
+                  <p className='text-base'>{`Email*`}</p>
                 </div>
               </label>
               <input
-                type='text'
+                type='email'
                 id='email'
+                onChange={(event) => {
+                  setEmail(event.target.value);
+                }}
+                value={email}
                 className='bg-light-light/30 accent-primary border-light-light mt-1 w-full appearance-none rounded-lg border px-2 py-2 text-xl'
               />
             </div>
@@ -85,10 +128,7 @@ export default function Login() {
                       fill='white'
                     />
                   </svg>
-                  <p className='text-base'>
-                    {`Password`}
-                    <span>{`*`}</span>
-                  </p>
+                  <p className='text-base'>{`Password*`}</p>
                 </div>
               </label>
               <div className='relative'>
@@ -103,32 +143,24 @@ export default function Login() {
                 />
 
                 <div className='absolute right-3 top-1/2 translate-y-[-30%]'>
-                  {isVisible ? (
-                    <button type='button' onClick={handlePasswordClick}>
-                      <PasswordVisible />
-                    </button>
-                  ) : (
-                    <button
-                      type='button'
-                      onClick={handlePasswordClick}
-                      className='translate-y-[1px]'
-                    >
-                      <PasswordNotVisible />
-                    </button>
-                  )}
+                  <VisiblePassword
+                    isVisible={isVisible}
+                    setIsVisible={setIsVisible}
+                  />
                 </div>
               </div>
             </div>
             <div className='mt-5 w-full'>
               <p>{`You don't have an account ?`}</p>
 
+              {/* TODO : add link for register */}
               <Link to='/' className='text-primary font-semibold underline'>
                 {`Create now`}
               </Link>
             </div>
           </div>
 
-          <Button path='/' word='Connection' isOutline={false} />
+          <Button word='Connection' type='submit' isOutline={false} />
         </form>
       </div>
     </motion.div>

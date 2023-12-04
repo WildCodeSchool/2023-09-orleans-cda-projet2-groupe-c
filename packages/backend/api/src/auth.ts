@@ -5,6 +5,7 @@ import { db } from '@app/backend-shared';
 import type { AuthBody } from '@app/types';
 
 const JWT_SECRET = process.env.JWT_SECRET;
+const FRONTEND_URL = 'http://localhost';
 
 // Throw an error if the JWT_SECRET environment variable is not defined
 if (JWT_SECRET === undefined) {
@@ -16,39 +17,14 @@ const secret = new TextEncoder().encode(JWT_SECRET);
 
 const authRouter = express.Router();
 
-// TODO - add route to register a new user
-
-// authRouter.post('/register', async (req, res) => {
-//   const email = 'miky@gmail.com';
-//   const password = 'mikexiong';
-
-//   const hashedPassword = await Bun.password.hash(password, {
-//     algorithm: 'bcrypt',
-//     cost: 10,
-//   });
-
-//   const insertUsers = await db
-//     .insertInto('user')
-//     .values({
-//       email,
-//       password: hashedPassword,
-//     })
-//     .execute();
-
-//   for (const insertedUser of insertUsers) {
-//     console.log(insertedUser.insertId);
-//   }
-
-//   return res.json({
-//     ok: true,
-//   });
-// });
+// TODO : add route to register a new user
 
 // Route to check the JWT token in the cookie and verify if the user is logged in
-authRouter.get('/check', async (req, res) => {
+authRouter.get('/verify', async (req, res) => {
   // Get the JWT from the cookie
-  const jwt: string | undefined = req.cookies.token;
+  const jwt: string | undefined = req.signedCookies.token;
 
+  // If the JWT is undefined, return an error
   if (jwt === undefined) {
     return res.json({
       message: 'JWT token is not defined',
@@ -58,18 +34,24 @@ authRouter.get('/check', async (req, res) => {
 
   try {
     // Verify the JWT
-    const check = await jose.jwtVerify(jwt, secret, {
-      issuer: 'http://localhost',
-      audience: 'http://localhost',
+    await jose.jwtVerify(jwt, secret, {
+      issuer: FRONTEND_URL,
+      audience: FRONTEND_URL,
     });
-
-    console.log(check);
 
     return res.json({
       message: 'JWT is verify and User is connected',
       isLoggedIn: true,
     });
   } catch (error) {
+    // If the JWT is expired
+    if (error instanceof jose.errors.JWTExpired) {
+      return res.json({
+        message: 'JWT is expired and User is not connected',
+        isLoggedIn: false,
+      });
+    }
+
     return res.json({
       isLoggedIn: false,
       error,
@@ -93,6 +75,7 @@ authRouter.post('/login', async (req, res) => {
     // If the user doesn't exist, return an error
     if (user === undefined) {
       return res.json({
+        email: 'User does not exist',
         isLoggedIn: false,
       });
     }
@@ -112,7 +95,7 @@ authRouter.post('/login', async (req, res) => {
       });
     }
 
-    // Create a new JWT
+    // Create a new JWT with the library jose
     const jwt = await new jose.SignJWT({
       sub: email,
     })
@@ -120,16 +103,16 @@ authRouter.post('/login', async (req, res) => {
         alg: 'HS256',
       })
       .setIssuedAt()
-      .setIssuer('http://localhost')
-      .setAudience('http://localhost')
+      .setIssuer(FRONTEND_URL)
+      .setAudience(FRONTEND_URL)
       .setExpirationTime('2h')
       .sign(secret);
 
     res.cookie('token', jwt, {
-      httpOnly: true, // The cookie only accessible by the web server
-      sameSite: 'lax', // The cookie is not sent with requests from other sites
+      httpOnly: true, // The cookie is not accessible via JavaScript but only via HTTP(S)
+      sameSite: true, // The cookie is not accessible via cross-site requests
       secure: process.env.NODE_ENV === 'production',
-      //   signed: true,
+      signed: true,
     });
 
     return res.json({

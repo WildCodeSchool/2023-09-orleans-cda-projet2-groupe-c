@@ -12,7 +12,7 @@ export interface SomeInterface {
 
 export interface ButtonProps {
   word: string;
-  path: string;
+  type: 'button' | 'submit' | 'reset';
   isOutline: boolean;
 }
 
