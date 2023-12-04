@@ -3,8 +3,6 @@ import { useEffect, useState } from 'react';
 import { useDisclosure } from '@app/frontend-shared';
 import type { SomeInterface, User } from '@app/types';
 
-import NavBar from '@/components/NavBar';
-
 export default function Home() {
   const [someData, setSomeData] = useState<SomeInterface>({
     someProperty: 'someValue',
@@ -34,44 +32,41 @@ export default function Home() {
   }, []);
 
   return (
-    <>
-      <NavBar />
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          gap: '1rem',
-          marginTop: '200px',
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: '1rem',
+        marginTop: '200px',
+      }}
+    >
+      <h1 className='text-primary font-title text-3xl underline'>
+        {'Hello world'}
+      </h1>
+      <span>{`${someData.someProperty}`}</span>
+
+      <button
+        type='button'
+        onClick={() => {
+          onDetailsToggle();
         }}
       >
-        <h1 className='text-primary font-title text-3xl underline'>
-          {'Hello world'}
-        </h1>
-        <span>{`${someData.someProperty}`}</span>
+        {'Click me'}
+      </button>
 
-        <button
-          type='button'
-          onClick={() => {
-            onDetailsToggle();
-          }}
-        >
-          {'Click me'}
-        </button>
-
-        {isDetailsOpen ? (
-          <pre>
-            {JSON.stringify(
-              {
-                user,
-              },
-              undefined,
-              2,
-            )}
-          </pre>
-        ) : undefined}
-      </div>
-    </>
+      {isDetailsOpen ? (
+        <pre>
+          {JSON.stringify(
+            {
+              user,
+            },
+            undefined,
+            2,
+          )}
+        </pre>
+      ) : undefined}
+    </div>
   );
 }
