@@ -1,6 +1,6 @@
 import { Outlet } from 'react-router-dom';
 
-import { useTheme } from '@/contexts/ThemeProvider';
+import { useTheme } from '@/contexts/ThemeContext';
 
 import ThemeSwitcher from './ThemeSwitcher';
 import FilterIcon from './icons/FilterIcon';

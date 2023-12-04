@@ -18,7 +18,7 @@ const themeProviderContext = createContext<ThemeProviderState | undefined>(
   undefined,
 );
 
-export function ThemeProvider({
+export function ThemeContext({
   children,
   defaultTheme = 'system',
   storageKey = 'vite-ui-theme',
@@ -68,7 +68,7 @@ export function ThemeProvider({
 export const useTheme = () => {
   const context = useContext(themeProviderContext);
 
-  if (!context) throw new Error('useTheme must be used within a ThemeProvider');
+  if (!context) throw new Error('useTheme must be used within a ThemeContext');
 
   return context;
 };
