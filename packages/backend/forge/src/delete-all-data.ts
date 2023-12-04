@@ -5,6 +5,12 @@ const allCategories = await db
   .selectAll()
   .execute();
 
+const allCities = await db.selectFrom('city').selectAll().execute();
+
 if (allCategories.length > 0) {
   await db.deleteFrom('hobby_category').execute();
+}
+
+if (allCities.length > 0) {
+  await db.deleteFrom('city').execute();
 }
