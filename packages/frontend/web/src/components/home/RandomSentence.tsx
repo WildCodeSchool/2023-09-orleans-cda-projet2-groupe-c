@@ -1,6 +1,4 @@
-import type { StringArray } from '@app/types';
-
-export const sentences: StringArray = [
+const sentences: string[] = [
   'Find someone who speaks the same language as you.',
   "Finding love isn't a syntax issue here.",
   'Looking for a relationship without “fatal errors” ?',
@@ -25,3 +23,11 @@ export const sentences: StringArray = [
   "Swipe right if you're ready to share your cookies and create unforgettable memories on Tindev.",
   'Welcome to Tindev, where dating is like HTML: simple but with infinite potential.',
 ];
+
+export default function RandomSentence() {
+  // Select a random sentence from the array "sentences"
+  const randomSentence: string =
+    sentences[Math.floor(Math.random() * sentences.length)];
+
+  return <h2 className='font-base text-base'>{randomSentence}</h2>;
+}

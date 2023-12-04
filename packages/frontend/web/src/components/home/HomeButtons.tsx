@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 
 import Button from '../Button';
 
@@ -29,8 +30,15 @@ export default function HomeButtons() {
       transition={{ duration: 0.5 }}
       className='mb-5 flex w-full flex-col items-center gap-8'
     >
-      <Button word='Login' path='#' isOutline={false} />
-      <Button word='Register' path='#' isOutline />
+      {/* TODO : add login route */}
+      <Link to='#' className='flex w-full justify-center'>
+        <Button word='Login' type='button' isOutline={false} />
+      </Link>
+
+      {/* TODO : add register route */}
+      <Link to='#' className='flex w-full justify-center'>
+        <Button word='Register' type='button' isOutline />
+      </Link>
 
       <p className='text-light-hard max-w-[500px] text-sm'>
         {`By clicking 'Login,' you agree to our `}

@@ -1,11 +1,8 @@
 import { Outlet } from 'react-router-dom';
 
-import { sentences } from '../components/home/random-sentence';
-import Logo from '../components/icons/LogoHome';
+import RandomSentence from '@/components/home/RandomSentence';
 
-// Select a random sentence from the array "sentences"
-const randomSentence: string =
-  sentences[Math.floor(Math.random() * sentences.length)];
+import Logo from '../components/icons/LogoHomeIcon';
 
 export default function Home() {
   return (
@@ -15,7 +12,7 @@ export default function Home() {
           <Logo />
           <h1 className='font-title text-6xl'>{`Tindev`}</h1>
           {/* Display a random sentence */}
-          <h2 className='font-base text-base'>{randomSentence}</h2>
+          <RandomSentence />
         </header>
 
         {/* Render the child routes */}
