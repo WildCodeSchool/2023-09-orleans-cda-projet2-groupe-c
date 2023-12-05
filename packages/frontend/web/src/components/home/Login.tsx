@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { useState } from 'react';
-import type { FormEvent } from 'react';
+import { type SubmitHandler, useForm } from 'react-hook-form';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 
 import { useAuth } from '@/contexts/AuthContext';
@@ -28,50 +28,62 @@ const containerVariants = {
   },
 };
 
+// Type for the form data
+interface FormData {
+  email: string;
+  password: string;
+}
+
 export default function Login() {
-  const [email, setEmail] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
   const [isVisible, setIsVisible] = useState<boolean>(false);
   const { isLoading, isLoggedIn, setIsLoggedIn } = useAuth();
   const navigate = useNavigate();
+  const { register, handleSubmit, formState } = useForm<FormData>({
+    mode: 'onChange',
+  });
+
+  // Desctructure the formState object
+  const { isValid, errors } = formState;
 
   // Submit the login form
-  const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-
+  const onSubmit: SubmitHandler<FormData> = async (data) => {
     try {
-      // Send the request to the API
+      // data from the register state
+      const email = data.email;
+      const password = data.password;
+
+      // Send the login request to the server
       const res = await fetch(`${API_URL}/auth/login`, {
         method: 'POST',
         credentials: 'include', // Send cookies
         headers: {
           'content-type': 'application/json',
         },
+        // Convert the JS object to a JSON string
         body: JSON.stringify({
           email,
           password,
         }),
       });
 
-      // Convert the response to json
-      const data = (await res.json()) as {
+      const result = (await res.json()) as {
         isLoggedIn: boolean;
       };
 
-      // If the user is logged in, set the state to true and redirect to the home page
-      if (data.isLoggedIn) {
+      // If the user is logged in, redirect to the home page
+      if (result.isLoggedIn) {
         setIsLoggedIn(true);
         navigate('/');
       }
     } catch (error) {
       throw new Error(`Failed to login: ${String(error)}`);
     }
-  };
 
-  // If the user is already logged in, redirect to the home page
-  if (isLoggedIn) {
-    return <Navigate to='/' />;
-  }
+    // If the user is already logged in, redirect to the home page
+    if (isLoggedIn && isValid) {
+      return <Navigate to='/' />;
+    }
+  };
 
   return isLoading ? (
     <p>{`Loading...`}</p>
@@ -83,7 +95,11 @@ export default function Login() {
       className='mb-10 flex w-full flex-col items-center gap-8 lg:mb-24'
     >
       <div className='w-full max-w-[500px]'>
-        <form onSubmit={onSubmit} className='flex flex-col items-start gap-4'>
+        {/* Login form with hook useForm */}
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className='flex flex-col items-start gap-4'
+        >
           <div className='mb-5 flex w-full flex-col gap-4'>
             <div>
               <label htmlFor='email'>
@@ -104,14 +120,19 @@ export default function Login() {
                 </div>
               </label>
               <input
+                {...register('email', {
+                  required: { value: true, message: 'ⓘ Email is required' },
+                  maxLength: {
+                    value: 255,
+                    message: 'ⓘ Password must be less than 255 characters',
+                  },
+                })}
+                name='email'
                 type='email'
                 id='email'
-                onChange={(event) => {
-                  setEmail(event.target.value);
-                }}
-                value={email}
                 className='bg-light-light/30 accent-primary border-light-light mt-1 w-full appearance-none rounded-lg border px-2 py-2 text-xl'
               />
+              <p className='mt-1 flex'>{errors.email?.message ?? ''}</p>{' '}
             </div>
             <div className='w-full'>
               <label htmlFor='password'>
@@ -133,15 +154,25 @@ export default function Login() {
               </label>
               <div className='relative'>
                 <input
+                  {...register('password', {
+                    required: {
+                      value: true,
+                      message: 'ⓘ Password is required',
+                    },
+                    minLength: {
+                      value: 8,
+                      message: 'ⓘ Password must be at least 8 characters',
+                    },
+                    maxLength: {
+                      value: 255,
+                      message: 'ⓘ Password must be less than 255 characters',
+                    },
+                  })}
+                  name='password'
                   type={isVisible ? 'text' : 'password'}
                   id='password'
-                  onChange={(event) => {
-                    setPassword(event.target.value);
-                  }}
-                  value={password}
                   className='bg-light-light/30 accent-primary border-light-light mt-1 w-full appearance-none rounded-lg border px-2 py-2 text-xl'
                 />
-
                 <div className='absolute right-3 top-1/2 translate-y-[-30%]'>
                   <VisiblePassword
                     isVisible={isVisible}
@@ -149,6 +180,7 @@ export default function Login() {
                   />
                 </div>
               </div>
+              <p className='mt-1 flex'>{errors.password?.message ?? ''}</p>
             </div>
             <div className='mt-5 w-full'>
               <p>{`You don't have an account ?`}</p>
