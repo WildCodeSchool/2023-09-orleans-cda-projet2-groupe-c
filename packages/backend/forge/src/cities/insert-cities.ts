@@ -1,8 +1,8 @@
+// Json file with cities from API's gouv
 import { sql } from 'kysely';
 
 import { db } from '@app/backend-shared';
 
-// Json file with cities from API's gouv
 import cities from './cities.json';
 
 export const insertCities = async () => {
@@ -24,7 +24,3 @@ export const insertCities = async () => {
       .execute();
   }
 };
-
-await insertCities().catch((error) => {
-  throw error;
-});

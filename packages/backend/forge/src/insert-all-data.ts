@@ -1,10 +1,12 @@
-import { insertCategories } from './insert-categories';
-import { insertCities } from './insert-cities';
+import { insertCities } from './cities/insert-cities';
+import { insertCategories } from './hobbies/insert-categories';
 
 const insertAllData = async () => {
-  await Promise.all([insertCategories(), insertCities()]);
+  await insertCategories();
+
+  await insertCities();
 };
 
 await insertAllData().catch((error) => {
-  throw error;
+  throw new Error(`Impossible to insert all data: ${error}`);
 });
