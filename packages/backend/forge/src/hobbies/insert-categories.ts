@@ -25,15 +25,11 @@ export const insertCategories = async () => {
         logo_path: '/uploads/categories/gardening.svg',
       },
       {
-        name: 'hiking',
-        logo_path: '/uploads/categories/hiking.svg',
-      },
-      {
         name: 'music',
         logo_path: '/uploads/categories/music.svg',
       },
       {
-        name: 'outings',
+        name: 'outing',
         logo_path: '/uploads/categories/outings.svg',
       },
       {
@@ -45,7 +41,7 @@ export const insertCategories = async () => {
         logo_path: '/uploads/categories/reading.svg',
       },
       {
-        name: 'sports',
+        name: 'sport',
         logo_path: '/uploads/categories/sports.svg',
       },
       {
@@ -59,7 +55,3 @@ export const insertCategories = async () => {
     ])
     .execute();
 };
-
-await insertCategories().catch((error) => {
-  throw error;
-});
