@@ -1,11 +1,11 @@
 import { motion } from 'framer-motion';
 
 export default function Button({
-  word,
+  children,
   type,
   isOutline,
 }: {
-  readonly word: string;
+  readonly children: string;
   readonly type: 'button' | 'submit' | 'reset';
   readonly isOutline: boolean;
 }) {
@@ -33,7 +33,7 @@ export default function Button({
       } border-primary text-light-light w-full max-w-[500px] shrink-0 rounded-lg border px-2 py-3 text-xl`}
     >
       {/* Display the button text */}
-      {word}
+      {children}
     </motion.button>
   );
 }

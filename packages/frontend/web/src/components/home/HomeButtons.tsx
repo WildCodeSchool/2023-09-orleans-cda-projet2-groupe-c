@@ -32,12 +32,16 @@ export default function HomeButtons() {
     >
       {/* TODO : add login route */}
       <Link to='#' className='flex w-full justify-center'>
-        <Button word='Login' type='button' isOutline={false} />
+        <Button type='button' isOutline={false}>
+          {`Login`}
+        </Button>
       </Link>
 
       {/* TODO : add register route */}
       <Link to='#' className='flex w-full justify-center'>
-        <Button word='Register' type='button' isOutline />
+        <Button type='button' isOutline>
+          {`Register`}
+        </Button>
       </Link>
 
       <p className='text-light-hard max-w-[500px] text-sm'>
