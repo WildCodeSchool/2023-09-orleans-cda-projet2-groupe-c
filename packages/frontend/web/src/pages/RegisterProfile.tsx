@@ -2,9 +2,9 @@ import { useForm } from 'react-hook-form';
 
 import type { UserTable } from '@app/types';
 
-export default function RegisterProfile() {
-  interface FormData extends UserTable {}
+interface FormData extends UserTable {}
 
+export default function RegisterProfile() {
   const {
     register,
     handleSubmit,
