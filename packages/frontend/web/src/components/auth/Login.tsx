@@ -3,9 +3,13 @@ import { useState } from 'react';
 import { type SubmitHandler, useForm } from 'react-hook-form';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 
+import type { AuthBody } from '@app/types';
+import { authSchema } from '@app/types';
+
 import { useAuth } from '@/contexts/AuthContext';
 
 import Button from '../Button';
+import Loading from '../Loading';
 import VisiblePassword from './VisiblePassword';
 
 const API_URL = import.meta.env.VITE_API_URL;
@@ -28,65 +32,90 @@ const containerVariants = {
   },
 };
 
-// Type for the form data
-interface FormData {
-  email: string;
-  password: string;
-}
-
 export default function Login() {
+  // State to show or hide the password
   const [isVisible, setIsVisible] = useState<boolean>(false);
-  const { isLoading, isLoggedIn, setIsLoggedIn } = useAuth();
+
+  // State to handle the errors from the form
+  const [formErrors, setFormErrors] = useState<{
+    email?: string[];
+    password?: string[];
+  }>({});
+
+  // State to handle the login error
+  const [loginError, setLoginError] = useState<string>('');
+
+  // Get the navigate function from the router
   const navigate = useNavigate();
-  const { register, handleSubmit, formState } = useForm<FormData>({
-    mode: 'onChange',
-  });
+
+  // Get states from the AuthContext
+  const { isLoading, isLoggedIn, setIsLoggedIn } = useAuth();
+
+  // Desctructure the useForm hook
+  const { register, handleSubmit, formState } = useForm<AuthBody>();
 
   // Desctructure the formState object
-  const { isValid, errors } = formState;
+  const { isValid } = formState;
+
+  // If the user is already logged in, redirect to the home page
+  if (isLoggedIn) {
+    return <Navigate to='/' />;
+  }
 
   // Submit the login form
-  const onSubmit: SubmitHandler<FormData> = async (data) => {
-    try {
-      // data from the register state
-      const email = data.email;
-      const password = data.password;
+  const onSubmit: SubmitHandler<AuthBody> = async (data) => {
+    // Get an object with the errors from the form
+    const result = authSchema.safeParse(data);
 
-      // Send the login request to the server
-      const res = await fetch(`${API_URL}/auth/login`, {
-        method: 'POST',
-        credentials: 'include', // Send cookies
-        headers: {
-          'content-type': 'application/json',
-        },
-        // Convert the JS object to a JSON string
-        body: JSON.stringify({
-          email,
-          password,
-        }),
-      });
-
-      const result = (await res.json()) as {
-        isLoggedIn: boolean;
-      };
-
-      // If the user is logged in, redirect to the home page
-      if (result.isLoggedIn) {
-        setIsLoggedIn(true);
-        navigate('/');
-      }
-    } catch (error) {
-      throw new Error(`Failed to login: ${String(error)}`);
+    // If the result is not a success, set the errors in the state errors
+    if (result.success) {
+      setFormErrors({});
+    } else {
+      setFormErrors(result.error.formErrors.fieldErrors);
     }
 
-    // If the user is already logged in, redirect to the home page
-    if (isLoggedIn && isValid) {
-      return <Navigate to='/' />;
+    try {
+      // data from the register state
+      const validate = authSchema.parse({
+        email: data.email,
+        password: data.password,
+      });
+
+      if (isValid) {
+        // Send the login request to the server
+        const res = await fetch(`${API_URL}/auth/login`, {
+          method: 'POST',
+          credentials: 'include', // Send cookies
+          headers: {
+            'content-type': 'application/json',
+          },
+          // Convert the JS object to a JSON string
+          body: JSON.stringify({
+            email: validate.email,
+            password: validate.password,
+          }),
+        });
+
+        // Get the result from the server as a JS object JSON
+        const resData = (await res.json()) as {
+          isLoggedIn: boolean;
+        };
+
+        // If the user is logged in, redirect to the home page
+        if (resData.isLoggedIn) {
+          setLoginError('');
+          setIsLoggedIn(true);
+          navigate('/');
+        }
+      }
+    } catch {
+      // If the login failed, set the error in the state login error
+      setLoginError('ⓘ Email or password is incorrect');
     }
   };
 
   return isLoading ? (
-    <p>{`Loading...`}</p>
+    <Loading />
   ) : (
     <motion.div
       variants={containerVariants}
@@ -120,19 +149,13 @@ export default function Login() {
                 </div>
               </label>
               <input
-                {...register('email', {
-                  required: { value: true, message: 'ⓘ Email is required' },
-                  maxLength: {
-                    value: 255,
-                    message: 'ⓘ Password must be less than 255 characters',
-                  },
-                })}
+                {...register('email')}
                 name='email'
                 type='email'
                 id='email'
                 className='bg-light-light/30 accent-primary border-light-light mt-1 w-full appearance-none rounded-lg border px-2 py-2 text-xl'
               />
-              <p className='mt-1 flex'>{errors.email?.message ?? ''}</p>{' '}
+              <p className='mt-1 flex'>{formErrors.email}</p>
             </div>
             <div className='w-full'>
               <label htmlFor='password'>
@@ -154,20 +177,7 @@ export default function Login() {
               </label>
               <div className='relative'>
                 <input
-                  {...register('password', {
-                    required: {
-                      value: true,
-                      message: 'ⓘ Password is required',
-                    },
-                    minLength: {
-                      value: 8,
-                      message: 'ⓘ Password must be at least 8 characters',
-                    },
-                    maxLength: {
-                      value: 255,
-                      message: 'ⓘ Password must be less than 255 characters',
-                    },
-                  })}
+                  {...register('password')}
                   name='password'
                   type={isVisible ? 'text' : 'password'}
                   id='password'
@@ -180,9 +190,11 @@ export default function Login() {
                   />
                 </div>
               </div>
-              <p className='mt-1 flex'>{errors.password?.message ?? ''}</p>
+              <p className='mt-1 flex'>{formErrors.password}</p>
             </div>
             <div className='mt-5 w-full'>
+              <p className='mb-5'>{loginError}</p>
+
               <p>{`You don't have an account ?`}</p>
 
               {/* TODO : add link for register */}
