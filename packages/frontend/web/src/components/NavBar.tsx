@@ -1,7 +1,5 @@
 import { Outlet } from 'react-router-dom';
 
-import { useTheme } from '@/contexts/ThemeContext';
-
 import ThemeSwitcher from './ThemeSwitcher';
 import FilterIcon from './icons/FilterIcon';
 import LikeIcon from './icons/LikeIcon';
@@ -10,12 +8,6 @@ import MessageIcon from './icons/MessageIcon';
 import UserIcon from './icons/UserIcon';
 
 function NavBar() {
-  const { theme, setTheme } = useTheme();
-
-  const toggleDarkMode = () => {
-    setTheme(theme === 'dark' ? 'light' : 'dark');
-  };
-
   const dataIcon = [
     {
       id: 'user',
@@ -38,7 +30,6 @@ function NavBar() {
     {
       id: 'theme',
       icon: <ThemeSwitcher />,
-      onclick: toggleDarkMode,
     },
   ];
   return (
@@ -52,17 +43,14 @@ function NavBar() {
           </div>
         </div>
         <div className='flex grow justify-end lg:justify-center'>
-          {dataIcon.map(({ id, icon, lgHidden, onclick }) => (
+          {dataIcon.map(({ id, icon, lgHidden }) => (
             <div
               key={id}
               className={`flex items-center px-1 md:px-2 lg:px-24 ${
                 lgHidden ?? false ? 'lg:hidden' : ''
               }`}
             >
-              <div
-                onClick={onclick ? toggleDarkMode : () => {}}
-                className='bg-light active:shadow-divider-dark flex h-8 w-8 cursor-pointer items-center justify-center rounded-full shadow-md duration-200 active:translate-y-[2px] active:shadow-inner md:h-10 md:w-10'
-              >
+              <div className='bg-light active:shadow-divider-dark flex h-8 w-8 cursor-pointer items-center justify-center rounded-full shadow-md duration-200 active:translate-y-[2px] active:shadow-inner md:h-10 md:w-10'>
                 {icon}
               </div>
             </div>

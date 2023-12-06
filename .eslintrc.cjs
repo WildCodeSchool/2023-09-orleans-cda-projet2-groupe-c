@@ -273,7 +273,6 @@ module.exports = {
   rules: {
     'react-refresh/only-export-components': [
       'off',
-      'warn',
       { allowConstantExport: true },
     ],
   },
