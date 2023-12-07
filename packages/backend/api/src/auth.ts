@@ -2,7 +2,7 @@ import express from 'express';
 import * as jose from 'jose';
 
 import { db } from '@app/backend-shared';
-import type { AuthBody } from '@app/types';
+import type { AuthBody, RegisterBody } from '@app/types';
 
 const JWT_SECRET = process.env.JWT_SECRET;
 const FRONTEND_URL = 'http://localhost';
@@ -18,6 +18,52 @@ const secret = new TextEncoder().encode(JWT_SECRET);
 const authRouter = express.Router();
 
 // TODO : add route to register a new user
+authRouter.post('/registration', async (req, res) => {
+  const { email, password } = req.body as RegisterBody;
+
+  const hashedPassword = await Bun.password.hash(password, {
+    algorithm: 'bcrypt',
+    cost: 10,
+  });
+
+  const result = await db
+    .insertInto('user')
+    .values({
+      email,
+      password: hashedPassword,
+      role: 'user',
+      activation_code: 'wesh',
+      email_verified_at: new Date(),
+    })
+    .execute();
+
+  const insertedId = result[0].insertId;
+
+  console.log(result);
+
+  const jwt = await new jose.SignJWT({
+    sub: email,
+  })
+    .setProtectedHeader({
+      alg: 'HS256',
+    })
+    .setIssuedAt()
+    .setIssuer(FRONTEND_URL)
+    .setAudience(FRONTEND_URL)
+    .setExpirationTime('2h')
+    .sign(secret);
+
+  res.cookie('token', jwt, {
+    httpOnly: true, // The cookie is not accessible via JavaScript but only via HTTP(S)
+    sameSite: true, // The cookie is not accessible via cross-site requests
+    secure: process.env.NODE_ENV === 'production',
+    signed: true,
+  });
+
+  return res.json({
+    ok: true,
+  });
+});
 
 // Route to check the JWT token in the cookie and verify if the user is logged in
 authRouter.get('/verify', async (req, res) => {

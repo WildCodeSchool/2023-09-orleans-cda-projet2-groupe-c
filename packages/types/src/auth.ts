@@ -27,3 +27,11 @@ export const authSchema = z
   .strip(); // remove additional properties
 
 export type AuthBody = z.infer<typeof authSchema>;
+
+export const registerSchema = authSchema.extend({
+  role: z.enum(['user', 'admin']),
+  activation_code: z.string().max(6),
+  email_verified_at: z.date(),
+});
+
+export type RegisterBody = z.infer<typeof registerSchema>;
