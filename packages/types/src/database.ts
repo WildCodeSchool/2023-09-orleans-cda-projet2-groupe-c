@@ -1,5 +1,24 @@
 import type { Generated, Insertable, Selectable, Updateable } from 'kysely';
 
+export interface BaseTable {
+  id: Generated<number>;
+  name: string;
+  logo_path: string;
+}
+
+export interface TechnologyTable extends BaseTable {}
+
+export interface LanguageTable extends BaseTable {}
+
+export interface HobbyCategoryTable extends BaseTable {}
+
+export interface PictureTable {
+  id: Generated<number>;
+  order?: number;
+  picture_path: string;
+  user_id: number;
+}
+
 export type Gender = 'male' | 'female' | 'non-binary';
 
 export type Role = 'user' | 'admin';
@@ -9,20 +28,7 @@ export type Point = {
   y: number;
 };
 
-export type ProfileTable = {
-  //technology, language, hobby_category
-  id: Generated<number>;
-  name: string;
-  logo_path: string;
-};
-
-export type IntermediateTable = {
-  id: Generated<number>;
-  order?: number;
-  user_id: number;
-};
-
-export type UserTable = {
+export interface UserTable {
   id: Generated<number>;
   name?: string;
   birthdate?: Date;
@@ -33,49 +39,50 @@ export type UserTable = {
   email: string;
   password: string;
   email_verified_at?: Date;
-  activation_code?: Date;
+  activation_code?: string;
   activate_at?: Date;
   city_id?: number;
-};
+}
 
-export type PictureTable = {
-  id: Generated<number>;
-  logo_path?: string;
-};
-
-export type HobbyTable = {
+export interface HobbyTable {
   id: Generated<number>;
   name: string;
   hobby_category_id: number;
-};
+}
 
-export type CityTable = {
+export interface CityTable {
   id: Generated<number>;
   name: string;
   coordinates: Point;
-};
+}
 
-export type MessageTable = {
+export interface MessageTable {
   id: Generated<number>;
   content?: string;
   sent_at: Date;
   conversation_id: number;
   sender_id: number;
-};
+}
+
+export interface IntermediateTable {
+  id: Generated<number>;
+  order?: number;
+  user_id: number;
+}
+
 export interface TechnologyUserTable extends IntermediateTable {
   technology_id: number;
 }
+
 export interface LanguageUserTable extends IntermediateTable {
   language_id: number;
 }
-export interface PictureUserTable extends IntermediateTable {
-  picture_id: number;
-}
+
 export interface HobbyUserTable extends IntermediateTable {
   hobby_id: number;
 }
 
-export type UserActionTable = {
+export interface UserActionTable {
   id: Generated<number>;
   initiator_id: number;
   receiver_id: number;
@@ -83,11 +90,19 @@ export type UserActionTable = {
   superlike_at: Date;
   next_at: Date;
   canceled_at: Date;
-};
+}
 
-export type Profile = Selectable<ProfileTable>;
-export type NewProfile = Insertable<ProfileTable>;
-export type ProfileUpdate = Updateable<ProfileTable>;
+export type Technology = Selectable<TechnologyTable>;
+export type NewTechnology = Insertable<TechnologyTable>;
+export type TechnologyUpdate = Updateable<TechnologyTable>;
+
+export type Language = Selectable<LanguageTable>;
+export type NewLanguage = Insertable<LanguageTable>;
+export type LanguageUpdate = Updateable<LanguageTable>;
+
+export type HobbyCategory = Selectable<HobbyCategoryTable>;
+export type NewHobbyCategory = Insertable<HobbyCategoryTable>;
+export type HobbyCategoryUpdate = Updateable<HobbyCategoryTable>;
 
 export type User = Selectable<UserTable>;
 export type NewUser = Insertable<UserTable>;
@@ -117,10 +132,6 @@ export type LanguageUser = Selectable<LanguageUserTable>;
 export type NewLanguageUser = Insertable<LanguageUserTable>;
 export type LanguageUserUpdate = Updateable<LanguageUserTable>;
 
-export type PictureUser = Selectable<PictureUserTable>;
-export type NewPictureUser = Insertable<PictureUserTable>;
-export type PictureUserUpdate = Updateable<PictureUserTable>;
-
 export type HobbyUser = Selectable<HobbyUserTable>;
 export type NewHobbyUser = Insertable<HobbyUserTable>;
 export type HobbyUserUpdate = Updateable<HobbyUserTable>;
@@ -128,8 +139,11 @@ export type HobbyUserUpdate = Updateable<HobbyUserTable>;
 export type UserAction = Selectable<UserActionTable>;
 export type NewUserAction = Insertable<UserActionTable>;
 export type UserActionUpdate = Updateable<UserActionTable>;
+
 export interface Database {
-  profile: ProfileTable;
+  hobby_category: HobbyCategoryTable;
+  technology: TechnologyTable;
+  language: LanguageTable;
   user: UserTable;
   picture: PictureTable;
   hobby: HobbyTable;
@@ -137,7 +151,6 @@ export interface Database {
   message: MessageTable;
   technology_user: TechnologyUserTable;
   language_user: LanguageUserTable;
-  picture_user: PictureUserTable;
   hobby_user: HobbyUserTable;
   user_action: UserActionTable;
 }
