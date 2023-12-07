@@ -6,51 +6,67 @@ export const insertLanguages = async () => {
     .values([
       {
         name: 'css',
-        logo_path: '/languages-logos/css.svg',
+        logo_path: '/images/languages-logos/css.svg',
       },
       {
         name: 'html',
-        logo_path: '/languages-logos/html.svg',
+        logo_path: '/images/languages-logos/html.svg',
       },
       {
         name: 'java',
-        logo_path: '/languages-logos/java.svg',
+        logo_path: '/images/languages-logos/java.svg',
       },
       {
         name: 'javascript',
-        logo_path: '/languages-logos/javascript.svg',
+        logo_path: '/images/languages-logos/javascript.svg',
       },
       {
-        name: 'gardening',
-        logo_path: '/languages-logos/gardening.svg',
+        name: 'php',
+        logo_path: '/images/languages-logos/php.svg',
       },
       {
-        name: 'music',
-        logo_path: '/languages-logos/music.svg',
+        name: 'python',
+        logo_path: '/images/languages-logos/python.svg',
       },
       {
-        name: 'outing',
-        logo_path: '/languages-logos/outings.svg',
+        name: 'sql',
+        logo_path: '/images/languages-logos/sql.svg',
       },
       {
-        name: 'photography',
-        logo_path: '/languages-logos/photography.svg',
+        name: 'c++',
+        logo_path: '/images/languages-logos/c++.svg',
       },
       {
-        name: 'reading',
-        logo_path: '/languages-logos/reading.svg',
+        name: 'c',
+        logo_path: '/images/languages-logos/c.svg',
       },
       {
-        name: 'sport',
-        logo_path: '/languages-logos/sports.svg',
+        name: 'ruby',
+        logo_path: '/images/languages-logos/ruby.svg',
       },
       {
-        name: 'traveling',
-        logo_path: '/languages-logos/traveling.svg',
+        name: 'csharp',
+        logo_path: '/images/languages-logos/csharp.svg',
       },
       {
-        name: 'writing',
-        logo_path: '/languages-logos/writing.svg',
+        name: 'swift',
+        logo_path: '/images/languages-logos/swift.svg',
+      },
+      {
+        name: 'typescript',
+        logo_path: '/images/languages-logos/typescript.svg',
+      },
+      {
+        name: 'golang',
+        logo_path: '/images/languages-logos/golang.svg',
+      },
+      {
+        name: 'kotlin',
+        logo_path: '/images/languages-logos/kotlin.svg',
+      },
+      {
+        name: 'rust',
+        logo_path: '/images/languages-logos/rust.svg',
       },
     ])
     .execute();
