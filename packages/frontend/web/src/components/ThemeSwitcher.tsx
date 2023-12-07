@@ -10,9 +10,13 @@ export default function ThemeSwitcher() {
     setTheme(theme === 'dark' ? 'light' : 'dark');
   };
   return (
-    <div onClick={toggleDarkMode} className='flex h-full items-center'>
+    <button
+      type='button'
+      onClick={toggleDarkMode}
+      className='flex h-8 w-8 items-center justify-center md:h-10 md:w-10'
+    >
       <MoonIcon className='text-secondary scale-moon h-4 w-4 md:h-5 md:w-5' />
       <SunIcon className='text-secondary scale-sun absolute h-4 w-4 md:h-5 md:w-5' />
-    </div>
+    </button>
   );
 }
