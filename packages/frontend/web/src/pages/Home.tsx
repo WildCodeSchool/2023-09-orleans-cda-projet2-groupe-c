@@ -50,6 +50,8 @@ export default function Home() {
       </h1>
       <ThemeSwitcher />
 
+      <img src='/languages-logos/java.svg' alt='' className='w-1/3' />
+
       <span>{`${someData.someProperty}`}</span>
 
       <button
