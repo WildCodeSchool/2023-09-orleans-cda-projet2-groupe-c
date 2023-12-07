@@ -3,7 +3,7 @@ import { useFormContext } from 'react-hook-form';
 export default function FormTest() {
   const { register } = useFormContext();
   return (
-    <div className='mt-32 flex items-center justify-center'>
+    <div>
       <label htmlFor='email' className='text-secondary'>
         {'Email'}
       </label>

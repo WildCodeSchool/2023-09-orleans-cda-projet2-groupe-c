@@ -1,7 +1,7 @@
 import { useFormContext } from 'react-hook-form';
 
 export default function FormBirthDate() {
-  const { register, handleSubmit } = useFormContext();
+  const { register } = useFormContext();
 
   return (
     <div className='mt-32 flex items-center justify-center'>

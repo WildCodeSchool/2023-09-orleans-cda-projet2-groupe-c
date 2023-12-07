@@ -1,9 +1,12 @@
 import { useFormContext } from 'react-hook-form';
 
 export default function FormName() {
-  const { register } = useFormContext();
+  const {
+    register,
+    formState: { errors },
+  } = useFormContext();
   return (
-    <div className='mt-32 flex items-center justify-center'>
+    <div className='flex flex-col'>
       <label className='text-secondary'>{'First Name'}</label>
       <input
         type='text'
@@ -12,9 +15,9 @@ export default function FormName() {
         {...register('name')}
       />
 
-      {/*  {errors.firstName ? (
-          <span className='text-next'>{errors.firstName.message}</span>
-        ) : undefined} */}
+      {/*   {errors.firstName ? (
+        <span className='text-next'>{errors.firstName.message}</span>
+      ) : undefined} */}
     </div>
   );
 }
