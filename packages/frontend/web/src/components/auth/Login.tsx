@@ -153,7 +153,7 @@ export default function Login() {
                 name='email'
                 type='email'
                 id='email'
-                className='bg-light-light/30 accent-primary border-light-light mt-1 w-full appearance-none rounded-lg border px-2 py-2 text-xl'
+                className='accent-primary mt-1 w-full appearance-none rounded-lg border border-white bg-white/30 px-2 py-2 text-xl'
               />
               <p className='mt-1 flex'>{formErrors.email}</p>
             </div>
@@ -181,7 +181,7 @@ export default function Login() {
                   name='password'
                   type={isVisible ? 'text' : 'password'}
                   id='password'
-                  className='bg-light-light/30 accent-primary border-light-light mt-1 w-full appearance-none rounded-lg border px-2 py-2 text-xl'
+                  className='accent-primary mt-1 w-full appearance-none rounded-lg border border-white bg-white/30 px-2 py-2 text-xl'
                 />
                 <div className='absolute right-3 top-1/2 translate-y-[-30%]'>
                   <VisiblePassword

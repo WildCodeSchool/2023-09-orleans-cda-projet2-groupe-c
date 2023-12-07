@@ -1,5 +1,6 @@
 import { Outlet } from 'react-router-dom';
 
+import NavBar from '@/components/NavBar';
 import RandomSentence from '@/components/home/RandomSentence';
 import { useAuth } from '@/contexts/AuthContext';
 
@@ -21,7 +22,8 @@ export default function Home() {
     content = <Loading />;
   } else {
     content = (
-      <main className='bg-background text-light-light h-screen w-screen overflow-hidden bg-cover bg-center bg-no-repeat p-5 text-center'>
+      <main className='bg-background text-light h-screen w-screen overflow-hidden bg-cover bg-center bg-no-repeat p-5 text-center'>
+        <NavBar />
         <section className='flex h-full flex-col items-center justify-between'>
           <header className='mt-32 flex flex-col items-center justify-center gap-4'>
             <Logo />

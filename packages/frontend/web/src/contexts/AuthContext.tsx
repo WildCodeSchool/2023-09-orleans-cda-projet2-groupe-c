@@ -77,7 +77,6 @@ export default function AuthProvider({
   );
 }
 
-/* eslint-disable react-refresh/only-export-components */
 // Custom hook to use the authentification context
 export const useAuth = () => {
   const context = useContext(authProviderContext);
