@@ -1,6 +1,5 @@
 // file format is YYYYMMDDHHMM-<name>.ts
 import type { Kysely } from 'kysely';
-import { sql } from 'kysely';
 
 import type { Database } from '@app/types';
 
