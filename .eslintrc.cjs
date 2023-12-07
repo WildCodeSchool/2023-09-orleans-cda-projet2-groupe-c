@@ -272,7 +272,7 @@ module.exports = {
   plugins: ['react', 'react-refresh', 'workspaces'],
   rules: {
     'react-refresh/only-export-components': [
-      'warn',
+      'off',
       { allowConstantExport: true },
     ],
   },
