@@ -38,6 +38,15 @@ export async function up(db: Kysely<Database>): Promise<void> {
       .execute();
 
     await trx.schema
+      .createTable('picture')
+      .ifNotExists()
+      .addColumn('id', 'integer', (col) =>
+        col.autoIncrement().primaryKey().unsigned().notNull(),
+      )
+      .addColumn('logo_path', 'varchar(255)')
+      .execute();
+
+    await trx.schema
       .createTable('hobby')
       .ifNotExists()
       .addColumn('id', 'int2', (col) =>
@@ -144,18 +153,25 @@ export async function up(db: Kysely<Database>): Promise<void> {
       .execute();
 
     await trx.schema
-      .createTable('picture')
+      .createTable('picture_user')
       .ifNotExists()
       .addColumn('id', 'integer', (col) =>
         col.autoIncrement().primaryKey().unsigned().notNull(),
       )
       .addColumn('order', 'integer', (col) => col.unsigned())
-      .addColumn('picture_path', 'varchar(255)')
       .addColumn('user_id', 'int4', (col) => col.unsigned().notNull())
+      .addColumn('picture_id', 'integer', (col) => col.unsigned().notNull())
       .addForeignKeyConstraint(
         'picture_user_id_fk',
         ['user_id'],
         'user',
+        ['id'],
+        (callBack) => callBack.onDelete('cascade'),
+      )
+      .addForeignKeyConstraint(
+        'picture_id_fk',
+        ['picture_id'],
+        'picture',
         ['id'],
         (callBack) => callBack.onDelete('cascade'),
       )
@@ -250,12 +266,13 @@ export async function down(db: Kysely<Database>): Promise<void> {
     await trx.schema.dropTable('message').ifExists().execute();
     await trx.schema.dropTable('user_action').ifExists().execute();
     await trx.schema.dropTable('hobby_user').ifExists().execute();
-    await trx.schema.dropTable('picture').ifExists().execute();
+    await trx.schema.dropTable('picture_user').ifExists().execute();
     await trx.schema.dropTable('language_user').ifExists().execute();
     await trx.schema.dropTable('technology_user').ifExists().execute();
     await trx.schema.dropTable('user').ifExists().execute();
     await trx.schema.dropTable('city').ifExists().execute();
     await trx.schema.dropTable('hobby').ifExists().execute();
+    await trx.schema.dropTable('picture').ifExists().execute();
     await trx.schema.dropTable('language').ifExists().execute();
     await trx.schema.dropTable('technology').ifExists().execute();
     await trx.schema.dropTable('hobby_category').ifExists().execute();

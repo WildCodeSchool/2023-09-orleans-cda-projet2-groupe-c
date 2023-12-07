@@ -1,3 +1,4 @@
+import { insertCities } from './cities/insert-cities';
 import { insertArtHobbies } from './hobbies/insert-art-hobbies';
 import { insertCategories } from './hobbies/insert-categories';
 import { insertCookingHobbies } from './hobbies/insert-cooking-hobbies';
@@ -14,6 +15,7 @@ import { insertWritingHobbies } from './hobbies/insert-writing-hobbies';
 
 const insertAllData = async () => {
   await insertCategories();
+
   await insertArtHobbies();
   await insertCookingHobbies();
   await insertDancingHobbies();
@@ -26,6 +28,8 @@ const insertAllData = async () => {
   await insertSportHobbies();
   await insertTravelingHobbies();
   await insertWritingHobbies();
+
+  await insertCities();
 };
 
 await insertAllData().catch((error) => {

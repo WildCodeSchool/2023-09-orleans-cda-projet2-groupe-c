@@ -39,7 +39,7 @@ export interface UserTable {
   email: string;
   password: string;
   email_verified_at?: Date;
-  activation_code?: Date;
+  activation_code?: string;
   activate_at?: Date;
   city_id?: number;
 }
