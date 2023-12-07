@@ -5,7 +5,7 @@ export default function Button({
   type,
   isOutline,
 }: {
-  readonly children: string;
+  readonly children: React.ReactNode;
   readonly type: 'button' | 'submit' | 'reset';
   readonly isOutline: boolean;
 }) {
