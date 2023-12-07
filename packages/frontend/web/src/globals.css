@@ -4,9 +4,12 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  height: 100dvh;
-  width: 100dvw;
-  margin: 0;
-  padding: 0;
+@layer base {
+  body {
+    height: 100dvh;
+    width: 100dvw;
+    margin: 0;
+    padding: 0;
+    background-color: #eae3e3;
+  }
 }

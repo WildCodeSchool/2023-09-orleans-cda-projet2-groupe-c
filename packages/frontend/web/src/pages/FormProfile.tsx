@@ -3,24 +3,31 @@ import { FormProvider, useForm } from 'react-hook-form';
 
 import type { UserTable } from '@app/types';
 
+import FormIAm from '@/components/FormIAm';
 import FormName from '@/components/FormName';
 import FormTest from '@/components/FormTest';
 
 interface FormData extends UserTable {}
 
 export default function FormProfile() {
-  const [page, setPage] = useState(0);
+  const [page, setPage] = useState<number>(0);
   const methods = useForm<FormData>();
-  const { handleSubmit, getValues, control, formState } = methods;
+  const { handleSubmit, getValues, formState } = methods;
+  const { isDirty, isValid } = formState;
+
+  console.log(isDirty, isValid);
+  console.log(page);
 
   const handleClick = () => {
     console.log('Valeur stocké:', getValues());
-    setPage(page + 1);
+    if (page < 5) {
+      setPage((prev) => prev + 1);
+    }
   };
 
   const goBack = () => {
     if (page > 0) {
-      setPage(page - 1);
+      setPage((prev) => prev - 1);
     }
   };
 
@@ -41,41 +48,31 @@ export default function FormProfile() {
 
   return (
     <FormProvider {...methods}>
-      <form
-        className='bg-light-hard m-auto mt-32 flex h-56 w-72 flex-col rounded-md p-8 shadow-md'
-        onSubmit={handleClick}
-      >
+      <form onSubmit={handleClick}>
         {page === 0 ? <FormName /> : ''}
-        {page === 1 ? <FormTest /> : ''}
-        {page > 0 ? (
-          <button onClick={goBack} type='button'>
-            {'Back'}
-          </button>
-        ) : (
-          ''
-        )}
-        {page < 1 ? (
+        {page === 1 ? <FormIAm /> : ''}
+        {page === 2 ? <FormTest /> : ''}
+        <div className='m-auto mt-4 flex w-[500px] flex-col gap-2'>
           <button
-            onClick={handleClick}
+            onClick={page < 2 ? handleClick : handleSubmit(formSubmit)}
             className='bg-primary rounded-md'
             type='submit'
+            disabled={!isDirty || !isValid}
           >
-            {'Next'}
+            {page < 2 ? 'Next' : 'Valider'}
           </button>
-        ) : (
-          ''
-        )}
-        {page === 1 ? (
-          <button
-            onClick={handleSubmit(formSubmit)}
-            className='bg-primary rounded-md'
-            type='submit'
-          >
-            {'Valider'}
-          </button>
-        ) : (
-          ''
-        )}
+          {page > 0 ? (
+            <button
+              className='border-primary rounded-md border-2'
+              onClick={goBack}
+              type='button'
+            >
+              {'Back'}
+            </button>
+          ) : (
+            ''
+          )}
+        </div>
       </form>
     </FormProvider>
   );
