@@ -11,7 +11,7 @@ interface FormData extends UserTable {}
 export default function FormProfile() {
   const [page, setPage] = useState(0);
   const methods = useForm<FormData>();
-  const { handleSubmit, getValues } = methods;
+  const { handleSubmit, getValues, control, formState } = methods;
 
   const handleClick = () => {
     console.log('Valeur stocké:', getValues());
@@ -43,7 +43,7 @@ export default function FormProfile() {
     <FormProvider {...methods}>
       <form
         className='bg-light-hard m-auto mt-32 flex h-56 w-72 flex-col rounded-md p-8 shadow-md'
-        onSubmit={handleSubmit(handleClick)}
+        onSubmit={handleClick}
       >
         {page === 0 ? <FormName /> : ''}
         {page === 1 ? <FormTest /> : ''}
