@@ -10,7 +10,7 @@
     "ts:check": "bun tsc"
   },
   "dependencies": {
-    "@app/types": "workspace:*",
+    "@app/shared": "workspace:*",
     "@app/frontend-shared": "workspace:*",
     "framer-motion": "^10.16.10",
     "react": "^18.2.0",

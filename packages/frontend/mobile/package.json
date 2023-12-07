@@ -17,7 +17,7 @@
     "expo-splash-screen": "~0.20.5"
   },
   "devDependencies": {
-    "@app/types": "workspace:*",
+    "@app/shared": "workspace:*",
     "@babel/core": "^7.20.0",
     "eslint-config-universe": "^12.0.0",
     "sharp-cli": "^4.1.1"

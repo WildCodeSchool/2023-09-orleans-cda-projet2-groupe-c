@@ -2,7 +2,7 @@ import express from 'express';
 import * as jose from 'jose';
 
 import { db } from '@app/backend-shared';
-import type { AuthBody } from '@app/types';
+import type { AuthBody } from '@app/shared';
 
 const JWT_SECRET = process.env.JWT_SECRET;
 const FRONTEND_URL = 'http://localhost';

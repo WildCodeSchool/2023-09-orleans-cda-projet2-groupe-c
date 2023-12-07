@@ -1,5 +1,5 @@
 {
-  "name": "@app/types",
+  "name": "@app/shared",
   "main": "src/index.ts",
   "type": "module",
   "devDependencies": {

@@ -2,7 +2,7 @@
 
 This is a Typescript library meant to be used as a shared package between all the frontend apps in this monorepo.
 
-It is set up to use the `@app/types` (`/packages/types`) package from this monorepo.
+It is set up to use the `@app/shared` (`/packages/types`) package from this monorepo.
 
 # How to use it?
 

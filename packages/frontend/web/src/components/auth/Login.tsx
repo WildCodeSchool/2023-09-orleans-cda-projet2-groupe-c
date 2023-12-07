@@ -3,8 +3,8 @@ import { useState } from 'react';
 import { type SubmitHandler, useForm } from 'react-hook-form';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 
-import type { AuthBody } from '@app/types';
-import { authSchema } from '@app/types';
+import type { AuthBody } from '@app/shared';
+import { authSchema } from '@app/shared';
 
 import { useAuth } from '@/contexts/AuthContext';
 

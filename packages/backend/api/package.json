@@ -7,7 +7,7 @@
     "build": "bun build ./src/index.ts --target bun --minify --splitting --outdir ./dist"
   },
   "dependencies": {
-    "@app/types": "workspace:*",
+    "@app/shared": "workspace:*",
     "@app/backend-shared": "workspace:*",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",

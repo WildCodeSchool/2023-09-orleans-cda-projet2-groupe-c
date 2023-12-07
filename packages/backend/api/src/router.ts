@@ -2,7 +2,7 @@ import express from 'express';
 import { sql } from 'kysely';
 
 import { db } from '@app/backend-shared';
-import type { SomeInterface } from '@app/types';
+import type { SomeInterface } from '@app/shared';
 
 import authRouter from './auth';
 

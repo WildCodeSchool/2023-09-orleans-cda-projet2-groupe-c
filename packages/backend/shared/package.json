@@ -7,7 +7,7 @@
     "mysql2": "^3.6.2"
   },
   "devDependencies": {
-    "@app/types": "workspace:*",
+    "@app/shared": "workspace:*",
     "bun-types": "latest"
   },
   "peerDependencies": {
