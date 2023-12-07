@@ -3,7 +3,7 @@ import { sql } from 'kysely';
 
 import { db } from '@app/backend-shared';
 
-import cities from './cities.json';
+import cities from '../data/cities.json';
 
 export const insertCities = async () => {
   // Verify that cities is an array
