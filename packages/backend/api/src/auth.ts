@@ -26,20 +26,22 @@ authRouter.post('/registration', async (req, res) => {
     cost: 10,
   });
 
-  const result = await db
-    .insertInto('user')
-    .values({
-      email,
-      password: hashedPassword,
-      role: 'user',
-      activation_code: 'wesh',
-      email_verified_at: new Date(),
-    })
-    .execute();
+  const user: RegisterBody = {
+    email,
+    password: hashedPassword,
+    role: 'user',
+    activation_code: '123456',
+    // activation_code: new Date(),
+    email_verified_at: new Date(),
+  };
 
-  const insertedId = result[0].insertId;
+  const result = await db.insertInto('user').values(user).execute();
 
   console.log(result);
+
+  const userId = result[0].insertId;
+
+  console.log('userId :', userId);
 
   const jwt = await new jose.SignJWT({
     sub: email,

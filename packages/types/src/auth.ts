@@ -31,6 +31,7 @@ export type AuthBody = z.infer<typeof authSchema>;
 export const registerSchema = authSchema.extend({
   role: z.enum(['user', 'admin']),
   activation_code: z.string().max(6),
+  // activation_code: z.date(),
   email_verified_at: z.date(),
 });
 
