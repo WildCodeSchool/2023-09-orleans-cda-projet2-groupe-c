@@ -1,14 +1,10 @@
 import { motion } from 'framer-motion';
 
-export default function Button({
-  children,
-  type,
-  isOutline,
-}: {
-  readonly children: React.ReactNode;
-  readonly type: 'button' | 'submit' | 'reset';
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   readonly isOutline: boolean;
-}) {
+}
+
+export default function Button({ children, type, isOutline }: ButtonProps) {
   return (
     // Use Link for navigation
     <motion.button
