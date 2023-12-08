@@ -14,3 +14,6 @@ if (allCategories.length > 0) {
 if (allCities.length > 0) {
   await db.deleteFrom('city').execute();
 }
+
+// eslint-disable-next-line unicorn/no-process-exit
+process.exit(0);

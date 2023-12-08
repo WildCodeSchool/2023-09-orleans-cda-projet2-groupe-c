@@ -11,16 +11,15 @@ export const insertCities = async () => {
     throw new TypeError('Cities must be an array');
   }
 
-  // Loop on cities and insert in database one by one
-  for (const city of cities) {
-    await db
-      .insertInto('city')
-      .values([
-        {
+  await db
+    .insertInto('city')
+    .values(
+      cities.map((city) => {
+        return {
           name: city.nom,
           coordinates: sql`POINT(${city.centre.coordinates[0]}, ${city.centre.coordinates[1]})`,
-        },
-      ])
-      .execute();
-  }
+        };
+      }),
+    )
+    .execute();
 };
