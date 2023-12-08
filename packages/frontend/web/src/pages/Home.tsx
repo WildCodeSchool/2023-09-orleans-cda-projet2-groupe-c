@@ -3,8 +3,6 @@ import { useEffect, useState } from 'react';
 import { useDisclosure } from '@app/frontend-shared';
 import type { SomeInterface, User } from '@app/types';
 
-import ThemeSwitcher from '@/components/ThemeSwitcher';
-
 export default function Home() {
   const [someData, setSomeData] = useState<SomeInterface>({
     someProperty: 'someValue',
@@ -40,18 +38,13 @@ export default function Home() {
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        height: '100vh',
-        width: '100vw',
         gap: '1rem',
+        marginTop: '200px',
       }}
     >
-      <h1 className='text-primary font-title dark:text-light-medium dark:bg-dark-medium text-3xl  underline'>
-        {'Hello world!'}
+      <h1 className='text-primary font-title text-3xl underline'>
+        {'Hello world'}
       </h1>
-      <ThemeSwitcher />
-
-      <img src='/languages-logos/java.svg' alt='' className='w-1/3' />
-
       <span>{`${someData.someProperty}`}</span>
 
       <button
