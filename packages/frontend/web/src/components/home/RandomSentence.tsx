@@ -1,4 +1,4 @@
-import sentences from '../data/sentences.json';
+import sentences from '../../data/sentences.json';
 
 const sentencesArray: { sentences: string[] } = sentences;
 
