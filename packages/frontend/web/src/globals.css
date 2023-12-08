@@ -30,7 +30,7 @@
   }
 
   input::placeholder {
-    color: #9c89a2;
+    @apply text-placeholder;
   }
 }
 
