@@ -1,14 +1,10 @@
 import { motion } from 'framer-motion';
 
-export default function Button({
-  word,
-  type,
-  isOutline,
-}: {
-  readonly word: string;
-  readonly type: 'button' | 'submit' | 'reset';
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   readonly isOutline: boolean;
-}) {
+}
+
+export default function Button({ children, type, isOutline }: ButtonProps) {
   return (
     // Use Link for navigation
     <motion.button
@@ -30,10 +26,10 @@ export default function Button({
       }}
       className={`${
         isOutline ? 'bg-transparent' : 'bg-primary'
-      } border-primary text-light-light w-full max-w-[500px] shrink-0 rounded-lg border px-2 py-3 text-xl`}
+      } border-primary text-light w-full max-w-[500px] shrink-0 rounded-lg border px-2 py-3 text-xl`}
     >
       {/* Display the button text */}
-      {word}
+      {children}
     </motion.button>
   );
 }

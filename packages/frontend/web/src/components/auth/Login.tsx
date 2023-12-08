@@ -203,8 +203,7 @@ export default function Login() {
               </Link>
             </div>
           </div>
-
-          <Button word='Connection' type='submit' isOutline={false} />
+          <Button type='submit' isOutline={false}>{`Login`}</Button>
         </form>
       </div>
     </motion.div>

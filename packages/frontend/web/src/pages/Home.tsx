@@ -15,7 +15,9 @@ export default function Home() {
   if (isLoggedIn) {
     content = (
       <main>
+        <NavBar />
         <p>{`Home page connected`}</p>
+        <Outlet />
       </main>
     );
   } else if (isLoading) {
@@ -23,10 +25,9 @@ export default function Home() {
   } else {
     content = (
       <main className='bg-background text-light h-screen w-screen overflow-hidden bg-cover bg-center bg-no-repeat p-5 text-center'>
-        <NavBar />
         <section className='flex h-full flex-col items-center justify-between'>
           <header className='mt-32 flex flex-col items-center justify-center gap-4'>
-            <Logo />
+            <Logo color='fill-light' />
             <h1 className='font-title text-6xl'>{`Tindev`}</h1>
             {/* Display a random sentence */}
             <RandomSentence />
