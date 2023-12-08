@@ -21,6 +21,12 @@ export default {
         title: ['Heavitas'],
         base: ['Poppins'],
       },
+      backgroundImage: {
+        background: 'url(/images/home/background.webp)',
+      },
+      boxShadow: {
+        btn: '0px 5px #bd0069',
+      },
       scale: {
         moon: 'var(--moon)',
         sun: 'var(--sun)',
