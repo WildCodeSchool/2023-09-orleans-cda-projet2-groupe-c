@@ -1,7 +1,10 @@
 import { insertCategories } from './hobbies/insert-categories';
+import { insertLanguages } from './languages/insert-languages';
 
 const insertAllData = async () => {
   await insertCategories();
+
+  await insertLanguages();
 };
 
 await insertAllData().catch((error) => {
