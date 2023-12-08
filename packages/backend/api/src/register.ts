@@ -9,14 +9,16 @@ register.get('/users', async (req, res) => {
   return res.json(users);
 });
 register.post('/', async (req, res) => {
-  const { name, role, gender, email, password } = req.body;
+  const { name, role, birthdate, gender, city_id, email, password } = req.body;
 
   const insertUsers = await db
     .insertInto('user')
     .values({
       name,
       role,
+      birthdate,
       gender,
+      city_id,
       email,
       password,
     })
