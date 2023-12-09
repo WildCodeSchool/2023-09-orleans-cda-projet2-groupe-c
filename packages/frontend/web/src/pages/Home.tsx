@@ -12,15 +12,15 @@ export default function Home() {
 
   let content;
 
-  if (isLoggedIn) {
+  if (isLoading) {
+    content = <Loading />;
+  } else if (isLoggedIn) {
     content = (
       <main>
         <NavBar />
         <Outlet />
       </main>
     );
-  } else if (isLoading) {
-    content = <Loading />;
   } else {
     content = (
       <main className='bg-background text-light h-screen w-screen overflow-hidden bg-cover bg-center bg-no-repeat p-5 text-center'>

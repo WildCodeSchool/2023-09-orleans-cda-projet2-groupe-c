@@ -52,7 +52,7 @@ export default function AuthProvider({
 
     // Call the function fetchData
     fetchData().catch((error) => {
-      throw new Error(error);
+      throw new Error(`Failed to verify auth: ${String(error)}`);
     });
 
     // Abort the request if the component is unmounted

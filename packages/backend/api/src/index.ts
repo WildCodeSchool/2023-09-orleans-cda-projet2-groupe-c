@@ -18,7 +18,7 @@ app.use(express.json());
 app.use(
   cors({
     origin: `http://${FRONTEND_HOST}:${FRONTEND_PORT}`,
-    credentials: true,
+    credentials: true, // allow the frontend to send cookies
   }),
 );
 

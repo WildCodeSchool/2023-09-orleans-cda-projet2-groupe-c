@@ -75,7 +75,7 @@ export default function Login() {
     }
 
     try {
-      // data from the register state
+      // Validation of user entered data using a validation schema
       const validate = authSchema.parse({
         email: data.email,
         password: data.password,
