@@ -16,7 +16,6 @@ export default function Home() {
     content = (
       <main>
         <NavBar />
-        <p>{`Home page connected`}</p>
         <Outlet />
       </main>
     );

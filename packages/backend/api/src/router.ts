@@ -4,7 +4,7 @@ import { sql } from 'kysely';
 import { db } from '@app/backend-shared';
 import type { SomeInterface } from '@app/shared';
 
-import authRouter from './auth';
+import authRouter from './auth/auth';
 
 const router = express.Router();
 
