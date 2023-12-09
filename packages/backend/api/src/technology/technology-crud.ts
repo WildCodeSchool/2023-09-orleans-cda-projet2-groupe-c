@@ -28,18 +28,18 @@ technologyRouter.get('/technologies', async (req, res) => {
 });
 
 // GET technology by id
-technologyRouter.get('/technologies/:id', async (req, res) => {
+technologyRouter.get('/technologies/:technologyId', async (req, res) => {
   try {
-    const technologyId = Number.parseInt(req.params.id);
+    const technologyId = Number.parseInt(req.params.technologyId);
 
     const technology = await db
       .selectFrom('technology')
-      .select(['id', 'name', 'logo_path'])
+      .selectAll()
       .where('id', '=', technologyId)
       .execute();
 
     if (technology.length === 0) {
-      return res.status(404).send({ message: 'technology not found' });
+      return res.status(404).send({ message: 'Technology not found' });
     }
 
     return res.status(200).json(technology);
@@ -64,7 +64,7 @@ technologyRouter.post('/technologies', async (req, res) => {
       })
       .executeTakeFirst();
 
-    return res.status(200).send({ message: 'technology added successfully' });
+    return res.status(200).send({ message: 'Technology added successfully' });
   } catch {
     res
       .status(500)
@@ -73,9 +73,9 @@ technologyRouter.post('/technologies', async (req, res) => {
 });
 
 // UPDATE technology
-technologyRouter.put('/technologies/:id', async (req, res) => {
+technologyRouter.put('/technologies/:technologyId', async (req, res) => {
   try {
-    const technologyId = Number.parseInt(req.params.id);
+    const technologyId = Number.parseInt(req.params.technologyId);
     // eslint-disable-next-line @typescript-eslint/naming-convention
     const { name, logo_path } = req.body;
 
@@ -95,18 +95,18 @@ technologyRouter.put('/technologies/:id', async (req, res) => {
 });
 
 // DELETE technology
-technologyRouter.delete('/technologies/:id', async (req, res) => {
+technologyRouter.delete('/technologies/:technologyId', async (req, res) => {
   try {
-    const technologyId = Number.parseInt(req.params.id);
+    const technologyId = Number.parseInt(req.params.technologyId);
 
     const technology = await db
       .selectFrom('technology')
-      .select(['id'])
+      .selectAll()
       .where('id', '=', technologyId)
       .execute();
 
     if (technology.length === 0) {
-      return res.status(404).send({ message: 'technology not found' });
+      return res.status(404).send({ message: 'Technology not found' });
     }
 
     await db
@@ -114,7 +114,7 @@ technologyRouter.delete('/technologies/:id', async (req, res) => {
       .where('id', '=', technologyId)
       .executeTakeFirst();
 
-    return res.status(200).json({ message: 'technology deleted successfully' });
+    return res.status(200).json({ message: 'Technology deleted successfully' });
   } catch {
     return res.status(500).send({ error: 'An error occurred while deleting' });
   }
