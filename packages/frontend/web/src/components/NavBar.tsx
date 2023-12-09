@@ -1,5 +1,3 @@
-import { Outlet } from 'react-router-dom';
-
 import ThemeSwitcher from './ThemeSwitcher';
 import FilterIcon from './icons/FilterIcon';
 import LikeIcon from './icons/LikeIcon';
