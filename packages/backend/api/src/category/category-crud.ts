@@ -28,13 +28,13 @@ categoriesRouter.get('/categories', async (req, res) => {
 });
 
 // GET category by id
-categoriesRouter.get('/categories/:id', async (req, res) => {
+categoriesRouter.get('/categories/:categoryId', async (req, res) => {
   try {
-    const categoryId = Number.parseInt(req.params.id);
+    const categoryId = Number.parseInt(req.params.categoryId);
 
     const category = await db
       .selectFrom('hobby_category')
-      .select(['id', 'name', 'logo_path'])
+      .selectAll()
       .where('id', '=', categoryId)
       .execute();
 
@@ -71,9 +71,9 @@ categoriesRouter.post('/categories', async (req, res) => {
 });
 
 // UPDATE category
-categoriesRouter.put('/categories/:id', async (req, res) => {
+categoriesRouter.put('/categories/:categoryId', async (req, res) => {
   try {
-    const categoryId = Number.parseInt(req.params.id);
+    const categoryId = Number.parseInt(req.params.categoryId);
     // eslint-disable-next-line @typescript-eslint/naming-convention
     const { name, logo_path } = req.body;
 
@@ -93,13 +93,13 @@ categoriesRouter.put('/categories/:id', async (req, res) => {
 });
 
 // DELETE category
-categoriesRouter.delete('/categories/:id', async (req, res) => {
+categoriesRouter.delete('/categories/:categoryId', async (req, res) => {
   try {
-    const categoryId = Number.parseInt(req.params.id);
+    const categoryId = Number.parseInt(req.params.categoryId);
 
     const category = await db
       .selectFrom('hobby_category')
-      .select(['id'])
+      .selectAll()
       .where('id', '=', categoryId)
       .execute();
 
