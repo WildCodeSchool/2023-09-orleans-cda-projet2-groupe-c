@@ -1,7 +1,3 @@
 export default function HomeCards() {
-  return (
-    <>
-      <h1>HomeCards</h1>
-    </>
-  );
+  return <h1>{`HomeCards`}</h1>;
 }

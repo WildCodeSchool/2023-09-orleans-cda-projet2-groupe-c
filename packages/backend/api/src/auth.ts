@@ -18,31 +18,6 @@ const secret = new TextEncoder().encode(JWT_SECRET);
 const authRouter = express.Router();
 
 // TODO : add route to register a new user
-authRouter.post('/register', async (req, res) => {
-  const email = 'mike@gmail.com';
-  const password = 'mikexiong';
-
-  const hashedPassword = await Bun.password.hash(password, {
-    algorithm: 'bcrypt',
-    cost: 10,
-  });
-
-  const insertUsers = await db
-    .insertInto('user')
-    .values({
-      email,
-      password: hashedPassword,
-    })
-    .execute();
-
-  for (const insertedUser of insertUsers) {
-    console.log(insertedUser.insertId);
-  }
-
-  return res.json({
-    ok: true,
-  });
-});
 
 // Route to check the JWT token in the cookie and verify if the user is logged in
 authRouter.get('/verify', async (req, res) => {
