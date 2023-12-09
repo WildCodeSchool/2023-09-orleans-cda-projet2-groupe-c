@@ -28,13 +28,13 @@ languageRouter.get('/languages', async (req, res) => {
 });
 
 // GET language by id
-languageRouter.get('/languages/:id', async (req, res) => {
+languageRouter.get('/languages/:languageId', async (req, res) => {
   try {
-    const languageId = Number.parseInt(req.params.id);
+    const languageId = Number.parseInt(req.params.languageId);
 
     const language = await db
       .selectFrom('language')
-      .select(['id', 'name', 'logo_path'])
+      .selectAll()
       .where('id', '=', languageId)
       .execute();
 
@@ -71,9 +71,9 @@ languageRouter.post('/languages', async (req, res) => {
 });
 
 // UPDATE language
-languageRouter.put('/languages/:id', async (req, res) => {
+languageRouter.put('/languages/:languageId', async (req, res) => {
   try {
-    const languageId = Number.parseInt(req.params.id);
+    const languageId = Number.parseInt(req.params.languageId);
     // eslint-disable-next-line @typescript-eslint/naming-convention
     const { name, logo_path } = req.body;
 
@@ -93,13 +93,13 @@ languageRouter.put('/languages/:id', async (req, res) => {
 });
 
 // DELETE language
-languageRouter.delete('/languages/:id', async (req, res) => {
+languageRouter.delete('/languages/:languageId', async (req, res) => {
   try {
-    const languageId = Number.parseInt(req.params.id);
+    const languageId = Number.parseInt(req.params.languageId);
 
     const language = await db
       .selectFrom('language')
-      .select(['id'])
+      .selectAll()
       .where('id', '=', languageId)
       .execute();
 
