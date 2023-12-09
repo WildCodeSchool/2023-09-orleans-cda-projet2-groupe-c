@@ -19,7 +19,7 @@ export interface PictureTable {
   user_id: number;
 }
 
-export type Gender = 'male' | 'female' | 'non-binary';
+export type Gender = 'man' | 'female' | 'non-binary';
 
 export type Role = 'user' | 'admin';
 
