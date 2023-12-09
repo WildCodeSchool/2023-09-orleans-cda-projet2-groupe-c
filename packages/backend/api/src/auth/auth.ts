@@ -40,6 +40,7 @@ authRouter.get('/verify', async (req, res) => {
     });
 
     return res.json({
+      ok: true,
       message: 'JWT is verify and User is connected',
       isLoggedIn: true,
     });
@@ -47,12 +48,14 @@ authRouter.get('/verify', async (req, res) => {
     // If the JWT is expired
     if (error instanceof jose.errors.JWTExpired) {
       return res.json({
+        ok: false,
         message: 'JWT is expired and User is not connected',
         isLoggedIn: false,
       });
     }
 
     return res.json({
+      ok: false,
       isLoggedIn: false,
       error,
     });
@@ -75,6 +78,7 @@ authRouter.post('/login', async (req, res) => {
     // If the user doesn't exist, return an error
     if (user === undefined) {
       return res.json({
+        ok: false,
         email: 'User does not exist',
         isLoggedIn: false,
       });
@@ -90,6 +94,7 @@ authRouter.post('/login', async (req, res) => {
     // If the password is incorrect, return an error
     if (!isCorrectPassword) {
       return res.json({
+        ok: false,
         message: 'Password is incorrect and User is not connected',
         isLoggedIn: false,
       });
@@ -108,6 +113,7 @@ authRouter.post('/login', async (req, res) => {
       .setExpirationTime('2h')
       .sign(secret);
 
+    // Define the cookie token with the JWT
     res.cookie('token', jwt, {
       httpOnly: true, // The cookie is not accessible via JavaScript but only via HTTP(S)
       sameSite: true, // The cookie is not accessible via cross-site requests
@@ -116,11 +122,13 @@ authRouter.post('/login', async (req, res) => {
     });
 
     return res.json({
+      ok: true,
       message: 'JWT is created and User is connected',
       isLoggedIn: isCorrectPassword,
     });
   } catch (error) {
     return res.json({
+      ok: false,
       isLoggedIn: false,
       error,
     });
