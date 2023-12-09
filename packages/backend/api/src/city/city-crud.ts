@@ -27,13 +27,13 @@ cityRouter.get('/cities', async (req, res) => {
 });
 
 // GET city by id
-cityRouter.get('/cities/:id', async (req, res) => {
+cityRouter.get('/cities/:cityId', async (req, res) => {
   try {
-    const cityId = Number.parseInt(req.params.id);
+    const cityId = Number.parseInt(req.params.cityId);
 
     const city = await db
       .selectFrom('city')
-      .select(['id', 'name', 'coordinates'])
+      .selectAll()
       .where('id', '=', cityId)
       .execute();
 
@@ -69,9 +69,9 @@ cityRouter.post('/cities', async (req, res) => {
 });
 
 // UPDATE city
-cityRouter.put('/cities/:id', async (req, res) => {
+cityRouter.put('/cities/:cityId', async (req, res) => {
   try {
-    const cityId = Number.parseInt(req.params.id);
+    const cityId = Number.parseInt(req.params.cityId);
     const { name, coordinates } = req.body;
 
     await db
@@ -90,13 +90,13 @@ cityRouter.put('/cities/:id', async (req, res) => {
 });
 
 // DELETE city
-cityRouter.delete('/cities/:id', async (req, res) => {
+cityRouter.delete('/cities/:cityId', async (req, res) => {
   try {
-    const cityId = Number.parseInt(req.params.id);
+    const cityId = Number.parseInt(req.params.cityId);
 
     const city = await db
       .selectFrom('city')
-      .select(['id'])
+      .selectAll()
       .where('id', '=', cityId)
       .execute();
 
