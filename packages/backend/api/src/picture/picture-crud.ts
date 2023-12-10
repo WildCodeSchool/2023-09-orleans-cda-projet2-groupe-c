@@ -26,11 +26,13 @@ pictureRouter.get('/users/:userId/pictures', async (req, res) => {
 // GET picture by id from a user
 pictureRouter.get('/users/:userId/pictures/:pictureId', async (req, res) => {
   try {
+    const userId = Number.parseInt(req.params.userId);
     const pictureId = Number.parseInt(req.params.pictureId);
 
     const picture = await db
       .selectFrom('picture')
       .selectAll()
+      .where('user_id', '=', userId)
       .where('id', '=', pictureId)
       .execute();
 
@@ -96,6 +98,7 @@ pictureRouter.put('/users/:userId/pictures/:pictureId', async (req, res) => {
         picture_path,
         user_id: userId,
       })
+      .where('user_id', '=', userId)
       .where('id', '=', pictureId)
       .executeTakeFirst();
 
@@ -106,13 +109,15 @@ pictureRouter.put('/users/:userId/pictures/:pictureId', async (req, res) => {
 });
 
 // DELETE picture
-pictureRouter.delete('/users/:id/pictures/:id', async (req, res) => {
+pictureRouter.delete('/users/:userId/pictures/:pictureId', async (req, res) => {
   try {
-    const pictureId = Number.parseInt(req.params.id);
+    const userId = Number.parseInt(req.params.userId);
+    const pictureId = Number.parseInt(req.params.pictureId);
 
     const picture = await db
       .selectFrom('picture')
       .selectAll()
+      .where('user_id', '=', userId)
       .where('id', '=', pictureId)
       .execute();
 
