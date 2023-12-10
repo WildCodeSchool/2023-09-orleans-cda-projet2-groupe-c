@@ -91,14 +91,27 @@ categoriesRouter.put('/categories/:categoryId', async (req, res) => {
     // eslint-disable-next-line @typescript-eslint/naming-convention
     const { name, logo_path } = req.body;
 
-    await db
-      .updateTable('hobby_category')
-      .set({
-        name,
-        logo_path,
-      })
+    // Get category by id
+    const category = await db
+      .selectFrom('hobby_category')
+      .selectAll()
       .where('id', '=', categoryId)
-      .executeTakeFirst();
+      .execute();
+
+    // Verify if category exists
+    if (category.length === 0) {
+      return res.status(404).send({ message: 'Category not found' });
+    } else {
+      // If exist, update category
+      await db
+        .updateTable('hobby_category')
+        .set({
+          name,
+          logo_path,
+        })
+        .where('id', '=', categoryId)
+        .executeTakeFirst();
+    }
 
     return res.status(200).json({ message: 'Category updated successfully' });
   } catch {
@@ -111,20 +124,23 @@ categoriesRouter.delete('/categories/:categoryId', async (req, res) => {
   try {
     const categoryId = Number.parseInt(req.params.categoryId);
 
+    // Get category by id
     const category = await db
       .selectFrom('hobby_category')
       .selectAll()
       .where('id', '=', categoryId)
       .execute();
 
+    // Verify if category exists
     if (category.length === 0) {
       return res.status(404).send({ message: 'Category not found' });
+    } else {
+      // If exist, delete category
+      await db
+        .deleteFrom('hobby_category')
+        .where('id', '=', categoryId)
+        .executeTakeFirst();
     }
-
-    await db
-      .deleteFrom('hobby_category')
-      .where('id', '=', categoryId)
-      .executeTakeFirst();
 
     return res.status(200).json({ message: 'Category deleted successfully' });
   } catch {
