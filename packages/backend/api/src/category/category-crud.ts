@@ -8,13 +8,27 @@ const categoriesRouter = express.Router();
 categoriesRouter.get('/categories', async (req, res) => {
   try {
     const { name } = req.query;
+    const { order } = req.query;
 
     let query = db.selectFrom('hobby_category').selectAll();
 
     // Verify if name is a string and not empty
     if (typeof name === 'string' && name.trim() !== '') {
       // if name is a string and not empty, add a WHERE clause to the query
-      query = query.where('name', '=', name);
+      // sort by name
+      query = query.where('name', 'like', `%${name}%`);
+    }
+
+    // Verify if order is a string and not empty
+    if (typeof order === 'string' && order.trim() !== '') {
+      if (order === 'asc') {
+        // if order is a string and not empty, add an ORDER BY clause to the query
+        // sort by alphabetical order
+        query = query.orderBy('name', 'asc');
+      } else if (order === 'desc') {
+        // sort by reverse alphabetical order
+        query = query.orderBy('name', 'desc');
+      }
     }
 
     const categories = await query.execute();
