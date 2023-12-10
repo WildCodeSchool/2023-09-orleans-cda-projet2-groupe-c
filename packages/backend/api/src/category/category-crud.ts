@@ -7,8 +7,7 @@ const categoriesRouter = express.Router();
 // GET all categories
 categoriesRouter.get('/categories', async (req, res) => {
   try {
-    const { name } = req.query;
-    const { order } = req.query;
+    const { name, order } = req.query;
 
     let sql = db.selectFrom('hobby_category').selectAll();
 
