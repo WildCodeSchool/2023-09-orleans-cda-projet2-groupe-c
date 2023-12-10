@@ -52,11 +52,9 @@ categoriesRouter.get('/categories/:categoryId', async (req, res) => {
       .execute();
 
     // Verify if category exists
-    if (category.length === 0) {
-      return res.status(404).send({ message: 'Category not found' });
-    }
-
-    return res.status(200).json(category);
+    return category.length === 0
+      ? res.status(404).send({ message: 'Category not found' })
+      : res.status(200).json(category);
   } catch {
     return res
       .status(500)
