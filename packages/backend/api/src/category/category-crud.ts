@@ -10,13 +10,13 @@ categoriesRouter.get('/categories', async (req, res) => {
     const { name } = req.query;
     const { order } = req.query;
 
-    let query = db.selectFrom('hobby_category').selectAll();
+    let sql = db.selectFrom('hobby_category').selectAll();
 
     // Verify if name is a string and not empty
     if (typeof name === 'string' && name.trim() !== '') {
       // if name is a string and not empty, add a WHERE clause to the query
       // sort by name
-      query = query.where('name', 'like', `%${name}%`);
+      sql = sql.where('name', 'like', `%${name}%`);
     }
 
     // Verify if order is a string and not empty
@@ -24,14 +24,14 @@ categoriesRouter.get('/categories', async (req, res) => {
       if (order === 'asc') {
         // if order is a string and not empty, add an ORDER BY clause to the query
         // sort by alphabetical order
-        query = query.orderBy('name', 'asc');
+        sql = sql.orderBy('name', 'asc');
       } else if (order === 'desc') {
         // sort by reverse alphabetical order
-        query = query.orderBy('name', 'desc');
+        sql = sql.orderBy('name', 'desc');
       }
     }
 
-    const categories = await query.execute();
+    const categories = await sql.execute();
 
     res.status(200).json(categories);
   } catch {
