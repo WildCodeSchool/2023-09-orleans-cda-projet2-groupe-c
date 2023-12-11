@@ -28,6 +28,10 @@
   body {
     @apply bg-light-medium;
   }
+
+  input::placeholder {
+    @apply text-placeholder;
+  }
 }
 
 @layer utilities {

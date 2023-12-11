@@ -1,72 +1,23 @@
-import { useEffect, useState } from 'react';
+import { Outlet } from 'react-router-dom';
 
-import { useDisclosure } from '@app/frontend-shared';
-import type { SomeInterface, User } from '@app/types';
+import RandomSentence from '@/components/home/RandomSentence';
+
+import Logo from '../components/icons/LogoHomeIcon';
 
 export default function Home() {
-  const [someData, setSomeData] = useState<SomeInterface>({
-    someProperty: 'someValue',
-  });
-  const { isOpen: isDetailsOpen, onToggle: onDetailsToggle } =
-    useDisclosure(false);
-
-  const user: Partial<User> = {};
-
-  useEffect(() => {
-    const abortController = new AbortController();
-
-    (async () => {
-      const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/some-route`,
-        {
-          signal: abortController.signal,
-        },
-      );
-      const data = await response.json();
-      setSomeData(data);
-    })();
-
-    return () => {
-      abortController.abort();
-    };
-  }, []);
-
   return (
-    <div
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        gap: '1rem',
-        marginTop: '200px',
-      }}
-    >
-      <h1 className='text-primary font-title text-3xl underline'>
-        {'Hello world'}
-      </h1>
-      <span>{`${someData.someProperty}`}</span>
+    <main className='bg-background text-light h-screen w-screen overflow-hidden bg-cover bg-center bg-no-repeat p-5 text-center'>
+      <section className='flex h-full flex-col items-center justify-between'>
+        <header className='mt-32 flex flex-col items-center justify-center gap-4'>
+          <Logo color='fill-light' />
+          <h1 className='font-title text-6xl'>{`Tindev`}</h1>
+          {/* Display a random sentence */}
+          <RandomSentence />
+        </header>
 
-      <button
-        type='button'
-        onClick={() => {
-          onDetailsToggle();
-        }}
-      >
-        {'Click me'}
-      </button>
-
-      {isDetailsOpen ? (
-        <pre>
-          {JSON.stringify(
-            {
-              user,
-            },
-            undefined,
-            2,
-          )}
-        </pre>
-      ) : undefined}
-    </div>
+        {/* Render the child routes */}
+        <Outlet />
+      </section>
+    </main>
   );
 }
