@@ -1,7 +1,7 @@
 import { useFormContext } from 'react-hook-form';
 
 type DefaultValues = {
-  account_github: string;
+  accountGithub: string;
 };
 
 export default function FormGitHub() {
@@ -22,7 +22,7 @@ export default function FormGitHub() {
           id='account_github'
           pattern='https://.*'
           placeholder='Your GitHub'
-          {...register('account_github')}
+          {...register('accountGithub')}
           className='border-primary bg-light mt-2 h-5 w-full rounded-md border px-2 py-6 text-lg focus:outline-none lg:text-xl'
         />
       </div>

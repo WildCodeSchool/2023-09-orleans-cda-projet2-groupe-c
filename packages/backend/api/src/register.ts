@@ -9,22 +9,31 @@ register.get('/users', async (req, res) => {
   return res.json(users);
 });
 register.post('/', async (req, res) => {
-  const { name, role, birthdate, gender, biography, account_github, email, password } = req.body; //city_id,
-  
-  const insertUsers = await db
-  .insertInto('user')
-  .values({
+  const {
     name,
     role,
     birthdate,
     gender,
     biography,
-    account_github,
-    // city_id,
+    accountGithub,
     email,
     password,
-  })
-  .execute();
+  } = req.body; //city_id,
+
+  const insertUsers = await db
+    .insertInto('user')
+    .values({
+      name,
+      role,
+      birthdate,
+      gender,
+      biography,
+      account_github: accountGithub,
+      // city_id,
+      email,
+      password,
+    })
+    .execute();
   for (const insertUser of insertUsers) {
     console.log(insertUser.insertId);
   }
