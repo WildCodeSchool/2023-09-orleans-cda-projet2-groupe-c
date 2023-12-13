@@ -1,6 +1,7 @@
 import { Outlet } from 'react-router-dom';
 
 import RandomSentence from '@/components/home/RandomSentence';
+import HomeContext from '@/contexts/HomeContext';
 
 import Logo from '../components/icons/LogoHomeIcon';
 
@@ -16,7 +17,9 @@ export default function Home() {
         </header>
 
         {/* Render the child routes */}
-        <Outlet />
+        <HomeContext>
+          <Outlet />
+        </HomeContext>
       </section>
     </main>
   );

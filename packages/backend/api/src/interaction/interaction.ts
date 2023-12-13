@@ -5,7 +5,7 @@ import { db } from '@app/backend-shared';
 const interactionRouter = express.Router();
 
 // Send a like
-interactionRouter.post('/:userId/interaction/like', async (req, res) => {
+interactionRouter.post('/:userId/interactions/like', async (req, res) => {
   try {
     const userId = Number.parseInt(req.params.userId);
     // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -28,7 +28,7 @@ interactionRouter.post('/:userId/interaction/like', async (req, res) => {
 });
 
 // Send a superlike
-interactionRouter.post('/:userId/interaction/superlike', async (req, res) => {
+interactionRouter.post('/:userId/interactions/superlike', async (req, res) => {
   try {
     const userId = Number.parseInt(req.params.userId);
     // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -51,7 +51,7 @@ interactionRouter.post('/:userId/interaction/superlike', async (req, res) => {
 });
 
 // Next a user
-interactionRouter.post('/:userId/interaction/next', async (req, res) => {
+interactionRouter.post('/:userId/interactions/next', async (req, res) => {
   try {
     const userId = Number.parseInt(req.params.userId);
     // eslint-disable-next-line @typescript-eslint/naming-convention
