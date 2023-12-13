@@ -8,6 +8,13 @@ const allCategories = await db
 if (allCategories.length > 0) {
   await db.deleteFrom('hobby_category').execute();
 }
+
+const allHobbies = await db.selectFrom('hobby').selectAll().execute();
+
+if (allHobbies.length > 0) {
+  await db.deleteFrom('hobby').execute();
+}
+
 const allTechnologies = await db.selectFrom('technology').selectAll().execute();
 
 if (allTechnologies.length > 0) {
