@@ -8,13 +8,13 @@ type City = {
 
 export default function FormCity() {
   const { register, setValue, getValues } = useFormContext();
-  const [inputValue, setInputValue] = useState<string | undefined>('');
+  const [inputValue, setInputValue] = useState<string>(getValues('city') || '');
   const [cities, setCities] = useState<Array<City>>([]);
 
-  const handleCityClick = (cityName: string) => {
+  const handleCityClick = (cityName: string, cityId: number) => {
     setInputValue(cityName);
     setCities([]); // Clear the cities after selecting one
-    setValue('city', cityName); // Update the form value
+    setValue('cityId', cityId); // Update the form value
   };
 
   const handleChange = (event: ChangeEvent<HTMLInputElement> | undefined) => {
@@ -44,6 +44,8 @@ export default function FormCity() {
         return () => {
           abortController.abort();
         };
+      } else if (input.length === 0) {
+        setCities([]);
       }
     }
   };
@@ -63,11 +65,7 @@ export default function FormCity() {
             id='city'
             onChange={handleChange}
             value={inputValue}
-            placeholder={
-              Boolean(getValues('city'))
-                ? getValues('city')
-                : 'Write and choose your city'
-            }
+            placeholder='Write and choose your city'
             className='border-primary bg-light mt-2 h-5 w-full rounded-md border px-2 py-6 text-lg focus:outline-none lg:text-xl'
           />
           <div className='bg-light absolute max-h-80 w-full overflow-y-auto rounded-lg shadow-lg'>
@@ -77,7 +75,7 @@ export default function FormCity() {
                   htmlFor={city.name}
                   className='hover:bg-primary hover:text-light flex w-full cursor-pointer items-center justify-center py-3 text-xl'
                   onClick={() => {
-                    handleCityClick(city.name);
+                    handleCityClick(city.name, city.id);
                   }}
                 >
                   {city.name}
@@ -87,7 +85,7 @@ export default function FormCity() {
                   id={city.name}
                   value={city.name}
                   className='sr-only'
-                  {...register('city')}
+                  {...register('cityId', { required: true })}
                 />
               </div>
             ))}

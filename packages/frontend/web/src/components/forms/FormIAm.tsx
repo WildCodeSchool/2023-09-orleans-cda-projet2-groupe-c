@@ -25,7 +25,7 @@ export default function FormIAm() {
         </span>
         <div className='flex items-center justify-center'>
           <label
-            className={`border-primary flex w-full cursor-pointer items-center justify-center rounded-lg border py-3 text-xl ${
+            className={`border-primary hover:bg-primary hover:text-light-hard flex w-full cursor-pointer items-center justify-center rounded-lg border  py-3 text-xl ${
               selectedOption === 'man' ? 'bg-primary text-light-hard' : ''
             }`}
             htmlFor='man'
@@ -45,7 +45,7 @@ export default function FormIAm() {
         </div>
         <div className='flex items-center justify-center'>
           <label
-            className={`border-primary flex w-full cursor-pointer items-center justify-center rounded-lg border py-3 text-xl ${
+            className={`border-primary hover:bg-primary hover:text-light-hard flex w-full cursor-pointer items-center justify-center rounded-lg border py-3 text-xl ${
               selectedOption === 'woman' ? 'bg-primary text-light-hard' : ''
             }`}
             htmlFor='woman'
@@ -65,7 +65,7 @@ export default function FormIAm() {
         </div>
         <div className='flex items-center justify-center'>
           <label
-            className={`border-primary flex w-full cursor-pointer items-center justify-center rounded-lg border py-3 text-xl ${
+            className={`border-primary hover:bg-primary hover:text-light-hard flex w-full cursor-pointer items-center justify-center rounded-lg border  py-3 text-xl ${
               selectedOption === 'other' ? 'bg-primary text-light-hard' : ''
             }`}
             htmlFor='other'

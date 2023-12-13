@@ -8,7 +8,6 @@ import NavBar from '@/components/NavBar';
 import FormBio from '@/components/forms/FormBio';
 import FormBirthDate from '@/components/forms/FormBirthDate';
 import FormCity from '@/components/forms/FormCity';
-import FormCityTest from '@/components/forms/FormCityTest';
 import FormEnd from '@/components/forms/FormEnd';
 import FormGitHub from '@/components/forms/FormGitHub';
 import FormIAm from '@/components/forms/FormIAm';
@@ -58,9 +57,7 @@ export default function FormProfile() {
           className='flex h-screen flex-col items-center justify-between'
         >
           <div className='flex h-full w-full max-w-[500px] flex-col justify-between'>
-            {/* {page === 0 ? <FormName /> : ''} */}
-            {page === 0 ? <FormCityTest /> : ''}
-
+            {page === 0 ? <FormName /> : ''}
             {page === 1 ? <FormBirthDate /> : ''}
             {page === 2 ? <FormIAm /> : ''}
             {page === 3 ? <FormBio /> : ''}
