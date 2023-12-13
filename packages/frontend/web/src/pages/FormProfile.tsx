@@ -8,6 +8,7 @@ import NavBar from '@/components/NavBar';
 import FormBio from '@/components/forms/FormBio';
 import FormBirthDate from '@/components/forms/FormBirthDate';
 import FormCity from '@/components/forms/FormCity';
+import FormCityTest from '@/components/forms/FormCityTest';
 import FormEnd from '@/components/forms/FormEnd';
 import FormGitHub from '@/components/forms/FormGitHub';
 import FormIAm from '@/components/forms/FormIAm';
@@ -20,9 +21,7 @@ export default function FormProfile() {
   const [page, setPage] = useState<number>(0);
   const methods = useForm<FormData>();
   const { handleSubmit, getValues, formState } = methods;
-  const { isDirty, isValid } = formState;
 
-  console.log(isDirty, isValid);
   console.log(page);
 
   const goBack = () => {
@@ -33,7 +32,7 @@ export default function FormProfile() {
 
   const formSubmit = async (data: FormData) => {
     console.log('Valeur stocké:', getValues());
-    if (page < 6) {
+    if (page < 7) {
       setPage((prev) => prev + 1);
     } else {
       try {
@@ -59,18 +58,20 @@ export default function FormProfile() {
           className='flex h-screen flex-col items-center justify-between'
         >
           <div className='flex h-full w-full max-w-[500px] flex-col justify-between'>
-            {page === 0 ? <FormName /> : ''}
+            {/* {page === 0 ? <FormName /> : ''} */}
+            {page === 0 ? <FormCityTest /> : ''}
+
             {page === 1 ? <FormBirthDate /> : ''}
             {page === 2 ? <FormIAm /> : ''}
             {page === 3 ? <FormBio /> : ''}
-            {/*  {page === 4 ? <FormCity /> : ''} */}
-            {page === 4 ? <FormGitHub /> : ''}
-            {page === 5 ? <FormEnd /> : ''}
+            {page === 4 ? <FormCity /> : ''}
+            {page === 5 ? <FormGitHub /> : ''}
+            {page === 7 ? <FormEnd /> : ''}
 
             {page === 6 ? <FormTest /> : ''}
             <div className='flex w-full flex-col gap-6 pb-40'>
               <Button isOutline={false} type='submit' color='text-light-hard'>
-                {page >= 6 ? 'Start matching' : 'Next'}
+                {page >= 7 ? 'Start matching' : 'Next'}
               </Button>
               {page > 0 && page < 7 ? (
                 <Button

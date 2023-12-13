@@ -6,10 +6,12 @@ type City = {
   name: string;
 };
 
-export default function FormCity() {
+export default function FormCityTest() {
   const { register, setValue, getValues } = useFormContext();
   const [inputValue, setInputValue] = useState<string | undefined>('');
   const [cities, setCities] = useState<Array<City>>([]);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  console.log(isOpen);
 
   const handleCityClick = (cityName: string) => {
     setInputValue(cityName);

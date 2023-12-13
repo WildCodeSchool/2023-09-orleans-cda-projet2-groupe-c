@@ -14,6 +14,7 @@ register.post('/', async (req, res) => {
     role,
     birthdate,
     gender,
+    cityId,
     biography,
     accountGithub,
     email,
@@ -27,9 +28,9 @@ register.post('/', async (req, res) => {
       role,
       birthdate,
       gender,
+      city_id: cityId,
       biography,
       account_github: accountGithub,
-      // city_id,
       email,
       password,
     })

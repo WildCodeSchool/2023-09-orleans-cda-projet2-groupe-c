@@ -6,7 +6,6 @@
 
 @layer base {
   :root {
-    --primary: #eb0573;
     --secondary: #3f436a;
     --light-hard: #eae3e3;
     --light-medium: #f4efef;
@@ -16,7 +15,6 @@
   }
 
   .dark {
-    --primary: #bd0069;
     --secondary: #fcfcfe;
     --light-hard: #111214;
     --light-medium: #1c1c1f;
@@ -31,6 +29,18 @@
 
   input::placeholder {
     @apply text-placeholder;
+  }
+
+  ::-webkit-scrollbar {
+    width: 5px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+    border-radius: 5px;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-primary;
+    border-radius: 5px;
   }
 }
 
