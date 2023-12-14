@@ -12,7 +12,7 @@ export function shuffle(string_: string): string {
 }
 
 export function tokenGenerator(): string[] {
-  const alpha = Array.from({ length: 26 }).map(function (event_, index) {
+  const alpha = Array.from({ length: 26 }).map(function (_, index) {
     return index + 65;
   });
   const filteredO = alpha.filter((x) => x != 79);
