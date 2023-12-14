@@ -1,9 +1,9 @@
 import { createBrowserRouter } from 'react-router-dom';
 
-import Home from './pages/Home';
-import ValidationToken from './components/auth/ValidationToken';
 import Registration from './components/auth/Registration';
 import Success from './components/auth/Success';
+import ValidationToken from './components/auth/ValidationToken';
+import Home from './pages/Home';
 
 const router = createBrowserRouter([
   {
@@ -12,17 +12,17 @@ const router = createBrowserRouter([
     children: [
       {
         path: '/registration',
-        element: <Registration />
+        element: <Registration />,
       },
       {
         path: '/registration/success',
-        element: <Success />
+        element: <Success />,
       },
       {
         path: '/registration/validation',
-        element: <ValidationToken />
-      }
-    ]
+        element: <ValidationToken />,
+      },
+    ],
   },
 ]);
 

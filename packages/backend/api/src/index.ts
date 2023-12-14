@@ -1,8 +1,8 @@
+import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import express from 'express';
 
 import router from './router';
-import cookieParser from 'cookie-parser';
 
 const app = express();
 
@@ -13,7 +13,12 @@ const FRONTEND_HOST = process.env.FRONTEND_HOST ?? 'localhost';
 const FRONTEND_PORT = process.env.FRONTEND_PORT ?? '4444';
 
 app.use(express.json());
-app.use(cors({ origin: `http://${FRONTEND_HOST}:${FRONTEND_PORT}`, credentials: true}));
+app.use(
+  cors({
+    origin: `http://${FRONTEND_HOST}:${FRONTEND_PORT}`,
+    credentials: true,
+  }),
+);
 
 app.use(cookieParser(COOKIE_SECRET));
 

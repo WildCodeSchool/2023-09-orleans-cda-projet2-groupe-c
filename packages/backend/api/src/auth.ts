@@ -2,7 +2,7 @@ import express from 'express';
 import * as jose from 'jose';
 
 import { db } from '@app/backend-shared';
-import type { RegisterBody } from '@app/types';
+import type { ActivationCode, RegisterBody } from '@app/types';
 
 import { tokenGenerator } from './utils/token-generator';
 
@@ -18,17 +18,17 @@ const authRouter = express.Router();
 
 authRouter.post('/registration', async (req, res) => {
   try {
-    const activation_code = tokenGenerator();
+    const activationCode = tokenGenerator();
 
     const { email, password } = req.body as RegisterBody;
     const hashedPassword = await Bun.password.hash(password, {
       algorithm: 'bcrypt',
       cost: 10,
     });
-    const user: RegisterBody = {
+    const user: ActivationCode = {
       email,
       password: hashedPassword,
-      activation_code,
+      activation_code: activationCode,
       email_verified_at: new Date(),
     };
 
@@ -75,17 +75,18 @@ authRouter.post('/registration', async (req, res) => {
 
 authRouter.post('/registration/validation', async (req) => {
   const userId = req.signedCookies.userId;
-  const code = req.body;
+  const { activation_code } = req.body;
+
   const activationCode = await db
     .selectFrom('user')
     .select('activation_code')
     .where('id', '=', userId)
     .execute();
 
-  if (code.code === activationCode[0].activation_code) {
+  if (activation_code === activationCode[0].activation_code) {
     await db
       .updateTable('user')
-      .set({ activation_code: "" })
+      .set({ activation_code: '' })
       .where('id', '=', userId)
       .execute();
   }
@@ -93,14 +94,13 @@ authRouter.post('/registration/validation', async (req) => {
 
 authRouter.get('/registration/users/code', async (req, res) => {
   const userId = req.signedCookies.userId;
+  // const userId = 47;
 
   const code = await db
-  .selectFrom('user')
-  .select('activation_code')
-  .where('id', '=', userId)
-  .execute();
-
-  console.log(code);
+    .selectFrom('user')
+    .select('activation_code')
+    .where('id', '=', userId)
+    .execute();
 
   return res.json(code);
 });

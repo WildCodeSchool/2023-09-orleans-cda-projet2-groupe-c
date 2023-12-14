@@ -8,11 +8,11 @@ export function shuffle(string_: string): string {
     a[index] = a[index_];
     a[index_] = temporary;
   }
-  return a.join("");
+  return a.join('');
 }
 
 export function tokenGenerator(): string {
-  const alpha = Array.from({length: 26}).map(function (event_, index) {
+  const alpha = Array.from({ length: 26 }).map(function (event_, index) {
     return index + 65;
   });
   const filteredO = alpha.filter((x) => x != 79);
@@ -20,7 +20,7 @@ export function tokenGenerator(): string {
   const alphabet = filteredI.map(function (z) {
     return String.fromCodePoint(z);
   });
-  let token = "";
+  let token = '';
   for (let index = 0; index < 3; index++) {
     token += alphabet[Math.floor(Math.random() * 24)];
     token += Math.floor(Math.random() * (9 - 1) + 1);
@@ -30,4 +30,3 @@ export function tokenGenerator(): string {
 
   return tokenUpper;
 }
-

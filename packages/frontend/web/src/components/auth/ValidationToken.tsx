@@ -1,61 +1,45 @@
-import { RegisterBody } from '@app/types';
 import { useEffect, useState } from 'react';
 import { type FieldValues, type SubmitHandler, useForm } from 'react-hook-form';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
 const onSubmit: SubmitHandler<FieldValues> = async (data) => {
-  const code = data.code;
+  const code = data.activation_code;
 
   await fetch(`${API_URL}/auth/registration/validation`, {
     method: 'POST',
     credentials: 'include',
     headers: { 'content-type': 'application/json' },
-    body: JSON.stringify({ code }),
+    body: JSON.stringify({ activation_code: code }),
   });
-};
-
-const getToken = async (data) => {
-  const codeValue: string = data.code;
-
-  await fetch(`${API_URL}/auth/registration/users/code`, {
-    method: 'GET',
-    credentials: 'include',
-    headers: { 'content-type': 'application/json' },
-    body: JSON.stringify({ codeValue }),
-  });
-
-  return codeValue;
 };
 
 export default function ValidationToken() {
-  const [code, setCode] = useState("");
+  const { register, handleSubmit } = useForm();
+
+  const [code, setCode] = useState('');
 
   useEffect(() => {
-    const fetchData = async () => {
-      await fetch(`${API_URL}/auth/registration/validation`);
-    };
-    fetchData().catch((error) => {
-      throw new Error(error);
-    });
-  }, []);
-
-  useEffect(() => {
+    const controller = new AbortController();
+    const signal = controller.signal;
     const fetchCode = async () => {
-      await fetch(`${API_URL}/auth/registration/users/code`)
-      .then((response) => response.json())
+      const res = await fetch(`${API_URL}/auth/registration/users/code`, {
+        signal,
+        credentials: 'include',
+        headers: { 'content-type': 'application/json' },
+      });
 
-      setCode(code)
+      const data = await res.json();
+      setCode(data[0].activation_code);
     };
     fetchCode().catch((error) => {
       throw new Error(error);
     });
-  }, [code, setCode]);
 
-  const { register, handleSubmit } = useForm();
-
-  console.log(code);
-
+    return () => {
+      controller.abort();
+    };
+  }, []);
 
   return (
     <div className='p-8'>
@@ -70,6 +54,11 @@ export default function ValidationToken() {
             }
           </p>
         </div>
+        <div>
+          <p className='text-dark-light my-2 mb-4 align-top text-xs'>
+            {`Activation code: ${code}`}
+          </p>
+        </div>
         <div className='mt-5 flex flex-col'>
           <form
             className='flex flex-col gap-3'
@@ -78,8 +67,8 @@ export default function ValidationToken() {
             <input
               className='border-primary bg-light-light text-dark-light/70 focus:outline-secondary w-100 rounded-lg border p-2 text-center transition-all focus:outline'
               type='text'
-              defaultValue={code}
-              {...register('code')}
+              {...register('activation_code')}
+              // onChange={(event) => {setCode(event.target.value)}}
             />
             <div className='flex flex-col items-center'>
               <button

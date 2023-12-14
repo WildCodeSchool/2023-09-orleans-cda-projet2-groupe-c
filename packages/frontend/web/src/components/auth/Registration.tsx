@@ -1,8 +1,8 @@
-import {
-  useForm,
-  type SubmitHandler,
-} from 'react-hook-form';
+import { useState } from 'react';
+import { type SubmitHandler, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
+
+import { authSchema } from '@app/types';
 import type { RegisterBody } from '@app/types';
 
 const API_URL = import.meta.env.VITE_API_URL;
@@ -13,17 +13,33 @@ export default function Registration() {
     criteriaMode: 'all',
   });
   const { isValid } = formState;
+  const [formErrors, setFormErrors] = useState<{
+    email?: string[];
+    password?: string[];
+  }>({});
 
   const onSubmit: SubmitHandler<RegisterBody> = async (data) => {
+    const result = authSchema.safeParse(data);
+
+    if (result.success) {
+      setFormErrors({});
+    } else {
+      setFormErrors(result.error.formErrors.fieldErrors);
+    }
     try {
-      const email = data.email;
-      const password = data.password;
+      const validate = authSchema.parse({
+        email: data.email,
+        password: data.password,
+      });
 
       await fetch(`${API_URL}/auth/registration`, {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({
+          email: validate.email,
+          password: validate.password,
+        }),
       });
     } catch (error) {
       throw new Error(`Failed to register. : ${String(error)}`);
@@ -41,9 +57,7 @@ export default function Registration() {
       <div className='bg-light-light flex h-[18rem] flex-col items-center gap-2 rounded-lg px-2 shadow-md'>
         <div className='text-start'>
           <p className='text-dark-light my-2 mb-4 align-top text-xs'>
-            {
-              'To activate your account, please enter the 6 characters you received in the confirmation email.'
-            }
+            {'Please enter your credentials to continue.'}
           </p>
         </div>
         <div className='flex flex-col items-center'>
@@ -59,13 +73,9 @@ export default function Registration() {
               type='email'
               id='email'
               className='border-primary bg-light-light text-dark-light/70 focus:outline-secondary w-100 rounded-lg border p-2 text-center transition-all focus:outline'
-              {...register('email', {
-                required: {
-                  value: true,
-                  message: 'Ce champ est obligatoire >:-(((',
-                },
-              })}
+              {...register('email')}
             />
+            <p className='text-next'>{formErrors.email}</p>
             <label
               htmlFor='password'
               className='text-secondary -mb-2 mt-2 text-sm'
@@ -79,6 +89,7 @@ export default function Registration() {
               className='border-primary bg-light-light text-dark-light/70 focus:outline-secondary w-100 rounded-lg border p-2 text-center transition-all focus:outline'
               {...register('password')}
             />
+            <p className='text-next'>{formErrors.password}</p>
             <button
               className='text-light-light bg-primary border-primary-dark mt-52 rounded-lg p-2 px-12'
               type='submit'
