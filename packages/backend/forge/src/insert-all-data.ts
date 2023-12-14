@@ -14,6 +14,7 @@ import { insertTravelingHobbies } from './hobbies/insert-traveling-hobbies';
 import { insertWritingHobbies } from './hobbies/insert-writing-hobbies';
 import { insertLanguages } from './languages/insert-languages';
 import { insertTechnologies } from './technologies/insert-technologies';
+import { insertUsers } from './users/insert-users';
 
 const insertAllData = async () => {
   try {
@@ -37,6 +38,8 @@ const insertAllData = async () => {
     await insertTechnologies();
 
     await insertLanguages();
+
+    await insertUsers();
   } catch (error) {
     throw new Error(`Impossible to insert all data: ${String(error)}`);
   }

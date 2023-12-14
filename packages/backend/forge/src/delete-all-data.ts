@@ -1,5 +1,11 @@
 import { db } from '@app/backend-shared';
 
+const allUsers = await db.selectFrom('user').selectAll().execute();
+
+if (allUsers.length > 0) {
+  await db.deleteFrom('user').execute();
+}
+
 const allCategories = await db
   .selectFrom('hobby_category')
   .selectAll()

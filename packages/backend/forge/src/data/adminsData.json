@@ -1,0 +1,35 @@
+[
+  {
+    "name": "Mike",
+    "birthdate": "1993-09-07",
+    "gender": "man",
+    "biography": "I love video games !",
+    "account_github": "https://github.com/Mikazian",
+    "role": "admin",
+    "email": "mike@tindev.com",
+    "password": "mikazian",
+    "activation_code": ""
+  },
+  {
+    "name": "Gregory",
+    "birthdate": "1996-11-29",
+    "gender": "man",
+    "biography": "I love  clementines !",
+    "account_github": "https://github.com/greegouze",
+    "role": "admin",
+    "email": "greegouze@tindev.com",
+    "password": "greegouze",
+    "activation_code": ""
+  },
+  {
+    "name": "Melvin",
+    "birthdate": "1994-09-06",
+    "gender": "man",
+    "biography": "I love Starfield !",
+    "account_github": "https://github.com/ElBarto444",
+    "role": "admin",
+    "email": "melvin@tindev.com",
+    "password": "elbarto444",
+    "activation_code": ""
+  }
+]
