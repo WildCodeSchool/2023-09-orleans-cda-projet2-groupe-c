@@ -1,3 +1,4 @@
+import { zodResolver } from '@hookform/resolvers/zod';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 import { type SubmitHandler, useForm } from 'react-hook-form';
@@ -52,10 +53,12 @@ export default function Login() {
   const { isLoading, isLoggedIn, setIsLoggedIn } = useAuth();
 
   // Desctructure the useForm hook
-  const { register, handleSubmit, formState } = useForm<AuthBody>();
+  const { register, handleSubmit, formState } = useForm<AuthBody>({
+    resolver: zodResolver(authSchema),
+  });
 
   // Desctructure the formState object
-  const { isValid } = formState;
+  const { isValid, errors } = formState;
 
   // If the user is already logged in, redirect to the home page
   if (isLoggedIn) {
