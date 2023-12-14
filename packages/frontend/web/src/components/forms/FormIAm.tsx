@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 
+import FormContainer from './FormContainer';
+
 type DefaultValues = {
   gender: 'man' | 'woman' | 'other';
 };
@@ -14,76 +16,41 @@ export default function FormIAm() {
     setSelectedOption((prev) => (prev === option ? '' : option));
   };
 
+  const genderOptions = [
+    { id: 'man', label: 'Man', value: 'man' },
+    { id: 'woman', label: 'Woman', value: 'woman' },
+    { id: 'other', label: 'Non Binary', value: 'non-binary' },
+  ];
+
   return (
-    <div className='font-base w-full flex-col items-center pt-40'>
-      <h1 className='text-primary font-title mb-4 justify-start text-2xl lg:text-3xl'>
-        {'I AM...'}
-      </h1>
-      <div className='bg-light  text-secondary flex flex-col gap-3 rounded-md px-7 pb-12 pt-5 text-sm shadow-md lg:text-base'>
-        <span className='flex justify-start pb-5 '>
-          {'Your sexe will be visible to everyone.'}
-        </span>
-        <div className='flex items-center justify-center'>
-          <label
-            className={`border-primary hover:bg-primary hover:text-light-hard flex w-full cursor-pointer items-center justify-center rounded-lg border  py-3 text-xl ${
-              selectedOption === 'man' ? 'bg-primary text-light-hard' : ''
-            }`}
-            htmlFor='man'
-            onClick={() => {
-              handleClick('man');
-            }}
-          >
-            {'Man'}
-          </label>
-          <input
-            className='sr-only'
-            type='radio'
-            id='man'
-            {...register('gender')}
-            value={'man'}
-          />
-        </div>
-        <div className='flex items-center justify-center'>
-          <label
-            className={`border-primary hover:bg-primary hover:text-light-hard flex w-full cursor-pointer items-center justify-center rounded-lg border py-3 text-xl ${
-              selectedOption === 'woman' ? 'bg-primary text-light-hard' : ''
-            }`}
-            htmlFor='woman'
-            onClick={() => {
-              handleClick('woman');
-            }}
-          >
-            {'woman'}
-          </label>
-          <input
-            className='sr-only'
-            type='radio'
-            id='woman'
-            {...register('gender')}
-            value={'woman'}
-          />
-        </div>
-        <div className='flex items-center justify-center'>
-          <label
-            className={`border-primary hover:bg-primary hover:text-light-hard flex w-full cursor-pointer items-center justify-center rounded-lg border  py-3 text-xl ${
-              selectedOption === 'other' ? 'bg-primary text-light-hard' : ''
-            }`}
-            htmlFor='other'
-            onClick={() => {
-              handleClick('other');
-            }}
-          >
-            {'non binary'}
-          </label>
-          <input
-            className='sr-only checked:bg-black'
-            type='radio'
-            id='other'
-            {...register('gender')}
-            value={'non-binary'}
-          />
-        </div>
+    <FormContainer title='I AM...'>
+      <span className='flex justify-start pb-5 '>
+        {'Your sexe will be visible to everyone.'}
+      </span>
+      <div className='flex flex-col gap-3'>
+        {genderOptions.map((option) => (
+          <div key={option.id} className='flex items-center justify-center'>
+            <label
+              className={`border-primary hover:bg-primary hover:text-light-hard flex w-full cursor-pointer items-center justify-center rounded-lg border  py-3 text-xl ${
+                selectedOption === option.id ? 'bg-primary text-light-hard' : ''
+              }`}
+              htmlFor={option.id}
+              onClick={() => {
+                handleClick(option.id);
+              }}
+            >
+              {option.label}
+            </label>
+            <input
+              className='sr-only'
+              type='radio'
+              id={option.id}
+              {...register('gender')}
+              value={option.value}
+            />
+          </div>
+        ))}
       </div>
-    </div>
+    </FormContainer>
   );
 }

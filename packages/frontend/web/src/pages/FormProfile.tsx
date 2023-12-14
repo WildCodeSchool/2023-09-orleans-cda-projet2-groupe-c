@@ -11,6 +11,7 @@ import FormCity from '@/components/forms/FormCity';
 import FormEnd from '@/components/forms/FormEnd';
 import FormGitHub from '@/components/forms/FormGitHub';
 import FormIAm from '@/components/forms/FormIAm';
+import FormLanguage from '@/components/forms/FormLanguage';
 import FormName from '@/components/forms/FormName';
 import FormTest from '@/components/forms/FormTest';
 
@@ -57,13 +58,14 @@ export default function FormProfile() {
           className='flex h-screen flex-col items-center justify-between'
         >
           <div className='flex h-full w-full max-w-[500px] flex-col justify-between'>
-            {page === 0 ? <FormName /> : ''}
+            {page === 8 ? <FormName /> : ''}
             {page === 1 ? <FormBirthDate /> : ''}
             {page === 2 ? <FormIAm /> : ''}
             {page === 3 ? <FormBio /> : ''}
             {page === 4 ? <FormCity /> : ''}
             {page === 5 ? <FormGitHub /> : ''}
             {page === 7 ? <FormEnd /> : ''}
+            {page === 0 ? <FormLanguage /> : ''}
 
             {page === 6 ? <FormTest /> : ''}
             <div className='flex w-full flex-col gap-6 pb-40'>

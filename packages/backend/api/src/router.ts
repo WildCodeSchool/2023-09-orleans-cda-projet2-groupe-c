@@ -5,6 +5,7 @@ import { db } from '@app/backend-shared';
 import type { SomeInterface } from '@app/types';
 
 import { city } from './cities/get-cities';
+import { language } from './languages/get-languages';
 import { register } from './register';
 
 const router = express.Router();
@@ -29,5 +30,6 @@ router.get('/some-route', (_request, response) => {
 
 router.use('/register', register);
 router.use('/', city);
+router.use('/', language);
 
 export default router;
