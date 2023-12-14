@@ -9,6 +9,7 @@
     "web": "bun expo start --web"
   },
   "dependencies": {
+    "@app/shared": "workspace:*",
     "@app/frontend-shared": "workspace:*",
     "expo": "~49.0.15",
     "expo-status-bar": "~1.6.0",
@@ -17,7 +18,6 @@
     "expo-splash-screen": "~0.20.5"
   },
   "devDependencies": {
-    "@app/shared": "workspace:*",
     "@babel/core": "^7.20.0",
     "eslint-config-universe": "^12.0.0",
     "sharp-cli": "^4.1.1"
