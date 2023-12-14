@@ -10,7 +10,7 @@ yarn-error.log*
 lerna-debug.log*
 .pnpm-debug.log*
 
-# Caches 
+# Caches
 
 .cache
 
@@ -63,7 +63,7 @@ jspm_packages/
 
 web_modules/
 
-# TypeScript cache
+# typescript cache
 
 *.tsbuildinfo
 

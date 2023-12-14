@@ -1,0 +1,37 @@
+import { Link } from "react-router-dom";
+import Check from "../svg/Check";
+
+export default function Success() {
+  return (
+    <>
+      <div className='p-8'>
+        <h1 className='font-title text-primary mb-5 mt-24 text-xl'>
+          {'Registration complete !'}
+        </h1>
+        <div className='bg-light-light flex h-[18rem] flex-col items-center justify-center gap-2 rounded-lg px-2 shadow-md'>
+          <div className='text-start'>
+            <div className="flex flex-row justify-center">
+            <Check />
+            </div>
+            <p className='text-secondary text-center my-4 mb-4 align-top text-lg'>
+              {
+                'Your TinDev account has been created !'
+              }
+            </p>
+            <p className="text-xs text-center text-secondary">{'To fully enjoy the application, you will receive a confirmation email to activate your account.'}</p>
+          </div>
+        </div>
+      </div>
+      <div className='flex flex-col items-center'>
+        <Link to='/registration/validation'>
+        <button
+          className='text-light-light bg-primary border-primary-dark mt-32 rounded-lg p-2 px-12'
+          type='button'
+        >
+          {'Validate'}
+        </button>
+        </Link>
+      </div>
+    </>
+  );
+}
