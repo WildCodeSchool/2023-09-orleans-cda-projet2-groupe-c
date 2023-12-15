@@ -13,7 +13,9 @@ import FormGitHub from '@/components/forms/FormGitHub';
 import FormIAm from '@/components/forms/FormIAm';
 import FormLanguage from '@/components/forms/FormLanguage';
 import FormName from '@/components/forms/FormName';
+import FormTechnology from '@/components/forms/FormTechnology';
 import FormTest from '@/components/forms/FormTest';
+import FormTest1 from '@/components/forms/FormTest1';
 
 interface FormData extends UserTable {}
 
@@ -51,24 +53,26 @@ export default function FormProfile() {
 
   return (
     <FormProvider {...methods}>
-      <NavBar />
-      <div className='w-full px-5'>
+      {/* <NavBar /> */}
+      <div className='w-full overflow-y-hidden px-5'>
         <form
           onSubmit={handleSubmit(formSubmit)}
           className='flex h-screen flex-col items-center justify-between'
         >
           <div className='flex h-full w-full max-w-[500px] flex-col justify-between'>
-            {page === 8 ? <FormName /> : ''}
+            {page === 9 ? <FormName /> : ''}
             {page === 1 ? <FormBirthDate /> : ''}
             {page === 2 ? <FormIAm /> : ''}
             {page === 3 ? <FormBio /> : ''}
             {page === 4 ? <FormCity /> : ''}
             {page === 5 ? <FormGitHub /> : ''}
             {page === 7 ? <FormEnd /> : ''}
-            {page === 0 ? <FormLanguage /> : ''}
+            {/* {page === 0 ? <FormLanguage /> : ''} */}
+            {page === 8 ? <FormTest1 /> : ''}
+            {page === 0 ? <FormTechnology /> : ''}
 
             {page === 6 ? <FormTest /> : ''}
-            <div className='flex w-full flex-col gap-6 pb-40'>
+            <div className='flex w-full flex-col gap-6 pb-5 md:pb-40'>
               <Button isOutline={false} type='submit' color='text-light-hard'>
                 {page >= 7 ? 'Start matching' : 'Next'}
               </Button>

@@ -7,6 +7,7 @@ import type { SomeInterface } from '@app/types';
 import { city } from './cities/get-cities';
 import { language } from './languages/get-languages';
 import { register } from './register';
+import { technology } from './technologies.ts/get-technologies';
 
 const router = express.Router();
 
@@ -31,5 +32,6 @@ router.get('/some-route', (_request, response) => {
 router.use('/register', register);
 router.use('/', city);
 router.use('/', language);
+router.use('/', technology);
 
 export default router;
