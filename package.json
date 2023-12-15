@@ -39,7 +39,9 @@
     "pre:commit:lint": "bun run lint:check",
     "pre:commit:format": "bun run format:check",
     "postinstall": "bun husky install && bun ./.tools/auto-detect-ip",
-    "debug": "bun ./.tools/debug"
+    "debug": "bun ./.tools/debug",
+    "database:up": "cd ./packages/backend/forge && bun run database:up",
+    "database:down": "cd ./packages/backend/forge && bun run database:down"
   },
   "devDependencies": {
     "@trivago/prettier-plugin-sort-imports": "^4.3.0",

@@ -1,0 +1,14 @@
+{
+  "name": "@app/forge",
+  "type": "module",
+  "scripts": {
+    "database:down": "bun run ./src/delete-all-data",
+    "database:up": "bun run ./src/insert-all-data"
+  },
+  "dependencies": {
+    "@app/backend-shared": "workspace:*"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  }
+}
