@@ -4,6 +4,6 @@ import technologyRouter from './technology/technology-crud';
 
 const router = express.Router();
 
-router.use('/', technologyRouter);
+router.use('/technologies', technologyRouter);
 
 export default router;
