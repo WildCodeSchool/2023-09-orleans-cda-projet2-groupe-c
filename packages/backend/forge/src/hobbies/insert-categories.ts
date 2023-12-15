@@ -6,51 +6,51 @@ export const insertCategories = async () => {
     .values([
       {
         name: 'art',
-        logo_path: '/categories-logos/categories/art.svg',
+        logo_path: '/images/categories-logos/art.svg',
       },
       {
         name: 'cooking',
-        logo_path: '/categories-logos/categories/cooking.svg',
+        logo_path: '/images/categories-logos/cooking.svg',
       },
       {
         name: 'dancing',
-        logo_path: '/categories-logos/categories/dancing.svg',
+        logo_path: '/images/categories-logos/dancing.svg',
       },
       {
         name: 'gaming',
-        logo_path: '/categories-logos/categories/gaming.svg',
+        logo_path: '/images/categories-logos/gaming.svg',
       },
       {
         name: 'gardening',
-        logo_path: '/categories-logos/categories/gardening.svg',
+        logo_path: '/images/categories-logos/gardening.svg',
       },
       {
         name: 'music',
-        logo_path: '/categories-logos/categories/music.svg',
+        logo_path: '/images/categories-logos/music.svg',
       },
       {
         name: 'outing',
-        logo_path: '/categories-logos/categories/outings.svg',
+        logo_path: '/images/categories-logos/outings.svg',
       },
       {
         name: 'photography',
-        logo_path: '/categories-logos/categories/photography.svg',
+        logo_path: '/images/categories-logos/photography.svg',
       },
       {
         name: 'reading',
-        logo_path: '/categories-logos/categories/reading.svg',
+        logo_path: '/images/categories-logos/reading.svg',
       },
       {
         name: 'sport',
-        logo_path: '/categories-logos/categories/sports.svg',
+        logo_path: '/images/categories-logos/sports.svg',
       },
       {
         name: 'traveling',
-        logo_path: '/categories-logos/categories/traveling.svg',
+        logo_path: '/images/categories-logos/traveling.svg',
       },
       {
         name: 'writing',
-        logo_path: '/categories-logos/categories/writing.svg',
+        logo_path: '/images/categories-logos/writing.svg',
       },
     ])
     .execute();
