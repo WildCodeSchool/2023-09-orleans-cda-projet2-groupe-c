@@ -4,6 +4,6 @@ import categoriesRouter from './category/category-crud';
 
 const router = express.Router();
 
-router.use('/', categoriesRouter);
+router.use('/categories', categoriesRouter);
 
 export default router;
