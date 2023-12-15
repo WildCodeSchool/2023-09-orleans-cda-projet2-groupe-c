@@ -6,6 +6,7 @@ const API_URL = import.meta.env.VITE_API_URL;
 const onSubmit: SubmitHandler<FieldValues> = async (data) => {
   const code = data.activation_code;
 
+  // Fetching the API to validate the user's code
   await fetch(`${API_URL}/auth/registration/validation`, {
     method: 'POST',
     credentials: 'include',
@@ -19,6 +20,7 @@ export default function ValidationToken() {
 
   const [code, setCode] = useState('');
 
+  // This useEffect hook will fetch the user's code from the database
   useEffect(() => {
     const controller = new AbortController();
     const signal = controller.signal;
@@ -30,7 +32,7 @@ export default function ValidationToken() {
       });
 
       const data = await res.json();
-      setCode(data[0].activation_code);
+      setCode(data[0].activation_code); // Set the code state to the retrieved user's code
     };
     fetchCode().catch((error) => {
       throw new Error(error);
@@ -56,7 +58,7 @@ export default function ValidationToken() {
         </div>
         <div>
           <p className='text-dark-light my-2 mb-4 align-top text-xs'>
-            {`Activation code: ${code}`}
+            {`Activation code: ${code}`} {/* Display the user's code */}
           </p>
         </div>
         <div className='mt-5 flex flex-col'>
@@ -67,8 +69,9 @@ export default function ValidationToken() {
             <input
               className='border-primary bg-light-light text-dark-light/70 focus:outline-secondary w-100 rounded-lg border p-2 text-center transition-all focus:outline'
               type='text'
-              {...register('activation_code')}
-              // onChange={(event) => {setCode(event.target.value)}}
+              {...register(
+                'activation_code',
+              )} /* The user has to type the shown code as a captcha to complete the validation */
             />
             <div className='flex flex-col items-center'>
               <button

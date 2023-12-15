@@ -29,7 +29,6 @@ export type UserTable = {
   gender?: Gender;
   biography?: string;
   account_github?: string;
-  role?: Role;
   email: string;
   password: string;
   email_verified_at?: Date;

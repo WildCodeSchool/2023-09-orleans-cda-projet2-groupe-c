@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { type SubmitHandler, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 
@@ -7,45 +7,31 @@ import type { RegisterBody } from '@app/types';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
-export default function Registration() {
+export default function RegistrationForm() {
   const navigate = useNavigate();
   const { register, handleSubmit, formState } = useForm<RegisterBody>({
-    criteriaMode: 'all',
+    resolver: zodResolver(authSchema),
   });
-  const { isValid } = formState;
-  const [formErrors, setFormErrors] = useState<{
-    email?: string[];
-    password?: string[];
-  }>({});
+  const { isValid, errors } = formState;
 
+  // onSubmit function to handle form submission
   const onSubmit: SubmitHandler<RegisterBody> = async (data) => {
-    const result = authSchema.safeParse(data);
-
-    if (result.success) {
-      setFormErrors({});
-    } else {
-      setFormErrors(result.error.formErrors.fieldErrors);
-    }
     try {
-      const validate = authSchema.parse({
-        email: data.email,
-        password: data.password,
-      });
-
+      // Send a POST request to the API to register the user
       await fetch(`${API_URL}/auth/registration`, {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
         credentials: 'include',
         body: JSON.stringify({
-          email: validate.email,
-          password: validate.password,
+          email: data.email,
+          password: data.password,
         }),
       });
     } catch (error) {
-      throw new Error(`Failed to register. : ${String(error)}`);
+      throw new Error(`Failed to register : ${String(error)}`); // Throw an error if the request fails
     }
     if (isValid) {
-      navigate('/registration/success');
+      navigate('/registration/success'); // Navigate to the success page if the form is valid with useNavigate
     }
   };
 
@@ -75,7 +61,9 @@ export default function Registration() {
               className='border-primary bg-light-light text-dark-light/70 focus:outline-secondary w-100 rounded-lg border p-2 text-center transition-all focus:outline'
               {...register('email')}
             />
-            <p className='text-next'>{formErrors.email}</p>
+            {errors.email && errors.email.message !== undefined ? (
+              <p className='text-next flex text-xs'>{errors.email.message}</p>
+            ) : undefined}
             <label
               htmlFor='password'
               className='text-secondary -mb-2 mt-2 text-sm'
@@ -89,7 +77,11 @@ export default function Registration() {
               className='border-primary bg-light-light text-dark-light/70 focus:outline-secondary w-100 rounded-lg border p-2 text-center transition-all focus:outline'
               {...register('password')}
             />
-            <p className='text-next'>{formErrors.password}</p>
+            {errors.password && errors.password.message !== undefined ? (
+              <p className='text-next flex text-xs'>
+                {errors.password.message}
+              </p>
+            ) : undefined}
             <button
               className='text-light-light bg-primary border-primary-dark mt-52 rounded-lg p-2 px-12'
               type='submit'

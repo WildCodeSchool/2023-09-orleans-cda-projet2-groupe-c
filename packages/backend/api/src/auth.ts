@@ -6,6 +6,9 @@ import type { ActivationCode, RegisterBody } from '@app/types';
 
 import { tokenGenerator } from './utils/token-generator';
 
+// In this file we handle the registration process and the activation code validation
+// it is displayed to the user as a captcha, he has to type it in a form input in order to validate his account
+
 const JWT_SECRET = process.env.JWT_SECRET;
 const FRONTEND_URL = 'http://localhost';
 
@@ -18,13 +21,16 @@ const authRouter = express.Router();
 
 authRouter.post('/registration', async (req, res) => {
   try {
-    const activationCode = tokenGenerator();
+    const activationCode = tokenGenerator(); // Generating random uppercased code with 6 characters and numbers
 
+    // Getting email and password from request body, followed by password hashing
     const { email, password } = req.body as RegisterBody;
     const hashedPassword = await Bun.password.hash(password, {
       algorithm: 'bcrypt',
       cost: 10,
     });
+
+    // Creating user object with the data from request body
     const user: ActivationCode = {
       email,
       password: hashedPassword,
@@ -36,6 +42,7 @@ authRouter.post('/registration', async (req, res) => {
 
     const userId = result[0].insertId;
 
+    // Creating JWT token with Jose library
     const jwt = await new jose.SignJWT({ sub: email })
       .setProtectedHeader({ alg: 'HS256' })
       .setIssuedAt()
@@ -51,6 +58,7 @@ authRouter.post('/registration', async (req, res) => {
       signed: true,
     });
 
+    // A cookie containing the user ID so we can use it to retrieve the activation code corresponding to the user
     res.cookie('userId', userId, {
       httpOnly: true,
       sameSite: true,
@@ -73,6 +81,7 @@ authRouter.post('/registration', async (req, res) => {
   }
 });
 
+// This route is used to validate the activation code
 authRouter.post('/registration/validation', async (req) => {
   const userId = req.signedCookies.userId;
   const { activation_code } = req.body;
@@ -92,9 +101,9 @@ authRouter.post('/registration/validation', async (req) => {
   }
 });
 
+// This route is used to retrieve the activation code from the database matching the user ID
 authRouter.get('/registration/users/code', async (req, res) => {
   const userId = req.signedCookies.userId;
-  // const userId = 47;
 
   const code = await db
     .selectFrom('user')
