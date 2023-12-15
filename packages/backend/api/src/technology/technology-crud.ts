@@ -40,7 +40,7 @@ technologyRouter.get('/', async (req, res) => {
 });
 
 // GET technology by id
-technologyRouter.get('/technologies/:technologyId', async (req, res) => {
+technologyRouter.get('/:technologyId', async (req, res) => {
   try {
     const technologyId = Number.parseInt(req.params.technologyId);
 
