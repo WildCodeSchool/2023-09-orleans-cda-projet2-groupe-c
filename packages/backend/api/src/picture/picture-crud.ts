@@ -5,7 +5,7 @@ import { db } from '@app/backend-shared';
 const pictureRouter = express.Router();
 
 // GET all pictures from a user
-pictureRouter.get('/users/:userId/pictures', async (req, res) => {
+pictureRouter.get('/:userId/pictures', async (req, res) => {
   try {
     const userId = Number.parseInt(req.params.userId);
 
@@ -24,7 +24,7 @@ pictureRouter.get('/users/:userId/pictures', async (req, res) => {
 });
 
 // GET picture by id from a user
-pictureRouter.get('/users/:userId/pictures/:pictureId', async (req, res) => {
+pictureRouter.get('/:userId/pictures/:pictureId', async (req, res) => {
   try {
     const userId = Number.parseInt(req.params.userId);
     const pictureId = Number.parseInt(req.params.pictureId);
@@ -49,7 +49,7 @@ pictureRouter.get('/users/:userId/pictures/:pictureId', async (req, res) => {
 });
 
 // ADD picture from a user
-pictureRouter.post('/users/:userId/pictures', async (req, res) => {
+pictureRouter.post('/:userId/pictures', async (req, res) => {
   try {
     const userId = Number.parseInt(req.params.userId);
     // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -85,7 +85,7 @@ pictureRouter.post('/users/:userId/pictures', async (req, res) => {
 });
 
 // UPDATE picture
-pictureRouter.put('/users/:userId/pictures/:pictureId', async (req, res) => {
+pictureRouter.put('/:userId/pictures/:pictureId', async (req, res) => {
   try {
     const userId = Number.parseInt(req.params.userId);
     const pictureId = Number.parseInt(req.params.pictureId);
@@ -109,7 +109,7 @@ pictureRouter.put('/users/:userId/pictures/:pictureId', async (req, res) => {
 });
 
 // DELETE picture
-pictureRouter.delete('/users/:userId/pictures/:pictureId', async (req, res) => {
+pictureRouter.delete('/:userId/pictures/:pictureId', async (req, res) => {
   try {
     const userId = Number.parseInt(req.params.userId);
     const pictureId = Number.parseInt(req.params.pictureId);
