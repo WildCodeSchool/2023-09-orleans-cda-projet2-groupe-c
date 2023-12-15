@@ -27,7 +27,7 @@ authRouter.get('/verify', async (req, res) => {
   // If the JWT is undefined, return an error
   if (jwt === undefined) {
     return res.json({
-      message: 'JWT token is not defined',
+      ok: false,
       isLoggedIn: false,
     });
   }
@@ -41,7 +41,6 @@ authRouter.get('/verify', async (req, res) => {
 
     return res.json({
       ok: true,
-      message: 'JWT is verify and User is connected',
       isLoggedIn: true,
     });
   } catch (error) {
@@ -49,7 +48,6 @@ authRouter.get('/verify', async (req, res) => {
     if (error instanceof jose.errors.JWTExpired) {
       return res.json({
         ok: false,
-        message: 'JWT is expired and User is not connected',
         isLoggedIn: false,
       });
     }
@@ -95,7 +93,6 @@ authRouter.post('/login', async (req, res) => {
     if (!isCorrectPassword) {
       return res.json({
         ok: false,
-        message: 'Password is incorrect and User is not connected',
         isLoggedIn: false,
       });
     }
@@ -123,7 +120,6 @@ authRouter.post('/login', async (req, res) => {
 
     return res.json({
       ok: true,
-      message: 'JWT is created and User is connected',
       isLoggedIn: isCorrectPassword,
     });
   } catch (error) {

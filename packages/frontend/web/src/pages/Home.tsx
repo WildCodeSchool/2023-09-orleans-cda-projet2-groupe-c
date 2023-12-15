@@ -10,19 +10,17 @@ import Logo from '../components/icons/LogoHomeIcon';
 export default function Home() {
   const { isLoggedIn, isLoading } = useAuth();
 
-  let content;
-
   if (isLoading) {
-    content = <Loading />;
+    return <Loading />;
   } else if (isLoggedIn) {
-    content = (
+    return (
       <main>
         <NavBar />
         <Outlet />
       </main>
     );
   } else {
-    content = (
+    return (
       <main className='bg-background text-light h-screen w-screen overflow-hidden bg-cover bg-center bg-no-repeat p-5 text-center'>
         <section className='flex h-full flex-col items-center justify-between'>
           <header className='mt-32 flex flex-col items-center justify-center gap-4'>
@@ -38,6 +36,4 @@ export default function Home() {
       </main>
     );
   }
-
-  return content;
 }

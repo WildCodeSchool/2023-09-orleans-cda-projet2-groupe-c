@@ -17,10 +17,7 @@ const authProviderContext = createContext<AuthProviderState | undefined>(
   undefined,
 );
 
-export default function AuthProvider({
-  children,
-  ...props
-}: AuthProviderProps) {
+export default function AuthContext({ children, ...props }: AuthProviderProps) {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
