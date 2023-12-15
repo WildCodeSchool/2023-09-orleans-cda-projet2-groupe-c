@@ -4,6 +4,6 @@ import hobbyRouter from './hobby/hobby-crud';
 
 const router = express.Router();
 
-router.use('/', hobbyRouter);
+router.use('/hobbies', hobbyRouter);
 
 export default router;
