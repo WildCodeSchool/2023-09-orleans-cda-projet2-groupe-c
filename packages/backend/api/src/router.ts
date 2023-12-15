@@ -4,6 +4,6 @@ import languageRouter from './language/language-crud';
 
 const router = express.Router();
 
-router.use('/', languageRouter);
+router.use('/languages', languageRouter);
 
 export default router;
