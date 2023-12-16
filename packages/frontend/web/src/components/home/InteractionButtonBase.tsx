@@ -1,18 +1,19 @@
-import { useHome } from '../../contexts/HomeContext';
-
 interface InteractionButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement> {}
+  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  readonly size: string;
+  readonly onClick: () => void;
+}
 
 export default function InteractionButton({
   children,
+  size,
+  onClick,
 }: InteractionButtonProps) {
-  const { handleLikeClick } = useHome();
-
   return (
     <button
       type='button'
-      onClick={handleLikeClick}
-      className='bg-light flex h-16 w-16 items-center justify-center rounded-full text-black shadow-md'
+      onClick={onClick}
+      className={`bg-light flex h-${size} w-${size} items-center justify-center rounded-full text-black shadow-md`}
     >
       {children}
     </button>

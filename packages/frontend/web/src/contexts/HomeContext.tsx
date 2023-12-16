@@ -19,6 +19,8 @@ type HomeProviderState = {
   users: Array<UserTable>;
   selectedUser?: UserTable;
   handleLikeClick: () => void;
+  handleSuperLikeClick: () => void;
+  handleNextClick: () => void;
 };
 
 // Create a context
@@ -62,39 +64,52 @@ export default function HomeContext({ children, ...props }: HomeProviderProps) {
     };
   }, []);
 
-  // Add a like to the selected user and select the next user
-  const handleLikeClick = useCallback(async () => {
-    try {
-      await fetch(`${API_URL}/users/${USER_ID}/interactions/like`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          receiver_id: selectedUser?.id,
-        }),
-      });
+  // Handle the interactions
+  const handleInteraction = useCallback(
+    async (interactionType: string) => {
+      try {
+        await fetch(
+          `${API_URL}/users/${USER_ID}/interactions/${interactionType}`,
+          {
+            method: 'POST',
+            headers: {
+              'content-type': 'application/json',
+            },
+            body: JSON.stringify({
+              receiver_id: selectedUser?.id, // Send in the body the id of the selected user
+            }),
+          },
+        );
 
-      // Select the current user
-      const currentIndex = users.findIndex(
-        (user) => user.id === selectedUser?.id,
-      );
+        // Select the current user index
+        const currentIndex = users.findIndex(
+          (user) => user.id === selectedUser?.id,
+        );
 
-      // Remove the current user from the list of users
-      setUsers((prevUsers) => {
-        const newUsers = [...prevUsers];
-        newUsers.splice(currentIndex, 1);
+        // Select the next user
+        const nextIndex = (currentIndex + 1) % users.length;
+        setSelectedUser(users[nextIndex]);
+      } catch (error) {
+        throw new Error(`Fail to ${interactionType} a user: ${String(error)}`);
+      }
+    },
+    [selectedUser, users],
+  );
 
-        return newUsers;
-      });
+  const handleLikeClick = useCallback(
+    () => handleInteraction('like'),
+    [handleInteraction],
+  );
 
-      // Select the next user
-      const nextIndex = (currentIndex + 1) % users.length;
-      setSelectedUser(users[nextIndex]);
-    } catch (error) {
-      throw new Error(`Fail to like a user: ${String(error)}`);
-    }
-  }, [selectedUser, users]);
+  const handleSuperLikeClick = useCallback(
+    () => handleInteraction('superlike'),
+    [handleInteraction],
+  );
+
+  const handleNextClick = useCallback(
+    () => handleInteraction('next'),
+    [handleInteraction],
+  );
 
   // Create an ibjet with the value to be shared
   // Memorize the value to avoid re-rendering
@@ -103,8 +118,16 @@ export default function HomeContext({ children, ...props }: HomeProviderProps) {
       users,
       selectedUser,
       handleLikeClick,
+      handleSuperLikeClick,
+      handleNextClick,
     };
-  }, [selectedUser, users, handleLikeClick]);
+  }, [
+    selectedUser,
+    users,
+    handleLikeClick,
+    handleSuperLikeClick,
+    handleNextClick,
+  ]);
 
   return (
     <homeProviderContext.Provider {...props} value={value}>
