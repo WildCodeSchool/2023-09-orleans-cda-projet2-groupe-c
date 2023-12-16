@@ -80,6 +80,14 @@ export default function HomeContext({ children, ...props }: HomeProviderProps) {
         (user) => user.id === selectedUser?.id,
       );
 
+      // Remove the current user from the list of users
+      setUsers((prevUsers) => {
+        const newUsers = [...prevUsers];
+        newUsers.splice(currentIndex, 1);
+
+        return newUsers;
+      });
+
       // Select the next user
       const nextIndex = (currentIndex + 1) % users.length;
       setSelectedUser(users[nextIndex]);
