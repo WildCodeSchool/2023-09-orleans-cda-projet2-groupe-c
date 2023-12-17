@@ -17,7 +17,9 @@ import FormTechnology from '@/components/forms/FormTechnology';
 import FormTest from '@/components/forms/FormTest';
 import FormTest1 from '@/components/forms/FormTest1';
 
-interface FormData extends UserTable {}
+interface FormData extends UserTable {
+  languages: number[];
+}
 
 export default function FormProfile() {
   const [page, setPage] = useState<number>(0);
@@ -38,12 +40,19 @@ export default function FormProfile() {
       setPage((prev) => prev + 1);
     } else {
       try {
+        const transformedData = {
+          ...data,
+          languages: data.languages.map((language: number) => ({
+            id: language,
+          })),
+        };
+
         await fetch(`${import.meta.env.VITE_API_URL}/register`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(data),
+          body: JSON.stringify(transformedData),
         });
       } catch (error) {
         throw new Error(`${String(error)}`);
@@ -54,22 +63,22 @@ export default function FormProfile() {
   return (
     <FormProvider {...methods}>
       {/* <NavBar /> */}
-      <div className='w-full overflow-y-hidden px-5'>
+      <div className='w-full px-5'>
         <form
           onSubmit={handleSubmit(formSubmit)}
           className='flex h-screen flex-col items-center justify-between'
         >
           <div className='flex h-full w-full max-w-[500px] flex-col justify-between'>
             {page === 9 ? <FormName /> : ''}
-            {page === 1 ? <FormBirthDate /> : ''}
+            {page === 8 ? <FormBirthDate /> : ''}
             {page === 2 ? <FormIAm /> : ''}
             {page === 3 ? <FormBio /> : ''}
             {page === 4 ? <FormCity /> : ''}
             {page === 5 ? <FormGitHub /> : ''}
             {page === 7 ? <FormEnd /> : ''}
             {/* {page === 0 ? <FormLanguage /> : ''} */}
-            {page === 8 ? <FormTest1 /> : ''}
-            {page === 0 ? <FormTechnology /> : ''}
+            {page === 0 ? <FormTest1 /> : ''}
+            {page === 1 ? <FormTechnology /> : ''}
 
             {page === 6 ? <FormTest /> : ''}
             <div className='flex w-full flex-col gap-6 pb-5 md:pb-40'>

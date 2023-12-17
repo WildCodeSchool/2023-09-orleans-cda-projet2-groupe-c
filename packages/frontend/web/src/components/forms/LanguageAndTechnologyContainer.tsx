@@ -9,23 +9,47 @@ interface DefaultValues {
   logo_path: string;
 }
 
+type FieldName = 'id' | 'name' | 'logo_path';
+
 interface SelectionFormProps extends React.HTMLAttributes<HTMLDivElement> {
   readonly apiUrl: string;
   readonly formTitle: string;
   readonly subtitle: string;
+  readonly fieldName: FieldName;
+  readonly storageKey: string;
 }
 
 export default function LanguageAndTechnology({
   apiUrl,
   formTitle,
   subtitle,
+  fieldName,
+  storageKey,
 }: SelectionFormProps) {
   const { register } = useFormContext<DefaultValues>();
-  const [items, setItems] = useState<Array<DefaultValues>>([]);
-  const [selectedItems, setSelectedItems] = useState<string[]>([]);
+  const [items, setItems] = useState<DefaultValues[]>([]);
+  const [selectedItems, setSelectedItems] = useState<string[]>(() => {
+    // Utilisez la prop storageKey pour construire la clé de localStorage
+    const savedItems = localStorage.getItem(storageKey);
+    if (savedItems != undefined) {
+      const parsedItems: unknown = JSON.parse(savedItems);
+      if (
+        Array.isArray(parsedItems) &&
+        parsedItems.every((item) => typeof item === 'string')
+      ) {
+        return parsedItems as string[];
+      }
+    }
+    return [];
+  });
+
+  useEffect(() => {
+    // Enregistrer les langages sélectionnés dans le localStorage chaque fois qu'ils changent
+    localStorage.setItem(storageKey, JSON.stringify(selectedItems));
+  }, [selectedItems, storageKey]);
 
   const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const language = event.target.value;
+    const language = event.target.id;
 
     if (selectedItems.includes(language)) {
       setSelectedItems(selectedItems.filter((lang) => lang !== language));
@@ -37,7 +61,7 @@ export default function LanguageAndTechnology({
     }
   };
 
-  console.log(selectedItems);
+  // console.log(selectedItems);
 
   console.log(items);
 
@@ -66,8 +90,6 @@ export default function LanguageAndTechnology({
     firstSelectedItems = items.find(
       (language) => language.name === selectedItems[0],
     );
-  } else {
-    console.log('cheh');
   }
 
   return (
@@ -122,10 +144,10 @@ export default function LanguageAndTechnology({
                   {item.name.charAt(0).toUpperCase() + item.name.slice(1)}
                 </label>
                 <input
-                  value={item.name}
+                  value={item.id}
                   id={item.name}
                   type='checkbox'
-                  {...register('name', { required: true })}
+                  {...register(fieldName, { required: true })}
                   onChange={handleCheckboxChange}
                   disabled={
                     selectedItems.length >= 6 &&
