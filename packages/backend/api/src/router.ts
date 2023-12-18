@@ -1,4 +1,3 @@
-// prettier-ignore
 import express from 'express';
 import { sql } from 'kysely';
 
