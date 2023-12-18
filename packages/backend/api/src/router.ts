@@ -15,7 +15,7 @@ router.get('/', async (_request, response) => {
   }>`SELECT 1 as coucou`.execute(db);
   const [row] = result.rows;
 
-  return response.send(`Hello World! ${row.coucou}`);
+  return response.send(`Hello World!  ${row.coucou}`);
 });
 
 router.get('/some-route', (_request, response) => {
