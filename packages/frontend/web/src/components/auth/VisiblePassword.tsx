@@ -1,5 +1,5 @@
-import PasswordNotVisible from '../icons/EyeCloseIcon';
-import PasswordVisible from '../icons/EyeOpenIcon';
+import EyeCloneIcon from '../icons/EyeCloseIcon';
+import EyeOpenIcon from '../icons/EyeOpenIcon';
 
 export default function VisiblePassword({
   isVisible,
@@ -17,7 +17,7 @@ export default function VisiblePassword({
             setIsVisible(!isVisible);
           }}
         >
-          <PasswordVisible />
+          <EyeOpenIcon />
         </button>
       ) : (
         <button
@@ -27,7 +27,7 @@ export default function VisiblePassword({
           }}
           className='translate-y-[1px]'
         >
-          <PasswordNotVisible />
+          <EyeCloneIcon />
         </button>
       )}
     </div>
