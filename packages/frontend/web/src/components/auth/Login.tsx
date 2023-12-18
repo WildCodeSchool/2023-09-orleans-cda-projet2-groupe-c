@@ -10,7 +10,6 @@ import { authSchema } from '@app/shared';
 import { useAuth } from '@/contexts/AuthContext';
 
 import Button from '../Button';
-import Loading from '../Loading';
 import PasswordIcon from '../icons/PasswordIcon';
 import UserIcon from '../icons/UserIcon';
 import VisiblePassword from './VisiblePassword';
@@ -43,7 +42,7 @@ export default function Login() {
   const navigate = useNavigate();
 
   // Get states from the AuthContext
-  const { isLoading, isLoggedIn, setIsLoggedIn } = useAuth();
+  const { isLoggedIn, setIsLoggedIn } = useAuth();
 
   // Desctructure the useForm hook
   const { register, handleSubmit, formState } = useForm<AuthBody>({
