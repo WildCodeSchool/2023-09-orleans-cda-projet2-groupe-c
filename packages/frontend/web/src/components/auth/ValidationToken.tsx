@@ -1,5 +1,8 @@
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect, useState } from 'react';
 import { type FieldValues, type SubmitHandler, useForm } from 'react-hook-form';
+
+import { type ActivationCode, activationCodeSchema } from '@app/types';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -16,7 +19,9 @@ const onSubmit: SubmitHandler<FieldValues> = async (data) => {
 };
 
 export default function ValidationToken() {
-  const { register, handleSubmit } = useForm();
+  const { register, handleSubmit } = useForm<ActivationCode>({
+    resolver: zodResolver(activationCodeSchema),
+  });
 
   const [code, setCode] = useState('');
 

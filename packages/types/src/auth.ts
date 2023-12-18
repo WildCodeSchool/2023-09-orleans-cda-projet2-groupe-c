@@ -25,17 +25,29 @@ export const authSchema = z
   .strict() // no additional properties allowed
   .strip(); // remove additional properties
 
-export const activationCodeSchema = authSchema
+export const activationCodeSchema = z
+  .string({
+    required_error: 'ⓘ Activation code is required',
+    invalid_type_error: 'ⓘ Activation code must be a string',
+  })
+  .trim()
+  .toUpperCase()
+  .max(6, { message: 'ⓘ Activation code must be 6 characters' })
+  .min(6, { message: 'ⓘ Activation code must be 6 characters' });
+
+export const roleSchema = z.enum(['user', 'admin']).default('user');
+
+export const authWithRoleSchema = authSchema
   .extend({
-    activation_code: z
-      .string({
-        required_error: 'ⓘ Activation code is required',
-        invalid_type_error: 'ⓘ Activation code must be a string',
-      })
-      .trim()
-      .toUpperCase()
-      .max(6, { message: 'ⓘ Activation code must be 6 characters' })
-      .min(6, { message: 'ⓘ Activation code must be 6 characters' }),
+    role: roleSchema,
+  })
+  .required()
+  .strict()
+  .strip();
+
+export const authWithRoleAndActivationCodeSchema = authWithRoleSchema
+  .extend({
+    activation_code: activationCodeSchema,
     email_verified_at: z.date({
       required_error: 'ⓘ Email verified at is required',
       invalid_type_error: 'ⓘ Email verified at must be a date',
@@ -45,5 +57,15 @@ export const activationCodeSchema = authSchema
   .strict()
   .strip();
 
-export type ActivationCode = z.infer<typeof activationCodeSchema>;
-export type RegisterBody = z.infer<typeof authSchema>;
+export const activationCodeWithTokenSchema = z.object({
+  activation_code: activationCodeSchema,
+  activate_at: z.date({
+    required_error: 'ⓘ Token verified at is required',
+    invalid_type_error: 'ⓘ Token verified at must be a date',
+  }),
+});
+
+export type ActivationCode = z.infer<typeof activationCodeWithTokenSchema>;
+export type AuthWithRoleAndActivationCode = z.infer<
+  typeof authWithRoleAndActivationCodeSchema
+>;

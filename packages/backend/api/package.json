@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "@app/backend-shared": "workspace:*",
+    "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "express": "^4.18.2",
     "jose": "^5.1.3",

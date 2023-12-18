@@ -2,7 +2,7 @@ import express from 'express';
 import * as jose from 'jose';
 
 import { db } from '@app/backend-shared';
-import type { ActivationCode, RegisterBody } from '@app/types';
+import type { ActivationCode, AuthWithRoleAndActivationCode } from '@app/types';
 
 import { tokenGenerator } from './utils/token-generator';
 
@@ -24,16 +24,17 @@ authRouter.post('/registration', async (req, res) => {
     const activationCode = tokenGenerator(); // Generating random uppercased code with 6 characters and numbers
 
     // Getting email and password from request body, followed by password hashing
-    const { email, password } = req.body as RegisterBody;
+    const { email, password } = req.body as AuthWithRoleAndActivationCode;
     const hashedPassword = await Bun.password.hash(password, {
       algorithm: 'bcrypt',
       cost: 10,
     });
 
     // Creating user object with the data from request body
-    const user: ActivationCode = {
+    const user: AuthWithRoleAndActivationCode = {
       email,
       password: hashedPassword,
+      role: 'user',
       activation_code: activationCode,
       email_verified_at: new Date(),
     };
@@ -93,11 +94,12 @@ authRouter.post('/registration/validation', async (req) => {
     .execute();
 
   if (activation_code === activationCode[0].activation_code) {
-    await db
-      .updateTable('user')
-      .set({ activation_code: '' })
-      .where('id', '=', userId)
-      .execute();
+    const code: ActivationCode = {
+      activation_code: '',
+      activate_at: new Date(),
+    };
+
+    await db.updateTable('user').set(code).where('id', '=', userId).execute();
   }
 });
 

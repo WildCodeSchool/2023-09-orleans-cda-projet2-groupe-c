@@ -3,19 +3,24 @@ import { type SubmitHandler, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 
 import { authSchema } from '@app/types';
-import type { RegisterBody } from '@app/types';
+import type { AuthWithRoleAndActivationCode } from '@app/types';
+
+import Button from '../Button';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
 export default function RegistrationForm() {
   const navigate = useNavigate();
-  const { register, handleSubmit, formState } = useForm<RegisterBody>({
-    resolver: zodResolver(authSchema),
-  });
+  const { register, handleSubmit, formState } =
+    useForm<AuthWithRoleAndActivationCode>({
+      resolver: zodResolver(authSchema),
+    });
   const { isValid, errors } = formState;
 
   // onSubmit function to handle form submission
-  const onSubmit: SubmitHandler<RegisterBody> = async (data) => {
+  const onSubmit: SubmitHandler<AuthWithRoleAndActivationCode> = async (
+    data,
+  ) => {
     try {
       // Send a POST request to the API to register the user
       await fetch(`${API_URL}/auth/registration`, {
@@ -51,7 +56,10 @@ export default function RegistrationForm() {
             onSubmit={handleSubmit(onSubmit)}
             className='flex flex-col justify-center gap-3'
           >
-            <label htmlFor='email' className='text-secondary -mb-2 text-sm'>
+            <label
+              htmlFor='email'
+              className='text-secondary dark:text-light-light -mb-2 text-sm'
+            >
               {'Email'}
               <span className='text-next'>{'*'}</span>
             </label>
@@ -66,7 +74,7 @@ export default function RegistrationForm() {
             ) : undefined}
             <label
               htmlFor='password'
-              className='text-secondary -mb-2 mt-2 text-sm'
+              className='text-secondary dark:text-light-light -mb-2 mt-2 text-sm'
             >
               {'Password'}
               <span className='text-next'>{'*'}</span>
@@ -82,12 +90,11 @@ export default function RegistrationForm() {
                 {errors.password.message}
               </p>
             ) : undefined}
-            <button
-              className='text-light-light bg-primary border-primary-dark mt-52 rounded-lg p-2 px-12'
-              type='submit'
-            >
-              {'Validate'}
-            </button>
+            <div className='mt-[20rem] flex flex-col'>
+              <Button type='submit' isOutline={false}>
+                {'Validate'}
+              </Button>
+            </div>
           </form>
         </div>
       </div>

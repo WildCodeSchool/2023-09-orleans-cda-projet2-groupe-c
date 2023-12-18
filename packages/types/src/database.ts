@@ -37,6 +37,7 @@ export interface UserTable {
   account_github?: string;
   email: string;
   password: string;
+  role: Role;
   email_verified_at?: Date;
   activation_code?: string;
   activate_at?: Date;
