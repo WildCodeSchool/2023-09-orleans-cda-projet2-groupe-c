@@ -4,6 +4,8 @@ import { type FieldValues, type SubmitHandler, useForm } from 'react-hook-form';
 
 import { type ActivationCode, activationCodeSchema } from '@app/types';
 
+import Button from '../Button';
+
 const API_URL = import.meta.env.VITE_API_URL;
 
 const onSubmit: SubmitHandler<FieldValues> = async (data) => {
@@ -79,12 +81,9 @@ export default function ValidationToken() {
               )} /* The user has to type the shown code as a captcha to complete the validation */
             />
             <div className='flex flex-col items-center'>
-              <button
-                className='text-light-light bg-primary border-primary-dark mt-52 rounded-lg p-2 px-12'
-                type='submit'
-              >
+              <Button isOutline={false} type='submit'>
                 {'Validate'}
-              </button>
+              </Button>
             </div>
           </form>
         </div>
