@@ -1,5 +1,5 @@
-import PasswordNotVisible from '../icons/PasswordNotVisibleIcon';
-import PasswordVisible from '../icons/PasswordVisibleIcon';
+import PasswordNotVisible from '../icons/EyeCloseIcon';
+import PasswordVisible from '../icons/EyeOpenIcon';
 
 export default function VisiblePassword({
   isVisible,
