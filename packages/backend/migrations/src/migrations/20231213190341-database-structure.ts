@@ -25,7 +25,7 @@ export async function up(db: Kysely<Database>): Promise<void> {
 
     await trx.schema
       .alterTable('user')
-      .addColumn('city_id', 'int8', (col) => col.unsigned().notNull())
+      .addColumn('city_id', 'int8', (col) => col.unsigned())
       .execute();
 
     await trx.schema
