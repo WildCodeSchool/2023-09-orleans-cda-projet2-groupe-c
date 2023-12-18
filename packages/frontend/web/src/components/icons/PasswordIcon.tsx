@@ -1,4 +1,4 @@
-export default function EyeOpenIcon({
+export default function PasswordIcon({
   className,
 }: {
   readonly className: string;

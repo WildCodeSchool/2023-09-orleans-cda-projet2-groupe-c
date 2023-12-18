@@ -5,7 +5,7 @@ import { type SubmitHandler, useForm } from 'react-hook-form';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 
 import type { AuthBody } from '@app/shared';
-import { authSchema } from '@app/shared';
+import { loginSchema } from '@app/shared';
 
 import { useAuth } from '@/contexts/AuthContext';
 
@@ -46,7 +46,7 @@ export default function Login() {
 
   // Desctructure the useForm hook
   const { register, handleSubmit, formState } = useForm<AuthBody>({
-    resolver: zodResolver(authSchema),
+    resolver: zodResolver(loginSchema),
   });
 
   // Desctructure the formState object
