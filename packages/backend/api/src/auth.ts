@@ -82,9 +82,9 @@ authRouter.post('/registration', async (req, res) => {
       res.status(401).json({ message: 'Token is not valid', error });
     }
 
-    return res.json({ ok: true, isLoggedIn: true });
+    return res.json({ ok: true });
   } catch (error) {
-    return res.json({ isLoggedIn: false, error: String(error) });
+    return res.json({ error });
   }
 });
 
@@ -94,15 +94,11 @@ authRouter.post('/registration/validation', async (req, res) => {
     const userId: number = req.signedCookies.userId;
     const { activation_code: activationCode }: ActivationCode = req.body;
 
-    console.log(req.body);
-
     const getCode = await db
       .selectFrom('user')
       .select('activation_code')
       .where('id', '=', userId)
       .execute();
-
-    console.log(getCode);
 
     if (activationCode === getCode[0].activation_code) {
       const code: ActivationToken = {

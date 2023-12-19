@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 
+import Button from '../Button';
 import Check from '../svg/Check';
 
 export default function Success() {
@@ -27,12 +28,9 @@ export default function Success() {
       </div>
       <div className='flex flex-col items-center'>
         <Link to='/registration/validation'>
-          <button
-            className='text-light-light bg-primary border-primary-dark mt-32 rounded-lg p-2 px-12'
-            type='button'
-          >
+          <Button type='button' isOutline={false}>
             {'Validate'}
-          </button>
+          </Button>
         </Link>
       </div>
     </>

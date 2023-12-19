@@ -2,8 +2,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { type SubmitHandler, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 
-import { authSchema } from '@app/types';
 import type { RegisterBody } from '@app/types';
+import { authSchema } from '@app/types';
 
 import Button from '../Button';
 
