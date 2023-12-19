@@ -1,6 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect, useState } from 'react';
-import { type FieldValues, type SubmitHandler, useForm } from 'react-hook-form';
+import { type SubmitHandler, useForm } from 'react-hook-form';
 
 import { type ActivationCode, activationCodeSchema } from '@app/types';
 
@@ -8,7 +8,7 @@ import Button from '../Button';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
-const onSubmit: SubmitHandler<FieldValues> = async (data) => {
+const onSubmit: SubmitHandler<ActivationCode> = async (data) => {
   const code = data.activation_code;
 
   // Fetching the API to validate the user's code
@@ -31,6 +31,7 @@ export default function ValidationToken() {
   useEffect(() => {
     const controller = new AbortController();
     const signal = controller.signal;
+
     const fetchCode = async () => {
       const res = await fetch(`${API_URL}/auth/registration/users/code`, {
         signal,
@@ -39,8 +40,10 @@ export default function ValidationToken() {
       });
 
       const data = await res.json();
+
       setCode(data[0].activation_code); // Set the code state to the retrieved user's code
     };
+
     fetchCode().catch((error) => {
       throw new Error(error);
     });

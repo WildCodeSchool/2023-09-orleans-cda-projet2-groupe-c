@@ -3,7 +3,7 @@ import { type SubmitHandler, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 
 import { authSchema } from '@app/types';
-import type { AuthWithRoleAndActivationCode } from '@app/types';
+import type { RegisterBody } from '@app/types';
 
 import Button from '../Button';
 
@@ -11,16 +11,14 @@ const API_URL = import.meta.env.VITE_API_URL;
 
 export default function RegistrationForm() {
   const navigate = useNavigate();
-  const { register, handleSubmit, formState } =
-    useForm<AuthWithRoleAndActivationCode>({
-      resolver: zodResolver(authSchema),
-    });
+  const { register, handleSubmit, formState } = useForm<RegisterBody>({
+    resolver: zodResolver(authSchema),
+  });
+
   const { isValid, errors } = formState;
 
   // onSubmit function to handle form submission
-  const onSubmit: SubmitHandler<AuthWithRoleAndActivationCode> = async (
-    data,
-  ) => {
+  const onSubmit: SubmitHandler<RegisterBody> = async (data) => {
     try {
       // Send a POST request to the API to register the user
       await fetch(`${API_URL}/auth/registration`, {

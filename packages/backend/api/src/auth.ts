@@ -2,7 +2,12 @@ import express from 'express';
 import * as jose from 'jose';
 
 import { db } from '@app/backend-shared';
-import type { ActivationCode, AuthWithRoleAndActivationCode } from '@app/types';
+import type {
+  ActivationCode,
+  ActivationToken,
+  RegisterBody,
+  RegisterWithActivationCode,
+} from '@app/types';
 
 import { tokenGenerator } from './utils/token-generator';
 
@@ -24,14 +29,15 @@ authRouter.post('/registration', async (req, res) => {
     const activationCode = tokenGenerator(); // Generating random uppercased code with 6 characters and numbers
 
     // Getting email and password from request body, followed by password hashing
-    const { email, password } = req.body as AuthWithRoleAndActivationCode;
+    const { email, password } = req.body as RegisterBody;
+
     const hashedPassword = await Bun.password.hash(password, {
       algorithm: 'bcrypt',
       cost: 10,
     });
 
     // Creating user object with the data from request body
-    const user: AuthWithRoleAndActivationCode = {
+    const user: RegisterWithActivationCode = {
       email,
       password: hashedPassword,
       role: 'user',
@@ -78,28 +84,37 @@ authRouter.post('/registration', async (req, res) => {
 
     return res.json({ ok: true, isLoggedIn: true });
   } catch (error) {
-    return res.json({ isLoggedIn: false, error });
+    return res.json({ isLoggedIn: false, error: String(error) });
   }
 });
 
 // This route is used to validate the activation code
-authRouter.post('/registration/validation', async (req) => {
-  const userId = req.signedCookies.userId;
-  const { activation_code } = req.body;
+authRouter.post('/registration/validation', async (req, res) => {
+  try {
+    const userId: number = req.signedCookies.userId;
+    const { activation_code: activationCode }: ActivationCode = req.body;
 
-  const activationCode = await db
-    .selectFrom('user')
-    .select('activation_code')
-    .where('id', '=', userId)
-    .execute();
+    console.log(req.body);
 
-  if (activation_code === activationCode[0].activation_code) {
-    const code: ActivationCode = {
-      activation_code: '',
-      activate_at: new Date(),
-    };
+    const getCode = await db
+      .selectFrom('user')
+      .select('activation_code')
+      .where('id', '=', userId)
+      .execute();
 
-    await db.updateTable('user').set(code).where('id', '=', userId).execute();
+    console.log(getCode);
+
+    if (activationCode === getCode[0].activation_code) {
+      const code: ActivationToken = {
+        activation_code: '',
+        activate_at: new Date(),
+      };
+
+      await db.updateTable('user').set(code).where('id', '=', userId).execute();
+    }
+    res.json({ ok: true });
+  } catch (error) {
+    throw new Error(`Error validating activation code: ${String(error)}`);
   }
 });
 
