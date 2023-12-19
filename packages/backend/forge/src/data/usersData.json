@@ -13,7 +13,7 @@
   {
     "name": "Alexandre",
     "birthdate": "1990-12-03",
-    "gender": "man",
+    "gender": "non-binary",
     "biography": "Travel enthusiast!",
     "account_github": "https://github.com/AlexTraveler",
     "role": "user",
@@ -57,7 +57,7 @@
   {
     "name": "Alice",
     "birthdate": "1998-03-25",
-    "gender": "woman",
+    "gender": "non-binary",
     "biography": "Passionate about coding!",
     "account_github": "https://github.com/AliceCoder",
     "role": "user",
@@ -68,7 +68,7 @@
   {
     "name": "Robert",
     "birthdate": "1995-11-12",
-    "gender": "man",
+    "gender": "non-binary",
     "biography": "Exploring new technologies!",
     "account_github": "https://github.com/RobTechExplorer",
     "role": "user",
@@ -101,7 +101,7 @@
   {
     "name": "Olivia",
     "birthdate": "1994-06-15",
-    "gender": "woman",
+    "gender": "non-binary",
     "biography": "Fitness freak and yoga enthusiast!",
     "account_github": "https://github.com/OliviaYogi",
     "role": "user",
@@ -156,7 +156,7 @@
   {
     "name": "Ethan",
     "birthdate": "1991-11-16",
-    "gender": "man",
+    "gender": "non-binary",
     "biography": "Passionate about technology and innovation!",
     "account_github": "https://github.com/EthanInnovate",
     "role": "user",
@@ -233,7 +233,7 @@
   {
     "name": "Jacob",
     "birthdate": "1996-09-14",
-    "gender": "man",
+    "gender": "non-binary",
     "biography": "Adventurous traveler and nature lover!",
     "account_github": "https://github.com/JacobNature",
     "role": "user",
