@@ -1,6 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect, useState } from 'react';
-import { type FieldValues, type SubmitHandler, useForm } from 'react-hook-form';
+import { type SubmitHandler, useForm } from 'react-hook-form';
 
 import { type ActivationCode, activationCodeSchema } from '@app/types';
 
@@ -8,7 +8,7 @@ import Button from '../Button';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
-const onSubmit: SubmitHandler<FieldValues> = async (data) => {
+const onSubmit: SubmitHandler<ActivationCode> = async (data) => {
   const code = data.activation_code;
 
   // Fetching the API to validate the user's code

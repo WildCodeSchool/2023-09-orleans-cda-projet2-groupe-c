@@ -10,5 +10,3 @@ node_modules
 packages/frontend/mobile/ios
 packages/frontend/mobile/android
 deployment/mysql/data
-
-packages/backend/api/src/router.ts
