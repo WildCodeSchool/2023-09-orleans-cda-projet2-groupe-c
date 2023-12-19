@@ -39,5 +39,20 @@ if (allCities.length > 0) {
   await db.deleteFrom('city').execute();
 }
 
+const usersHobbies = await db.selectFrom('hobby_user').selectAll().execute();
+
+if (usersHobbies.length > 0) {
+  await db.deleteFrom('hobby_user').execute();
+}
+
+const usersLanguages = await db
+  .selectFrom('language_user')
+  .selectAll()
+  .execute();
+
+if (usersLanguages.length > 0) {
+  await db.deleteFrom('language_user').execute();
+}
+
 // eslint-disable-next-line unicorn/no-process-exit
 process.exit(0);
