@@ -17,6 +17,7 @@ import { insertTechnologies } from './technologies/insert-technologies';
 import { insertUsers } from './users/insert-users';
 import { insertUsersHobbies } from './users/insert-users-hobbies';
 import { insertUsersLanguages } from './users/insert-users-languages';
+import { insertUsersPictures } from './users/insert-users-pictures';
 import { insertUsersLTechnologies } from './users/insert-users-technologies';
 
 const insertAllData = async () => {
@@ -46,6 +47,9 @@ const insertAllData = async () => {
     await insertUsersLanguages();
     await insertUsersHobbies();
     await insertUsersLTechnologies();
+    await insertUsersPictures('man');
+    await insertUsersPictures('woman');
+    await insertUsersPictures('non-binary');
   } catch (error) {
     throw new Error(`Impossible to insert all data: ${String(error)}`);
   }

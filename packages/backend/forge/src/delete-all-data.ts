@@ -54,5 +54,11 @@ if (usersLanguages.length > 0) {
   await db.deleteFrom('language_user').execute();
 }
 
+const usersPictures = await db.selectFrom('picture').selectAll().execute();
+
+if (usersPictures.length > 0) {
+  await db.deleteFrom('picture').execute();
+}
+
 // eslint-disable-next-line unicorn/no-process-exit
 process.exit(0);
