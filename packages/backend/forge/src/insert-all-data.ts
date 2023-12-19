@@ -18,7 +18,7 @@ import { insertUsers } from './users/insert-users';
 import { insertUsersHobbies } from './users/insert-users-hobbies';
 import { insertUsersLanguages } from './users/insert-users-languages';
 import { insertUsersPictures } from './users/insert-users-pictures';
-import { insertUsersLTechnologies } from './users/insert-users-technologies';
+import { insertUsersTechnologies } from './users/insert-users-technologies';
 
 const insertAllData = async () => {
   try {
@@ -46,7 +46,7 @@ const insertAllData = async () => {
     await insertUsers();
     await insertUsersLanguages();
     await insertUsersHobbies();
-    await insertUsersLTechnologies();
+    await insertUsersTechnologies();
     await insertUsersPictures('man');
     await insertUsersPictures('woman');
     await insertUsersPictures('non-binary');

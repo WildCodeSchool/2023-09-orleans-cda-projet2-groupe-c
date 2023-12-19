@@ -2,7 +2,7 @@ import { db } from '@app/backend-shared';
 
 const MAX_TECHNOLOGIES_PER_USER = 6;
 
-export const insertUsersLTechnologies = async () => {
+export const insertUsersTechnologies = async () => {
   // Get all users id
   const usersId = await db
     .selectFrom('user')
