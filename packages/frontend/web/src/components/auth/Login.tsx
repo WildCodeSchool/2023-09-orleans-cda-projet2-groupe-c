@@ -152,13 +152,13 @@ export default function Login() {
               ) : undefined}
             </div>
             <div className='mt-5 w-full'>
-              <p>{`You don't have an account ?`}</p>
+              <p>{`No account yet ?`}</p>
 
               <Link
                 to='/registration'
                 className='text-primary font-semibold underline'
               >
-                {`Create now`}
+                {`Create one now`}
               </Link>
             </div>
           </div>
