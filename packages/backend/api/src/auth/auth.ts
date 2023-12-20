@@ -34,7 +34,7 @@ authRouter.get('/verify', async (req, res) => {
 
   try {
     // Verify the JWT
-    await jose.jwtVerify(jwt, secret, {
+    const { payload } = await jose.jwtVerify(jwt, secret, {
       issuer: FRONTEND_URL,
       audience: FRONTEND_URL,
     });
@@ -42,6 +42,7 @@ authRouter.get('/verify', async (req, res) => {
     return res.json({
       ok: true,
       isLoggedIn: true,
+      userId: payload.userId,
     });
   } catch (error) {
     // If the JWT is expired
@@ -69,7 +70,7 @@ authRouter.post('/login', async (req, res) => {
     // Get the user from the database
     const user = await db
       .selectFrom('user')
-      .select(['user.password'])
+      .select(['user.id', 'user.password'])
       .where('user.email', '=', email)
       .executeTakeFirst();
 
@@ -100,6 +101,7 @@ authRouter.post('/login', async (req, res) => {
     // Create a new JWT with the library jose
     const jwt = await new jose.SignJWT({
       sub: email,
+      userId: user.id, // Add the user id to the JWT payload
     })
       .setProtectedHeader({
         alg: 'HS256',
