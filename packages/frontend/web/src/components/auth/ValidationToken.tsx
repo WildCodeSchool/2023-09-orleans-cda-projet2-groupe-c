@@ -2,7 +2,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect, useState } from 'react';
 import { type SubmitHandler, useForm } from 'react-hook-form';
 
-import { type ActivationCode, activationCodeSchema } from '@app/types';
+import { type ActivationCode, activationCodeSchema } from '@app/shared';
 
 import Button from '../Button';
 

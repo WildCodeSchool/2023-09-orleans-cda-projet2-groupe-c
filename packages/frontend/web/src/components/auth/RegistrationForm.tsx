@@ -2,8 +2,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { type SubmitHandler, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 
-import type { RegisterBody } from '@app/types';
-import { authSchema } from '@app/types';
+import type { RegisterBody } from '@app/shared';
+import { registrationSchema } from '@app/shared';
 
 import Button from '../Button';
 
@@ -12,7 +12,7 @@ const API_URL = import.meta.env.VITE_API_URL;
 export default function RegistrationForm() {
   const navigate = useNavigate();
   const { register, handleSubmit, formState } = useForm<RegisterBody>({
-    resolver: zodResolver(authSchema),
+    resolver: zodResolver(registrationSchema),
   });
 
   const { isValid, errors } = formState;

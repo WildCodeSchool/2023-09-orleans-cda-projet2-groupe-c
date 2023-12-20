@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const userSchema = z
+export const authSchema = z
   .object({
     name: z
       .string({
@@ -76,12 +76,14 @@ export const userSchema = z
   .strict()
   .strip();
 
-export const authSchema = userSchema.pick({
+
+
+export const registrationSchema = authSchema.pick({
   email: true,
   password: true,
 });
 
-export const registerWithActivationCodeSchema = userSchema.pick({
+export const registerWithActivationCodeSchema = authSchema.pick({
   email: true,
   password: true,
   role: true,
@@ -89,14 +91,14 @@ export const registerWithActivationCodeSchema = userSchema.pick({
   email_verified_at: true,
 });
 
-export const activationCodeSchema = userSchema.pick({ activation_code: true });
+export const activationCodeSchema = authSchema.pick({ activation_code: true });
 
-export const activationTokenSchema = userSchema.pick({
+export const activationTokenSchema = authSchema.pick({
   activation_code: true,
   activate_at: true,
 });
 
-export type RegisterBody = z.infer<typeof authSchema>;
+export type RegisterBody = z.infer<typeof registrationSchema>;
 
 export type RegisterWithActivationCode = z.infer<
   typeof registerWithActivationCodeSchema

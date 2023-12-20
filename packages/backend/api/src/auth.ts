@@ -7,7 +7,7 @@ import type {
   ActivationToken,
   RegisterBody,
   RegisterWithActivationCode,
-} from '@app/types';
+} from '@app/shared';
 
 import { tokenGenerator } from './utils/token-generator';
 
