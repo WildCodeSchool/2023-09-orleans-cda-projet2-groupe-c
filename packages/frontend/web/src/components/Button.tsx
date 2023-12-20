@@ -26,7 +26,7 @@ export default function Button({ children, type, isOutline }: ButtonProps) {
       }}
       className={`${
         isOutline ? 'bg-transparent' : 'bg-primary'
-      } border-primary text-light w-full max-w-[500px] shrink-0 rounded-lg border px-2 py-3 text-xl`}
+      } border-primary w-full max-w-[500px] shrink-0 rounded-lg border px-2 py-3 text-xl text-white`}
     >
       {/* Display the button text */}
       {children}
