@@ -4,10 +4,11 @@ import { db } from '@app/backend-shared';
 
 const register = express.Router();
 
-register.get('/users', async (req, res) => {
+register.get('/users', async (_req, res) => {
   const users = await db.selectFrom('user').selectAll().execute();
   return res.json(users);
 });
+
 register.post('/', async (req, res) => {
   try {
     const {
@@ -20,46 +21,70 @@ register.post('/', async (req, res) => {
       accountGithub,
       email,
       password,
-      languages
+      languages,
+      technologies,
+      hobbies,
     } = req.body;
-    
-    const result = await db.transaction().execute(async (trx) => {
-      const userResult = await trx.insertInto('user')
-      .values({
-        name,
-        role,
-        birthdate,
-        gender,
-        city_id: cityId,
-        biography,
-        account_github: accountGithub,
-        email,
-        password,
-      })
-      .execute()
-      
-      //recupère l'id de l'user nouvellement creer 
-      const userId = userResult[0].insertId;
-      
-        for (const language of languages) { 
-          await trx
-          .insertInto('language_user')
-          .values({
+
+    await db.transaction().execute(async (trx) => {
+      const userResult = await trx
+        .insertInto('user')
+        .values({
+          name,
+          role,
+          birthdate,
+          gender,
+          city_id: cityId,
+          biography,
+          account_github: accountGithub,
+          email,
+          password,
+        })
+
+        .executeTakeFirstOrThrow();
+
+      //recupère l'id de l'user nouvellement creer
+      const userId = userResult.insertId;
+
+      await trx
+        .insertInto('language_user')
+        .values(
+          languages.map((language: { id: number; order: number }) => ({
             language_id: language.id,
-            user_id: Number(userId)
-          })
-          .execute();  
-        }
-      
-      return userResult;
+            user_id: userId,
+            order: language.order,
+          })),
+        )
+        .execute();
+
+      await trx
+        .insertInto('technology_user')
+        .values(
+          technologies.map((technology: { id: number; order: number }) => ({
+            technology_id: technology.id,
+            user_id: userId,
+            order: technology.order,
+          })),
+        )
+        .execute();
+
+      await trx
+        .insertInto('hobby_user')
+        .values(
+          hobbies.map((hobby: { id: number; order: number }) => ({
+            hobby_id: hobby.id,
+            user_id: userId,
+            order: hobby.order,
+          })),
+        )
+        .execute();
     });
-    
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-    return res.json({ success: true, result: JSON.stringify(result, (_, v) => typeof v === 'bigint' ? v.toString() : v) });
+
+    return res.json({ success: true, message: 'User add with success !' });
   } catch (error) {
-    // Gérer les erreurs et envoyer une réponse appropriée
-    console.error('Error in registration:', error);
-    return res.status(500).json({ error: 'Internal Server Error' });
+    return res.status(500).json({
+      error: `An error occurred during registration ${String(error)}`,
+    });
   }
 });
 

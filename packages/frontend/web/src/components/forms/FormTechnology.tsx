@@ -18,8 +18,8 @@ export default function FormTechnology() {
     apiUrl: 'technologies',
     formTitle: 'MY TECHNOLOGY',
     subtitle: 'You can choose some technologies.',
-    fieldName: 'tech' as FieldName,
-    storageKey: 'tech',
+    fieldName: 'technologies' as FieldName,
+    storageKey: 'technologies',
   };
   return <LanguageAndTechnologyContainer {...props} />;
 }

@@ -4,27 +4,28 @@ import { FormProvider, useForm } from 'react-hook-form';
 import type { UserTable } from '@app/types';
 
 import Button from '@/components/Button';
-import NavBar from '@/components/NavBar';
 import FormBio from '@/components/forms/FormBio';
 import FormBirthDate from '@/components/forms/FormBirthDate';
 import FormCity from '@/components/forms/FormCity';
 import FormEnd from '@/components/forms/FormEnd';
 import FormGitHub from '@/components/forms/FormGitHub';
+import FormHobby from '@/components/forms/FormHobby';
 import FormIAm from '@/components/forms/FormIAm';
 import FormLanguage from '@/components/forms/FormLanguage';
 import FormName from '@/components/forms/FormName';
 import FormTechnology from '@/components/forms/FormTechnology';
 import FormTest from '@/components/forms/FormTest';
-import FormTest1 from '@/components/forms/FormTest1';
 
 interface FormData extends UserTable {
   languages: number[];
+  technologies: number[];
+  hobbies: number[];
 }
 
 export default function FormProfile() {
   const [page, setPage] = useState<number>(0);
   const methods = useForm<FormData>();
-  const { handleSubmit, getValues, formState } = methods;
+  const { handleSubmit, getValues } = methods;
 
   console.log(page);
 
@@ -36,14 +37,25 @@ export default function FormProfile() {
 
   const formSubmit = async (data: FormData) => {
     console.log('Valeur stocké:', getValues());
-    if (page < 7) {
+    if (page < 10) {
       setPage((prev) => prev + 1);
     } else {
       try {
         const transformedData = {
           ...data,
-          languages: data.languages.map((language: number) => ({
-            id: language,
+          languages: data.languages.map((langages: number, index: number) => ({
+            id: langages,
+            order: index + 1,
+          })),
+          technologies: data.technologies.map(
+            (technologies: number, index: number) => ({
+              id: technologies,
+              order: index + 1,
+            }),
+          ),
+          hobbies: data.hobbies.map((hobbies: number, index: number) => ({
+            id: hobbies,
+            order: index + 1,
           })),
         };
 
@@ -69,23 +81,23 @@ export default function FormProfile() {
           className='flex h-screen flex-col items-center justify-between'
         >
           <div className='flex h-full w-full max-w-[500px] flex-col justify-between'>
-            {page === 9 ? <FormName /> : ''}
-            {page === 8 ? <FormBirthDate /> : ''}
+            {page === 0 ? <FormName /> : ''}
+            {page === 1 ? <FormBirthDate /> : ''}
             {page === 2 ? <FormIAm /> : ''}
-            {page === 3 ? <FormBio /> : ''}
-            {page === 4 ? <FormCity /> : ''}
-            {page === 5 ? <FormGitHub /> : ''}
-            {page === 7 ? <FormEnd /> : ''}
-            {/* {page === 0 ? <FormLanguage /> : ''} */}
-            {page === 0 ? <FormTest1 /> : ''}
-            {page === 1 ? <FormTechnology /> : ''}
+            {page === 3 ? <FormCity /> : ''}
+            {page === 4 ? <FormLanguage /> : ''}
+            {page === 5 ? <FormTechnology /> : ''}
+            {page === 6 ? <FormHobby /> : ''}
+            {page === 7 ? <FormBio /> : ''}
+            {page === 8 ? <FormGitHub /> : ''}
+            {page === 9 ? <FormTest /> : ''}
+            {page === 10 ? <FormEnd /> : ''}
 
-            {page === 6 ? <FormTest /> : ''}
             <div className='flex w-full flex-col gap-6 pb-5 md:pb-40'>
               <Button isOutline={false} type='submit' color='text-light-hard'>
-                {page >= 7 ? 'Start matching' : 'Next'}
+                {page >= 10 ? 'Start matching' : 'Next'}
               </Button>
-              {page > 0 && page < 7 ? (
+              {page > 0 && page < 10 ? (
                 <Button
                   isOutline
                   type='button'

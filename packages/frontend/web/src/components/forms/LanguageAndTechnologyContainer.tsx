@@ -29,7 +29,6 @@ export default function LanguageAndTechnology({
   const { register } = useFormContext<DefaultValues>();
   const [items, setItems] = useState<DefaultValues[]>([]);
   const [selectedItems, setSelectedItems] = useState<string[]>(() => {
-    // Utilisez la prop storageKey pour construire la clé de localStorage
     const savedItems = localStorage.getItem(storageKey);
     if (savedItems != undefined) {
       const parsedItems: unknown = JSON.parse(savedItems);
@@ -61,7 +60,7 @@ export default function LanguageAndTechnology({
     }
   };
 
-  // console.log(selectedItems);
+  console.log(selectedItems);
 
   console.log(items);
 

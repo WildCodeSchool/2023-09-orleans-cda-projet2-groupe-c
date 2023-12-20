@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 
 import FormContainer from './FormContainer';
@@ -8,18 +7,18 @@ type DefaultValues = {
 };
 
 export default function FormIAm() {
-  const { register } = useFormContext<DefaultValues>();
+  const { register, watch, setValue } = useFormContext();
 
-  const [selectedOption, setSelectedOption] = useState('');
+  const selectedOption = watch('gender');
 
   const handleClick = (option: string) => {
-    setSelectedOption((prev) => (prev === option ? '' : option));
+    setValue('gender', option === selectedOption ? '' : option);
   };
 
   const genderOptions = [
     { id: 'man', label: 'Man', value: 'man' },
     { id: 'woman', label: 'Woman', value: 'woman' },
-    { id: 'other', label: 'Non Binary', value: 'non-binary' },
+    { id: 'non-binary', label: 'Non Binary', value: 'non-binary' },
   ];
 
   return (
