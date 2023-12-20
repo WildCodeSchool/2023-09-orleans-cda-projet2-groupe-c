@@ -76,8 +76,6 @@ export const authSchema = z
   .strict()
   .strip();
 
-
-
 export const registrationSchema = authSchema.pick({
   email: true,
   password: true,
