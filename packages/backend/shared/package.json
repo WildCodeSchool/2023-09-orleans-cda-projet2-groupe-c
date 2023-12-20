@@ -3,11 +3,11 @@
   "main": "src/index.ts",
   "type": "module",
   "dependencies": {
+    "@app/shared": "workspace:*",
     "kysely": "^0.26.3",
     "mysql2": "^3.6.2"
   },
   "devDependencies": {
-    "@app/types": "workspace:*",
     "bun-types": "latest"
   },
   "peerDependencies": {

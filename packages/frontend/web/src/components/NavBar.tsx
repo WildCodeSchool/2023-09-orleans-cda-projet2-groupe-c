@@ -1,5 +1,3 @@
-import { Outlet } from 'react-router-dom';
-
 import ThemeSwitcher from './ThemeSwitcher';
 import FilterIcon from './icons/FilterIcon';
 import LikeIcon from './icons/LikeIcon';
@@ -34,32 +32,29 @@ const dataIcon = [
 
 function NavBar() {
   return (
-    <>
-      <nav className='bg-light-hard relative flex w-full items-center p-3 shadow-md'>
-        <div className='absolute flex items-center gap-2 pl-2'>
-          <LogoIcon className='text-secondary w-clamp fill-primary' />
-          <div className='mt-1 text-xl md:text-3xl'>
-            <span className='text-secondary font-title'>{'TIN'}</span>
-            <span className='text-primary font-title'>{'DEV'}</span>
-          </div>
+    <nav className='bg-light-hard relative flex w-full items-center p-3 shadow-md'>
+      <div className='absolute flex items-center gap-2 pl-2'>
+        <LogoIcon className='text-secondary w-clamp fill-primary' />
+        <div className='mt-1 text-xl md:text-3xl'>
+          <span className='text-secondary font-title'>{'TIN'}</span>
+          <span className='text-primary font-title'>{'DEV'}</span>
         </div>
-        <div className='flex grow justify-end lg:justify-center'>
-          {dataIcon.map(({ id, icon, lgHidden }) => (
-            <div
-              key={id}
-              className={`flex items-center px-1 md:px-2 lg:px-24 ${
-                lgHidden ?? false ? 'lg:hidden' : ''
-              }`}
-            >
-              <div className='bg-light active:shadow-divider-dark flex h-8 w-8 cursor-pointer items-center justify-center rounded-full shadow-md duration-200 active:translate-y-[2px] active:shadow-inner md:h-10 md:w-10'>
-                {icon}
-              </div>
+      </div>
+      <div className='flex grow justify-end lg:justify-center'>
+        {dataIcon.map(({ id, icon, lgHidden }) => (
+          <div
+            key={id}
+            className={`flex items-center px-1 md:px-2 lg:px-24 ${
+              lgHidden ?? false ? 'lg:hidden' : ''
+            }`}
+          >
+            <div className='bg-light active:shadow-divider-dark flex h-8 w-8 cursor-pointer items-center justify-center rounded-full shadow-md duration-200 active:translate-y-[2px] active:shadow-inner md:h-10 md:w-10'>
+              {icon}
             </div>
-          ))}
-        </div>
-      </nav>
-      <Outlet />
-    </>
+          </div>
+        ))}
+      </div>
+    </nav>
   );
 }
 
