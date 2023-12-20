@@ -1,6 +1,6 @@
 import { type Kysely, sql } from 'kysely';
 
-import type { Database } from '@app/types';
+import type { Database } from '@app/shared';
 
 export async function up(db: Kysely<Database>): Promise<void> {
   // Migration code that update the database to the desired state.

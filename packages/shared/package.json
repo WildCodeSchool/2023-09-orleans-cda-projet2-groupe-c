@@ -1,5 +1,5 @@
 {
-  "name": "@app/types",
+  "name": "@app/shared",
   "main": "src/index.ts",
   "type": "module",
   "devDependencies": {
@@ -10,6 +10,7 @@
     "typescript": "^5.0.0"
   },
   "dependencies": {
-    "@hookform/resolvers": "^3.3.2"
+    "@hookform/resolvers": "^3.3.2",
+    "zod": "^3.22.4"
   }
 }

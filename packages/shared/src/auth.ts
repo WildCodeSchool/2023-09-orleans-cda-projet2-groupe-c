@@ -60,6 +60,7 @@ export const userSchema = z
         invalid_type_error: 'ⓘ Activation code must be a string.',
       })
       .trim()
+      .min(6, { message: 'ⓘ Activation code must be more than 6 characters.' })
       .max(6, {
         message: 'ⓘ Activation code must be less than 255 characters.',
       }),
@@ -104,3 +105,6 @@ export type RegisterWithActivationCode = z.infer<
 export type ActivationCode = z.infer<typeof activationCodeSchema>;
 
 export type ActivationToken = z.infer<typeof activationTokenSchema>;
+export const loginSchema = authSchema.pick({ email: true, password: true });
+
+export type AuthBody = z.infer<typeof loginSchema>;
