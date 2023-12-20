@@ -9,6 +9,4 @@ router.use('/auth', authRouter);
 
 router.use('/categories', categoriesRouter);
 
-router.use('/auth', authRouter);
-
 export default router;
