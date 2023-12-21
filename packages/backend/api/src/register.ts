@@ -26,6 +26,8 @@ register.post('/', async (req, res) => {
       hobbies,
     } = req.body;
 
+    //use the transaction property allows us to cancel the request if an
+    //error has arrived during the submission of the data
     await db.transaction().execute(async (trx) => {
       const userResult = await trx
         .insertInto('user')
@@ -43,7 +45,7 @@ register.post('/', async (req, res) => {
 
         .executeTakeFirstOrThrow();
 
-      //recupère l'id de l'user nouvellement creer
+      //get the user id newly created
       const userId = userResult.insertId;
 
       await trx

@@ -1,18 +1,20 @@
 import { useFormContext } from 'react-hook-form';
+import { ZodError } from 'zod';
+
+import type { FormIamValidation } from '@app/shared';
+import { formIamShema } from '@app/shared';
 
 import FormContainer from './FormContainer';
 
-type DefaultValues = {
-  gender: 'man' | 'woman' | 'other';
-};
-
 export default function FormIAm() {
-  const { register, watch, setValue } = useFormContext();
+  const { register, watch, setValue, formState } =
+    useFormContext<FormIamValidation>();
+  const { errors } = formState;
 
   const selectedOption = watch('gender');
 
-  const handleClick = (option: string) => {
-    setValue('gender', option === selectedOption ? '' : option);
+  const handleClick = () => {
+    setValue('gender', selectedOption);
   };
 
   const genderOptions = [
@@ -34,9 +36,7 @@ export default function FormIAm() {
                 selectedOption === option.id ? 'bg-primary text-light-hard' : ''
               }`}
               htmlFor={option.id}
-              onClick={() => {
-                handleClick(option.id);
-              }}
+              onClick={handleClick}
             >
               {option.label}
             </label>
@@ -44,12 +44,29 @@ export default function FormIAm() {
               className='sr-only'
               type='radio'
               id={option.id}
-              {...register('gender')}
+              {...register('gender', {
+                validate: (value) => {
+                  try {
+                    formIamShema.shape.gender.parse(value);
+                    return true;
+                  } catch (error: unknown) {
+                    if (error instanceof ZodError) {
+                      return 'ⓘ Gender is required.';
+                    }
+                    return 'An error occurred';
+                  }
+                },
+              })}
               value={option.value}
             />
           </div>
         ))}
       </div>
+      {errors.gender ? (
+        <p className='error-message'>{errors.gender.message}</p>
+      ) : (
+        ''
+      )}
     </FormContainer>
   );
 }

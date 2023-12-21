@@ -91,6 +91,16 @@ export default function LanguageAndTechnology({
     );
   }
 
+  useEffect(() => {
+    // Désactiver le défilement lorsque le composant est monté
+    document.body.style.overflow = 'hidden';
+
+    // Réactiver le défilement lorsque le composant est démonté
+    return () => {
+      document.body.style.overflow = 'auto';
+    };
+  }, []);
+
   return (
     <FormContainer title={formTitle}>
       <span className='flex justify-start'>

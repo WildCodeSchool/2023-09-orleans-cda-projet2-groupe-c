@@ -34,9 +34,6 @@ export default function FormHobby() {
 
   console.log(watch('hobbies'));
 
-  /* console.log(selectedHobby);
-  console.log(hobbies); */
-
   useEffect(() => {
     const abortController = new AbortController();
 
@@ -58,7 +55,7 @@ export default function FormHobby() {
       <span className='flex justify-start pb-5 '>
         {'You can choose a maximum of 6 hobbies.'}
       </span>
-      <div className='max-h-60 w-full overflow-y-auto bg-blue-950 py-3'>
+      <div className='max-h-60 w-full overflow-y-auto py-3'>
         {hobbies.map((category) => (
           <div key={category.category_name}>
             <div className='border-secondary mb-5 flex justify-start border-b'>
@@ -84,7 +81,7 @@ export default function FormHobby() {
                     type='checkbox'
                     {...register('hobbies', { required: true })}
                     onChange={handleCheckboxChange}
-                    className=''
+                    className='sr-only'
                   />
                 </label>
               ))}

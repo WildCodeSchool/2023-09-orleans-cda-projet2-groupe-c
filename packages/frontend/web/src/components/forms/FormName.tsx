@@ -1,14 +1,13 @@
 import { useFormContext } from 'react-hook-form';
+import { ZodError } from 'zod';
+
+import type { FormNameValidation } from '@app/shared';
+import { formName } from '@app/shared';
 
 import FormContainer from './FormContainer';
 
-type DefaultValues = {
-  name: string;
-};
-
 export default function FormName() {
-  const { register, formState } = useFormContext<DefaultValues>();
-
+  const { register, formState } = useFormContext<FormNameValidation>();
   const { errors } = formState;
 
   return (
@@ -22,14 +21,29 @@ export default function FormName() {
         id='name'
         placeholder='name'
         {...register('name', {
-          required: {
-            value: true,
-            message: 'le nom pelo',
+          pattern: {
+            value: /^\w*$/,
+            message: 'ⓘ Special characters are not allowed',
+          },
+          validate: (value) => {
+            try {
+              formName.shape.name.parse(value);
+              return true;
+            } catch (error: unknown) {
+              if (error instanceof ZodError) {
+                return error.errors[0]?.message;
+              }
+              return 'An error occurred';
+            }
           },
         })}
         className='border-primary bg-light mt-2 h-5 w-full rounded-md border px-2 py-6 text-lg focus:outline-none lg:text-xl'
       />
-      <p>{errors.name?.message}</p>
+      {errors.name ? (
+        <p className='error-message'>{errors.name.message}</p>
+      ) : (
+        ''
+      )}
     </FormContainer>
   );
 }

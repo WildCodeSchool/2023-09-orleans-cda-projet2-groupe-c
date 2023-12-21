@@ -1,7 +1,7 @@
 import { Kysely, MysqlDialect, sql } from 'kysely';
 import { createPool } from 'mysql2';
 
-import type { Database } from '@app/types';
+import type { Database } from '@app/shared';
 
 const { DB_HOST, DB_PORT, DB_USER, DB_PASS, DB_NAME } = process.env;
 

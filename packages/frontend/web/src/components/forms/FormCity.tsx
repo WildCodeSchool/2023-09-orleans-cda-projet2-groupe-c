@@ -10,7 +10,9 @@ type City = {
 
 export default function FormCity() {
   const { register, setValue, getValues } = useFormContext();
-  const [inputValue, setInputValue] = useState<string>(getValues('city') || '');
+  const [inputValue, setInputValue] = useState<string>(
+    getValues('city') === undefined ? '' : getValues('city'),
+  );
   const [cities, setCities] = useState<Array<City>>([]);
 
   const handleCityClick = (cityName: string, cityId: number) => {

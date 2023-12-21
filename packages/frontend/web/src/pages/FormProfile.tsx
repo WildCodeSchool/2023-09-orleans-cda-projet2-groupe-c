@@ -1,7 +1,8 @@
+import React from 'react';
 import { useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 
-import type { UserTable } from '@app/types';
+import type { ProfileForm } from '@app/shared';
 
 import Button from '@/components/Button';
 import FormBio from '@/components/forms/FormBio';
@@ -16,47 +17,54 @@ import FormName from '@/components/forms/FormName';
 import FormTechnology from '@/components/forms/FormTechnology';
 import FormTest from '@/components/forms/FormTest';
 
-interface FormData extends UserTable {
+interface FormValidation extends ProfileForm {
   languages: number[];
   technologies: number[];
   hobbies: number[];
 }
-
 export default function FormProfile() {
   const [page, setPage] = useState<number>(0);
-  const methods = useForm<FormData>();
+  //I use the const methods to send all useForm properties to my child elements
+  const methods = useForm<FormValidation>();
   const { handleSubmit, getValues } = methods;
+
+  const PAGES = [
+    { currentPage: 0, component: <FormName /> },
+    { currentPage: 1, component: <FormBirthDate /> },
+    { currentPage: 2, component: <FormIAm /> },
+    { currentPage: 3, component: <FormCity /> },
+    { currentPage: 4, component: <FormLanguage /> },
+    { currentPage: 5, component: <FormTechnology /> },
+    { currentPage: 6, component: <FormHobby /> },
+    { currentPage: 7, component: <FormBio /> },
+    { currentPage: 8, component: <FormGitHub /> },
+    { currentPage: 9, component: <FormTest /> },
+    { currentPage: 10, component: <FormEnd /> },
+  ];
 
   console.log(page);
 
-  const goBack = () => {
-    if (page > 0) {
-      setPage((prev) => prev - 1);
-    }
-  };
-
-  const formSubmit = async (data: FormData) => {
+  const formSubmit = async (data: FormValidation) => {
     console.log('Valeur stocké:', getValues());
+    // If the current page is less than 10, move to the next page
     if (page < 10) {
       setPage((prev) => prev + 1);
+      // Otherwise, attempt to submit the form data
     } else {
       try {
+        // This function transforms an array of numbers into an array of objects
+        // Each object has two properties: id (the value of the number) and order (the index of the number + 1)
+        const transformArray = (array: number[]) =>
+          array.map((item: number, index: number) => ({
+            id: item,
+            order: index + 1,
+          }));
+        // Use the transformArray function to transform the languages, technologies, and hobbies arrays
         const transformedData = {
           ...data,
-          languages: data.languages.map((langages: number, index: number) => ({
-            id: langages,
-            order: index + 1,
-          })),
-          technologies: data.technologies.map(
-            (technologies: number, index: number) => ({
-              id: technologies,
-              order: index + 1,
-            }),
-          ),
-          hobbies: data.hobbies.map((hobbies: number, index: number) => ({
-            id: hobbies,
-            order: index + 1,
-          })),
+          languages: transformArray(data.languages),
+          technologies: transformArray(data.technologies),
+          hobbies: transformArray(data.hobbies),
         };
 
         await fetch(`${import.meta.env.VITE_API_URL}/register`, {
@@ -74,24 +82,19 @@ export default function FormProfile() {
 
   return (
     <FormProvider {...methods}>
-      {/* <NavBar /> */}
       <div className='w-full px-5'>
         <form
           onSubmit={handleSubmit(formSubmit)}
           className='flex h-screen flex-col items-center justify-between'
         >
           <div className='flex h-full w-full max-w-[500px] flex-col justify-between'>
-            {page === 0 ? <FormName /> : ''}
-            {page === 1 ? <FormBirthDate /> : ''}
-            {page === 2 ? <FormIAm /> : ''}
-            {page === 3 ? <FormCity /> : ''}
-            {page === 4 ? <FormLanguage /> : ''}
-            {page === 5 ? <FormTechnology /> : ''}
-            {page === 6 ? <FormHobby /> : ''}
-            {page === 7 ? <FormBio /> : ''}
-            {page === 8 ? <FormGitHub /> : ''}
-            {page === 9 ? <FormTest /> : ''}
-            {page === 10 ? <FormEnd /> : ''}
+            {/*   i use react.Fragment because only <></> not work with key */}
+            {PAGES.map(
+              ({ currentPage, component }) =>
+                currentPage === page && (
+                  <React.Fragment key={currentPage}>{component}</React.Fragment>
+                ),
+            )}
 
             <div className='flex w-full flex-col gap-6 pb-5 md:pb-40'>
               <Button isOutline={false} type='submit' color='text-light-hard'>
@@ -101,7 +104,9 @@ export default function FormProfile() {
                 <Button
                   isOutline
                   type='button'
-                  onClick={goBack}
+                  onClick={() => {
+                    setPage(page - 1);
+                  }}
                   color='text-primary'
                 >
                   {'Back'}

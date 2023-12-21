@@ -30,8 +30,7 @@ export default function HomeButtons() {
       transition={{ duration: 0.5 }}
       className='font-base mb-5 flex w-full flex-col items-center gap-8'
     >
-      {/* TODO : add login route */}
-      <Link to='#' className='flex w-full justify-center'>
+      <Link to='/login' className='flex w-full justify-center'>
         <Button type='button' isOutline={false}>
           {`Login`}
         </Button>
