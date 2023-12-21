@@ -5,25 +5,27 @@ import { db } from '@app/backend-shared';
 import type {
   ActivationCode,
   ActivationToken,
+  AuthBody,
   RegisterBody,
   RegisterWithActivationCode,
 } from '@app/shared';
 
-import { tokenGenerator } from './utils/token-generator';
-
-// In this file we handle the registration process and the activation code validation
-// it is displayed to the user as a captcha, he has to type it in a form input in order to validate his account
+import { tokenGenerator } from '@/utils/token-generator';
 
 const JWT_SECRET = process.env.JWT_SECRET;
 const FRONTEND_URL = 'http://localhost';
 
+// Throw an error if the JWT_SECRET environment variable is not defined
 if (JWT_SECRET === undefined) {
   throw new Error('JWT_SECRET is not defined');
 }
 
+// Encode the JWT secret
 const secret = new TextEncoder().encode(JWT_SECRET);
+
 const authRouter = express.Router();
 
+// Route to register a new user
 authRouter.post('/registration', async (req, res) => {
   try {
     const activationCode = tokenGenerator(); // Generating random uppercased code with 6 characters and numbers
@@ -58,6 +60,7 @@ authRouter.post('/registration', async (req, res) => {
       .setExpirationTime('2h')
       .sign(secret);
 
+    // A cookie containing the JWT token
     res.cookie('token', jwt, {
       httpOnly: true,
       sameSite: true,
@@ -65,7 +68,7 @@ authRouter.post('/registration', async (req, res) => {
       signed: true,
     });
 
-    // A cookie containing the user ID so we can use it to retrieve the activation code corresponding to the user
+    // A cookie containing the user ID
     res.cookie('userId', userId, {
       httpOnly: true,
       sameSite: true,
@@ -88,7 +91,7 @@ authRouter.post('/registration', async (req, res) => {
   }
 });
 
-// This route is used to validate the activation code
+// Route to validate the activation code
 authRouter.post('/registration/validation', async (req, res) => {
   try {
     const userId: number = req.signedCookies.userId;
@@ -114,7 +117,7 @@ authRouter.post('/registration/validation', async (req, res) => {
   }
 });
 
-// This route is used to retrieve the activation code from the database matching the user ID
+// Route to get the user's activation code from the database
 authRouter.get('/registration/users/code', async (req, res) => {
   const userId = req.signedCookies.userId;
 
@@ -125,6 +128,118 @@ authRouter.get('/registration/users/code', async (req, res) => {
     .execute();
 
   return res.json(code);
+});
+
+// Route to check the JWT token in the cookie and verify if the user is logged in
+authRouter.get('/verify', async (req, res) => {
+  // Get the JWT from the cookie
+  const jwt: string | undefined = req.signedCookies.token;
+
+  // If the JWT is undefined, return an error
+  if (jwt === undefined) {
+    return res.json({
+      ok: false,
+      isLoggedIn: false,
+    });
+  }
+
+  try {
+    // Verify the JWT
+    await jose.jwtVerify(jwt, secret, {
+      issuer: FRONTEND_URL,
+      audience: FRONTEND_URL,
+    });
+
+    return res.json({
+      ok: true,
+      isLoggedIn: true,
+    });
+  } catch (error) {
+    // If the JWT is expired
+    if (error instanceof jose.errors.JWTExpired) {
+      return res.json({
+        ok: false,
+        isLoggedIn: false,
+      });
+    }
+
+    return res.json({
+      ok: false,
+      isLoggedIn: false,
+      error,
+    });
+  }
+});
+
+// Route to login a user
+authRouter.post('/login', async (req, res) => {
+  // Extract the email and password from the request body
+  const { email, password } = req.body as AuthBody;
+
+  try {
+    // Get the user from the database
+    const user = await db
+      .selectFrom('user')
+      .select(['user.password'])
+      .where('user.email', '=', email)
+      .executeTakeFirst();
+
+    // If the user doesn't exist, return an error
+    if (user === undefined) {
+      return res.json({
+        ok: false,
+        email: 'User does not exist',
+        isLoggedIn: false,
+      });
+    }
+
+    // Verify the password
+    const isCorrectPassword = await Bun.password.verify(
+      password, // password provided by the user
+      user.password, // password stored in the database
+      'bcrypt', // hashing algorithm used
+    );
+
+    // If the password is incorrect, return an error
+    if (!isCorrectPassword) {
+      return res.json({
+        ok: false,
+        isLoggedIn: false,
+      });
+    }
+
+    // Create a new JWT with the library jose
+    const jwt = await new jose.SignJWT({
+      sub: email,
+    })
+      .setProtectedHeader({
+        alg: 'HS256',
+      })
+      .setIssuedAt()
+      .setIssuer(FRONTEND_URL)
+      .setAudience(FRONTEND_URL)
+      .setExpirationTime('2h')
+      .sign(secret);
+
+    // Define the cookie token with the JWT
+    res.cookie('token', jwt, {
+      httpOnly: true, // The cookie is not accessible via JavaScript but only via HTTP(S)
+      sameSite: true, // The cookie is not accessible via cross-site requests
+      secure: process.env.NODE_ENV === 'production',
+      signed: true,
+    });
+
+    return res.json({
+      ok: true,
+      isLoggedIn: isCorrectPassword,
+    });
+  } catch (error) {
+    return res.json({
+      ok: false,
+      isLoggedIn: false,
+      error,
+    });
+  }
 });
 
 export default authRouter;

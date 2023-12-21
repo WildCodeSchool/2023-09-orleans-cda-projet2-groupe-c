@@ -35,9 +35,10 @@ export interface UserTable {
   gender?: Gender;
   biography?: string;
   account_github?: string;
+  role: Role;
   email: string;
   password: string;
-  role: Role;
+
   email_verified_at?: Date;
   activation_code?: string;
   activate_at?: Date;

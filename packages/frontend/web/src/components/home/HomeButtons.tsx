@@ -36,7 +36,6 @@ export default function HomeButtons() {
         </Button>
       </Link>
 
-      {/* TODO : add register route */}
       <Link to='/registration' className='flex w-full justify-center'>
         <Button type='button' isOutline>
           {`Register`}

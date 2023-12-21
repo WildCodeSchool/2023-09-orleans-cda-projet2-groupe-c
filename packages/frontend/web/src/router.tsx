@@ -24,19 +24,19 @@ const router = createBrowserRouter([
     ],
   },
   {
-    path: '/registration',
+    path: '/',
     element: <Registration />,
     children: [
       {
-        path: '/registration/',
+        path: '/registration',
         element: <RegistrationForm />,
       },
       {
-        path: '/registration/validation',
+        path: '/validation',
         element: <Success />,
       },
       {
-        path: '/registration/success',
+        path: '/success',
         element: <ValidationToken />,
       },
     ],

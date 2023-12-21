@@ -1,6 +1,6 @@
 import express from 'express';
 
-import authRouter from './auth/auth';
+import authRouter from './auth';
 import categoriesRouter from './category/category-crud';
 
 const router = express.Router();
