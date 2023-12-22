@@ -19,20 +19,17 @@ export const authSchema = z
       },
       { message: 'ⓘ You must be 18 years old to register.' },
     ),
-    gender: z.enum(['male', 'female', 'non-binary']),
+    gender: z.enum(['man', 'woman', 'non-binary', '']),
+
     biography: z.optional(
       z.string().trim().max(1000, {
         message: 'ⓘ Biography must be less than 1000 characters.',
       }),
     ),
     account_github: z.optional(
-      z
-        .string()
-        .trim()
-        .url({ message: 'ⓘ Your account Github must be a url valid.' })
-        .max(255, {
-          message: 'ⓘ Your account Github must be less than 255 characters.',
-        }),
+      z.string().trim().max(255, {
+        message: 'ⓘ Your account Github must be less than 255 characters.',
+      }),
     ),
     role: z.enum(['user', 'admin']),
     email: z
@@ -76,5 +73,4 @@ export const authSchema = z
   .strip();
 
 export const loginSchema = authSchema.pick({ email: true, password: true });
-
 export type AuthBody = z.infer<typeof loginSchema>;
