@@ -1,6 +1,6 @@
 import LanguageAndTechnologyContainer from './LanguageAndTechnologyContainer';
 
-type FieldName = 'id' | 'name' | 'logo_path';
+type FieldName = 'name';
 
 export default function FormLanguage() {
   const props = {
@@ -8,7 +8,6 @@ export default function FormLanguage() {
     formTitle: 'MY LANGUAGES',
     subtitle: 'You must select at least one language.',
     fieldName: 'languages' as FieldName,
-    storageKey: 'languages',
   };
   return <LanguageAndTechnologyContainer {...props} />;
 }

@@ -1,25 +1,17 @@
 import { useEffect, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
+import { ZodError } from 'zod';
+
+import type { FormCategoryValidation } from '@app/shared';
+import { formHobbiesShema } from '@app/shared';
 
 import FormContainer from './FormContainer';
 
-interface Hobby {
-  hobby_id: number;
-  hobby_name: string;
-}
-
-interface Category {
-  id: number;
-  logo_path: string;
-  category_name: string;
-  hobbies: Hobby[];
-}
-
-interface FormValues extends Category {}
-
 export default function FormHobby() {
-  const { register, watch } = useFormContext<FormValues>();
-  const [hobbies, setHobbies] = useState<Array<Category>>([]);
+  const { register, watch, formState } =
+    useFormContext<FormCategoryValidation>();
+  const { errors } = formState;
+  const [hobbies, setHobbies] = useState<FormCategoryValidation[]>([]);
   const [selectedHobby, setSelectedHobby] = useState<string[]>([]);
 
   const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -58,14 +50,14 @@ export default function FormHobby() {
       <div className='max-h-60 w-full overflow-y-auto py-3'>
         {hobbies.map((category) => (
           <div key={category.category_name}>
-            <div className='border-secondary mb-5 flex justify-start border-b'>
+            <div className='border-secondary flex justify-start border-b'>
               <h1 className='flex gap-2'>
                 <img src={category.logo_path} alt='' />
                 {category.category_name.charAt(0).toUpperCase() +
                   category.category_name.slice(1)}
               </h1>
             </div>
-            <div className='flex flex-wrap gap-3'>
+            <div className='flex flex-wrap gap-3 py-6'>
               {category.hobbies.map((hobby) => (
                 <label
                   htmlFor={hobby.hobby_name}
@@ -79,7 +71,19 @@ export default function FormHobby() {
                     value={hobby.hobby_id}
                     id={hobby.hobby_name}
                     type='checkbox'
-                    {...register('hobbies', { required: true })}
+                    {...register('hobbies', {
+                      validate: (value) => {
+                        try {
+                          formHobbiesShema.shape.hobbies.parse(value);
+                          return true;
+                        } catch (error: unknown) {
+                          if (error instanceof ZodError) {
+                            return 'ⓘ Select at least one hobby';
+                          }
+                          return 'An error occurred';
+                        }
+                      },
+                    })}
                     onChange={handleCheckboxChange}
                     className='sr-only'
                   />
@@ -89,6 +93,11 @@ export default function FormHobby() {
           </div>
         ))}
       </div>
+      {errors.hobbies ? (
+        <p className='error-message'>{errors.hobbies.message}</p>
+      ) : (
+        ''
+      )}
     </FormContainer>
   );
 }

@@ -72,38 +72,5 @@ export const authSchema = z
   .strict()
   .strip();
 
-export const formBaseShema = z.object({
-  id: z.number(),
-  name: z.string(),
-  logo_path: z.optional(z.string()),
-});
-
 export const loginSchema = authSchema.pick({ email: true, password: true });
 export type AuthBody = z.infer<typeof loginSchema>;
-
-//Form
-export const profileFormShema = authSchema.omit({
-  email: true,
-  password: true,
-  activation_code: true,
-  email_verified_at: true,
-  activate_at: true,
-});
-
-export const formName = authSchema.pick({ name: true });
-export const formBirthDate = authSchema.pick({ birthdate: true });
-export const formIamShema = authSchema.pick({ gender: true });
-export const formCityShema = authSchema.pick({ city_id: true });
-
-export const formBioShema = authSchema.pick({ biography: true });
-export const formGitShema = authSchema.pick({ account_github: true });
-
-export type ProfileForm = z.infer<typeof profileFormShema>;
-export type FormNameValidation = z.infer<typeof formName>;
-export type FormBirthDateValidation = z.infer<typeof formBirthDate>;
-export type FormIamValidation = z.infer<typeof formIamShema>;
-export type FormCityValidation = z.infer<typeof formCityShema>;
-export type FormBaseValidation = z.infer<typeof formBaseShema>;
-
-export type FormBioValidation = z.infer<typeof formBioShema>;
-export type FormGitValidation = z.infer<typeof formGitShema>;

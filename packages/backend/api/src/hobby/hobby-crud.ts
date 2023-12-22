@@ -16,9 +16,12 @@ hobbyRouter.get('/', async (req, res) => {
           eb
             .selectFrom('hobby')
             .select(['hobby.name as hobby_name', 'hobby.id as hobby_id'])
-            .whereRef('hobby.hobby_category_id', '=', 'hobby_category.id'),
+            .whereRef('hobby.hobby_category_id', '=', 'hobby_category.id')
+            .orderBy('hobby_name asc')
+            .limit(31),
         ).as('hobbies'),
       ])
+      .orderBy('hobby_category.name asc')
       .execute();
 
     return res.status(200).json(hobbiesByCategory);

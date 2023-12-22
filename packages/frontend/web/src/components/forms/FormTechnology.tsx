@@ -1,6 +1,6 @@
 import LanguageAndTechnologyContainer from './LanguageAndTechnologyContainer';
 
-type FieldName = 'id' | 'name' | 'logo_path';
+type FieldName = 'name';
 export default function FormTechnology() {
   const props = {
     apiUrl: 'technologies',

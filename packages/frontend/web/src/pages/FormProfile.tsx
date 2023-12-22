@@ -17,15 +17,10 @@ import FormName from '@/components/forms/FormName';
 import FormTechnology from '@/components/forms/FormTechnology';
 import FormTest from '@/components/forms/FormTest';
 
-interface FormValidation extends ProfileForm {
-  languages: number[];
-  technologies: number[];
-  hobbies: number[];
-}
 export default function FormProfile() {
   const [page, setPage] = useState<number>(0);
   //I use the const methods to send all useForm properties to my child elements
-  const methods = useForm<FormValidation>();
+  const methods = useForm<ProfileForm>();
   const { handleSubmit, getValues } = methods;
 
   const PAGES = [
@@ -44,7 +39,7 @@ export default function FormProfile() {
 
   console.log(page);
 
-  const formSubmit = async (data: FormValidation) => {
+  const formSubmit = async (data: ProfileForm) => {
     console.log('Valeur stocké:', getValues());
     // If the current page is less than 10, move to the next page
     if (page < 10) {

@@ -1,22 +1,17 @@
 import { useEffect, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 
+import type { FormBaseValidation } from '@app/shared';
+
 import FormContainer from './FormContainer';
 
-interface DefaultValues {
-  id: number;
-  name: string;
-  logo_path: string;
-}
-
-type FieldName = 'id' | 'name' | 'logo_path';
+type FieldName = 'name';
 
 interface SelectionFormProps extends React.HTMLAttributes<HTMLDivElement> {
   readonly apiUrl: string;
   readonly formTitle: string;
   readonly subtitle: string;
   readonly fieldName: FieldName;
-  readonly storageKey: string;
 }
 
 export default function LanguageAndTechnology({
@@ -24,28 +19,10 @@ export default function LanguageAndTechnology({
   formTitle,
   subtitle,
   fieldName,
-  storageKey,
 }: SelectionFormProps) {
-  const { register } = useFormContext<DefaultValues>();
-  const [items, setItems] = useState<DefaultValues[]>([]);
-  const [selectedItems, setSelectedItems] = useState<string[]>(() => {
-    const savedItems = localStorage.getItem(storageKey);
-    if (savedItems != undefined) {
-      const parsedItems: unknown = JSON.parse(savedItems);
-      if (
-        Array.isArray(parsedItems) &&
-        parsedItems.every((item) => typeof item === 'string')
-      ) {
-        return parsedItems as string[];
-      }
-    }
-    return [];
-  });
-
-  useEffect(() => {
-    // Enregistrer les langages sélectionnés dans le localStorage chaque fois qu'ils changent
-    localStorage.setItem(storageKey, JSON.stringify(selectedItems));
-  }, [selectedItems, storageKey]);
+  const { register } = useFormContext<FormBaseValidation>();
+  const [items, setItems] = useState<FormBaseValidation[]>([]);
+  const [selectedItems, setSelectedItems] = useState<string[]>([]);
 
   const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const language = event.target.id;
@@ -90,16 +67,6 @@ export default function LanguageAndTechnology({
       (language) => language.name === selectedItems[0],
     );
   }
-
-  useEffect(() => {
-    // Désactiver le défilement lorsque le composant est monté
-    document.body.style.overflow = 'hidden';
-
-    // Réactiver le défilement lorsque le composant est démonté
-    return () => {
-      document.body.style.overflow = 'auto';
-    };
-  }, []);
 
   return (
     <FormContainer title={formTitle}>
