@@ -1,24 +1,26 @@
 interface BulletBaseProps {
-  readonly id?: string;
   readonly children: React.ReactNode;
   readonly lgHidden?: boolean;
+  readonly size: string;
+  readonly onClick?: () => void;
+  readonly disabled?: boolean;
 }
 
 export default function BulletBase({
-  id,
   children,
   lgHidden,
+  size,
+  onClick,
+  disabled,
 }: BulletBaseProps) {
   return (
     <div
-      key={id}
-      className={`flex items-center px-1 md:px-2 lg:px-24 ${
-        lgHidden ?? false ? 'lg:hidden' : ''
-      }`}
+      onClick={disabled ?? false ? undefined : onClick}
+      className={`${lgHidden ?? false ? 'lg:hidden' : ''} ${
+        disabled ?? false ? 'opacity-50' : ''
+      } bg-light active:shadow-divider-dark flex h-${size} w-${size} cursor-pointer items-center justify-center rounded-full shadow-md duration-200 active:translate-y-[2px] active:shadow-inner`}
     >
-      <div className='bg-light active:shadow-divider-dark flex h-8 w-8 cursor-pointer items-center justify-center rounded-full shadow-md duration-200 active:translate-y-[2px] active:shadow-inner md:h-10 md:w-10'>
-        {children}
-      </div>
+      {children}
     </div>
   );
 }

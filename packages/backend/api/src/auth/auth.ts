@@ -33,7 +33,7 @@ authRouter.get('/verify', async (req, res) => {
   }
 
   try {
-    // Verify the JWT
+    // Verify the JWT and get the payload for getting the user id
     const { payload } = await jose.jwtVerify(jwt, secret, {
       issuer: FRONTEND_URL,
       audience: FRONTEND_URL,
