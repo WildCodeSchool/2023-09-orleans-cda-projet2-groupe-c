@@ -8,10 +8,10 @@
     "migrations:generate": "bun run ./src/lib/migrations/generate"
   },
   "dependencies": {
+    "@app/shared": "workspace:*",
     "@app/backend-shared": "workspace:*"
   },
   "devDependencies": {
-    "@app/types": "workspace:*",
     "bun-types": "latest",
     "commander": "^11.1.0"
   },

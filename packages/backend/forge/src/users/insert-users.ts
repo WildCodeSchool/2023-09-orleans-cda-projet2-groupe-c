@@ -3,8 +3,8 @@ import Bun from 'bun';
 import { db } from '@app/backend-shared';
 import type { Gender, Role } from '@app/types';
 
-import adminsData from '../data/adminsData.json';
-import usersData from '../data/usersData.json';
+import adminsData from '../data/admins-data.json';
+import usersData from '../data/users-data.json';
 
 export const insertUsers = async () => {
   try {
