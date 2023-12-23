@@ -53,7 +53,7 @@ export type Picture = Omit<PictureTable, 'id' | 'user_id'> & {
   id: number;
 };
 
-// Extend "UserBase" and
+// Extend "UserBase" and add new fields with the new types
 export interface User extends UserBase {
   city: City[] | undefined;
   languages: Language[] | undefined;

@@ -25,7 +25,7 @@ export default function Interactions() {
     handleLikeClick,
     handleSuperLikeClick,
     handleNextClick,
-    superLikeCount,
+    superLikesCount,
   } = useHome();
 
   return (
@@ -40,16 +40,16 @@ export default function Interactions() {
           <BulletBase
             size='16'
             onClick={handleSuperLikeClick}
-            disabled={superLikeCount > 0 ? false : true} // Disable the button if superLikeCount is 0
+            disabled={superLikesCount > 0 ? false : true} // Disable the button if superLikesCount is 0
           >
             <motion.div
               variants={interactionVariants}
-              animate={superLikeCount > 0 ? 'visible' : undefined} // Disable the animation if superLikeCount is 0
+              animate={superLikesCount > 0 ? 'visible' : undefined} // Disable the animation if superLikesCount is 0
               className='relative flex items-center justify-center'
             >
               <SuperLikeIcon className='w-10 fill-[#59C3FF]' />
               <p className='font-title text-light absolute translate-y-[4px] text-sm font-black'>
-                {superLikeCount}
+                {superLikesCount}
               </p>
             </motion.div>
           </BulletBase>

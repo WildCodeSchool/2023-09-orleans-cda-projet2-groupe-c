@@ -12,6 +12,70 @@ async function getUsers(userId: number): Promise<User[]> {
   //
   // MySQL query:
   //
+  // SELECT "u.id", "u.name", "u.birthdate", "u.gender", "u.biography", "u.account_github"
+  //  (
+  //    SELECT JSON_AGG(agg), '[]')
+  //    FROM (
+  //        SELECT "c.id", "c.name" AS "city_name", "c.coordinates"
+  //        FROM "city" AS "c"
+  //        WHERE "c.id" = "u.city_id"
+  //    ) AS agg
+  //  ) AS "city",
+  // (
+  //    SELECT JSON_AGG(agg), '[]')
+  //    FROM (
+  //        SELECT "l.id", "l.name", "lu.order", "l.logo_path"
+  //        FROM "language_user" AS "lu"
+  //        INNER JOIN "language" AS "l" ON "lu.language_id" = "l.id"
+  //        WHERE "lu.user_id" = "u.id"
+  //        ORDER BY "lu.order" ASC
+  //        LIMIT 6
+  //    ) AS agg
+  //  ) AS "languages",
+  // (
+  //    SELECT JSON_AGG(agg), '[]')
+  //    FROM (
+  //        SELECT "t.id", "t.name", "tu.order", "t.logo_path"
+  //        FROM "technology_user" AS "tu"
+  //        INNER JOIN "technology" AS "t" ON "tu.technology_id" = "t.id"
+  //        WHERE "tu.user_id" = "u.id"
+  //        ORDER BY "tu.order" ASC
+  //        LIMIT 6
+  //    ) AS agg
+  //  ) AS "technologies",
+  // (
+  //    SELECT JSON_AGG(agg), '[]')
+  //    FROM (
+  //        SELECT "hc.name" AS "category", "h.id", "h.name", "hu.order"
+  //        FROM "hobby_user" AS "hu"
+  //        INNER JOIN "hobby" AS "h" ON "hu.hobby_id" = "h.id"
+  //        INNER JOIN "hobby_category" AS "hc" ON "h.hobby_category_id" = "hc.id"
+  //        WHERE "hu.user_id" = "u.id"
+  //    ) AS agg
+  //  ) AS "hobbies",
+  // (
+  //    SELECT JSON_AGG(agg), '[]')
+  //    FROM (
+  //        SELECT "p.id", "p.order", "p.picture_path"
+  //        FROM "picture" AS "p"
+  //        WHERE "p.user_id" = "u.id"
+  //        ORDER BY "p.order" ASC
+  //        LIMIT 6
+  //    ) AS agg
+  //  ) AS "pictures"
+  // FROM "user" AS "u"
+  // WHERE (
+  //    "u.name" IS NOT NULL
+  //    AND "u.birthdate" IS NOT NULL
+  //    AND "u.gender" IS NOT NULL
+  //    AND "u.city_id" IS NOT NULL
+  //    AND "u.activate_at" IS NOT NULL
+  // )
+  // AND "u.id" NOT IN (
+  //    SELECT "ua.receiver_id"
+  //    FROM "user_action" AS "ua"
+  //    WHERE "ua.initiator_id" = ?
+  // )
 
   const users = await db
     .selectFrom('user as u')
@@ -80,118 +144,23 @@ async function getUsers(userId: number): Promise<User[]> {
     )
     .execute();
 
-  return users;
+  // Remove the user logged in from the list of users
+  const filteredUsers = users.filter((user) => Number(user.id) !== userId);
+
+  return filteredUsers;
 }
-
-// const users = await db
-//   .selectFrom('user as u')
-//   .where((eb) =>
-//     eb.and([
-//       eb('u.name', 'is not', null),
-//       eb('u.birthdate', 'is not', null),
-//       eb('u.gender', 'is not', null),
-//       eb('u.city_id', 'is not', null),
-//       eb('u.activate_at', 'is not', null),
-//     ]),
-//   )
-//   .where('u.id', 'not in', (eb) =>
-//     eb
-//       .selectFrom('user_action as ua')
-//       .select('ua.receiver_id')
-//       .where('ua.initiator_id', '=', userId),
-//   )
-//   .select([
-//     'u.id',
-//     'u.name',
-//     'u.birthdate',
-//     'u.gender',
-//     'u.biography',
-//     'u.account_github',
-//     'u.city_id',
-//   ])
-//   .execute();
-
-// Remove the current user from the list of users
-//   const filteredUsers: UserWithLanguages[] = users.filter(
-//     (user) => Number(user.id) !== userId,
-//   );
-
-//   // For each user
-//   for (const filteredUser of filteredUsers) {
-//     // Select all languages from a user
-//     const languages = await db
-//       .selectFrom('language_user as lu')
-//       .innerJoin('language as l', 'lu.language_id', 'l.id')
-//       .where('lu.user_id', '=', filteredUser.id)
-//       .selectAll()
-//       .execute();
-
-//     // Select all technologies from a user
-//     const technologies = await db
-//       .selectFrom('technology_user as tu')
-//       .innerJoin('technology as t', 'tu.technology_id', 't.id')
-//       .where('tu.user_id', '=', filteredUser.id)
-//       .selectAll()
-//       .execute();
-
-//     // Select all hobbies from a user
-//     const hobbies = await db
-//       .selectFrom('hobby_user as hu')
-//       .innerJoin('hobby as h', 'hu.hobby_id', 'h.id')
-//       .where('hu.user_id', '=', filteredUser.id)
-//       .selectAll()
-//       .execute();
-
-//     // Select all pictures from a user
-//     const pictures = await db
-//       .selectFrom('picture as p')
-//       .innerJoin('user as u', 'p.user_id', 'u.id')
-//       .where('p.user_id', '=', filteredUser.id)
-//       .selectAll()
-//       .execute();
-
-//     // Add languages, technologies, hobbies and pictures fields to the user
-//     filteredUser.languages = languages.map((l) => l.name);
-//     filteredUser.technologies = technologies.map((t) => t.name);
-//     filteredUser.hobbies = hobbies.map((h) => h.name);
-//     filteredUser.pictures = pictures.map((p) => p.picture_path);
-//   }
-
-//   return filteredUsers;
-// }
 
 // Fetch a list of users without the user logged in and return the first user from the list
 userRouter.get('/:userId', async (req, res) => {
   try {
     const userId = Number.parseInt(req.params.userId);
-    // const userIndex = 0;
 
-    // Get users if account is activated and has all required fields
+    // use "getUsers" function to fetch users from the database
     const users = await getUsers(userId);
-
-    // const selectedUser = filteredUsers[userIndex];
 
     res.status(200).json(users);
   } catch {
-    res.status(500).json({ error: 'An error occurred while fetching users.' });
-  }
-});
-
-userRouter.post('/:userId', async (req, res) => {
-  try {
-    const userId = Number.parseInt(req.params.userId);
-    const userIndex = Number.parseInt(req.body.userIndex);
-
-    const users = await getUsers();
-
-    const filteredUsers = users.filter((user) => Number(user.id) !== userId);
-
-    const nextUserIndex = (userIndex + 1) % filteredUsers.length;
-    const nextUser = filteredUsers[nextUserIndex];
-
-    res.status(200).json(nextUser);
-  } catch {
-    res.status(500).json({ error: 'An error occurred while fetching users.' });
+    res.status(500).json({ error: 'An error occurred while fetching users' });
   }
 });
 
