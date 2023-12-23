@@ -41,7 +41,7 @@ export interface UserTable {
   email_verified_at?: Date;
   activation_code?: string;
   activate_at?: Date;
-  city_id?: bigint;
+  city_id?: number;
 }
 
 export interface HobbyTable {
@@ -51,7 +51,7 @@ export interface HobbyTable {
 }
 
 export interface CityTable {
-  id: Generated<bigint>;
+  id: Generated<number>;
   name: string;
   coordinates: Point;
 }

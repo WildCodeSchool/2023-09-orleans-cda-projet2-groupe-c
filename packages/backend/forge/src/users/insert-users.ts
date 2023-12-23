@@ -1,18 +1,22 @@
 import Bun from 'bun';
 
 import { db } from '@app/backend-shared';
-import type { Gender, Role } from '@app/types';
+import type { Gender, Role } from '@app/shared';
 
 import adminsData from '../data/admins-data.json';
 import usersData from '../data/users-data.json';
 
+interface City {
+  id: number;
+}
+
 export const insertUsers = async () => {
   try {
     // Get all cities id
-    const citiesId = await db.selectFrom('city').select('id').execute();
+    const citiesId: City[] = await db.selectFrom('city').select('id').execute();
 
     // Function to generate a random city id
-    const randomCityId = () => {
+    const randomCityId = (): number => {
       const randomIndex = Math.floor(Math.random() * citiesId.length);
       return citiesId[randomIndex].id;
     };
@@ -34,11 +38,12 @@ export const insertUsers = async () => {
           ...admin,
           birthdate: new Date(admin.birthdate),
           gender: admin.gender as Gender,
-          role: admin.role as Role,
+          role: 'admin' as Role,
           password: hashedPassword,
           email_verified_at: new Date(),
+          activation_code: '',
           activate_at: new Date(),
-          city_id: BigInt(randomCityId()),
+          city_id: randomCityId(),
         };
       }),
     );
@@ -48,7 +53,7 @@ export const insertUsers = async () => {
       // Loop on each users
       usersData.map(async (user) => {
         // Get the password from the user
-        const password = user.password;
+        const password = 'password';
         // Hash the password with bcrypt
         const hashedPassword = await Bun.password.hash(password, {
           algorithm: 'bcrypt',
@@ -60,11 +65,12 @@ export const insertUsers = async () => {
           ...user,
           birthdate: new Date(user.birthdate),
           gender: user.gender as Gender,
-          role: user.role as Role,
+          role: 'user' as Role,
           password: hashedPassword,
           email_verified_at: new Date(),
+          activation_code: '',
           activate_at: new Date(),
-          city_id: BigInt(randomCityId()),
+          city_id: randomCityId(),
         };
       }),
     );
