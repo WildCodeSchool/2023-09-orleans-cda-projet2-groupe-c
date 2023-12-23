@@ -74,11 +74,11 @@ export default function InteractionContext({
   );
 }
 
-export const useHome = () => {
+export const useInteraction = () => {
   const context = useContext(interactionProviderContext);
 
   if (!context) {
-    throw new Error('useHome must be used within a HomeProvider');
+    throw new Error('useInteraction must be used within a HomeProvider');
   }
 
   return context;

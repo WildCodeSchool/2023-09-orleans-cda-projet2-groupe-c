@@ -9,6 +9,7 @@ import type {
 
 export * from './database';
 export * from './auth';
+export * from './interaction';
 
 // Extend "UserTable", remove unwanted properties and add a new id property
 export type UserBase = Omit<

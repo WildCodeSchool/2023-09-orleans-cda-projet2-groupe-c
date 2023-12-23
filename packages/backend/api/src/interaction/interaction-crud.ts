@@ -1,6 +1,15 @@
 import express from 'express';
 
 import { db } from '@app/backend-shared';
+import {
+  type LikeBody,
+  type NextBody,
+  type SuperLikeBody,
+  likeSchema,
+  nextSchema,
+  receiverSchema,
+  superLikeSchema,
+} from '@app/shared';
 
 const interactionRouter = express.Router();
 
@@ -68,17 +77,30 @@ interactionRouter.get(
 interactionRouter.post('/:userId/interactions/like', async (req, res) => {
   try {
     const userId = Number.parseInt(req.params.userId);
-    const { receiver_id: receiverId } = req.body;
 
-    await db
-      .insertInto('user_action')
-      .values({
-        initiator_id: userId,
-        receiver_id: receiverId,
-        liked_at: new Date(),
-        canceled_at: new Date(),
-      })
-      .execute();
+    // Get the receiver id from the request body
+    // Use parse from zod to validate the request body
+    const { receiver_id: receiverId } = receiverSchema.parse(req.body);
+
+    const likeBody: LikeBody = {
+      initiator_id: userId,
+      receiver_id: receiverId,
+      liked_at: new Date(),
+      canceled_at: new Date(),
+    };
+
+    // Use safeParse from zod to validate the request body
+    // Return an object with success or error and data properties
+    const result = likeSchema.safeParse(likeBody);
+
+    // If one of the property values is incorrect, returns an error
+    if (!result.success) {
+      res.status(400).json({ success: false, error: result.error.message });
+      return;
+    }
+
+    // Insert like interaction in database with zod parsed data
+    await db.insertInto('user_action').values(result.data).execute();
 
     res.json({ success: true });
   } catch {
@@ -90,17 +112,30 @@ interactionRouter.post('/:userId/interactions/like', async (req, res) => {
 interactionRouter.post('/:userId/interactions/superlike', async (req, res) => {
   try {
     const userId = Number.parseInt(req.params.userId);
-    const { receiver_id: receiverId } = req.body;
 
-    await db
-      .insertInto('user_action')
-      .values({
-        initiator_id: userId,
-        receiver_id: receiverId,
-        superlike_at: new Date(),
-        canceled_at: new Date(),
-      })
-      .execute();
+    // Get the receiver id from the request body
+    // Use parse from zod to validate the request body
+    const { receiver_id: receiverId } = receiverSchema.parse(req.body);
+
+    const superLikeBody: SuperLikeBody = {
+      initiator_id: userId,
+      receiver_id: receiverId,
+      superlike_at: new Date(),
+      canceled_at: new Date(),
+    };
+
+    // Use safeParse from zod to validate the request body
+    // Return an object with success or error and data properties
+    const result = superLikeSchema.safeParse(superLikeBody);
+
+    // If one of the property values is incorrect, returns an error
+    if (!result.success) {
+      res.status(400).json({ success: false, error: result.error.message });
+      return;
+    }
+
+    // Insert superlike interaction in database with zod parsed data
+    await db.insertInto('user_action').values(result.data).execute();
 
     res.json({ success: true });
   } catch {
@@ -112,17 +147,29 @@ interactionRouter.post('/:userId/interactions/superlike', async (req, res) => {
 interactionRouter.post('/:userId/interactions/next', async (req, res) => {
   try {
     const userId = Number.parseInt(req.params.userId);
-    const { receiver_id: receiverId } = req.body;
 
-    await db
-      .insertInto('user_action')
-      .values({
-        initiator_id: userId,
-        receiver_id: receiverId,
-        next_at: new Date(),
-        canceled_at: new Date(),
-      })
-      .execute();
+    // Get the receiver id from the request body
+    // Use parse from zod to validate the request body
+    const { receiver_id: receiverId } = receiverSchema.parse(req.body);
+
+    const nextBody: NextBody = {
+      initiator_id: userId,
+      receiver_id: receiverId,
+      next_at: new Date(),
+      canceled_at: new Date(),
+    };
+
+    // Use safeParse from zod to validate the request body
+    // Return an object with success or error and data properties
+    const result = nextSchema.safeParse(nextBody);
+
+    // If one of the property values is incorrect, returns an error
+    if (!result.success) {
+      res.status(400).json({ success: false, error: result.error.message });
+      return;
+    }
+
+    await db.insertInto('user_action').values(result.data).execute();
 
     res.json({ success: true });
   } catch {

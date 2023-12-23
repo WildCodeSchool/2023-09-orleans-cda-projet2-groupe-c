@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 
-import { useHome } from '../../contexts/InteractionContext';
+import { useInteraction } from '../../contexts/InteractionContext';
 import BulletBase from '../BulletBase';
 import LikeIcon from '../icons/LikeIcon';
 import NextIcon from '../icons/NextIcon';
@@ -26,7 +26,7 @@ export default function Interactions() {
     handleSuperLikeClick,
     handleNextClick,
     superLikesCount,
-  } = useHome();
+  } = useInteraction();
 
   return (
     <div>
