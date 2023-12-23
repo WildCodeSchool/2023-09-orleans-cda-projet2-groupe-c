@@ -1,4 +1,4 @@
-import HomeContext from '@/contexts/HomeContext';
+import InteractionContext from '@/contexts/InteractionContext';
 
 import { useAuth } from '../contexts/AuthContext';
 import HomeButtons from './home/HomeButtons';
@@ -10,9 +10,9 @@ export default function AuthLayout() {
   // If the user is logged in, display the cards
   if (isLoggedIn) {
     return (
-      <HomeContext>
+      <InteractionContext>
         <HomeCards />
-      </HomeContext>
+      </InteractionContext>
     );
   }
 

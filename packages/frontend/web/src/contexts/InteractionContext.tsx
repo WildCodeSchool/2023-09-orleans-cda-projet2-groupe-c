@@ -18,11 +18,14 @@ type HomeProviderState = {
 };
 
 // Create a context
-const homeProviderContext = createContext<HomeProviderState | undefined>(
+const interactionProviderContext = createContext<HomeProviderState | undefined>(
   undefined,
 );
 
-export default function HomeContext({ children, ...props }: HomeProviderProps) {
+export default function InteractionContext({
+  children,
+  ...props
+}: HomeProviderProps) {
   // Get the current user id from the auth context
   const { userId } = useAuth();
 
@@ -65,14 +68,14 @@ export default function HomeContext({ children, ...props }: HomeProviderProps) {
   ]);
 
   return (
-    <homeProviderContext.Provider {...props} value={value}>
+    <interactionProviderContext.Provider {...props} value={value}>
       {children}
-    </homeProviderContext.Provider>
+    </interactionProviderContext.Provider>
   );
 }
 
 export const useHome = () => {
-  const context = useContext(homeProviderContext);
+  const context = useContext(interactionProviderContext);
 
   if (!context) {
     throw new Error('useHome must be used within a HomeProvider');

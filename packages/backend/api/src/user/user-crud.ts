@@ -76,7 +76,6 @@ async function getUsers(userId: number): Promise<User[]> {
   //    FROM "user_action" AS "ua"
   //    WHERE "ua.initiator_id" = ?
   // )
-
   const users = await db
     .selectFrom('user as u')
     .select((eb) => [
@@ -150,7 +149,7 @@ async function getUsers(userId: number): Promise<User[]> {
   return filteredUsers;
 }
 
-// Fetch a list of users without the user logged in and return the first user from the list
+// Fetch a list of users without the user logged in
 userRouter.get('/:userId', async (req, res) => {
   try {
     const userId = Number.parseInt(req.params.userId);

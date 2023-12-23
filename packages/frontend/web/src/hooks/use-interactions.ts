@@ -77,7 +77,7 @@ export default function useInteractions({ ...props }) {
         },
       );
 
-      // Fetch superlikes count from a user and set the new value in superLikeCount
+      // Fetch selected user and superlikes count from the user logged in to display the next user and the remaining superlikes count
       const controller = new AbortController();
       const signal = controller.signal;
 
@@ -89,6 +89,7 @@ export default function useInteractions({ ...props }) {
         throw new Error(`Fail to fetch user's superlike: ${String(error)}`);
       });
 
+      // Abort all fetch requests if the component is unmounted
       return () => {
         controller.abort();
       };

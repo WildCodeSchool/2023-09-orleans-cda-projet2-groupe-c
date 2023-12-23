@@ -68,14 +68,13 @@ interactionRouter.get(
 interactionRouter.post('/:userId/interactions/like', async (req, res) => {
   try {
     const userId = Number.parseInt(req.params.userId);
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    const { receiver_id } = req.body;
+    const { receiver_id: receiverId } = req.body;
 
     await db
       .insertInto('user_action')
       .values({
         initiator_id: userId,
-        receiver_id,
+        receiver_id: receiverId,
         liked_at: new Date(),
         canceled_at: new Date(),
       })
@@ -91,14 +90,13 @@ interactionRouter.post('/:userId/interactions/like', async (req, res) => {
 interactionRouter.post('/:userId/interactions/superlike', async (req, res) => {
   try {
     const userId = Number.parseInt(req.params.userId);
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    const { receiver_id } = req.body;
+    const { receiver_id: receiverId } = req.body;
 
     await db
       .insertInto('user_action')
       .values({
         initiator_id: userId,
-        receiver_id,
+        receiver_id: receiverId,
         superlike_at: new Date(),
         canceled_at: new Date(),
       })
@@ -114,14 +112,13 @@ interactionRouter.post('/:userId/interactions/superlike', async (req, res) => {
 interactionRouter.post('/:userId/interactions/next', async (req, res) => {
   try {
     const userId = Number.parseInt(req.params.userId);
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    const { receiver_id } = req.body;
+    const { receiver_id: receiverId } = req.body;
 
     await db
       .insertInto('user_action')
       .values({
         initiator_id: userId,
-        receiver_id,
+        receiver_id: receiverId,
         next_at: new Date(),
         canceled_at: new Date(),
       })

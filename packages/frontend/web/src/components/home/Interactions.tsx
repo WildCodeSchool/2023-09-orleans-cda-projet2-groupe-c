@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 
-import { useHome } from '../../contexts/HomeContext';
+import { useHome } from '../../contexts/InteractionContext';
 import BulletBase from '../BulletBase';
 import LikeIcon from '../icons/LikeIcon';
 import NextIcon from '../icons/NextIcon';
