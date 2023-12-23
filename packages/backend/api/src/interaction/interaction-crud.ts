@@ -19,8 +19,19 @@ interactionRouter.get('/:userId/interactions', async (req, res) => {
     const userId = Number.parseInt(req.params.userId);
 
     const userActions = await db
-      .selectFrom('user_action')
-      .selectAll()
+      .selectFrom('user_action as ua')
+      .innerJoin('user as receiver', 'receiver.id', 'ua.receiver_id')
+      .innerJoin('user as initiator', 'initiator.id', 'ua.initiator_id')
+      .select([
+        'initiator.id as initiator_id',
+        'initiator.name as initiator_name',
+        'receiver.id as receiver_id',
+        'receiver.name as receiver_name',
+        'next_at',
+        'liked_at',
+        'superlike_at',
+        'canceled_at',
+      ])
       .where('initiator_id', '=', userId)
       .execute();
 
@@ -82,6 +93,21 @@ interactionRouter.post('/:userId/interactions/like', async (req, res) => {
     // Use parse from zod to validate the request body
     const { receiver_id: receiverId } = receiverSchema.parse(req.body);
 
+    // Get interaction between the user and the receiver
+    const existingInteraction = await db
+      .selectFrom('user_action')
+      .selectAll()
+      .where('initiator_id', '=', userId)
+      .where('receiver_id', '=', receiverId)
+      .execute();
+
+    // If the interaction already exists, returns an error
+    if (existingInteraction.length > 0) {
+      return res
+        .status(400)
+        .json({ success: false, error: 'Interaction already exists !' });
+    }
+
     const likeBody: LikeBody = {
       initiator_id: userId,
       receiver_id: receiverId,
@@ -117,6 +143,21 @@ interactionRouter.post('/:userId/interactions/superlike', async (req, res) => {
     // Use parse from zod to validate the request body
     const { receiver_id: receiverId } = receiverSchema.parse(req.body);
 
+    // Get interaction between the user and the receiver
+    const existingInteraction = await db
+      .selectFrom('user_action')
+      .selectAll()
+      .where('initiator_id', '=', userId)
+      .where('receiver_id', '=', receiverId)
+      .execute();
+
+    // If the interaction already exists, returns an error
+    if (existingInteraction.length > 0) {
+      return res
+        .status(400)
+        .json({ success: false, error: 'Interaction already exists !' });
+    }
+
     const superLikeBody: SuperLikeBody = {
       initiator_id: userId,
       receiver_id: receiverId,
@@ -151,6 +192,21 @@ interactionRouter.post('/:userId/interactions/next', async (req, res) => {
     // Get the receiver id from the request body
     // Use parse from zod to validate the request body
     const { receiver_id: receiverId } = receiverSchema.parse(req.body);
+
+    // Get interaction between the user and the receiver
+    const existingInteraction = await db
+      .selectFrom('user_action')
+      .selectAll()
+      .where('initiator_id', '=', userId)
+      .where('receiver_id', '=', receiverId)
+      .execute();
+
+    // If the interaction already exists, returns an error
+    if (existingInteraction.length > 0) {
+      return res
+        .status(400)
+        .json({ success: false, error: 'Interaction already exists !' });
+    }
 
     const nextBody: NextBody = {
       initiator_id: userId,
