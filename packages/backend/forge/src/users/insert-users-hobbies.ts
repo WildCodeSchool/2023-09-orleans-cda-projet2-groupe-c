@@ -18,25 +18,35 @@ export const insertUsersHobbies = async () => {
       .orderBy('id')
       .execute();
 
-    // Function to generate a random hobby id
-    const randomHobbyId = () => {
-      const randomIndex = Math.floor(Math.random() * hobbies.length);
-      return hobbies[randomIndex].id;
-    };
-
     // Array to store all user hobbies
     const userHobbies = [];
 
-    // For each user, assign 6 random hobbies
-    for (const userId of users) {
-      // Generate a random number between 1 and 6, this number will be the number of hobbies for each user
-      const hobbyCount = Math.floor(Math.random() * MAX_HOBBIES_PER_USER) + 1;
+    // For each user, assign 1 to 6 random hobbies
+    for (const user of users) {
+      // Create a new set to avoid duplicate hobbies
+      const hobbiesId = new Set();
 
-      for (let index = 0; index < hobbyCount; index++) {
+      // Generate a random number between 1 and 6, this number will be the number of hobbies for each user
+      const randomHobbyCount =
+        Math.floor(Math.random() * MAX_HOBBIES_PER_USER) + 1;
+
+      // Loop to generate a random index for each hobbies par user and add to the set "hobbiesId"
+      while (hobbiesId.size < randomHobbyCount) {
+        // Generate a random index between 0 and the length of the hobbies array
+        const randomIndex = Math.floor(Math.random() * hobbies.length);
+
+        // Add the language id to the set
+        hobbiesId.add(hobbies[randomIndex].id);
+      }
+
+      let order = 1;
+
+      // For each hobbies in the set, push an object with order, user_id and hobby_id fields to the array "userHobbies"
+      for (const hobbyId of hobbiesId) {
         userHobbies.push({
-          order: index + 1,
-          user_id: userId.id,
-          hobby_id: randomHobbyId(),
+          order: order++,
+          user_id: user.id,
+          hobby_id: hobbyId as number,
         });
       }
     }

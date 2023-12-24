@@ -18,26 +18,35 @@ export const insertUsersTechnologies = async () => {
       .orderBy('id')
       .execute();
 
-    // Function to generate a random technology id
-    const randomTechnologyId = () => {
-      const randomIndex = Math.floor(Math.random() * technology.length);
-      return technology[randomIndex].id;
-    };
-
     // Array to store all user technologies
     const userTechnologies = [];
 
-    // For each user, assign 6 random technologies
-    for (const userId of users) {
+    // For each user, assign 1 to 6 random technologies
+    for (const user of users) {
+      // Create a new set to avoid duplicate technologies
+      const technologiesId = new Set();
+
       // Generate a random number between 1 and 6, this number will be the number of technologies for each user
-      const technologyCount =
+      const randomTechnologyCount =
         Math.floor(Math.random() * MAX_TECHNOLOGIES_PER_USER) + 1;
 
-      for (let index = 0; index < technologyCount; index++) {
+      // Loop to generate a random index for each technologies par user and add to the set "techoologiesId"
+      while (technologiesId.size < randomTechnologyCount) {
+        // Generate a random index between 0 and the length of the technologies array
+        const randomIndex = Math.floor(Math.random() * technology.length);
+
+        // Add the technology id to the set
+        technologiesId.add(technology[randomIndex].id);
+      }
+
+      let order = 1;
+
+      // For each technologies in the set, push an object with order, user_id and technology_id fields to the array "userTechnologies"
+      for (const technologyId of technologiesId) {
         userTechnologies.push({
-          order: index + 1,
-          user_id: userId.id,
-          technology_id: randomTechnologyId(),
+          order: order++,
+          user_id: user.id,
+          technology_id: technologyId as number,
         });
       }
     }
