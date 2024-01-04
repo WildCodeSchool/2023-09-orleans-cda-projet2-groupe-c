@@ -1,73 +1,45 @@
-import { StatusBar } from 'expo-status-bar';
-import { useEffect, useState } from 'react';
-import { Button, StyleSheet, Text, View } from 'react-native';
+/* eslint-disable react/jsx-closing-bracket-location */
 
-import { useDisclosure } from '@app/frontend-shared';
-import type { SomeInterface, User } from '@app/shared';
+/* eslint-disable @typescript-eslint/naming-convention */
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+
+import HomeMobile from './components/home/HomeMobile';
+import { ThemeContext, useTheme } from './contexts/ThemeContext';
+
+const Stack = createNativeStackNavigator();
 
 export default function App() {
-  const [someData, setSomeData] = useState<SomeInterface>({
-    someProperty: 'someValue',
-  });
-  const { isOpen: isDetailsOpen, onToggle: onDetailsToggle } =
-    useDisclosure(false);
-
-  const user: Partial<User> = {};
-
-  useEffect(() => {
-    const abortController = new AbortController();
-
-    (async () => {
-      const response = await fetch(
-        `${process.env.EXPO_PUBLIC_API_URL}/some-route`,
-        {
-          signal: abortController.signal,
-        },
-      );
-      const data = await response.json();
-      setSomeData(data);
-    })();
-
-    return () => {
-      abortController.abort();
-    };
-  }, []);
-
   return (
-    <View style={styles.container}>
-      <Text>{'Coucou'}</Text>
-
-      <Text>{`${someData.someProperty}`}</Text>
-
-      <Button
-        title='Click me'
-        onPress={() => {
-          onDetailsToggle();
-        }}
-      />
-
-      {isDetailsOpen ? (
-        <Text>
-          {JSON.stringify(
-            {
-              user,
-            },
-            undefined,
-            2,
-          )}
-        </Text>
-      ) : undefined}
-
-      <StatusBar style='auto' />
-    </View>
+    <ThemeContext>
+      <MyComponent />
+    </ThemeContext>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+function MyComponent() {
+  const { colors, colorTheme } = useTheme();
+
+  const theme = {
+    dark: colorTheme === 'dark',
+    colors: {
+      primary: colors.primary,
+      background: colors.background,
+      card: colors.card,
+      text: colors.text,
+      border: colors.border,
+      notification: colors.notification,
+    },
+  };
+
+  return (
+    <NavigationContainer theme={theme}>
+      <Stack.Navigator
+        initialRouteName='Home'
+        screenOptions={{ headerShown: false }}
+      >
+        <Stack.Screen name='Home' component={HomeMobile} />
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+}
