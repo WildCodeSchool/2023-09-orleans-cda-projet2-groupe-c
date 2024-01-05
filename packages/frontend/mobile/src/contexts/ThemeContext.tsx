@@ -28,21 +28,23 @@ const themeProviderContext = createContext<ThemeProviderState | undefined>(
 );
 
 export function ThemeContext({ children }: ThemeProviderProps) {
-  const [theme, setTheme] = useState<ColorSchemeName>();
+  const deviceTheme = useColorScheme();
+  const [theme, setTheme] = useState<ColorSchemeName>(deviceTheme);
   const [isLoading, setIsLoading] = useState(true);
 
   // Load the preference from AsyncStorage on app launch
   useEffect(() => {
-    const load = async () => {
-      const storedTheme = (await AsyncStorage.getItem(
-        THEME_ASYNC_STORAGE_KEY,
-      )) as ColorSchemeName;
+    const loadTheme = async () => {
+      const storedTheme = await AsyncStorage.getItem(THEME_ASYNC_STORAGE_KEY);
 
-      setTheme(storedTheme);
+      if (storedTheme !== null) {
+        setTheme(storedTheme as ColorSchemeName);
+      }
+
       setIsLoading(false);
     };
 
-    load().catch((error) => {
+    loadTheme().catch((error) => {
       throw new Error(error);
     });
   }, []);
@@ -51,10 +53,6 @@ export function ThemeContext({ children }: ThemeProviderProps) {
   useEffect(() => {
     if (theme) {
       AsyncStorage.setItem(THEME_ASYNC_STORAGE_KEY, theme).catch((error) => {
-        throw new Error(error);
-      });
-    } else {
-      AsyncStorage.removeItem(THEME_ASYNC_STORAGE_KEY).catch((error) => {
         throw new Error(error);
       });
     }

@@ -3,7 +3,7 @@
 /* eslint-disable @typescript-eslint/no-require-imports */
 
 /* eslint-disable unicorn/prefer-module */
-import { ImageBackground, StyleSheet, View } from 'react-native';
+import { Button, ImageBackground, StyleSheet, View } from 'react-native';
 
 import { useTheme } from '../../contexts/ThemeContext';
 import Title from '../Title';
@@ -12,7 +12,11 @@ import HomeStackScreen from './HomeStackScreen';
 import RandomSentence from './RandomSentence';
 
 export default function HomeMobile() {
-  const { colors } = useTheme();
+  const { colors, colorTheme, setColorTheme } = useTheme();
+
+  const switchTheme = () => {
+    setColorTheme(colorTheme === 'light' ? 'dark' : 'light');
+  };
 
   return (
     <View style={styles.container}>
@@ -28,6 +32,8 @@ export default function HomeMobile() {
             {/* Generate random sentence */}
             <RandomSentence />
           </View>
+
+          <Button title='Switch Theme' onPress={switchTheme} />
 
           {/* Outlet */}
           <HomeStackScreen />
