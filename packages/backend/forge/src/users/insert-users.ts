@@ -48,18 +48,18 @@ export const insertUsers = async () => {
       }),
     );
 
+    const password = 'password';
+
+    // Hash the password with bcrypt
+    const hashedPassword = await Bun.password.hash(password, {
+      algorithm: 'bcrypt',
+      cost: 10,
+    });
+
     // Get a list of users with hashed passwords
     const users = await Promise.all(
       // Loop on each users
-      usersData.map(async (user) => {
-        // Get the password from the user
-        const password = 'password';
-        // Hash the password with bcrypt
-        const hashedPassword = await Bun.password.hash(password, {
-          algorithm: 'bcrypt',
-          cost: 10,
-        });
-
+      usersData.map((user) => {
         // Return the user with the hashed password and the other fields
         return {
           ...user,
