@@ -38,7 +38,6 @@ export interface UserTable {
   role: Role;
   email: string;
   password: string;
-
   email_verified_at?: Date;
   activation_code?: string;
   activate_at?: Date;

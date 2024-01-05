@@ -82,7 +82,7 @@ authRouter.post('/registration', async (req, res) => {
         audience: FRONTEND_URL,
       });
     } catch (error) {
-      res.status(401).json({ message: 'Token is not valid', error });
+      return res.status(401).json({ message: 'Token is not valid', error });
     }
 
     return res.json({ ok: true });
@@ -113,7 +113,7 @@ authRouter.post('/registration/validation', async (req, res) => {
     }
     res.json({ ok: true });
   } catch (error) {
-    throw new Error(`Error validating activation code: ${String(error)}`);
+    return res.json({ error });
   }
 });
 

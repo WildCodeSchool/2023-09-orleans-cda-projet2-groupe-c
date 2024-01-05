@@ -34,14 +34,14 @@ export default function RegistrationForm() {
       throw new Error(`Failed to register : ${String(error)}`); // Throw an error if the request fails
     }
     if (isValid) {
-      navigate('/success'); // Navigate to the success page if the form is valid with useNavigate
+      navigate('/signup/success'); // Navigate to the success page if the form is valid with useNavigate
     }
   };
 
   return (
     <div className='p-8'>
       <h1 className='font-title text-primary mb-5 mt-24 text-xl'>
-        {'Validate my account'}
+        {'Create a new account'}
       </h1>
       <div className='bg-light-light flex h-[18rem] flex-col items-center gap-2 rounded-lg px-2 shadow-md'>
         <div className='text-start'>

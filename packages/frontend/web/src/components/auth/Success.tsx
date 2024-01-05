@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 
 import Button from '../Button';
-import Check from '../svg/Check';
+import CheckIcon from '../icons/CheckIcon';
 
 export default function Success() {
   return (
@@ -13,7 +13,7 @@ export default function Success() {
         <div className='bg-light-light flex h-[18rem] flex-col items-center justify-center gap-2 rounded-lg px-2 shadow-md'>
           <div className='text-start'>
             <div className='flex flex-row justify-center'>
-              <Check />
+              <CheckIcon />
             </div>
             <p className='text-secondary my-4 mb-4 text-center align-top text-lg'>
               {'Your TinDev account has been created !'}
@@ -27,7 +27,7 @@ export default function Success() {
         </div>
       </div>
       <div className='flex flex-col items-center'>
-        <Link to='/validation'>
+        <Link to='signup/validation'>
           <Button type='button' isOutline={false}>
             {'Validate'}
           </Button>

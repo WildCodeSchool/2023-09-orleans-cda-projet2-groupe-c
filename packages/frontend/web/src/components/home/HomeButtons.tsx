@@ -36,7 +36,7 @@ export default function HomeButtons() {
         </Button>
       </Link>
 
-      <Link to='/registration' className='flex w-full justify-center'>
+      <Link to='/signup/registration' className='flex w-full justify-center'>
         <Button type='button' isOutline>
           {`Register`}
         </Button>
