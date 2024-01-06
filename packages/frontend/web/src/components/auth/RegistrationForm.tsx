@@ -34,7 +34,7 @@ export default function RegistrationForm() {
       throw new Error(`Failed to register : ${String(error)}`); // Throw an error if the request fails
     }
     if (isValid) {
-      navigate('/signup/success'); // Navigate to the success page if the form is valid with useNavigate
+      navigate('/registration/success'); // Navigate to the success page if the form is valid with useNavigate
     }
   };
 

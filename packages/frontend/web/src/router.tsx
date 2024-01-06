@@ -21,23 +21,23 @@ const router = createBrowserRouter([
         path: '/login',
         element: <Login />,
       },
+    ],
+  },
+  {
+    path: '/registration',
+    element: <Registration />,
+    children: [
       {
-        path: '/signup',
-        element: <Registration />,
-        children: [
-          {
-            path: '/signup/registration',
-            element: <RegistrationForm />,
-          },
-          {
-            path: '/signup/success',
-            element: <Success />,
-          },
-          {
-            path: '/signup/validation',
-            element: <ValidationToken />,
-          },
-        ],
+        path: '',
+        element: <RegistrationForm />,
+      },
+      {
+        path: 'success',
+        element: <Success />,
+      },
+      {
+        path: 'validation',
+        element: <ValidationToken />,
       },
     ],
   },

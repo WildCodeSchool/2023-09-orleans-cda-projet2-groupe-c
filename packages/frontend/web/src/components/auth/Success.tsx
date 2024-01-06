@@ -27,7 +27,7 @@ export default function Success() {
         </div>
       </div>
       <div className='flex flex-col items-center'>
-        <Link to='signup/validation'>
+        <Link to='/registration/validation'>
           <Button type='button' isOutline={false}>
             {'Validate'}
           </Button>
