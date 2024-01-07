@@ -3,11 +3,11 @@ import HomeButtons from './home/HomeButtons';
 import HomeCards from './home/HomeCards';
 
 export default function AuthLayout() {
-  const { isLoggedIn } = useAuth();
+  const { isLoggedIn, userId } = useAuth();
 
   // If the user is logged in, display the cards
   if (isLoggedIn) {
-    return <HomeCards />;
+    return <HomeCards userId={userId} />;
   }
 
   // else display the buttons

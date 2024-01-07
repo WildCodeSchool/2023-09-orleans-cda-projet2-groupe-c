@@ -11,7 +11,7 @@ export default {
         'light-medium': 'var(--light-medium)',
         light: 'var(--light)',
         'dark-ulta-light': '#3c4045',
-        'divider-dark': '#4d4f58',
+        divider: 'var(--divider)',
         placeholder: '#9c89a2',
         success: '#51d686',
         'super-like': '#59c3ff',
@@ -20,6 +20,9 @@ export default {
       fontFamily: {
         title: ['Heavitas'],
         base: ['Poppins'],
+      },
+      fontSize: {
+        xs: '0.75rem',
       },
       backgroundImage: {
         background: 'url(/images/home/background.webp)',
@@ -30,6 +33,9 @@ export default {
       scale: {
         moon: 'var(--moon)',
         sun: 'var(--sun)',
+      },
+      height: {
+        'clamp-image': 'clamp(200px, 120vw, 70vh)',
       },
     },
   },
