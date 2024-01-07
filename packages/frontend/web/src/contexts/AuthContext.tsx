@@ -10,6 +10,8 @@ type AuthProviderState = {
   isLoggedIn: boolean;
   setIsLoggedIn: (value: boolean) => void;
   isLoading: boolean;
+  userId: number | undefined;
+  verifyToken: () => void; // Add refetch function to the context
 };
 
 // Create an authentification context
@@ -20,42 +22,45 @@ const authProviderContext = createContext<AuthProviderState | undefined>(
 export default function AuthContext({ children, ...props }: AuthProviderProps) {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [userId, setUserId] = useState<number | undefined>();
 
   // Verify if the user is logged in
-  useEffect(() => {
+  const verifyToken = async () => {
+    // Extract fetchData to use it in refetch
     const controller = new AbortController();
 
-    const fetchData = async () => {
-      try {
-        const res = await fetch(`${API_URL}/auth/verify`, {
-          method: 'GET',
-          signal: controller.signal, // pass the signal in the request for aborting the request
-          credentials: 'include', // include cookies in the request
-        });
+    try {
+      const res = await fetch(`${API_URL}/auth/verify`, {
+        method: 'GET',
+        signal: controller.signal, // pass the signal in the request for aborting the request
+        credentials: 'include', // include cookies in the request
+      });
 
-        // Convert the response to json
-        const data = (await res.json()) as {
-          isLoggedIn: boolean;
-        };
+      // Convert the response to json
+      const data = (await res.json()) as {
+        isLoggedIn: boolean;
+        userId: number;
+      };
 
-        setIsLoggedIn(data.isLoggedIn);
-      } catch (error) {
-        throw new Error(`Failed to verify auth: ${String(error)}`);
-      } finally {
-        // Stop the loading if the request is loaded
-        setIsLoading(false);
-      }
-    };
-
-    // Call the function fetchData
-    fetchData().catch((error) => {
+      setIsLoggedIn(data.isLoggedIn);
+      setUserId(data.userId);
+    } catch (error) {
       throw new Error(`Failed to verify auth: ${String(error)}`);
-    });
+    } finally {
+      // Stop the loading if the request is loaded
+      setIsLoading(false);
+    }
 
     // Abort the request if the component is unmounted
     return () => {
       controller.abort();
     };
+  };
+
+  useEffect(() => {
+    verifyToken().catch((error) => {
+      throw new Error(`Failed to verify auth: ${String(error)}`);
+    });
   }, []);
 
   // Memoize the values
@@ -64,8 +69,10 @@ export default function AuthContext({ children, ...props }: AuthProviderProps) {
       isLoggedIn,
       setIsLoggedIn,
       isLoading,
+      userId,
+      verifyToken,
     };
-  }, [isLoggedIn, isLoading]);
+  }, [isLoggedIn, isLoading, userId]);
 
   return (
     <authProviderContext.Provider {...props} value={value}>

@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 
 import type { User } from '@app/shared';
 
 import Badge from '../Badge';
+import GitHubIcon from '../icons/GitHubIcon';
 import LocationIcon from '../icons/LocationIcon';
 import CardSection from './CardSection';
 
@@ -38,13 +40,16 @@ export default function Card({ user }: CardProps) {
                       <div className='w-3'>
                         <img src={hobby.logo_path} alt={hobby.category} />
                       </div>
-                      <p className=' text-xs'>{hobby.name}</p>
+                      <p className=' text-xs'>
+                        {hobby.name.charAt(0).toUpperCase() +
+                          hobby.name.slice(1)}
+                      </p>
                     </Badge>
                   </div>
                 ))}
               </div>
             </div>
-            <div className='absolute bottom-4 right-4 h-12 w-12 sm:h-16 sm:w-16'>
+            <div className='absolute bottom-4 right-4 h-16 w-16'>
               <img
                 src={user.languages ? user.languages[0].logo_path : ''}
                 alt={user.languages ? user.languages[0].name : ''}
@@ -53,20 +58,36 @@ export default function Card({ user }: CardProps) {
           </div>
           <div className='align-center flex gap-2'>
             <LocationIcon />
-            <p className='translate-y-[1px] text-xs'>
+            <p className='translate-y-[1px] text-sm'>
               {user.city ? user.city[0].city_name : ''}
             </p>
           </div>
         </div>
-        <img
-          src={user.pictures ? user.pictures[0].picture_path : ''}
-          alt={` Picture of ${user.name} `}
-          className='h-full w-full object-cover'
-        />
+        <div className='flex h-full w-full items-center justify-center'>
+          <img
+            src={user.pictures ? user.pictures[0].picture_path : ''}
+            alt={` Picture of ${user.name} `}
+            className='h-full w-full object-cover object-center'
+          />
+        </div>
       </div>
+
       <CardSection title={'About Me'} isBorder>
         <p className='text-sm'>{user.biography}</p>
+        <div className='mt-10 flex items-center gap-1'>
+          <GitHubIcon className={'fill-secondary'} />
+          {user.account_github ?? '' ? (
+            <Link to={user.account_github ?? '/'}>
+              <p className='text-primary underline-primary cursor-pointer text-sm underline-offset-2'>
+                {user.account_github}
+              </p>
+            </Link>
+          ) : (
+            <p className='text-sm'>{`No GitHub account.`}</p>
+          )}
+        </div>
       </CardSection>
+
       <CardSection title={'My languages'} isBorder>
         <div className='grid grid-cols-6 gap-2'>
           {user.languages
@@ -82,6 +103,7 @@ export default function Card({ user }: CardProps) {
             : ''}
         </div>
       </CardSection>
+
       <CardSection title={'My technologies'} isBorder>
         <div className='grid grid-cols-6 gap-2'>
           {user.technologies
@@ -95,6 +117,7 @@ export default function Card({ user }: CardProps) {
             : ''}
         </div>
       </CardSection>
+
       <CardSection title={'My photo gallery'} isBorder={false}>
         <div className='flex flex-col gap-2'>
           {user.pictures
@@ -106,7 +129,7 @@ export default function Card({ user }: CardProps) {
                   <img
                     src={picture.picture_path}
                     alt=''
-                    className='h-full w-full scale-110 object-cover'
+                    className='h-full w-full scale-110 object-cover object-center'
                   />
                 </div>
               ))

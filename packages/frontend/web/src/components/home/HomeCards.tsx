@@ -16,10 +16,6 @@ export default function HomeCards({
 
   // Fetch the user
   useEffect(() => {
-    if (userId === undefined) {
-      return;
-    }
-
     const controller = new AbortController();
     const signal = controller.signal;
 
@@ -47,7 +43,7 @@ export default function HomeCards({
   }
 
   return (
-    <div className='font-base mx-auto flex h-[calc(100vh-55px)] w-full max-w-[500px] flex-col justify-between gap-5 overflow-y-auto px-5 py-10 text-white'>
+    <div className='font-base mx-auto flex h-[calc(100vh-65px)] w-full max-w-[500px] flex-col justify-between gap-5 overflow-y-auto px-5 py-10 text-white'>
       <Card user={selectedUser} />
       <div className='h-[100px] bg-red-500'>
         <p>{`Buttons`}</p>
