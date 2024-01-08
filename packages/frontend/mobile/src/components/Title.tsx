@@ -14,6 +14,7 @@ interface TitleProps extends TextProps {
 
 export default function Title({ children, size }: TitleProps) {
   const [isFontLoaded, setIsFontLoaded] = useState(false);
+
   const { colors } = useTheme();
 
   const styles = StyleSheet.create({
