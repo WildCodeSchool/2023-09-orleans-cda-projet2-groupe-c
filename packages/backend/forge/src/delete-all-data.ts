@@ -1,5 +1,11 @@
 import { db } from '@app/backend-shared';
 
+const allUsers = await db.selectFrom('user').selectAll().execute();
+
+if (allUsers.length > 0) {
+  await db.deleteFrom('user').execute();
+}
+
 const allCategories = await db
   .selectFrom('hobby_category')
   .selectAll()
@@ -31,6 +37,27 @@ const allCities = await db.selectFrom('city').selectAll().execute();
 
 if (allCities.length > 0) {
   await db.deleteFrom('city').execute();
+}
+
+const usersHobbies = await db.selectFrom('hobby_user').selectAll().execute();
+
+if (usersHobbies.length > 0) {
+  await db.deleteFrom('hobby_user').execute();
+}
+
+const usersLanguages = await db
+  .selectFrom('language_user')
+  .selectAll()
+  .execute();
+
+if (usersLanguages.length > 0) {
+  await db.deleteFrom('language_user').execute();
+}
+
+const usersPictures = await db.selectFrom('picture').selectAll().execute();
+
+if (usersPictures.length > 0) {
+  await db.deleteFrom('picture').execute();
 }
 
 // eslint-disable-next-line unicorn/no-process-exit
