@@ -2,7 +2,7 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { useTheme } from '../contexts/ThemeContext';
-import { themeColors } from '../themes/theme';
+import { lightModeColors, themeColors } from '../themes/theme';
 
 interface ButtonProps {
   readonly children: React.ReactNode;
@@ -44,9 +44,9 @@ export default function ButtonMobile({
         isOutline ?? false
           ? // eslint-disable-next-line unicorn/no-nested-ternary
             colorTheme === 'light'
-            ? '#eb0573'
-            : '#fcfcfe'
-          : '#fcfcfe',
+            ? lightModeColors.primary
+            : lightModeColors.notification
+          : lightModeColors.notification,
     },
   });
 
