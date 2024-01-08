@@ -14,6 +14,11 @@ import { insertTravelingHobbies } from './hobbies/insert-traveling-hobbies';
 import { insertWritingHobbies } from './hobbies/insert-writing-hobbies';
 import { insertLanguages } from './languages/insert-languages';
 import { insertTechnologies } from './technologies/insert-technologies';
+import { insertUsers } from './users/insert-users';
+import { insertUsersHobbies } from './users/insert-users-hobbies';
+import { insertUsersLanguages } from './users/insert-users-languages';
+import { insertUsersPictures } from './users/insert-users-pictures';
+import { insertUsersTechnologies } from './users/insert-users-technologies';
 
 const insertAllData = async () => {
   try {
@@ -37,6 +42,14 @@ const insertAllData = async () => {
     await insertTechnologies();
 
     await insertLanguages();
+
+    await insertUsers();
+    await insertUsersLanguages();
+    await insertUsersHobbies();
+    await insertUsersTechnologies();
+    await insertUsersPictures('man');
+    await insertUsersPictures('woman');
+    await insertUsersPictures('non-binary');
   } catch (error) {
     throw new Error(`Impossible to insert all data: ${String(error)}`);
   }
