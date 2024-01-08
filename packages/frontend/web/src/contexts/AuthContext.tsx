@@ -10,6 +10,7 @@ type AuthProviderState = {
   isLoggedIn: boolean;
   setIsLoggedIn: (value: boolean) => void;
   isLoading: boolean;
+  userId: number | undefined;
 };
 
 // Create an authentification context
@@ -20,6 +21,7 @@ const authProviderContext = createContext<AuthProviderState | undefined>(
 export default function AuthContext({ children, ...props }: AuthProviderProps) {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [userId, setUserId] = useState<number | undefined>();
 
   // Verify if the user is logged in
   useEffect(() => {
@@ -36,9 +38,11 @@ export default function AuthContext({ children, ...props }: AuthProviderProps) {
         // Convert the response to json
         const data = (await res.json()) as {
           isLoggedIn: boolean;
+          userId: number;
         };
 
         setIsLoggedIn(data.isLoggedIn);
+        setUserId(data.userId);
       } catch (error) {
         throw new Error(`Failed to verify auth: ${String(error)}`);
       } finally {
@@ -64,8 +68,9 @@ export default function AuthContext({ children, ...props }: AuthProviderProps) {
       isLoggedIn,
       setIsLoggedIn,
       isLoading,
+      userId,
     };
-  }, [isLoggedIn, isLoading]);
+  }, [isLoggedIn, isLoading, userId]);
 
   return (
     <authProviderContext.Provider {...props} value={value}>

@@ -86,10 +86,10 @@ export interface UserActionTable {
   id: Generated<number>;
   initiator_id: number;
   receiver_id: number;
-  liked_at: Date;
-  superlike_at: Date;
-  next_at: Date;
-  canceled_at: Date;
+  liked_at?: Date;
+  superlike_at?: Date;
+  next_at?: Date;
+  canceled_at?: Date;
 }
 
 export type Technology = Selectable<TechnologyTable>;

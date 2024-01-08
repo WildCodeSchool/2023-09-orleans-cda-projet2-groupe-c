@@ -16,6 +16,7 @@
   }
 
   .dark {
+    --primary: #eb0573;
     --secondary: #fcfcfe;
     --light-hard: #111214;
     --light-medium: #1c1c1f;
