@@ -1,8 +1,6 @@
 import { useFormContext } from 'react-hook-form';
-import { ZodError } from 'zod';
 
-import type { FormNameValidation } from '@app/shared';
-import { formName } from '@app/shared';
+import { type FormNameValidation, formNameSchema } from '@app/shared';
 
 import FormContainer from './FormContainer';
 
@@ -21,20 +19,9 @@ export default function FormName() {
         id='name'
         placeholder='name'
         {...register('name', {
-          pattern: {
-            value: /^\w*$/,
-            message: 'ⓘ Special characters are not allowed',
-          },
           validate: (value) => {
-            try {
-              formName.shape.name.parse(value);
-              return true;
-            } catch (error: unknown) {
-              if (error instanceof ZodError) {
-                return error.errors[0]?.message;
-              }
-              return 'An error occurred';
-            }
+            const result = formNameSchema.shape.name.safeParse(value);
+            return result.success ? true : result.error.errors[0]?.message;
           },
         })}
         className='border-primary bg-light mt-2 h-5 w-full rounded-md border px-2 py-6 text-lg focus:outline-none lg:text-xl'

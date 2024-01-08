@@ -17,27 +17,25 @@ import FormName from '@/components/forms/FormName';
 import FormTechnology from '@/components/forms/FormTechnology';
 import FormTest from '@/components/forms/FormTest';
 
+const PAGES = [
+  { currentPage: 3, component: <FormName /> },
+  { currentPage: 1, component: <FormBirthDate /> },
+  { currentPage: 2, component: <FormIAm /> },
+  { currentPage: 0, component: <FormCity /> },
+  { currentPage: 4, component: <FormLanguage /> },
+  { currentPage: 5, component: <FormTechnology /> },
+  { currentPage: 6, component: <FormHobby /> },
+  { currentPage: 7, component: <FormBio /> },
+  { currentPage: 8, component: <FormGitHub /> },
+  { currentPage: 9, component: <FormTest /> },
+  { currentPage: 10, component: <FormEnd /> },
+];
+
 export default function FormProfile() {
   const [page, setPage] = useState<number>(0);
   //I use the const methods to send all useForm properties to my child elements
   const methods = useForm<ProfileForm>();
   const { handleSubmit, getValues } = methods;
-
-  const PAGES = [
-    { currentPage: 0, component: <FormName /> },
-    { currentPage: 1, component: <FormBirthDate /> },
-    { currentPage: 2, component: <FormIAm /> },
-    { currentPage: 3, component: <FormCity /> },
-    { currentPage: 4, component: <FormLanguage /> },
-    { currentPage: 5, component: <FormTechnology /> },
-    { currentPage: 6, component: <FormHobby /> },
-    { currentPage: 7, component: <FormBio /> },
-    { currentPage: 8, component: <FormGitHub /> },
-    { currentPage: 9, component: <FormTest /> },
-    { currentPage: 10, component: <FormEnd /> },
-  ];
-
-  console.log(page);
 
   const formSubmit = async (data: ProfileForm) => {
     console.log('Valeur stocké:', getValues());

@@ -25,6 +25,7 @@
 
   body {
     @apply bg-light-medium;
+    overflow-y: hidden;
   }
 
   input::placeholder {

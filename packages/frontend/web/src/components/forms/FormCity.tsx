@@ -1,58 +1,72 @@
-import { type ChangeEvent, useState } from 'react';
+import { useState } from 'react';
 import { useFormContext } from 'react-hook-form';
+
+import { formCityShema } from '@app/shared';
+import type { CityBody, FormCityValidation, Point } from '@app/shared';
 
 import FormContainer from './FormContainer';
 
-type City = {
-  id: number;
-  name: string;
-};
+interface Coordinates {
+  coordinates: Point;
+}
 
 export default function FormCity() {
-  const { register, setValue, getValues } = useFormContext();
-  const [inputValue, setInputValue] = useState<string>(
-    getValues('city') === undefined ? '' : getValues('city'),
-  );
-  const [cities, setCities] = useState<Array<City>>([]);
+  const { register, setValue, getValues, formState } =
+    useFormContext<FormCityValidation>();
+  const { errors } = formState;
+  const { onChange, ...rest } = register('cityName');
+  const [cities, setCities] = useState<CityBody[]>([]);
 
-  const handleCityClick = (cityName: string, cityId: number) => {
-    setInputValue(cityName);
+  register('cityId', {
+    validate: (value) => {
+      const result = formCityShema.safeParse({
+        id: value,
+        name: getValues('cityName'),
+      });
+      return result.success ? true : result.error.errors[0]?.message;
+    },
+  });
+  const searchBar = getValues('cityName');
+
+  const handleCityChange = (cityName: string, cityId: number) => {
     setCities([]); // Clear the cities after selecting one
     setValue('cityId', cityId); // Update the form value
-    setValue('city', cityName); //Update name value
+    setValue('cityName', cityName); //Update name value
   };
 
-  const handleChange = (event: ChangeEvent<HTMLInputElement> | undefined) => {
-    if (event) {
-      const input = event.target.value;
-      setInputValue(input);
+  const handleChange = () => {
+    if (Boolean(searchBar) && searchBar.length >= 3) {
+      const abortController = new AbortController();
 
-      // Fetch cities when input length is 3 or more
-      if (input.length >= 3) {
-        const abortController = new AbortController();
+      (async () => {
+        try {
+          const response = await fetch(
+            `${
+              import.meta.env.VITE_API_URL
+            }/cities?name=${searchBar}&order=asc`,
+            {
+              signal: abortController.signal,
+            },
+          );
+          const data = await response.json();
+          const citiesWithoutCoordinates = data.map(
+            ({
+              // eslint-disable-next-line @typescript-eslint/no-unused-vars
+              coordinates,
+              ...rest
+            }: Coordinates) => rest,
+          );
+          setCities(citiesWithoutCoordinates);
+        } catch (error) {
+          throw new Error(`${String(error)}`);
+        }
+      })();
 
-        (async () => {
-          try {
-            const response = await fetch(
-              `${import.meta.env.VITE_API_URL}/cities?name=${input}&order=asc`,
-              {
-                signal: abortController.signal,
-              },
-            );
-
-            const data = await response.json();
-            setCities(data);
-          } catch (error) {
-            throw new Error(`${String(error)}`);
-          }
-        })();
-
-        return () => {
-          abortController.abort();
-        };
-      } else if (input.length === 0) {
-        setCities([]);
-      }
+      return () => {
+        abortController.abort();
+      };
+    } else {
+      setCities([]);
     }
   };
 
@@ -64,9 +78,12 @@ export default function FormCity() {
       <div className='text-secondary relative'>
         <input
           type='search'
-          id='city'
-          onChange={handleChange}
-          value={inputValue}
+          id='searchBar'
+          onChange={(event) => {
+            handleChange();
+            void onChange(event);
+          }}
+          {...rest}
           placeholder='Write and choose your city'
           className='border-primary bg-light mt-2 h-5 w-full rounded-md border px-2 py-6 text-lg focus:outline-none lg:text-xl'
         />
@@ -76,23 +93,26 @@ export default function FormCity() {
               <label
                 htmlFor={city.name}
                 className='hover:bg-primary hover:text-light flex w-full cursor-pointer items-center justify-center py-3 text-xl'
-                onClick={() => {
-                  handleCityClick(city.name, city.id);
-                }}
               >
                 {city.name}
               </label>
               <input
                 type='radio'
                 id={city.name}
-                value={city.name}
+                value={city.id}
                 className='sr-only'
-                {...register('cityId', { required: true })}
+                onChange={(event) => {
+                  handleCityChange(city.name, Number(event.target.value));
+                }}
               />
             </div>
           ))}
         </div>
       </div>
+
+      {errors.cityId ? (
+        <p className='error-message'>{errors.cityId.message}</p>
+      ) : undefined}
     </FormContainer>
   );
 }

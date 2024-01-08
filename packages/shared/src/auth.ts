@@ -9,8 +9,12 @@ export const authSchema = z
       })
       .trim()
       .min(3, { message: 'ⓘ Name must be more than 3 characters.' })
-      .max(255, { message: 'ⓘ Name must be less than 255 characters.' }),
-    birthdate: z.date({ required_error: 'ⓘ Birthdate is required.' }).refine(
+      .max(255, { message: 'ⓘ Name must be less than 255 characters.' })
+      .regex(
+        new RegExp(/^[A-Za-z]+['s-]?[ A-Za-z]+$/),
+        'ⓘ Name should contain only alphabets',
+      ),
+    birthdate: z.date().refine(
       (date) => {
         // Calculate user age for registration, user must be >= 18 years old
         const age = new Date().getFullYear() - date.getFullYear();
@@ -19,17 +23,30 @@ export const authSchema = z
       },
       { message: 'ⓘ You must be 18 years old to register.' },
     ),
-    gender: z.enum(['man', 'woman', 'non-binary', '']),
+    gender: z.enum(['man', 'woman', 'non-binary'], {
+      invalid_type_error: 'ⓘ Please select one of the options',
+    }),
 
     biography: z.optional(
-      z.string().trim().max(1000, {
-        message: 'ⓘ Biography must be less than 1000 characters.',
-      }),
+      z
+        .string()
+        .trim()
+        .max(1000, {
+          message: 'ⓘ Biography must be less than 1000 characters.',
+        })
+        .regex(
+          new RegExp(/^[A-Za-z]+['s-]?[ A-Za-z]+$/),
+          'ⓘ Biography should contain only alphabets',
+        ),
     ),
     account_github: z.optional(
-      z.string().trim().max(255, {
-        message: 'ⓘ Your account Github must be less than 255 characters.',
-      }),
+      z
+        .string()
+        .trim()
+        .max(255, {
+          message: 'ⓘ Your account Github must be less than 255 characters.',
+        })
+        .or(z.string().url()),
     ),
     role: z.enum(['user', 'admin']),
     email: z

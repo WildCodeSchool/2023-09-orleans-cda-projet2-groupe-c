@@ -1,8 +1,6 @@
 import { useFormContext } from 'react-hook-form';
-import { ZodError } from 'zod';
 
-import type { FormIamValidation } from '@app/shared';
-import { formIamShema } from '@app/shared';
+import { type FormIamValidation, formIamSchema } from '@app/shared';
 
 import FormContainer from './FormContainer';
 
@@ -46,15 +44,10 @@ export default function FormIAm() {
               id={option.id}
               {...register('gender', {
                 validate: (value) => {
-                  try {
-                    formIamShema.shape.gender.parse(value);
-                    return true;
-                  } catch (error: unknown) {
-                    if (error instanceof ZodError) {
-                      return 'ⓘ Gender is required.';
-                    }
-                    return 'An error occurred';
-                  }
+                  const result = formIamSchema.shape.gender.safeParse(value);
+                  return result.success
+                    ? true
+                    : result.error.errors[0]?.message;
                 },
               })}
               value={option.value}

@@ -1,6 +1,7 @@
 import express from 'express';
 
 import { db } from '@app/backend-shared';
+import type { FormBackValidation, ProfileForm } from '@app/shared';
 
 const register = express.Router();
 
@@ -15,7 +16,7 @@ register.post('/', async (req, res) => {
       name,
       role,
       birthdate,
-      gender,
+      /* gender, */
       cityId,
       biography,
       accountGithub,
@@ -24,7 +25,7 @@ register.post('/', async (req, res) => {
       languages,
       technologies,
       hobbies,
-    } = req.body;
+    } = req.body as FormBackValidation;
 
     //use the transaction property allows us to cancel the request if an
     //error has arrived during the submission of the data
@@ -35,7 +36,7 @@ register.post('/', async (req, res) => {
           name,
           role,
           birthdate,
-          gender,
+          /*  gender, */
           city_id: cityId,
           biography,
           account_github: accountGithub,

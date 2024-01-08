@@ -1,32 +1,40 @@
 import { useEffect, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
-import { ZodError } from 'zod';
 
-import type { FormCategoryValidation } from '@app/shared';
-import { formHobbiesShema } from '@app/shared';
+import {
+  type CategoryHobby,
+  type FormCategoryValidation,
+  formHobbiesChooseShema,
+} from '@app/shared';
 
 import FormContainer from './FormContainer';
 
 export default function FormHobby() {
-  const { register, watch, formState } =
-    useFormContext<FormCategoryValidation>();
+  const { register, formState } = useFormContext<FormCategoryValidation>();
   const { errors } = formState;
-  const [hobbies, setHobbies] = useState<FormCategoryValidation[]>([]);
+  const [hobbies, setHobbies] = useState<CategoryHobby[]>([]);
   const [selectedHobby, setSelectedHobby] = useState<string[]>([]);
+
+  console.log(selectedHobby);
+  console.log(hobbies);
 
   const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const hobby = event.target.id;
 
     if (selectedHobby.includes(hobby)) {
       setSelectedHobby(selectedHobby.filter((lang) => lang !== hobby));
+      //localStorage.setItem('selectedHobby', JSON.stringify(selectedHobby.filter((lang) => lang !== hobby)));
     } else if (selectedHobby.length < 6) {
       setSelectedHobby([...selectedHobby, hobby]);
+      //localStorage.setItem('selectedHobby', JSON.stringify([...selectedHobby, hobby]));
     }
   };
 
-  console.log(watch('hobbies'));
-
   useEffect(() => {
+    /*   const savedHobbies = localStorage.getItem('selectedHobby');
+    if (savedHobbies) {
+      setSelectedHobby(JSON.parse(savedHobbies));
+    } */
     const abortController = new AbortController();
 
     (async () => {
@@ -73,19 +81,15 @@ export default function FormHobby() {
                     type='checkbox'
                     {...register('hobbies', {
                       validate: (value) => {
-                        try {
-                          formHobbiesShema.shape.hobbies.parse(value);
-                          return true;
-                        } catch (error: unknown) {
-                          if (error instanceof ZodError) {
-                            return 'ⓘ Select at least one hobby';
-                          }
-                          return 'An error occurred';
-                        }
+                        const result =
+                          formHobbiesChooseShema.shape.hobbies.safeParse(value);
+                        return result.success
+                          ? true
+                          : result.error.errors[0]?.message;
                       },
                     })}
                     onChange={handleCheckboxChange}
-                    className='sr-only'
+                    className=''
                   />
                 </label>
               ))}

@@ -1,8 +1,6 @@
 import { useFormContext } from 'react-hook-form';
-import { ZodError } from 'zod';
 
-import type { FormBirthDateValidation } from '@app/shared';
-import { formBirthDate } from '@app/shared';
+import { type FormBirthDateValidation, formBirthDateSchema } from '@app/shared';
 
 import FormContainer from './FormContainer';
 
@@ -18,26 +16,17 @@ export default function FormBirthDate() {
       <span className=' flex justify-start pb-8'>
         {'You must be of legal age to register.'}
       </span>
-      <label className='' htmlFor='birthdate'>
-        {'Username *'}
-      </label>
       <input
         type='date'
         id='birthdate'
         {...register('birthdate', {
           validate: (value) => {
-            if ((value as unknown as string) === '') {
-              return 'ⓘ Birthdate is required.';
+            const date = new Date(value);
+            if (Number.isNaN(date.getTime())) {
+              return "ⓘ That's not a date!";
             }
-            try {
-              formBirthDate.shape.birthdate.parse(new Date(value)); // convert the string to a Date
-              return true;
-            } catch (error: unknown) {
-              if (error instanceof ZodError) {
-                return error.errors[0]?.message;
-              }
-              return 'An error occurred';
-            }
+            const result = formBirthDateSchema.shape.birthdate.safeParse(date);
+            return result.success ? true : result.error.errors[0]?.message;
           },
         })}
         className='border-primary bg-light mt-2 h-5 w-full rounded-md border px-2 py-6 text-xl focus:outline-none'

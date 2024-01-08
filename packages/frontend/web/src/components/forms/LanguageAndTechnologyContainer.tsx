@@ -20,7 +20,8 @@ export default function LanguageAndTechnology({
   subtitle,
   fieldName,
 }: SelectionFormProps) {
-  const { register } = useFormContext<FormBaseValidation>();
+  const { register, formState } = useFormContext<FormBaseValidation>();
+  const { errors } = formState;
   const [items, setItems] = useState<FormBaseValidation[]>([]);
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
 
@@ -123,7 +124,14 @@ export default function LanguageAndTechnology({
                   value={item.id}
                   id={item.name}
                   type='checkbox'
-                  {...register(fieldName, { required: true })}
+                  {...register(fieldName, {
+                    validate: (value) => {
+                      if (Array.isArray(value) && value.length > 0) {
+                        return true;
+                      }
+                      return 'ⓘ You must select at least one item.';
+                    },
+                  })}
                   onChange={handleCheckboxChange}
                   disabled={
                     selectedItems.length >= 6 &&
@@ -137,9 +145,12 @@ export default function LanguageAndTechnology({
         </div>
       </div>
       <div className='h-7'>
-        {selectedItems.length >= 6 && (
-          <p className=' text-next text-base'>{'stop tu en a 6 !'}</p>
+        {selectedItems.length > 6 && (
+          <p className=' text-next text-base'>
+            {'you have already selected 6 !'}
+          </p>
         )}
+        {errors[fieldName] ? <p>{errors[fieldName]?.message}</p> : undefined}
       </div>
     </FormContainer>
   );
