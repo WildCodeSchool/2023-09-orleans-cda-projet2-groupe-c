@@ -2,45 +2,16 @@ import express from 'express';
 
 import { db } from '@app/backend-shared';
 import { type ActionBody, actionSchema, receiverSchema } from '@app/shared';
-import type { Request } from '@app/shared';
+import type { Request as ExpressRequest } from '@app/shared';
 
 import { getUserId } from '@/middlewares/auth-handlers';
+import { getSuperLikeCount } from '@/middlewares/interaction-handlers';
+
+interface Request extends ExpressRequest {
+  superLikesCount?: number;
+}
 
 const interactionRouter = express.Router();
-
-// Function to get superlikes count
-const superLikeCount = async (userId: number) => {
-  // Create a new date object and get the current date
-  const currentDate = new Date();
-
-  // Set time to 00:00:00:00
-  currentDate.setHours(0, 0, 0, 0);
-
-  // Create a new date object for the next date
-  const nextDate = new Date(currentDate);
-
-  // Get the current day + 1 and set the next date
-  nextDate.setDate(nextDate.getDate() + 1);
-
-  // Select all superlikes from the user between the current date and the next date
-  const superLikesCount = await db
-    .selectFrom('user_action')
-    .select((eb) => eb.fn.countAll<number>().as('superlike_count'))
-    .where('initiator_id', '=', userId)
-    // Filter superlikes's date with "WHERE...AND WHERE" clause and compare if the date is between the current date and the next date
-    .where('superlike_at', '>=', currentDate)
-    .where('superlike_at', '<', nextDate)
-    .execute();
-
-  // By default, superliker count is 5, for each superlike post, decrement the counter
-  // Reset the counter to 5 when the date has changed
-  let superLikesCounter = 5 - superLikesCount[0].superlike_count;
-
-  // Make sure the counter is between 0 and 5
-  superLikesCounter = Math.max(0, Math.min(5, superLikesCounter));
-
-  return superLikesCounter;
-};
 
 // Get all interactions from the user
 interactionRouter.get(
@@ -48,7 +19,7 @@ interactionRouter.get(
   getUserId,
   async (req: Request, res) => {
     try {
-      // Get the userId from the payload
+      // Get userId from the request
       const userId = req.userId as number;
 
       // Select all interactions from the user
@@ -83,13 +54,10 @@ interactionRouter.get(
 interactionRouter.get(
   '/:userId/interactions/superlike/count',
   getUserId,
-  async (req: Request, res) => {
+  getSuperLikeCount,
+  (req: Request, res) => {
     try {
-      // Get the userId from the payload
-      const userId = req.userId as number;
-
-      // Get superlikes count
-      const remainingSuperLikes = await superLikeCount(userId);
+      const remainingSuperLikes = req.superLikesCount as number;
 
       res.status(200).json(remainingSuperLikes);
     } catch {
@@ -104,11 +72,16 @@ interactionRouter.get(
 interactionRouter.post(
   '/:userId/interactions/:action',
   getUserId,
+  getSuperLikeCount,
   async (req: Request, res) => {
     try {
-      // Get the userId from the payload
+      // Get the userId from the request
       const userId = req.userId as number;
 
+      // Get superlikes count from the request
+      const remainingSuperLikes = req.superLikesCount as number;
+
+      // Get the action from the request params
       const action = req.params.action;
 
       // Get the receiver id from the request body
@@ -136,6 +109,7 @@ interactionRouter.post(
         canceled_at: new Date(),
       };
 
+      // Switch between the action type
       switch (action) {
         case 'like': {
           actionBody = {
@@ -145,6 +119,13 @@ interactionRouter.post(
           break;
         }
         case 'superlike': {
+          // If there is no remaining superlikes, returns an error
+          if (remainingSuperLikes <= 0) {
+            return res
+              .status(400)
+              .json({ success: false, error: 'No remaining superlikes!' });
+          }
+
           actionBody = {
             ...actionBody,
             superlike_at: new Date(),
@@ -170,18 +151,8 @@ interactionRouter.post(
         return;
       }
 
-      // Get superlikes count
-      const remainingSuperLikes = await superLikeCount(userId);
-
-      // If superlikes count is less than or equal to 0, returns an error
-      if (remainingSuperLikes <= 0) {
-        return res
-          .status(400)
-          .json({ success: false, error: 'No remaining superlikes!' });
-      } else {
-        // Insert like interaction in database with zod parsed data
-        await db.insertInto('user_action').values(result.data).execute();
-      }
+      // Insert like interaction in database with zod parsed data
+      await db.insertInto('user_action').values(result.data).execute();
 
       res.json({ success: true });
     } catch {
