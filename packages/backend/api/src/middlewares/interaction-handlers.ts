@@ -8,7 +8,7 @@ interface Request extends ExpressRequest {
 }
 
 // Function to get superlikes count
-const superLikeCount = async (userId: number): Promise<number> => {
+const superLikeCount = async (userId: number) => {
   // Create a new date object and get the current date
   const currentDate = new Date();
 
@@ -57,7 +57,7 @@ export const getSuperLikeCount = async (
     }
 
     const superLikesCount = await superLikeCount(userId);
-    req.superLikesCount = Number(superLikesCount); // Convert superLikesCount to a number
+    req.superLikesCount = superLikesCount;
 
     next();
   } catch {
