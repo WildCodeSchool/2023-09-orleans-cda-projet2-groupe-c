@@ -30,7 +30,7 @@ export const insertCategories = async () => {
       },
       {
         name: 'outing',
-        logo_path: '/images/categories-logos/outings.svg',
+        logo_path: '/images/categories-logos/outing.svg',
       },
       {
         name: 'photography',
@@ -42,7 +42,7 @@ export const insertCategories = async () => {
       },
       {
         name: 'sport',
-        logo_path: '/images/categories-logos/sports.svg',
+        logo_path: '/images/categories-logos/sport.svg',
       },
       {
         name: 'traveling',
