@@ -3,11 +3,13 @@ import express from 'express';
 import { jsonArrayFrom } from 'kysely/helpers/mysql';
 
 import { db } from '@app/backend-shared';
-import type { User } from '@app/shared';
+import type { Request } from '@app/shared';
+
+import { getUserId } from '@/middlewares/auth-handlers';
 
 const userRouter = express.Router();
 
-async function getUsers(userId: number): Promise<User[]> {
+async function getUsers(userId: number) {
   // Select all users with whom the initiator has not interacted
   //
   // MySQL query:
@@ -150,9 +152,10 @@ async function getUsers(userId: number): Promise<User[]> {
 }
 
 // Fetch a list of users without the user logged in
-userRouter.get('/:userId', async (req, res) => {
+userRouter.get('/:userId', getUserId, async (req: Request, res) => {
   try {
-    const userId = Number.parseInt(req.params.userId);
+    // Get the userId from the payload
+    const userId = req.userId as number;
 
     // use "getUsers" function to fetch users from the database
     const users = await getUsers(userId);

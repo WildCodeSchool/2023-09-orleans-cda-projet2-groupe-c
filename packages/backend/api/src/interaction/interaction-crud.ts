@@ -1,236 +1,196 @@
 import express from 'express';
 
 import { db } from '@app/backend-shared';
-import {
-  type LikeBody,
-  type NextBody,
-  type SuperLikeBody,
-  likeSchema,
-  nextSchema,
-  receiverSchema,
-  superLikeSchema,
-} from '@app/shared';
+import { type ActionBody, actionSchema, receiverSchema } from '@app/shared';
+import type { Request } from '@app/shared';
+
+import { getUserId } from '@/middlewares/auth-handlers';
 
 const interactionRouter = express.Router();
 
+// Function to get superlikes count
+const superLikeCount = async (userId: number) => {
+  // Create a new date object and get the current date
+  const currentDate = new Date();
+
+  // Set time to 00:00:00:00
+  currentDate.setHours(0, 0, 0, 0);
+
+  // Create a new date object for the next date
+  const nextDate = new Date(currentDate);
+
+  // Get the current day + 1 and set the next date
+  nextDate.setDate(nextDate.getDate() + 1);
+
+  // Select all superlikes from the user between the current date and the next date
+  const superLikesCount = await db
+    .selectFrom('user_action')
+    .select((eb) => eb.fn.countAll<number>().as('superlike_count'))
+    .where('initiator_id', '=', userId)
+    // Filter superlikes's date with "WHERE...AND WHERE" clause and compare if the date is between the current date and the next date
+    .where('superlike_at', '>=', currentDate)
+    .where('superlike_at', '<', nextDate)
+    .execute();
+
+  // By default, superliker count is 5, for each superlike post, decrement the counter
+  // Reset the counter to 5 when the date has changed
+  let superLikesCounter = 5 - superLikesCount[0].superlike_count;
+
+  // Make sure the counter is between 0 and 5
+  superLikesCounter = Math.max(0, Math.min(5, superLikesCounter));
+
+  return superLikesCounter;
+};
+
 // Get all interactions from the user
-interactionRouter.get('/:userId/interactions', async (req, res) => {
-  try {
-    const userId = Number.parseInt(req.params.userId);
+interactionRouter.get(
+  '/:userId/interactions',
+  getUserId,
+  async (req: Request, res) => {
+    try {
+      // Get the userId from the payload
+      const userId = req.userId as number;
 
-    const userActions = await db
-      .selectFrom('user_action as ua')
-      .innerJoin('user as receiver', 'receiver.id', 'ua.receiver_id')
-      .innerJoin('user as initiator', 'initiator.id', 'ua.initiator_id')
-      .select([
-        'initiator.id as initiator_id',
-        'initiator.name as initiator_name',
-        'receiver.id as receiver_id',
-        'receiver.name as receiver_name',
-        'next_at',
-        'liked_at',
-        'superlike_at',
-        'canceled_at',
-      ])
-      .where('initiator_id', '=', userId)
-      .execute();
+      // Select all interactions from the user
+      const userActions = await db
+        .selectFrom('user_action as ua')
+        .innerJoin('user as receiver', 'receiver.id', 'ua.receiver_id')
+        .innerJoin('user as initiator', 'initiator.id', 'ua.initiator_id')
+        .select([
+          'initiator.id as initiator_id',
+          'initiator.name as initiator_name',
+          'receiver.id as receiver_id',
+          'receiver.name as receiver_name',
+          'next_at',
+          'liked_at',
+          'superlike_at',
+          'canceled_at',
+        ])
+        .where('initiator_id', '=', userId)
+        .execute();
 
-    res.status(200).json(userActions);
-  } catch (error) {
-    res.status(500).json({ success: false, error });
-  }
-});
+      res.status(200).json(userActions);
+    } catch {
+      res.status(500).json({
+        success: false,
+        error: 'An error occurred while fetching interactions.',
+      });
+    }
+  },
+);
 
 // Get superlikes count from the user between the current date and the next date
 interactionRouter.get(
   '/:userId/interactions/superlike/count',
-  async (req, res) => {
+  getUserId,
+  async (req: Request, res) => {
     try {
-      const userId = Number.parseInt(req.params.userId);
+      // Get the userId from the payload
+      const userId = req.userId as number;
 
-      // Create a new date object and get the current date
-      const currentDate = new Date();
+      // Get superlikes count
+      const remainingSuperLikes = await superLikeCount(userId);
 
-      // Set time to 00:00:00:00
-      currentDate.setHours(0, 0, 0, 0);
-
-      // Create a new date object for the next date
-      const nextDate = new Date(currentDate);
-
-      // Get the current day + 1 and set the next date
-      nextDate.setDate(nextDate.getDate() + 1);
-
-      // Select all superlikes from the user between the current date and the next date
-      const superLikesCount = await db
-        .selectFrom('user_action')
-        .select((eb) => eb.fn.countAll<number>().as('superlike_count'))
-        // Filter superlikes's date with "WHERE...AND WHERE" clause and compare if the date is between the current date and the next date
-        .where('initiator_id', '=', userId)
-        .where('superlike_at', '>=', currentDate)
-        .where('superlike_at', '<', nextDate)
-        .execute();
-
-      // By default, superliker count is 5, for each superlike post, decrement the counter
-      // Reset the counter to 5 when the date has changed
-      let superLikesCounter = 5 - superLikesCount[0].superlike_count;
-
-      // Make sure the counter is between 0 and 5
-      superLikesCounter = Math.max(0, Math.min(5, superLikesCounter));
-
-      res.status(200).json(superLikesCounter);
-    } catch (error) {
-      res.status(500).json({ success: false, error });
+      res.status(200).json(remainingSuperLikes);
+    } catch {
+      res
+        .status(500)
+        .json({ error: 'An error occurred while fetching superlike count.' });
     }
   },
 );
 
 // Send a like
-interactionRouter.post('/:userId/interactions/like', async (req, res) => {
-  try {
-    const userId = Number.parseInt(req.params.userId);
+interactionRouter.post(
+  '/:userId/interactions/:action',
+  getUserId,
+  async (req: Request, res) => {
+    try {
+      // Get the userId from the payload
+      const userId = req.userId as number;
 
-    // Get the receiver id from the request body
-    // Use parse from zod to validate the request body
-    const { receiver_id: receiverId } = receiverSchema.parse(req.body);
+      const action = req.params.action;
 
-    // Get interaction between the user and the receiver
-    const existingInteraction = await db
-      .selectFrom('user_action')
-      .selectAll()
-      .where('initiator_id', '=', userId)
-      .where('receiver_id', '=', receiverId)
-      .execute();
+      // Get the receiver id from the request body
+      // Use parse from zod to validate the request body
+      const { receiver_id: receiverId } = receiverSchema.parse(req.body);
 
-    // If the interaction already exists, returns an error
-    if (existingInteraction.length > 0) {
-      return res
-        .status(400)
-        .json({ success: false, error: 'Interaction already exists !' });
+      // Get interaction between the user and the receiver
+      const existingInteraction = await db
+        .selectFrom('user_action')
+        .selectAll()
+        .where('initiator_id', '=', userId)
+        .where('receiver_id', '=', receiverId)
+        .execute();
+
+      // If the interaction already exists, returns an error
+      if (existingInteraction.length > 0) {
+        return res
+          .status(400)
+          .json({ success: false, error: 'Interaction already exists !' });
+      }
+
+      let actionBody: ActionBody = {
+        initiator_id: Number(userId),
+        receiver_id: receiverId,
+        canceled_at: new Date(),
+      };
+
+      switch (action) {
+        case 'like': {
+          actionBody = {
+            ...actionBody,
+            liked_at: new Date(),
+          };
+          break;
+        }
+        case 'superlike': {
+          actionBody = {
+            ...actionBody,
+            superlike_at: new Date(),
+          };
+          break;
+        }
+        case 'next': {
+          actionBody = {
+            ...actionBody,
+            next_at: new Date(),
+          };
+          break;
+        }
+      }
+
+      // Use safeParse from zod to validate the request body
+      // Return an object with success or error and data properties
+      const result = actionSchema.safeParse(actionBody);
+
+      // If one of the property values is incorrect, returns an error
+      if (!result.success) {
+        res.status(400).json({ success: false, error: result.error.message });
+        return;
+      }
+
+      // Get superlikes count
+      const remainingSuperLikes = await superLikeCount(userId);
+
+      // If superlikes count is less than or equal to 0, returns an error
+      if (remainingSuperLikes <= 0) {
+        return res
+          .status(400)
+          .json({ success: false, error: 'No remaining superlikes!' });
+      } else {
+        // Insert like interaction in database with zod parsed data
+        await db.insertInto('user_action').values(result.data).execute();
+      }
+
+      res.json({ success: true });
+    } catch {
+      res.status(500).json({
+        success: false,
+        error: 'An error occurred during user interaction.',
+      });
     }
-
-    const likeBody: LikeBody = {
-      initiator_id: userId,
-      receiver_id: receiverId,
-      liked_at: new Date(),
-      canceled_at: new Date(),
-    };
-
-    // Use safeParse from zod to validate the request body
-    // Return an object with success or error and data properties
-    const result = likeSchema.safeParse(likeBody);
-
-    // If one of the property values is incorrect, returns an error
-    if (!result.success) {
-      res.status(400).json({ success: false, error: result.error.message });
-      return;
-    }
-
-    // Insert like interaction in database with zod parsed data
-    await db.insertInto('user_action').values(result.data).execute();
-
-    res.json({ success: true });
-  } catch {
-    res.status(500).json({ success: false });
-  }
-});
-
-// Send a superlike
-interactionRouter.post('/:userId/interactions/superlike', async (req, res) => {
-  try {
-    const userId = Number.parseInt(req.params.userId);
-
-    // Get the receiver id from the request body
-    // Use parse from zod to validate the request body
-    const { receiver_id: receiverId } = receiverSchema.parse(req.body);
-
-    // Get interaction between the user and the receiver
-    const existingInteraction = await db
-      .selectFrom('user_action')
-      .selectAll()
-      .where('initiator_id', '=', userId)
-      .where('receiver_id', '=', receiverId)
-      .execute();
-
-    // If the interaction already exists, returns an error
-    if (existingInteraction.length > 0) {
-      return res
-        .status(400)
-        .json({ success: false, error: 'Interaction already exists !' });
-    }
-
-    const superLikeBody: SuperLikeBody = {
-      initiator_id: userId,
-      receiver_id: receiverId,
-      superlike_at: new Date(),
-      canceled_at: new Date(),
-    };
-
-    // Use safeParse from zod to validate the request body
-    // Return an object with success or error and data properties
-    const result = superLikeSchema.safeParse(superLikeBody);
-
-    // If one of the property values is incorrect, returns an error
-    if (!result.success) {
-      res.status(400).json({ success: false, error: result.error.message });
-      return;
-    }
-
-    // Insert superlike interaction in database with zod parsed data
-    await db.insertInto('user_action').values(result.data).execute();
-
-    res.json({ success: true });
-  } catch {
-    res.status(500).json({ success: false });
-  }
-});
-
-// Next a user
-interactionRouter.post('/:userId/interactions/next', async (req, res) => {
-  try {
-    const userId = Number.parseInt(req.params.userId);
-
-    // Get the receiver id from the request body
-    // Use parse from zod to validate the request body
-    const { receiver_id: receiverId } = receiverSchema.parse(req.body);
-
-    // Get interaction between the user and the receiver
-    const existingInteraction = await db
-      .selectFrom('user_action')
-      .selectAll()
-      .where('initiator_id', '=', userId)
-      .where('receiver_id', '=', receiverId)
-      .execute();
-
-    // If the interaction already exists, returns an error
-    if (existingInteraction.length > 0) {
-      return res
-        .status(400)
-        .json({ success: false, error: 'Interaction already exists !' });
-    }
-
-    const nextBody: NextBody = {
-      initiator_id: userId,
-      receiver_id: receiverId,
-      next_at: new Date(),
-      canceled_at: new Date(),
-    };
-
-    // Use safeParse from zod to validate the request body
-    // Return an object with success or error and data properties
-    const result = nextSchema.safeParse(nextBody);
-
-    // If one of the property values is incorrect, returns an error
-    if (!result.success) {
-      res.status(400).json({ success: false, error: result.error.message });
-      return;
-    }
-
-    await db.insertInto('user_action').values(result.data).execute();
-
-    res.json({ success: true });
-  } catch {
-    res.status(500).json({ success: false });
-  }
-});
+  },
+);
 
 export default interactionRouter;

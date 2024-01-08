@@ -1,4 +1,9 @@
+import type { Request as ExpressRequest } from 'express';
 import { z } from 'zod';
+
+export interface Request extends ExpressRequest {
+  userId?: number;
+}
 
 export const receiver = z.number().int().positive();
 
@@ -14,20 +19,10 @@ export const interactionBaseSchema = z.object({
   canceled_at: z.date(),
 });
 
-export const likeSchema = interactionBaseSchema.extend({
-  liked_at: z.date(),
+export const actionSchema = interactionBaseSchema.extend({
+  liked_at: z.date().optional(),
+  superlike_at: z.date().optional(),
+  next_at: z.date().optional(),
 });
 
-export const superLikeSchema = interactionBaseSchema.extend({
-  superlike_at: z.date(),
-});
-
-export const nextSchema = interactionBaseSchema.extend({
-  next_at: z.date(),
-});
-
-export type LikeBody = z.infer<typeof likeSchema>;
-
-export type SuperLikeBody = z.infer<typeof superLikeSchema>;
-
-export type NextBody = z.infer<typeof nextSchema>;
+export type ActionBody = z.infer<typeof actionSchema>;

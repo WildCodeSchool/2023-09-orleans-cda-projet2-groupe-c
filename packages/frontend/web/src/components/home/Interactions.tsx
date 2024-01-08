@@ -20,26 +20,27 @@ const interactionVariants = {
 };
 
 export default function Interactions() {
-  const {
-    selectedUser,
-    handleLikeClick,
-    handleSuperLikeClick,
-    handleNextClick,
-    superLikesCount,
-  } = useInteraction();
+  const { selectedUser, handleInteraction, superLikesCount } = useInteraction();
 
   return (
     <div>
       <p>{selectedUser?.name}</p>
       <div className='flex justify-center'>
         <div className='flex w-full max-w-[500px] items-center justify-between px-5'>
-          <BulletBase size='20' onClick={handleNextClick}>
+          <BulletBase
+            size='20'
+            onClick={() => {
+              handleInteraction('next');
+            }}
+          >
             <NextIcon className='w-10 fill-[#D52121]' />
           </BulletBase>
 
           <BulletBase
             size='16'
-            onClick={handleSuperLikeClick}
+            onClick={() => {
+              handleInteraction('superlike');
+            }}
             disabled={superLikesCount > 0 ? false : true} // Disable the button if superLikesCount is 0
           >
             <motion.div
@@ -54,7 +55,12 @@ export default function Interactions() {
             </motion.div>
           </BulletBase>
 
-          <BulletBase size='20' onClick={handleLikeClick}>
+          <BulletBase
+            size='20'
+            onClick={() => {
+              handleInteraction('like');
+            }}
+          >
             <LikeIcon className='fill-primary w-12' />
           </BulletBase>
         </div>

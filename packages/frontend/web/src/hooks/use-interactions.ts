@@ -15,6 +15,7 @@ export default function useInteractions({ ...props }) {
     async ({ signal }: { signal: AbortSignal }) => {
       const res = await fetch(`${API_URL}/users/${userId}`, {
         signal,
+        credentials: 'include',
       });
       const data = await res.json();
 
@@ -31,6 +32,7 @@ export default function useInteractions({ ...props }) {
         `${API_URL}/users/${userId}/interactions/superlike/count`,
         {
           signal,
+          credentials: 'include',
         },
       );
       const data = await res.json();
@@ -71,6 +73,7 @@ export default function useInteractions({ ...props }) {
           headers: {
             'content-type': 'application/json',
           },
+          credentials: 'include',
           body: JSON.stringify({
             receiver_id: selectedUser?.id, // Send in the body the id of the selected user
           }),

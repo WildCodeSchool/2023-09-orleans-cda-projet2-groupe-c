@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useMemo } from 'react';
+import { createContext, useContext, useMemo } from 'react';
 
 import type { UserTable } from '@app/shared';
 
@@ -12,9 +12,7 @@ type HomeProviderProps = {
 type HomeProviderState = {
   selectedUser: UserTable | undefined;
   superLikesCount: number;
-  handleLikeClick: () => void;
-  handleSuperLikeClick: () => void;
-  handleNextClick: () => void;
+  handleInteraction: (action: string) => void;
 };
 
 // Create a context
@@ -34,38 +32,15 @@ export default function InteractionContext({
     userId,
   });
 
-  const handleLikeClick = useCallback(
-    () => handleInteraction('like'),
-    [handleInteraction],
-  );
-
-  const handleSuperLikeClick = useCallback(
-    () => handleInteraction('superlike'),
-    [handleInteraction],
-  );
-
-  const handleNextClick = useCallback(
-    () => handleInteraction('next'),
-    [handleInteraction],
-  );
-
   // Create an objet with the value to be shared
   // Memorize the value to avoid re-rendering
   const value = useMemo(() => {
     return {
       selectedUser,
       superLikesCount,
-      handleLikeClick,
-      handleSuperLikeClick,
-      handleNextClick,
+      handleInteraction,
     };
-  }, [
-    selectedUser,
-    superLikesCount,
-    handleLikeClick,
-    handleSuperLikeClick,
-    handleNextClick,
-  ]);
+  }, [selectedUser, superLikesCount, handleInteraction]);
 
   return (
     <interactionProviderContext.Provider {...props} value={value}>
