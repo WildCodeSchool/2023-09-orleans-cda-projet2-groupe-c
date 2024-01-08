@@ -35,18 +35,18 @@ export default function FormHobby() {
     if (savedHobbies) {
       setSelectedHobby(JSON.parse(savedHobbies));
     } */
-    const abortController = new AbortController();
+    const controller = new AbortController();
 
     (async () => {
       const response = await fetch(`${import.meta.env.VITE_API_URL}/hobbies`, {
-        signal: abortController.signal,
+        signal: controller.signal,
       });
       const data = await response.json();
       setHobbies(data);
     })();
 
     return () => {
-      abortController.abort();
+      controller.abort();
     };
   }, []);
 

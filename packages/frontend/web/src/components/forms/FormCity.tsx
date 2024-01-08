@@ -18,10 +18,10 @@ export default function FormCity() {
   const [cities, setCities] = useState<CityBody[]>([]);
 
   register('cityId', {
-    validate: (value) => {
+    validate: () => {
       const result = formCityShema.safeParse({
-        id: value,
-        name: getValues('cityName'),
+        cityId: getValues('cityId'),
+        cityName: getValues('cityName'),
       });
       return result.success ? true : result.error.errors[0]?.message;
     },
@@ -36,7 +36,7 @@ export default function FormCity() {
 
   const handleChange = () => {
     if (Boolean(searchBar) && searchBar.length >= 3) {
-      const abortController = new AbortController();
+      const controller = new AbortController();
 
       (async () => {
         try {
@@ -45,7 +45,7 @@ export default function FormCity() {
               import.meta.env.VITE_API_URL
             }/cities?name=${searchBar}&order=asc`,
             {
-              signal: abortController.signal,
+              signal: controller.signal,
             },
           );
           const data = await response.json();
@@ -63,7 +63,7 @@ export default function FormCity() {
       })();
 
       return () => {
-        abortController.abort();
+        controller.abort();
       };
     } else {
       setCities([]);

@@ -32,4 +32,4 @@ hobbyRouter.get('/', async (req, res) => {
   }
 });
 
-export default hobbyRouter;
+export { hobbyRouter };

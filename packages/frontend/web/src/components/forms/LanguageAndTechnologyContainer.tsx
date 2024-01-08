@@ -26,15 +26,15 @@ export default function LanguageAndTechnology({
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
 
   const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const language = event.target.id;
+    const target = event.target.id;
 
-    if (selectedItems.includes(language)) {
-      setSelectedItems(selectedItems.filter((lang) => lang !== language));
+    if (selectedItems.includes(target)) {
+      setSelectedItems(selectedItems.filter((item) => item !== target));
       console.log('je retire');
     } else if (selectedItems.length < 6) {
       console.log('jajoute');
 
-      setSelectedItems([...selectedItems, language]);
+      setSelectedItems([...selectedItems, target]);
     }
   };
 
@@ -43,13 +43,13 @@ export default function LanguageAndTechnology({
   console.log(items);
 
   useEffect(() => {
-    const abortController = new AbortController();
+    const controller = new AbortController();
 
     (async () => {
       const response = await fetch(
         `${import.meta.env.VITE_API_URL}/${apiUrl}`,
         {
-          signal: abortController.signal,
+          signal: controller.signal,
         },
       );
       const data = await response.json();
@@ -57,7 +57,7 @@ export default function LanguageAndTechnology({
     })();
 
     return () => {
-      abortController.abort();
+      controller.abort();
     };
   }, [apiUrl]);
 
@@ -71,10 +71,7 @@ export default function LanguageAndTechnology({
 
   return (
     <FormContainer title={formTitle}>
-      <span className='flex justify-start'>
-        {/* {'You must select at least one language.'} */}
-        {subtitle}
-      </span>
+      <span className='flex justify-start'>{subtitle}</span>
       <div className='mt-3 flex flex-col justify-center text-center'>
         {apiUrl === 'languages' ? (
           <div className='flex flex-col items-center justify-center gap-3'>

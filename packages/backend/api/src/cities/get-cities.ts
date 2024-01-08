@@ -2,9 +2,9 @@ import express from 'express';
 
 import { db } from '@app/backend-shared';
 
-const city = express.Router();
+const cityRouter = express.Router();
 
-city.get('/cities', async (req, res) => {
+cityRouter.get('/', async (req, res) => {
   try {
     const { name, order } = req.query;
 
@@ -31,4 +31,4 @@ city.get('/cities', async (req, res) => {
   }
 });
 
-export { city };
+export { cityRouter };

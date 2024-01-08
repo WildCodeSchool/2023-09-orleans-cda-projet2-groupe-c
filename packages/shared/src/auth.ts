@@ -28,18 +28,11 @@ export const authSchema = z
     }),
 
     biography: z.optional(
-      z
-        .string()
-        .trim()
-        .max(1000, {
-          message: 'ⓘ Biography must be less than 1000 characters.',
-        })
-        .regex(
-          new RegExp(/^[A-Za-z]+['s-]?[ A-Za-z]+$/),
-          'ⓘ Biography should contain only alphabets',
-        ),
+      z.string().trim().max(1000, {
+        message: 'ⓘ Biography must be less than 1000 characters.',
+      }),
     ),
-    account_github: z.optional(
+    accountGithub: z.optional(
       z
         .string()
         .trim()
@@ -79,7 +72,7 @@ export const authSchema = z
         message: 'ⓘ Activation code must be less than 255 characters.',
       }),
     activate_at: z.date({ required_error: 'ⓘ Activate at is required.' }),
-    city_id: z
+    cityId: z
       .number({
         required_error: 'ⓘ City id is required.',
         invalid_type_error: 'ⓘ City id must be a number.',

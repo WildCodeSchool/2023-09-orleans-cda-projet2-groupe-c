@@ -19,17 +19,16 @@ export default function FormGitHub() {
           type='url'
           id='account_github'
           placeholder='Your GitHub'
-          {...register('account_github', {
+          {...register('accountGithub', {
             validate: (value) => {
-              const result =
-                formGitSchema.shape.account_github.safeParse(value);
+              const result = formGitSchema.shape.accountGithub.safeParse(value);
               return result.success ? true : result.error.errors[0]?.message;
             },
           })}
           className='border-primary bg-light mt-2 h-5 w-full rounded-md border px-2 py-6 text-lg focus:outline-none lg:text-xl'
         />
-        {errors.account_github ? (
-          <p className='error-message'>{errors.account_github.message}</p>
+        {errors.accountGithub ? (
+          <p className='error-message'>{errors.accountGithub.message}</p>
         ) : (
           ''
         )}

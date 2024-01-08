@@ -1,7 +1,7 @@
 import express from 'express';
 
 import { db } from '@app/backend-shared';
-import type { FormBackValidation, ProfileForm } from '@app/shared';
+import type { FormBackValidation } from '@app/shared';
 
 const register = express.Router();
 
@@ -16,7 +16,7 @@ register.post('/', async (req, res) => {
       name,
       role,
       birthdate,
-      /* gender, */
+      gender,
       cityId,
       biography,
       accountGithub,
@@ -36,7 +36,7 @@ register.post('/', async (req, res) => {
           name,
           role,
           birthdate,
-          /*  gender, */
+          gender,
           city_id: cityId,
           biography,
           account_github: accountGithub,
@@ -54,7 +54,7 @@ register.post('/', async (req, res) => {
         .values(
           languages.map((language: { id: number; order: number }) => ({
             language_id: language.id,
-            user_id: userId,
+            user_id: Number(userId),
             order: language.order,
           })),
         )
@@ -65,7 +65,7 @@ register.post('/', async (req, res) => {
         .values(
           technologies.map((technology: { id: number; order: number }) => ({
             technology_id: technology.id,
-            user_id: userId,
+            user_id: Number(userId),
             order: technology.order,
           })),
         )
@@ -76,7 +76,7 @@ register.post('/', async (req, res) => {
         .values(
           hobbies.map((hobby: { id: number; order: number }) => ({
             hobby_id: hobby.id,
-            user_id: userId,
+            user_id: Number(userId),
             order: hobby.order,
           })),
         )

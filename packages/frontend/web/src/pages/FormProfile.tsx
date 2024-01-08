@@ -18,10 +18,10 @@ import FormTechnology from '@/components/forms/FormTechnology';
 import FormTest from '@/components/forms/FormTest';
 
 const PAGES = [
-  { currentPage: 3, component: <FormName /> },
+  { currentPage: 0, component: <FormName /> },
   { currentPage: 1, component: <FormBirthDate /> },
   { currentPage: 2, component: <FormIAm /> },
-  { currentPage: 0, component: <FormCity /> },
+  { currentPage: 3, component: <FormCity /> },
   { currentPage: 4, component: <FormLanguage /> },
   { currentPage: 5, component: <FormTechnology /> },
   { currentPage: 6, component: <FormHobby /> },
