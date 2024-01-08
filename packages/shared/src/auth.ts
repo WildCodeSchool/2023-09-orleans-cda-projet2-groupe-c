@@ -70,11 +70,41 @@ export const authSchema = z
         required_error: 'ⓘ City id is required.',
         invalid_type_error: 'ⓘ City id must be a number.',
       })
-      .positive({ message: 'ⓘ City id must be a positive number.' }),
+      .positive({ message: 'ⓘ City id must be a positive number.' })
+      .nullable(),
   })
   .strict()
   .strip();
 
+export const registrationSchema = authSchema.pick({
+  email: true,
+  password: true,
+});
+
+export const registerWithActivationCodeSchema = authSchema.pick({
+  email: true,
+  password: true,
+  role: true,
+  activation_code: true,
+  email_verified_at: true,
+});
+
+export const activationCodeSchema = authSchema.pick({ activation_code: true });
+
+export const activationTokenSchema = authSchema.pick({
+  activation_code: true,
+  activate_at: true,
+});
+
+export type RegisterBody = z.infer<typeof registrationSchema>;
+
+export type RegisterWithActivationCode = z.infer<
+  typeof registerWithActivationCodeSchema
+>;
+
+export type ActivationCode = z.infer<typeof activationCodeSchema>;
+
+export type ActivationToken = z.infer<typeof activationTokenSchema>;
 export const loginSchema = authSchema.pick({ email: true, password: true });
 
 export type AuthBody = z.infer<typeof loginSchema>;
