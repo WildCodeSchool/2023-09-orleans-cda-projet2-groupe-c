@@ -1,10 +1,8 @@
-import * as randomString from 'randomstring';
+import crypto from 'node:crypto';
 
-export const tokenGenerator = (): string => {
-  return randomString
-    .generate({
-      length: 6,
-      charset: 'alphanumeric',
-    })
-    .toUpperCase();
-};
+export function tokenGenerator() {
+  const randomBytes = crypto.randomBytes(6);
+  const randomHex = randomBytes.toString('hex');
+
+  return randomHex.slice(0, 6).toUpperCase();
+}
