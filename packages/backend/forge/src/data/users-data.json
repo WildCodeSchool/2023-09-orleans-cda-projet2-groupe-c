@@ -1,0 +1,274 @@
+[
+  {
+    "name": "Sophie",
+    "birthdate": "1995-04-15",
+    "gender": "woman",
+    "biography": "Passionate about photography!",
+    "account_github": "https://github.com/SophiePhotog",
+    "email": "sophie@tindev.com"
+  },
+  {
+    "name": "Alexandre",
+    "birthdate": "1990-12-03",
+    "gender": "non-binary",
+    "biography": "Travel enthusiast!",
+    "account_github": "https://github.com/AlexTraveler",
+    "email": "alex@tindev.com"
+  },
+  {
+    "name": "Emily",
+    "birthdate": "1994-07-22",
+    "gender": "woman",
+    "biography": "Music is my passion!",
+    "account_github": "https://github.com/EmilyMusic",
+    "email": "emily@tindev.com"
+  },
+  {
+    "name": "Daniel",
+    "birthdate": "1991-09-18",
+    "gender": "man",
+    "biography": "Adventurous and love sports!",
+    "account_github": "https://github.com/DanielAdventure",
+    "email": "daniel@tindev.com"
+  },
+  {
+    "name": "Sophia",
+    "birthdate": "1993-02-10",
+    "gender": "woman",
+    "biography": "Bookworm and nature lover!",
+    "account_github": "https://github.com/SophiaNature",
+    "email": "sophia@tindev.com"
+  },
+  {
+    "name": "Alice",
+    "birthdate": "1998-03-25",
+    "gender": "non-binary",
+    "biography": "Passionate about coding!",
+    "account_github": "https://github.com/AliceCoder",
+    "email": "alice@tindev.com"
+  },
+  {
+    "name": "Robert",
+    "birthdate": "1995-11-12",
+    "gender": "non-binary",
+    "biography": "Exploring new technologies!",
+    "account_github": "https://github.com/RobTechExplorer",
+    "email": "robert@tindev.com"
+  },
+  {
+    "name": "Ella",
+    "birthdate": "1990-07-18",
+    "gender": "woman",
+    "biography": "Art lover and designer!",
+    "account_github": "https://github.com/EllaArtDesign",
+    "email": "ella@tindev.com"
+  },
+  {
+    "name": "Liam",
+    "birthdate": "1997-08-04",
+    "gender": "man",
+    "biography": "Love to cook and experiment in the kitchen!",
+    "account_github": "https://github.com/LiamChef",
+    "email": "liam@tindev.com"
+  },
+  {
+    "name": "Olivia",
+    "birthdate": "1994-06-15",
+    "gender": "non-binary",
+    "biography": "Fitness freak and yoga enthusiast!",
+    "account_github": "https://github.com/OliviaYogi",
+    "email": "olivia@tindev.com"
+  },
+  {
+    "name": "Noah",
+    "birthdate": "1993-12-28",
+    "gender": "man",
+    "biography": "Passionate about music production!",
+    "account_github": "https://github.com/NoahMusicMaker",
+    "email": "noah@tindev.com"
+  },
+  {
+    "name": "Ava",
+    "birthdate": "1996-09-20",
+    "gender": "woman",
+    "biography": "Passionate about environmental conservation!",
+    "account_github": "https://github.com/AvaEnvironment",
+    "email": "ava@tindev.com"
+  },
+  {
+    "name": "William",
+    "birthdate": "1992-05-08",
+    "gender": "man",
+    "biography": "Adventurous traveler and blogger!",
+    "account_github": "https://github.com/WillExplorer",
+    "email": "william@tindev.com"
+  },
+  {
+    "name": "Mia",
+    "birthdate": "1998-02-12",
+    "gender": "woman",
+    "biography": "Tech enthusiast and AI researcher!",
+    "account_github": "https://github.com/MiaTechAI",
+    "email": "mia@tindev.com"
+  },
+  {
+    "name": "Ethan",
+    "birthdate": "1991-11-16",
+    "gender": "non-binary",
+    "biography": "Passionate about technology and innovation!",
+    "account_github": "https://github.com/EthanInnovate",
+    "email": "ethan@tindev.com"
+  },
+  {
+    "name": "Isabella",
+    "birthdate": "1997-07-30",
+    "gender": "woman",
+    "biography": "Art lover and painter!",
+    "account_github": "https://github.com/IsabellaArtiste",
+    "email": "isabella@tindev.com"
+  },
+  {
+    "name": "James",
+    "birthdate": "1990-04-02",
+    "gender": "man",
+    "biography": "Fitness enthusiast and personal trainer!",
+    "account_github": "https://github.com/JamesFit",
+    "email": "james@tindev.com"
+  },
+  {
+    "name": "Charlotte",
+    "birthdate": "1993-08-18",
+    "gender": "woman",
+    "biography": "Bookworm and aspiring writer!",
+    "account_github": "https://github.com/CharlotteWriter",
+    "email": "charlotte@tindev.com"
+  },
+  {
+    "name": "Henry",
+    "birthdate": "1995-12-05",
+    "gender": "man",
+    "biography": "Gamer and streamer!",
+    "account_github": "https://github.com/HenryGamer",
+    "email": "henry@tindev.com"
+  },
+  {
+    "name": "Amelia",
+    "birthdate": "1994-03-25",
+    "gender": "woman",
+    "biography": "Coffee lover and barista!",
+    "account_github": "https://github.com/AmeliaCoffee",
+    "email": "amelia@tindev.com"
+  },
+  {
+    "name": "Luna",
+    "birthdate": "1998-06-20",
+    "gender": "woman",
+    "biography": "Astronomy enthusiast and stargazer!",
+    "account_github": "https://github.com/LunaStargazer",
+    "email": "luna@tindev.com"
+  },
+  {
+    "name": "Jacob",
+    "birthdate": "1996-09-14",
+    "gender": "non-binary",
+    "biography": "Adventurous traveler and nature lover!",
+    "account_github": "https://github.com/JacobNature",
+    "email": "jacob@tindev.com"
+  },
+  {
+    "name": "Aria",
+    "birthdate": "1992-12-28",
+    "gender": "woman",
+    "biography": "Musician and singer!",
+    "account_github": "https://github.com/AriaMusic",
+    "email": "aria@tindev.com"
+  },
+  {
+    "name": "Lucas",
+    "birthdate": "1994-03-12",
+    "gender": "man",
+    "biography": "Tech enthusiast and software developer!",
+    "account_github": "https://github.com/LucasDev",
+    "email": "lucas@tindev.com"
+  },
+  {
+    "name": "Evelyn",
+    "birthdate": "1997-08-28",
+    "gender": "woman",
+    "biography": "Fashion designer and style enthusiast!",
+    "account_github": "https://github.com/EvelynStyle",
+    "email": "evelyn@tindev.com"
+  },
+  {
+    "name": "Alexander",
+    "birthdate": "1993-10-05",
+    "gender": "man",
+    "biography": "Passionate about fitness and bodybuilding!",
+    "account_github": "https://github.com/AlexanderFit",
+    "email": "alexander@tindev.com"
+  },
+  {
+    "name": "Chloe",
+    "birthdate": "1996-05-17",
+    "gender": "woman",
+    "biography": "Animal lover and volunteer!",
+    "account_github": "https://github.com/ChloeAnimalLover",
+    "email": "chloe@tindev.com"
+  },
+  {
+    "name": "Benjamin",
+    "birthdate": "1992-11-09",
+    "gender": "man",
+    "biography": "Foodie and culinary explorer!",
+    "account_github": "https://github.com/BenjaminFoodie",
+    "email": "benjamin@tindev.com"
+  },
+  {
+    "name": "Grace",
+    "birthdate": "1998-02-25",
+    "gender": "woman",
+    "biography": "Art enthusiast and museum goer!",
+    "account_github": "https://github.com/GraceArt",
+    "email": "grace@tindev.com"
+  },
+  {
+    "name": "Victoria",
+    "birthdate": "1995-09-21",
+    "gender": "woman",
+    "biography": "Nature lover and hiking enthusiast!",
+    "account_github": "https://github.com/VictoriaHiker",
+    "email": "victoria@tindev.com"
+  },
+  {
+    "name": "Nathan",
+    "birthdate": "1993-12-18",
+    "gender": "man",
+    "biography": "Coffee addict and tech geek!",
+    "account_github": "https://github.com/NathanTechie",
+    "email": "nathan@tindev.com"
+  },
+  {
+    "name": "Emma",
+    "birthdate": "1997-06-14",
+    "gender": "woman",
+    "biography": "Travel blogger and adventurer!",
+    "account_github": "https://github.com/EmmaTraveler",
+    "email": "emma@tindev.com"
+  },
+  {
+    "name": "Oliver",
+    "birthdate": "1990-11-09",
+    "gender": "man",
+    "biography": "Gamer and Twitch streamer!",
+    "account_github": "https://github.com/OliverGamer",
+    "email": "oliver@tindev.com"
+  },
+  {
+    "name": "Abigail",
+    "birthdate": "1998-04-25",
+    "gender": "woman",
+    "biography": "Animal rights activist and volunteer!",
+    "account_github": "https://github.com/AbigailActivist",
+    "email": "abigail@tindev.com"
+  }
+]
