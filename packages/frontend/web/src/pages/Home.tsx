@@ -17,9 +17,9 @@ export default function Home() {
 
   if (isLoggedIn) {
     return (
-      <main className='flex-1 bg-red-600'>
+      <main className='relative flex-1'>
         <NavBar />
-        <div className='relative'>
+        <div className='relative -z-10'>
           <Message />
           <Outlet />
         </div>

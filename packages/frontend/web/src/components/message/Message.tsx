@@ -55,6 +55,7 @@ export default function Message() {
   //   const { userId } = useAuth();
   const userId = 341;
 
+  // Fetch conversations between the user logged in and other users
   useEffect(() => {
     const controller = new AbortController();
     const signal = controller.signal;
@@ -78,6 +79,7 @@ export default function Message() {
     };
   }, []);
 
+  // Set the number of messages
   useEffect(() => {
     if (conversations !== undefined) {
       setMessagesCount(conversations.length);
@@ -89,7 +91,7 @@ export default function Message() {
       initial='hidden'
       animate='visible'
       variants={modalVariant}
-      className='font-base text-secondary bg-light-medium absolute left-0 top-0 z-50 h-full w-full lg:block lg:min-w-[300px] lg:max-w-[25vw]'
+      className='font-base text-secondary bg-light-medium border-divider absolute left-0 top-0 h-full w-full lg:block lg:min-w-[300px] lg:max-w-[25vw] lg:border-r'
     >
       <div className='my-5 flex justify-center'>
         <h2 className='font-title text-primary text-2xl'>{`Conversation`}</h2>
