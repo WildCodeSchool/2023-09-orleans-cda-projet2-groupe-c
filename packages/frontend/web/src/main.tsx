@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import { RouterProvider } from 'react-router-dom';
 
 import AuthContext from './contexts/AuthContext.tsx';
+import HomeContext from './contexts/HomeContext.tsx';
 import { ThemeContext } from './contexts/ThemeContext.tsx';
 import './globals.css';
 import router from './router.tsx';
@@ -14,7 +15,9 @@ if (rootElement) {
     <React.StrictMode>
       <AuthContext>
         <ThemeContext>
-          <RouterProvider router={router} />
+          <HomeContext>
+            <RouterProvider router={router} />
+          </HomeContext>
         </ThemeContext>
       </AuthContext>
     </React.StrictMode>,

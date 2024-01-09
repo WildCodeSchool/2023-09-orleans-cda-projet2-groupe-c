@@ -55,22 +55,23 @@ messageRouter.get('/:userId/messages', async (req, res) => {
   }
 });
 
-messageRouter.get('/:userId/messages/:conversationId', async (req, res) => {
-  try {
-    const conversationId = Number.parseInt(req.params.conversationId);
+// TODO : remove comment when the conversation is implemented
+// messageRouter.get('/:userId/messages/:conversationId', async (req, res) => {
+//   try {
+//     const conversationId = Number.parseInt(req.params.conversationId);
 
-    const messages = await db
-      .selectFrom('message as m')
-      .innerJoin('user as u', 'm.sender_id', 'u.id')
-      .select(['m.id', 'u.name as sender_name', 'm.content', 'm.sent_at'])
-      .where('m.conversation_id', '=', conversationId)
-      .orderBy('m.sent_at', 'desc')
-      .execute();
+//     const messages = await db
+//       .selectFrom('message as m')
+//       .innerJoin('user as u', 'm.sender_id', 'u.id')
+//       .select(['m.id', 'u.name as sender_name', 'm.content', 'm.sent_at'])
+//       .where('m.conversation_id', '=', conversationId)
+//       .orderBy('m.sent_at', 'desc')
+//       .execute();
 
-    return res.json(messages);
-  } catch (error) {
-    throw new Error(`Fail to get messages : ${String(error)}`);
-  }
-});
+//     return res.json(messages);
+//   } catch (error) {
+//     throw new Error(`Fail to get messages : ${String(error)}`);
+//   }
+// });
 
 export default messageRouter;

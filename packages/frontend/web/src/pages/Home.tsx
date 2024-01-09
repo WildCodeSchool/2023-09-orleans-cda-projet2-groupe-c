@@ -2,6 +2,7 @@ import { Outlet } from 'react-router-dom';
 
 import NavBar from '@/components/NavBar';
 import RandomSentence from '@/components/home/RandomSentence';
+import Message from '@/components/message/Message';
 import { useAuth } from '@/contexts/AuthContext';
 
 import Loading from '../components/Loading';
@@ -16,9 +17,12 @@ export default function Home() {
 
   if (isLoggedIn) {
     return (
-      <main>
+      <main className='flex-1 bg-red-600'>
         <NavBar />
-        <Outlet />
+        <div className='relative'>
+          <Message />
+          <Outlet />
+        </div>
       </main>
     );
   }
