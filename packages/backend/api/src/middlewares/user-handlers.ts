@@ -5,8 +5,11 @@ import { jsonArrayFrom } from 'kysely/helpers/mysql';
 import { db } from '@app/backend-shared';
 import type { Request as ExpressRequest } from '@app/shared';
 
+// Unwrap the type of the Promise
+export type Users = Awaited<ReturnType<typeof users>>;
+
 interface Request extends ExpressRequest {
-  usersList?: unknown[];
+  usersList?: Users;
 }
 
 const users = async (userId: number) => {

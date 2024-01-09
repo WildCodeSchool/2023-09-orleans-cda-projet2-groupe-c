@@ -3,10 +3,10 @@ import express from 'express';
 import type { Request as ExpressRequest } from '@app/shared';
 
 import { getUserId } from '@/middlewares/auth-handlers';
-import { getUsers } from '@/middlewares/user-handlers';
+import { type Users, getUsers } from '@/middlewares/user-handlers';
 
 interface Request extends ExpressRequest {
-  usersList?: unknown[];
+  usersList?: Users;
 }
 
 const userRouter = express.Router();
