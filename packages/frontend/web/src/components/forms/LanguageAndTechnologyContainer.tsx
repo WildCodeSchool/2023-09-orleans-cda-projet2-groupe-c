@@ -1,17 +1,20 @@
 import { useEffect, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 
-import type { FormBaseValidation } from '@app/shared';
+import {
+  type FormItemsBodyValidation,
+  type FormItemsValidation,
+  type SelectedItemBody,
+  formArrayStringSchema,
+} from '@app/shared';
 
 import FormContainer from './FormContainer';
-
-type FieldName = 'name';
 
 interface SelectionFormProps extends React.HTMLAttributes<HTMLDivElement> {
   readonly apiUrl: string;
   readonly formTitle: string;
   readonly subtitle: string;
-  readonly fieldName: FieldName;
+  readonly fieldName: 'languages' | 'technologies';
 }
 
 export default function LanguageAndTechnology({
@@ -20,29 +23,36 @@ export default function LanguageAndTechnology({
   subtitle,
   fieldName,
 }: SelectionFormProps) {
-  const { register, formState } = useFormContext<FormBaseValidation>();
+  const [items, setItems] = useState<FormItemsBodyValidation[]>([]);
+  const [selectedItems, setSelectedItems] = useState<SelectedItemBody[]>([]);
+  const { register, formState } = useFormContext<FormItemsValidation>();
   const { errors } = formState;
-  const [items, setItems] = useState<FormBaseValidation[]>([]);
-  const [selectedItems, setSelectedItems] = useState<string[]>([]);
 
   const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const target = event.target.id;
+    // Convert Json to JS object
+    const targetValue = JSON.parse(event.target.value);
+    // Get Id from the value
+    const targetId = targetValue.id;
 
-    if (selectedItems.includes(target)) {
-      setSelectedItems(selectedItems.filter((item) => item !== target));
-      console.log('je retire');
+    let newItems = selectedItems;
+
+    if (selectedItems.some((item) => item.id === targetId)) {
+      newItems = selectedItems.filter((item) => item.id !== targetId);
     } else if (selectedItems.length < 6) {
-      console.log('jajoute');
-
-      setSelectedItems([...selectedItems, target]);
+      newItems = [
+        ...selectedItems,
+        { id: targetId, order: selectedItems.length + 1 },
+      ];
     }
+    setSelectedItems(newItems);
+    localStorage.setItem(fieldName, JSON.stringify(newItems));
   };
 
-  console.log(selectedItems);
-
-  console.log(items);
-
   useEffect(() => {
+    const savedItems = localStorage.getItem(fieldName);
+    if (savedItems) {
+      setSelectedItems(JSON.parse(savedItems));
+    }
     const controller = new AbortController();
 
     (async () => {
@@ -52,6 +62,7 @@ export default function LanguageAndTechnology({
           signal: controller.signal,
         },
       );
+
       const data = await response.json();
       setItems(data);
     })();
@@ -63,9 +74,9 @@ export default function LanguageAndTechnology({
 
   let firstSelectedItems;
 
-  if (apiUrl === 'languages') {
+  if (apiUrl === 'languages' && selectedItems.length > 0) {
     firstSelectedItems = items.find(
-      (language) => language.name === selectedItems[0],
+      (language) => language.id === selectedItems[0].id,
     );
   }
 
@@ -95,10 +106,14 @@ export default function LanguageAndTechnology({
               >
                 <label className='text-[12px]' htmlFor={item.name}>
                   <div className='relative flex justify-center'>
-                    {selectedItems.includes(item.name) ? (
+                    {selectedItems.some(
+                      (selectedItem) => selectedItem.id === item.id,
+                    ) ? (
                       <div className='bg-primary absolute right-0 top-0 flex h-5 w-5 translate-x-2 translate-y-[-8px] items-center justify-center rounded-full'>
                         <p className='text-white'>
-                          {selectedItems.indexOf(item.name) + 1}
+                          {selectedItems.findIndex(
+                            (selectedItem) => selectedItem.id === item.id,
+                          ) + 1}
                         </p>
                       </div>
                     ) : (
@@ -107,7 +122,9 @@ export default function LanguageAndTechnology({
 
                     <img
                       className={`hover:outline-primary h-12 w-12 hover:rounded-md hover:outline hover:outline-offset-2 lg:h-16 lg:w-16 ${
-                        selectedItems.includes(item.name)
+                        selectedItems.some(
+                          (selectedItem) => selectedItem.id === item.id,
+                        )
                           ? 'outline-primary rounded-md outline outline-offset-2'
                           : ''
                       }`}
@@ -118,21 +135,32 @@ export default function LanguageAndTechnology({
                   {item.name.charAt(0).toUpperCase() + item.name.slice(1)}
                 </label>
                 <input
-                  value={item.id}
+                  value={JSON.stringify({
+                    id: item.id,
+                    order:
+                      selectedItems.findIndex(
+                        (selectedItem) => selectedItem.id === item.id,
+                      ) + 1,
+                  })}
                   id={item.name}
                   type='checkbox'
                   {...register(fieldName, {
                     validate: (value) => {
-                      if (Array.isArray(value) && value.length > 0) {
-                        return true;
-                      }
-                      return 'ⓘ You must select at least one item.';
+                      const key =
+                        apiUrl === 'languages' ? 'languages' : 'technologies';
+                      const result =
+                        formArrayStringSchema.shape[key].safeParse(value);
+                      return result.success
+                        ? true
+                        : result.error.errors[0]?.message;
                     },
                   })}
                   onChange={handleCheckboxChange}
                   disabled={
                     selectedItems.length >= 6 &&
-                    !selectedItems.includes(item.name)
+                    !selectedItems.some(
+                      (selectedItem) => selectedItem.id === item.id,
+                    )
                   }
                   className='sr-only'
                 />
@@ -141,11 +169,9 @@ export default function LanguageAndTechnology({
           </div>
         </div>
       </div>
-      <div className='h-7'>
-        {selectedItems.length > 6 && (
-          <p className=' text-next text-base'>
-            {'you have already selected 6 !'}
-          </p>
+      <div className='text-secondary absolute bottom-4'>
+        {selectedItems.length >= 6 && (
+          <p className='text-base'>{'ⓘ You have already selected 6 !'}</p>
         )}
         {errors[fieldName] ? <p>{errors[fieldName]?.message}</p> : undefined}
       </div>

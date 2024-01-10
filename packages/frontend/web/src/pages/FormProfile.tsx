@@ -18,13 +18,13 @@ import FormTechnology from '@/components/forms/FormTechnology';
 import FormTest from '@/components/forms/FormTest';
 
 const PAGES = [
-  { currentPage: 0, component: <FormName /> },
+  { currentPage: 6, component: <FormName /> },
   { currentPage: 1, component: <FormBirthDate /> },
   { currentPage: 2, component: <FormIAm /> },
   { currentPage: 3, component: <FormCity /> },
   { currentPage: 4, component: <FormLanguage /> },
   { currentPage: 5, component: <FormTechnology /> },
-  { currentPage: 6, component: <FormHobby /> },
+  { currentPage: 0, component: <FormHobby /> },
   { currentPage: 7, component: <FormBio /> },
   { currentPage: 8, component: <FormGitHub /> },
   { currentPage: 9, component: <FormTest /> },
@@ -45,13 +45,11 @@ export default function FormProfile() {
       // Otherwise, attempt to submit the form data
     } else {
       try {
-        // This function transforms an array of numbers into an array of objects
-        // Each object has two properties: id (the value of the number) and order (the index of the number + 1)
-        const transformArray = (array: number[]) =>
-          array.map((item: number, index: number) => ({
-            id: item,
-            order: index + 1,
-          }));
+        // This function transforms an array of string into an array of objects
+        const transformArray = (array: string[]) =>
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+          array.map((item: string) => JSON.parse(item));
+
         // Use the transformArray function to transform the languages, technologies, and hobbies arrays
         const transformedData = {
           ...data,
@@ -88,7 +86,6 @@ export default function FormProfile() {
                   <React.Fragment key={currentPage}>{component}</React.Fragment>
                 ),
             )}
-
             <div className='flex w-full flex-col gap-6 pb-5 md:pb-40'>
               <Button isOutline={false} type='submit' color='text-light-hard'>
                 {page >= 10 ? 'Start matching' : 'Next'}

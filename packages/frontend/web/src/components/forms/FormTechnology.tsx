@@ -1,6 +1,7 @@
 import LanguageAndTechnologyContainer from './LanguageAndTechnologyContainer';
 
-type FieldName = 'name';
+type FieldName = 'technologies';
+
 export default function FormTechnology() {
   const props = {
     apiUrl: 'technologies',

@@ -4,7 +4,8 @@ import { useFormContext } from 'react-hook-form';
 import {
   type CategoryHobby,
   type FormCategoryValidation,
-  formHobbiesChooseShema,
+  type SelectedItemBody,
+  formArrayStringSchema,
 } from '@app/shared';
 
 import FormContainer from './FormContainer';
@@ -13,28 +14,33 @@ export default function FormHobby() {
   const { register, formState } = useFormContext<FormCategoryValidation>();
   const { errors } = formState;
   const [hobbies, setHobbies] = useState<CategoryHobby[]>([]);
-  const [selectedHobby, setSelectedHobby] = useState<string[]>([]);
-
-  console.log(selectedHobby);
-  console.log(hobbies);
+  const [selectedHobby, setSelectedHobby] = useState<SelectedItemBody[]>([]);
 
   const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const hobby = event.target.id;
+    // Convert Json to JS object
+    const targetValue = JSON.parse(event.target.value);
+    // Get Id from the value
+    const targetId = targetValue.id;
 
-    if (selectedHobby.includes(hobby)) {
-      setSelectedHobby(selectedHobby.filter((lang) => lang !== hobby));
-      //localStorage.setItem('selectedHobby', JSON.stringify(selectedHobby.filter((lang) => lang !== hobby)));
+    let newItems = selectedHobby;
+
+    if (selectedHobby.some((item) => item.id === targetId)) {
+      newItems = selectedHobby.filter((item) => item.id !== targetId);
     } else if (selectedHobby.length < 6) {
-      setSelectedHobby([...selectedHobby, hobby]);
-      //localStorage.setItem('selectedHobby', JSON.stringify([...selectedHobby, hobby]));
+      newItems = [
+        ...selectedHobby,
+        { id: targetId, order: selectedHobby.length + 1 },
+      ];
     }
+    setSelectedHobby(newItems);
+    localStorage.setItem('hobbies', JSON.stringify(newItems));
   };
 
   useEffect(() => {
-    /*   const savedHobbies = localStorage.getItem('selectedHobby');
+    const savedHobbies = localStorage.getItem('hobbies');
     if (savedHobbies) {
       setSelectedHobby(JSON.parse(savedHobbies));
-    } */
+    }
     const controller = new AbortController();
 
     (async () => {
@@ -71,18 +77,28 @@ export default function FormHobby() {
                   htmlFor={hobby.hobby_name}
                   key={hobby.hobby_id}
                   className={`border-primary text-secondary hover:bg-primary cursor-pointer rounded-lg border px-2 py-1 ${
-                    selectedHobby.includes(hobby.hobby_name) ? 'bg-primary' : ''
+                    selectedHobby.some(
+                      (selectedItem) => selectedItem.id === hobby.hobby_id,
+                    )
+                      ? 'bg-primary'
+                      : ''
                   }`}
                 >
                   {hobby.hobby_name}
                   <input
-                    value={hobby.hobby_id}
+                    value={JSON.stringify({
+                      id: hobby.hobby_id,
+                      order:
+                        selectedHobby.findIndex(
+                          (selectedItem) => selectedItem.id === hobby.hobby_id,
+                        ) + 1,
+                    })}
                     id={hobby.hobby_name}
                     type='checkbox'
                     {...register('hobbies', {
                       validate: (value) => {
                         const result =
-                          formHobbiesChooseShema.shape.hobbies.safeParse(value);
+                          formArrayStringSchema.shape.hobbies.safeParse(value);
                         return result.success
                           ? true
                           : result.error.errors[0]?.message;

@@ -56,7 +56,9 @@ export default function FormIAm() {
         ))}
       </div>
       {errors.gender ? (
-        <p className='error-message'>{errors.gender.message}</p>
+        <p className='text-secondary absolute bottom-3'>
+          {errors.gender.message}
+        </p>
       ) : (
         ''
       )}

@@ -6,7 +6,7 @@ export default function FormContainer({ children, title }: Container) {
         {title}
       </h1>
       <div
-        className={`bg-light text-secondary flex flex-col rounded-md px-7 pb-12 pt-5 text-sm shadow-md lg:text-base`}
+        className={`bg-light text-secondary relative flex flex-col rounded-md px-7 pb-12 pt-5 text-sm shadow-md lg:text-base`}
       >
         {children}
       </div>

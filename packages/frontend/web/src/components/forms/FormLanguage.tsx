@@ -1,6 +1,6 @@
 import LanguageAndTechnologyContainer from './LanguageAndTechnologyContainer';
 
-type FieldName = 'name';
+type FieldName = 'languages';
 
 export default function FormLanguage() {
   const props = {

@@ -32,7 +32,9 @@ export default function FormBirthDate() {
         className='border-primary bg-light mt-2 h-5 w-full rounded-md border px-2 py-6 text-xl focus:outline-none'
       />
       {errors.birthdate ? (
-        <p className='error-message'>{errors.birthdate.message}</p>
+        <p className='text-secondary absolute bottom-3'>
+          {errors.birthdate.message}
+        </p>
       ) : (
         ''
       )}

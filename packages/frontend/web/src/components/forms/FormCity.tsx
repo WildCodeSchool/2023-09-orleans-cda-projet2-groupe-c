@@ -111,7 +111,9 @@ export default function FormCity() {
       </div>
 
       {errors.cityId ? (
-        <p className='error-message'>{errors.cityId.message}</p>
+        <p className='text-secondary absolute bottom-3'>
+          {errors.cityId.message}
+        </p>
       ) : undefined}
     </FormContainer>
   );
