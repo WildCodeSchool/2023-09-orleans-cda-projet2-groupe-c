@@ -38,10 +38,10 @@ export default function Card({ user }: CardProps) {
                 {user.hobbies.map((hobby) => (
                   <div key={hobby.id}>
                     <Badge>
-                      <div className='w-3'>
+                      <div className='w-4'>
                         <img src={hobby.logo_path} alt={hobby.category} />
                       </div>
-                      <p className=' text-xs'>
+                      <p className='text-xs'>
                         {hobby.name.charAt(0).toUpperCase() +
                           hobby.name.slice(1)}
                       </p>
@@ -91,7 +91,7 @@ export default function Card({ user }: CardProps) {
         <div className='grid grid-cols-6 gap-2'>
           {user.languages.map((language) => (
             <div key={language.id} className='text-center text-xs'>
-              <img src={language.logo_path} alt='' />
+              <img src={language.logo_path} alt={`Logo ${language.name}`} />
               <p>
                 {language.name.charAt(0).toUpperCase() + language.name.slice(1)}
               </p>
@@ -104,9 +104,9 @@ export default function Card({ user }: CardProps) {
         <div className='grid grid-cols-6 gap-2'>
           {user.technologies.map((technology) => (
             <div key={technology.id} className='text-center text-xs'>
-              <img src={technology.logo_path} alt='' />
+              <img src={technology.logo_path} alt={`Logo ${technology.name}`} />
               {technology.name.charAt(0).toUpperCase() +
-                technology.name.slice(1)}{' '}
+                technology.name.slice(1)}
             </div>
           ))}
         </div>
@@ -114,14 +114,14 @@ export default function Card({ user }: CardProps) {
 
       <CardSection title={'My photo gallery'} isBorder={false}>
         <div className='flex flex-col gap-2'>
-          {user.pictures.map((picture) => (
+          {user.pictures.map((picture, index) => (
             <div
               key={picture.id}
               className='h-full max-h-[496px] min-h-[296px] w-full min-w-[296px] max-w-[496px] overflow-hidden'
             >
               <img
                 src={picture.picture_path}
-                alt=''
+                alt={`Picture of ${user.name} number ${index + 1}`}
                 className='h-full w-full scale-110 object-cover object-center'
               />
             </div>
