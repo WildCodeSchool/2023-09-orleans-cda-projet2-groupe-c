@@ -24,13 +24,21 @@ export const authSchema = z
       { message: 'ⓘ You must be 18 years old to register.' },
     ),
     gender: z.enum(['man', 'woman', 'non-binary'], {
-      invalid_type_error: 'ⓘ Please select one of the options',
+      invalid_type_error: 'ⓘ Please select one of the options.',
     }),
 
     biography: z.optional(
-      z.string().trim().max(1000, {
-        message: 'ⓘ Biography must be less than 1000 characters.',
-      }),
+      z
+        .string()
+        .trim()
+        .max(1000, {
+          message: 'ⓘ Biography must be less than 1000 characters.',
+        })
+        .regex(
+          new RegExp(/^[A-Za-z]+['s-]?[ A-Za-z]+$/),
+          'ⓘ Name should contain only alphabets',
+        )
+        .or(z.literal('')),
     ),
     accountGithub: z.optional(
       z
@@ -39,7 +47,8 @@ export const authSchema = z
         .max(255, {
           message: 'ⓘ Your account Github must be less than 255 characters.',
         })
-        .or(z.string().url()),
+        .url({ message: 'ⓘ Please enter a valid url.' })
+        .or(z.literal('')),
     ),
     role: z.enum(['user', 'admin']),
     email: z

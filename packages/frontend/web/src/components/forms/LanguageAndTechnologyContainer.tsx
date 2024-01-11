@@ -50,7 +50,7 @@ export default function LanguageAndTechnology({
 
   useEffect(() => {
     const savedItems = localStorage.getItem(fieldName);
-    if (savedItems) {
+    if (savedItems !== null) {
       setSelectedItems(JSON.parse(savedItems));
     }
     const controller = new AbortController();
@@ -70,7 +70,7 @@ export default function LanguageAndTechnology({
     return () => {
       controller.abort();
     };
-  }, [apiUrl]);
+  }, [apiUrl, fieldName]);
 
   let firstSelectedItems;
 
@@ -162,7 +162,7 @@ export default function LanguageAndTechnology({
                       (selectedItem) => selectedItem.id === item.id,
                     )
                   }
-                  className='sr-only'
+                  className='absolute h-0 w-0 opacity-0'
                 />
               </div>
             ))}

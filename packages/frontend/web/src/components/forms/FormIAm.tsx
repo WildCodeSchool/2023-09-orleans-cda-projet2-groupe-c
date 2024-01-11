@@ -39,7 +39,7 @@ export default function FormIAm() {
               {option.label}
             </label>
             <input
-              className='sr-only'
+              className='absolute h-0 w-0 opacity-0'
               type='radio'
               id={option.id}
               {...register('gender', {

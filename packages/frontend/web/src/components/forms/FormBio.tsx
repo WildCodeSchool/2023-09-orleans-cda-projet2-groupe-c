@@ -29,7 +29,7 @@ export default function FormBio() {
           ''
         )}
       </FormContainer>
-      <div className='text-secondary mb-8 flex justify-end text-lg'>
+      <div className='text-secondary mb-48 flex justify-end text-lg md:mb-8'>
         <button type='submit'>{'Skip >'}</button>
       </div>
     </>

@@ -13,10 +13,9 @@ interface Coordinates {
 export default function FormCity() {
   const { register, setValue, getValues, formState } =
     useFormContext<FormCityValidation>();
-  const { errors } = formState;
-  const { onChange, ...rest } = register('cityName');
+  const { onChange, ...rest } = register('cityName'); //use cityName to keep the name in the input
   const [cities, setCities] = useState<CityBody[]>([]);
-
+  const { errors } = formState;
   register('cityId', {
     validate: () => {
       const result = formCityShema.safeParse({
@@ -100,7 +99,7 @@ export default function FormCity() {
                 type='radio'
                 id={city.name}
                 value={city.id}
-                className='sr-only'
+                className='absolute h-0 w-0 opacity-0'
                 onChange={(event) => {
                   handleCityChange(city.name, Number(event.target.value));
                 }}

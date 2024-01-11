@@ -23,7 +23,7 @@ export default function FormBirthDate() {
           validate: (value) => {
             const date = new Date(value);
             if (Number.isNaN(date.getTime())) {
-              return "ⓘ That's not a date!";
+              return 'ⓘ Please enter your birthday date.';
             }
             const result = formBirthDateSchema.shape.birthdate.safeParse(date);
             return result.success ? true : result.error.errors[0]?.message;

@@ -38,7 +38,7 @@ export default function FormHobby() {
 
   useEffect(() => {
     const savedHobbies = localStorage.getItem('hobbies');
-    if (savedHobbies) {
+    if (savedHobbies !== null) {
       setSelectedHobby(JSON.parse(savedHobbies));
     }
     const controller = new AbortController();
@@ -105,7 +105,7 @@ export default function FormHobby() {
                       },
                     })}
                     onChange={handleCheckboxChange}
-                    className=''
+                    className='absolute h-0 w-0 opacity-0'
                   />
                 </label>
               ))}
@@ -113,6 +113,9 @@ export default function FormHobby() {
           </div>
         ))}
       </div>
+      {selectedHobby.length >= 6 && (
+        <p className='text-base'>{'ⓘ You have already selected 6 !'}</p>
+      )}
       {errors.hobbies ? (
         <p className='error-message'>{errors.hobbies.message}</p>
       ) : (

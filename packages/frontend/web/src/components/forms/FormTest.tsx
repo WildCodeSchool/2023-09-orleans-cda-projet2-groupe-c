@@ -1,3 +1,4 @@
+// While waiting for the PR register
 import { useFormContext } from 'react-hook-form';
 
 type FormValues = {
@@ -25,7 +26,7 @@ export default function FormTest() {
             pattern: {
               value:
                 /^[\w!#$%&'*+./=?^`{|}~-]+@[\dA-Za-z-]+(?:\.[\dA-Za-z-]+)*$/,
-              message: 'Pas top l email non ? ',
+              message: 'Invalid Email. ',
             },
             required: {
               value: true,

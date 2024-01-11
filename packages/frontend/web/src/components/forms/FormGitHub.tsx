@@ -33,7 +33,7 @@ export default function FormGitHub() {
           ''
         )}
       </FormContainer>
-      <div className='text-secondary mb-16 flex justify-end text-lg'>
+      <div className='text-secondary mb-48 flex justify-end text-lg md:mb-24'>
         <button type='submit'>{'Skip >'}</button>
       </div>
     </>

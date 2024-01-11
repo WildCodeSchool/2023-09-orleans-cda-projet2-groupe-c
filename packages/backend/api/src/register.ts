@@ -49,6 +49,9 @@ register.post('/', async (req, res) => {
       //get the user id newly created
       const userId = userResult.insertId;
 
+      // It maps over the 'languages, technologies and hobbies' array, which contains objects with 'id' and 'order' properties.
+      // e.g For each language, it creates a new record with 'language_id' set to the language's 'id',
+      // 'user_id' set to 'userId', and 'order' set to the language's 'order'.
       await trx
         .insertInto('language_user')
         .values(

@@ -2,7 +2,7 @@ import React from 'react';
 import { useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 
-import type { ProfileForm } from '@app/shared';
+import type { ProfileForm, SelectedItemBody } from '@app/shared';
 
 import Button from '@/components/Button';
 import FormBio from '@/components/forms/FormBio';
@@ -18,13 +18,13 @@ import FormTechnology from '@/components/forms/FormTechnology';
 import FormTest from '@/components/forms/FormTest';
 
 const PAGES = [
-  { currentPage: 6, component: <FormName /> },
+  { currentPage: 0, component: <FormName /> },
   { currentPage: 1, component: <FormBirthDate /> },
   { currentPage: 2, component: <FormIAm /> },
   { currentPage: 3, component: <FormCity /> },
   { currentPage: 4, component: <FormLanguage /> },
   { currentPage: 5, component: <FormTechnology /> },
-  { currentPage: 0, component: <FormHobby /> },
+  { currentPage: 6, component: <FormHobby /> },
   { currentPage: 7, component: <FormBio /> },
   { currentPage: 8, component: <FormGitHub /> },
   { currentPage: 9, component: <FormTest /> },
@@ -35,10 +35,9 @@ export default function FormProfile() {
   const [page, setPage] = useState<number>(0);
   //I use the const methods to send all useForm properties to my child elements
   const methods = useForm<ProfileForm>();
-  const { handleSubmit, getValues } = methods;
+  const { handleSubmit } = methods;
 
   const formSubmit = async (data: ProfileForm) => {
-    console.log('Valeur stocké:', getValues());
     // If the current page is less than 10, move to the next page
     if (page < 10) {
       setPage((prev) => prev + 1);
@@ -46,11 +45,10 @@ export default function FormProfile() {
     } else {
       try {
         // This function transforms an array of string into an array of objects
-        const transformArray = (array: string[]) =>
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-          array.map((item: string) => JSON.parse(item));
+        const transformArray = (array: string[]): SelectedItemBody[] =>
+          array.map((item: string) => JSON.parse(item) as SelectedItemBody);
 
-        // Use the transformArray function to transform the languages, technologies, and hobbies arrays
+        // Use the transformArray function to transform the languages, technologies, and hobbies object
         const transformedData = {
           ...data,
           languages: transformArray(data.languages),
