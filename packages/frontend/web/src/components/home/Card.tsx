@@ -15,6 +15,7 @@ interface CardProps {
 export default function Card({ user }: CardProps) {
   const [age, setAge] = useState<number>(0);
 
+  // Calculate the age of the user
   useEffect(() => {
     if (user.birthdate) {
       const currentDate = new Date();
@@ -24,6 +25,8 @@ export default function Card({ user }: CardProps) {
       setAge(userAge);
     }
   }, [user.birthdate]);
+
+  console.log(user);
 
   return (
     <div className='flex-1 overflow-y-auto rounded-lg shadow-lg'>

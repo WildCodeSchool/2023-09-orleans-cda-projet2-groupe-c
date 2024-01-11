@@ -110,7 +110,7 @@ export default function Login() {
             <div>
               <label htmlFor='email'>
                 <div className='flex items-center gap-2'>
-                  <UserIcon className='h-[18px] w-[15px]' />
+                  <UserIcon className='h-[18px] w-[15px] fill-white' />
                   <p className='text-base'>{`Email*`}</p>
                 </div>
               </label>
