@@ -1,13 +1,13 @@
 import { useCallback, useEffect, useState } from 'react';
 
-import type { User } from '@app/shared';
+import type { UserBody } from '@app/shared';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
 export default function useInteractions({ ...props }) {
   const { userId } = props;
 
-  const [selectedUser, setSelectedUser] = useState<User>();
+  const [selectedUser, setSelectedUser] = useState<UserBody>();
   const [superLikesCount, setSuperLikesCount] = useState<number>(0);
 
   // Fetch user's superlike from the API
@@ -18,6 +18,8 @@ export default function useInteractions({ ...props }) {
         credentials: 'include',
       });
       const data = await res.json();
+
+      console.log(data);
 
       // Set a list of user interactions in the state "superLike"
       setSelectedUser(data[0]);

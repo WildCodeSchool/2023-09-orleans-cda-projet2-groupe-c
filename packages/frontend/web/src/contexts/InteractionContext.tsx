@@ -1,6 +1,6 @@
 import { createContext, useContext, useMemo } from 'react';
 
-import type { User } from '@app/shared';
+import type { UserBody } from '@app/shared';
 
 import { useAuth } from '@/contexts/AuthContext';
 import useInteractions from '@/hooks/use-interactions';
@@ -10,7 +10,7 @@ type HomeProviderProps = {
 };
 
 type HomeProviderState = {
-  selectedUser: User | undefined;
+  selectedUser: UserBody | undefined;
   superLikesCount: number;
   handleInteraction: (action: string) => void;
 };
