@@ -11,9 +11,8 @@ import type {
   RegisterWithActivationCode,
 } from '@app/shared';
 
+import { getUserId, hashPassword } from '@/middlewares/auth-handlers';
 import { tokenGenerator } from '@/utils/token-generator';
-
-import { getUserId, hashPassword } from './middlewares/auth-handlers';
 
 const JWT_SECRET = process.env.JWT_SECRET;
 const FRONTEND_URL = 'http://localhost';
@@ -54,10 +53,10 @@ authRouter.post('/registration', hashPassword, async (req, res) => {
     const result = await db.insertInto('user').values(data).execute();
 
     // Get userId inserted
-    const userId = result[0].insertId;
+    const userId = Number(result[0].insertId);
 
     // Creating JWT token with Jose library
-    const jwt = await new jose.SignJWT({ sub: email, userId: Number(userId) })
+    const jwt = await new jose.SignJWT({ sub: email, userId })
       .setProtectedHeader({ alg: 'HS256' })
       .setIssuedAt()
       .setIssuer(FRONTEND_URL)

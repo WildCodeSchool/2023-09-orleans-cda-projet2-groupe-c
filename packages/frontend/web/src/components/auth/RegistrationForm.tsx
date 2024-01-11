@@ -24,23 +24,26 @@ export default function RegistrationForm() {
   // onSubmit function to handle form submission
   const onSubmit: SubmitHandler<RegisterBody> = async (data) => {
     try {
-      // Send a POST request to the API to register the user
-      await fetch(`${API_URL}/auth/registration`, {
-        method: 'POST',
-        headers: { 'content-type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({
-          email: data.email,
-          password: data.password,
-        }),
-      });
+      if (isValid) {
+        // Send a POST request to the API to register the user
+        await fetch(`${API_URL}/auth/registration`, {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({
+            email: data.email,
+            password: data.password,
+          }),
+        });
 
-      setIsLoggedIn(true);
+        setIsLoggedIn(true);
+
+        // Navigate to the success page if the form is valid with useNavigate
+        navigate('/registration/success');
+      }
     } catch (error) {
-      throw new Error(`Failed to register : ${String(error)}`); // Throw an error if the request fails
-    }
-    if (isValid) {
-      navigate('/registration/success'); // Navigate to the success page if the form is valid with useNavigate
+      // Throw an error if the request fails
+      throw new Error(`Failed to register : ${String(error)}`);
     }
   };
 

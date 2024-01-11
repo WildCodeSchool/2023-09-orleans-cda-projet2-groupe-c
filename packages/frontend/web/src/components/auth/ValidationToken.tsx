@@ -5,9 +5,8 @@ import { Navigate, useNavigate } from 'react-router-dom';
 
 import { type ActivationCode, activationCodeSchema } from '@app/shared';
 
+import Button from '@/components/Button';
 import { useAuth } from '@/contexts/AuthContext';
-
-import Button from '../Button';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
