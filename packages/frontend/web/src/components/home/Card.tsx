@@ -26,8 +26,6 @@ export default function Card({ user }: CardProps) {
     }
   }, [user.birthdate]);
 
-  console.log(user);
-
   return (
     <div className='flex-1 overflow-y-auto rounded-lg shadow-lg'>
       <div className='relative h-full'>
