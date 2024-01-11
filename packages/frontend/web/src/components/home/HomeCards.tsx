@@ -1,3 +1,9 @@
+import ProfileInteractionLayout from '../user-interaction/ProfileInteractionLayout';
+
 export default function HomeCards() {
-  return <h1>{`HomeCards`}</h1>;
+  return (
+    <div className='z-50'>
+      <ProfileInteractionLayout />
+    </div>
+  );
 }

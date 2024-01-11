@@ -18,7 +18,9 @@ export default function Home() {
     return (
       <main>
         <NavBar />
-        <Outlet />
+        <div className='relative z-50'>
+          <Outlet />
+        </div>
       </main>
     );
   }

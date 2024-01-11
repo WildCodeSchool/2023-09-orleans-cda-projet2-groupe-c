@@ -2,6 +2,7 @@ import { createBrowserRouter } from 'react-router-dom';
 
 import AuthLayout from './components/AuthLayout';
 import Login from './components/auth/Login';
+import ProfileInteractionLayout from './components/user-interaction/ProfileInteractionLayout';
 import Home from './pages/Home';
 
 const router = createBrowserRouter([
@@ -12,6 +13,12 @@ const router = createBrowserRouter([
       {
         path: '/',
         element: <AuthLayout />,
+        children: [
+          {
+            path: '/profile-interaction',
+            element: <ProfileInteractionLayout />,
+          },
+        ],
       },
       {
         path: '/login',
