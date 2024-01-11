@@ -2,6 +2,7 @@ import express from 'express';
 import * as jose from 'jose';
 
 import { db } from '@app/backend-shared';
+import type { Request as ExpressRequest } from '@app/shared';
 import type {
   ActivationCode,
   ActivationToken,
@@ -11,6 +12,8 @@ import type {
 } from '@app/shared';
 
 import { tokenGenerator } from '@/utils/token-generator';
+
+import { getUserId, hashPassword } from './middlewares/auth-handlers';
 
 const JWT_SECRET = process.env.JWT_SECRET;
 const FRONTEND_URL = 'http://localhost';
@@ -23,36 +26,38 @@ if (JWT_SECRET === undefined) {
 // Encode the JWT secret
 const secret = new TextEncoder().encode(JWT_SECRET);
 
+interface Request extends ExpressRequest {
+  superLikesCount?: number;
+}
+
 const authRouter = express.Router();
 
 // Route to register a new user
-authRouter.post('/registration', async (req, res) => {
+authRouter.post('/registration', hashPassword, async (req, res) => {
   try {
-    const activationCode = tokenGenerator(); // Generating random uppercased code with 6 characters and numbers
+    // Generating random uppercased code with 6 characters and numbers
+    const activationCode = tokenGenerator();
 
     // Getting email and password from request body, followed by password hashing
     const { email, password } = req.body as RegisterBody;
 
-    const hashedPassword = await Bun.password.hash(password, {
-      algorithm: 'bcrypt',
-      cost: 10,
-    });
-
     // Creating user object with the data from request body
-    const user: RegisterWithActivationCode = {
+    const data: RegisterWithActivationCode = {
       email,
-      password: hashedPassword,
+      password: password,
       role: 'user',
       activation_code: activationCode,
       email_verified_at: new Date(),
     };
 
-    const result = await db.insertInto('user').values(user).execute();
+    // Insert new user into database
+    const result = await db.insertInto('user').values(data).execute();
 
+    // Get userId inserted
     const userId = result[0].insertId;
 
     // Creating JWT token with Jose library
-    const jwt = await new jose.SignJWT({ sub: email })
+    const jwt = await new jose.SignJWT({ sub: email, userId: Number(userId) })
       .setProtectedHeader({ alg: 'HS256' })
       .setIssuedAt()
       .setIssuer(FRONTEND_URL)
@@ -68,67 +73,90 @@ authRouter.post('/registration', async (req, res) => {
       signed: true,
     });
 
-    // A cookie containing the user ID
-    res.cookie('userId', userId, {
-      httpOnly: true,
-      sameSite: true,
-      secure: process.env.NODE_ENV === 'production',
-      signed: true,
-    });
-
     try {
       await jose.jwtVerify(jwt, secret, {
         issuer: FRONTEND_URL,
         audience: FRONTEND_URL,
       });
-    } catch (error) {
-      return res.status(401).json({ message: 'Token is not valid', error });
+    } catch {
+      return res.status(401).json({
+        ok: false,
+        isLoggedIn: false,
+      });
     }
 
-    return res.json({ ok: true });
-  } catch (error) {
-    return res.json({ error });
+    return res.json({ ok: true, isLoggedIn: true });
+  } catch {
+    return res.json({ ok: false, isLoggedIn: false });
   }
 });
 
 // Route to validate the activation code
-authRouter.post('/registration/validation', async (req, res) => {
-  try {
-    const userId: number = req.signedCookies.userId;
-    const { activation_code: activationCode }: ActivationCode = req.body;
+authRouter.post(
+  '/registration/validation',
+  getUserId,
+  async (req: Request, res) => {
+    try {
+      // Get userId from the request
+      const userId = req.userId as number;
 
-    const getCode = await db
-      .selectFrom('user')
-      .select('activation_code')
-      .where('id', '=', userId)
-      .execute();
+      // Get the activation code from the request body
+      const { activation_code: activationCode }: ActivationCode = req.body;
 
-    if (activationCode === getCode[0].activation_code) {
-      const code: ActivationToken = {
-        activation_code: '',
-        activate_at: new Date(),
-      };
+      // Get the activation code from the database
+      const getCode = await db
+        .selectFrom('user')
+        .select('activation_code')
+        .where('id', '=', userId)
+        .execute();
 
-      await db.updateTable('user').set(code).where('id', '=', userId).execute();
+      // Remove the activation code from the database and update the activation date
+      if (activationCode === getCode[0].activation_code) {
+        const code: ActivationToken = {
+          activation_code: '',
+          activate_at: new Date(),
+        };
+
+        await db
+          .updateTable('user')
+          .set(code)
+          .where('id', '=', userId)
+          .execute();
+      }
+      res.json({ ok: true, isLoggedIn: true });
+    } catch {
+      return res.json({
+        ok: false,
+        isLoggedIn: false,
+        error: 'Wrong activation code!',
+      });
     }
-    res.json({ ok: true });
-  } catch (error) {
-    return res.json({ error });
-  }
-});
+  },
+);
 
 // Route to get the user's activation code from the database
-authRouter.get('/registration/users/code', async (req, res) => {
-  const userId = req.signedCookies.userId;
+authRouter.get(
+  '/registration/users/:userId/code',
+  getUserId,
+  async (req: Request, res) => {
+    try {
+      const userId = req.userId as number;
 
-  const code = await db
-    .selectFrom('user')
-    .select('activation_code')
-    .where('id', '=', userId)
-    .execute();
+      // Get the activation code from the database
+      const code = await db
+        .selectFrom('user')
+        .select('activation_code')
+        .where('id', '=', userId)
+        .execute();
 
-  return res.json(code);
-});
+      return res.json(code);
+    } catch {
+      return res.json({
+        error: 'An error occurred while fetching the activation code.',
+      });
+    }
+  },
+);
 
 // Route to check the JWT token in the cookie and verify if the user is logged in
 authRouter.get('/verify', async (req, res) => {
@@ -144,8 +172,8 @@ authRouter.get('/verify', async (req, res) => {
   }
 
   try {
-    // Verify the JWT
-    await jose.jwtVerify(jwt, secret, {
+    // Verify the JWT and get the payload for getting the user id
+    const { payload } = await jose.jwtVerify(jwt, secret, {
       issuer: FRONTEND_URL,
       audience: FRONTEND_URL,
     });
@@ -153,6 +181,7 @@ authRouter.get('/verify', async (req, res) => {
     return res.json({
       ok: true,
       isLoggedIn: true,
+      userId: payload.userId,
     });
   } catch (error) {
     // If the JWT is expired
@@ -180,7 +209,7 @@ authRouter.post('/login', async (req, res) => {
     // Get the user from the database
     const user = await db
       .selectFrom('user')
-      .select(['user.password'])
+      .select(['user.id', 'user.password'])
       .where('user.email', '=', email)
       .executeTakeFirst();
 
@@ -211,6 +240,7 @@ authRouter.post('/login', async (req, res) => {
     // Create a new JWT with the library jose
     const jwt = await new jose.SignJWT({
       sub: email,
+      userId: user.id, // Add the user id to the JWT payload
     })
       .setProtectedHeader({
         alg: 'HS256',

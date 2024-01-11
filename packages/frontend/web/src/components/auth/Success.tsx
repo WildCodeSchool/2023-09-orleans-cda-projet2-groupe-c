@@ -1,9 +1,17 @@
-import { Link } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
+
+import { useAuth } from '@/contexts/AuthContext';
 
 import Button from '../Button';
 import CheckIcon from '../icons/CheckIcon';
 
 export default function Success() {
+  const { isLoggedIn } = useAuth();
+
+  if (!isLoggedIn) {
+    return <Navigate to='/login' />;
+  }
+
   return (
     <>
       <div className='p-8'>
