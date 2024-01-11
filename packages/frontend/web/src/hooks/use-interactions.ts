@@ -19,8 +19,6 @@ export default function useInteractions({ ...props }) {
       });
       const data = await res.json();
 
-      console.log(data);
-
       // Set a list of user interactions in the state "superLike"
       setSelectedUser(data[0]);
     },

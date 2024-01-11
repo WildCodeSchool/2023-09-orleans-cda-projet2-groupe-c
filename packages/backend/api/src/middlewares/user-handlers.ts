@@ -1,6 +1,6 @@
 /* eslint-disable unicorn/no-null */
 import type { Response } from 'express';
-import { jsonArrayFrom } from 'kysely/helpers/mysql';
+import { jsonArrayFrom, jsonObjectFrom } from 'kysely/helpers/mysql';
 
 import { db } from '@app/backend-shared';
 import type { Request as ExpressRequest } from '@app/shared';
@@ -90,7 +90,7 @@ const users = async (userId: number) => {
       'u.gender',
       'u.biography',
       'u.account_github',
-      jsonArrayFrom(
+      jsonObjectFrom(
         eb
           .selectFrom('city as c')
           .select(['c.id', 'c.name as city_name', 'c.coordinates'])
