@@ -104,7 +104,10 @@ export default function LanguageAndTechnology({
                 className='flex flex-col items-center text-center duration-200 hover:scale-105'
                 key={item.id}
               >
-                <label className='text-[12px]' htmlFor={item.name}>
+                <label
+                  className='cursor-pointer text-[12px]'
+                  htmlFor={item.name}
+                >
                   <div className='relative flex justify-center'>
                     {selectedItems.some(
                       (selectedItem) => selectedItem.id === item.id,
@@ -162,7 +165,7 @@ export default function LanguageAndTechnology({
                       (selectedItem) => selectedItem.id === item.id,
                     )
                   }
-                  className='absolute h-0 w-0 opacity-0'
+                  className='absolute opacity-0'
                 />
               </div>
             ))}

@@ -99,7 +99,7 @@ export default function FormCity() {
                 type='radio'
                 id={city.name}
                 value={city.id}
-                className='absolute h-0 w-0 opacity-0'
+                className='absolute opacity-0'
                 onChange={(event) => {
                   handleCityChange(city.name, Number(event.target.value));
                 }}

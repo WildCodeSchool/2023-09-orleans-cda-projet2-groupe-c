@@ -1,5 +1,7 @@
 import { motion } from 'framer-motion';
 
+import { useTheme } from '@/contexts/ThemeContext';
+
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   readonly isOutline: boolean;
 }
@@ -10,6 +12,9 @@ export default function Button({
   isOutline,
   onClick,
 }: ButtonProps) {
+  useTheme();
+  const { theme } = useTheme();
+
   return (
     // Use Link for navigation
     <motion.button
@@ -31,8 +36,10 @@ export default function Button({
       }}
       onClick={onClick}
       className={`${
-        isOutline ? 'bg-transparent' : 'bg-primary'
-      } border-primary w-full max-w-[500px] shrink-0 rounded-lg border px-2 py-3 text-xl text-white`}
+        isOutline
+          ? `bg-transparent ${theme === 'dark' ? 'text-white' : 'text-primary'}`
+          : 'bg-primary text-white'
+      } border-primary w-full max-w-[500px] shrink-0 rounded-lg border px-2 py-3 text-xl`}
     >
       {/* Display the button text */}
       {children}

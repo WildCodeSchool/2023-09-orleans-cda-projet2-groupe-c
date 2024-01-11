@@ -13,7 +13,12 @@ export default function FormName() {
       <span className='flex justify-start pb-8'>
         {'The maximum allowed number of character is 100.'}
       </span>
-      <label htmlFor='name'>{'Username'}</label>
+      <div className='flex'>
+        <label htmlFor='name'>{'Username'}</label>
+        <label className='text-primary' htmlFor='name'>
+          {'*'}
+        </label>
+      </div>
       <input
         type='text'
         id='name'
