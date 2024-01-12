@@ -5,7 +5,6 @@ import { FormProvider, useForm } from 'react-hook-form';
 import type { ProfileForm, SelectedItemBody } from '@app/shared';
 
 import Button from '@/components/Button';
-import NavBar from '@/components/NavBar';
 import FormBio from '@/components/forms/FormBio';
 import FormBirthDate from '@/components/forms/FormBirthDate';
 import FormCity from '@/components/forms/FormCity';
@@ -41,7 +40,7 @@ export default function FormProfile() {
   const formSubmit = async (data: ProfileForm) => {
     // If the current page is less than 10, move to the next page
     if (page < 10) {
-      setPage((prev) => prev + 1);
+      setPage(page + 1);
       // Otherwise, attempt to submit the form data
     } else {
       try {
@@ -71,46 +70,41 @@ export default function FormProfile() {
   };
 
   return (
-    <>
-      <NavBar />
-      <FormProvider {...methods}>
-        <div className='w-full px-5'>
-          <form
-            onSubmit={handleSubmit(formSubmit)}
-            className='flex h-screen flex-col items-center justify-between'
-          >
-            <div className='flex h-full w-full max-w-[500px] flex-col justify-between'>
-              {/*   i use react.Fragment because only <></> not work with key */}
-              {PAGES.map(
-                ({ currentPage, component }) =>
-                  currentPage === page && (
-                    <React.Fragment key={currentPage}>
-                      {component}
-                    </React.Fragment>
-                  ),
-              )}
-              <div className='flex w-full flex-col gap-6 pb-5 md:pb-40'>
-                <Button isOutline={false} type='submit'>
-                  {page >= 10 ? 'Start matching' : 'Next'}
+    <FormProvider {...methods}>
+      <div className='w-full px-5'>
+        <form
+          onSubmit={handleSubmit(formSubmit)}
+          className='flex h-screen flex-col items-center justify-between'
+        >
+          <div className='flex h-full w-full max-w-[500px] flex-col justify-between'>
+            {/*   i use react.Fragment because only <></> not work with key */}
+            {PAGES.map(
+              ({ currentPage, component }) =>
+                currentPage === page && (
+                  <React.Fragment key={currentPage}>{component}</React.Fragment>
+                ),
+            )}
+            <div className='flex w-full flex-col gap-6 pb-5 md:pb-40'>
+              <Button isOutline={false} type='submit'>
+                {page >= 10 ? 'Start matching' : 'Next'}
+              </Button>
+              {page > 0 && page < 10 ? (
+                <Button
+                  isOutline
+                  type='button'
+                  onClick={() => {
+                    setPage(page - 1);
+                  }}
+                >
+                  {'Back'}
                 </Button>
-                {page > 0 && page < 10 ? (
-                  <Button
-                    isOutline
-                    type='button'
-                    onClick={() => {
-                      setPage(page - 1);
-                    }}
-                  >
-                    {'Back'}
-                  </Button>
-                ) : (
-                  ''
-                )}
-              </div>
+              ) : (
+                ''
+              )}
             </div>
-          </form>
-        </div>
-      </FormProvider>
-    </>
+          </div>
+        </form>
+      </div>
+    </FormProvider>
   );
 }
