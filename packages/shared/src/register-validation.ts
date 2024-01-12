@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 import { authSchema } from '.';
 
-export interface CategoryHobby {
+export interface CategoryHobby extends FormItemsBodyValidation {
   category_name: string;
   logo_path: string;
   hobbies: {

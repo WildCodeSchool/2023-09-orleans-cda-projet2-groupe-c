@@ -5,11 +5,6 @@ import type { FormBackValidation } from '@app/shared';
 
 const register = express.Router();
 
-register.get('/users', async (_req, res) => {
-  const users = await db.selectFrom('user').selectAll().execute();
-  return res.json(users);
-});
-
 register.post('/', async (req, res) => {
   try {
     const {

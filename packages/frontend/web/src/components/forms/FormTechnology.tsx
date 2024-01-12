@@ -8,7 +8,6 @@ export default function FormTechnology() {
     formTitle: 'MY TECHNOLOGY',
     subtitle: 'You can choose some technologies.',
     fieldName: 'technologies' as FieldName,
-    storageKey: 'technologies',
   };
   return <LanguageAndTechnologyContainer {...props} />;
 }

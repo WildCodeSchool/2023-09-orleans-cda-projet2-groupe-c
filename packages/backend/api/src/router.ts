@@ -2,12 +2,12 @@ import express from 'express';
 
 import authRouter from './auth/auth';
 import categoriesRouter from './category/category-crud';
-import { cityRouter } from './cities/get-cities';
+import { cityRouter } from './cities/city-crud';
 import { hobbyRouter } from './hobby/hobby-crud';
 import interactionRouter from './interaction/interaction-crud';
-import { languageRouter } from './languages/get-languages';
+import { languageRouter } from './languages/language-crud';
 import { register } from './register';
-import { technologyRouter } from './technologies.ts/get-technologies';
+import { technologyRouter } from './technologies.ts/technology-crud';
 import userRouter from './user/user-crud';
 
 const router = express.Router();

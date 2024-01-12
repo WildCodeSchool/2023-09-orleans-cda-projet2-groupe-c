@@ -13,7 +13,7 @@ export default {
   theme: {
     extend: {
       colors: {
-        primary: '#eb0573',
+        primary: 'var(--primary)',
         secondary: 'var(--secondary)',
         'light-hard': 'var(--light-hard)',
         'light-medium': 'var(--light-medium)',

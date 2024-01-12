@@ -6,6 +6,7 @@
 
 @layer base {
   :root {
+    --primary: #eb0573;
     --secondary: #3f436a;
     --light-hard: #eae3e3;
     --light-medium: #f4efef;

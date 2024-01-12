@@ -1,12 +1,8 @@
-import { useEffect, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 
-import {
-  type FormItemsBodyValidation,
-  type FormItemsValidation,
-  type SelectedItemBody,
-  formArrayStringSchema,
-} from '@app/shared';
+import { type FormItemsValidation, formArrayStringSchema } from '@app/shared';
+
+import useSelectedItems from '@/hooks/use-selected-items';
 
 import FormContainer from './FormContainer';
 
@@ -23,58 +19,19 @@ export default function LanguageAndTechnology({
   subtitle,
   fieldName,
 }: SelectionFormProps) {
-  const [items, setItems] = useState<FormItemsBodyValidation[]>([]);
-  const [selectedItems, setSelectedItems] = useState<SelectedItemBody[]>([]);
+  const {
+    items,
+    apiUrlItems,
+    selectedItems,
+    fieldNameItems,
+    handleCheckboxChange,
+  } = useSelectedItems({ apiUrlItems: apiUrl, fieldNameItems: fieldName });
   const { register, formState } = useFormContext<FormItemsValidation>();
   const { errors } = formState;
 
-  const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    // Convert Json to JS object
-    const targetValue = JSON.parse(event.target.value);
-    // Get Id from the value
-    const targetId = targetValue.id;
-
-    let newItems = selectedItems;
-
-    if (selectedItems.some((item) => item.id === targetId)) {
-      newItems = selectedItems.filter((item) => item.id !== targetId);
-    } else if (selectedItems.length < 6) {
-      newItems = [
-        ...selectedItems,
-        { id: targetId, order: selectedItems.length + 1 },
-      ];
-    }
-    setSelectedItems(newItems);
-    localStorage.setItem(fieldName, JSON.stringify(newItems));
-  };
-
-  useEffect(() => {
-    const savedItems = localStorage.getItem(fieldName);
-    if (savedItems !== null) {
-      setSelectedItems(JSON.parse(savedItems));
-    }
-    const controller = new AbortController();
-
-    (async () => {
-      const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/${apiUrl}`,
-        {
-          signal: controller.signal,
-        },
-      );
-
-      const data = await response.json();
-      setItems(data);
-    })();
-
-    return () => {
-      controller.abort();
-    };
-  }, [apiUrl, fieldName]);
-
   let firstSelectedItems;
 
-  if (apiUrl === 'languages' && selectedItems.length > 0) {
+  if (apiUrlItems === 'languages' && selectedItems.length > 0) {
     firstSelectedItems = items.find(
       (language) => language.id === selectedItems[0].id,
     );
@@ -84,7 +41,7 @@ export default function LanguageAndTechnology({
     <FormContainer title={formTitle}>
       <span className='flex justify-start'>{subtitle}</span>
       <div className='mt-3 flex flex-col justify-center text-center'>
-        {apiUrl === 'languages' ? (
+        {apiUrlItems === 'languages' ? (
           <div className='flex flex-col items-center justify-center gap-3'>
             <div className='outline-primary my-2 flex h-12 w-12 items-center justify-center rounded-md py-2 outline outline-offset-2 md:mt-4 md:h-16 md:w-16'>
               <img
@@ -147,7 +104,7 @@ export default function LanguageAndTechnology({
                   })}
                   id={item.name}
                   type='checkbox'
-                  {...register(fieldName, {
+                  {...register(fieldNameItems, {
                     validate: (value) => {
                       const key =
                         apiUrl === 'languages' ? 'languages' : 'technologies';
