@@ -28,6 +28,10 @@ export type Point = {
   y: number;
 };
 
+export type GeoJson = {
+  coordinates: [number, number];
+};
+
 export interface UserTable {
   id: Generated<number>;
   name?: string;
@@ -42,6 +46,7 @@ export interface UserTable {
   activation_code?: string;
   activate_at?: Date;
   city_id?: number;
+  preference_id?: number;
 }
 
 export interface HobbyTable {
@@ -53,7 +58,7 @@ export interface HobbyTable {
 export interface CityTable {
   id: Generated<number>;
   name: string;
-  coordinates: Point;
+  coordinates: Point & GeoJson;
 }
 
 export interface MessageTable {
@@ -90,6 +95,13 @@ export interface UserActionTable {
   superlike_at?: Date;
   next_at?: Date;
   canceled_at?: Date;
+}
+
+export interface PreferenceTable {
+  id: Generated<number>;
+  distance: number;
+  language_pref_id: number;
+  gender_pref: Gender;
 }
 
 export type Technology = Selectable<TechnologyTable>;
@@ -140,6 +152,10 @@ export type UserAction = Selectable<UserActionTable>;
 export type NewUserAction = Insertable<UserActionTable>;
 export type UserActionUpdate = Updateable<UserActionTable>;
 
+export type Preference = Selectable<PreferenceTable>;
+export type NewPreference = Insertable<PreferenceTable>;
+export type PreferenceUpdate = Updateable<PreferenceTable>;
+
 export interface Database {
   hobby_category: HobbyCategoryTable;
   technology: TechnologyTable;
@@ -153,4 +169,5 @@ export interface Database {
   language_user: LanguageUserTable;
   hobby_user: HobbyUserTable;
   user_action: UserActionTable;
+  preference: PreferenceTable;
 }

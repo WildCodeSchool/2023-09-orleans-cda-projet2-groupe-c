@@ -1,25 +1,28 @@
 /* eslint-disable unicorn/no-null */
 import type { Response } from 'express';
-import { jsonArrayFrom } from 'kysely/helpers/mysql';
+import { jsonArrayFrom, jsonObjectFrom } from 'kysely/helpers/mysql';
 
 import { db } from '@app/backend-shared';
 import type { Request as ExpressRequest } from '@app/shared';
+
+import type { PreferenceBody } from '@/middlewares/filter-handlers';
 
 // Unwrap the type of the Promise
 export type Users = Awaited<ReturnType<typeof users>>;
 
 interface Request extends ExpressRequest {
   usersList?: Users;
+  userPreferences?: PreferenceBody;
 }
 
-const users = async (userId: number) => {
-  // Select all users with whom the initiator has not interacted
+const users = async (userId: number, userPreferences: PreferenceBody) => {
+  // Select all users with whom the initiator has not interacted and who match the user's preferences
   //
   // MySQL query:
   //
   // SELECT "u.id", "u.name", "u.birthdate", "u.gender", "u.biography", "u.account_github"
   //  (
-  //    SELECT JSON_AGG(agg), '[]')
+  //    SELECT JSON_OBJECT(agg), '[]')
   //    FROM (
   //        SELECT "c.id", "c.name" AS "city_name", "c.coordinates"
   //        FROM "city" AS "c"
@@ -27,7 +30,7 @@ const users = async (userId: number) => {
   //    ) AS agg
   //  ) AS "city",
   // (
-  //    SELECT JSON_AGG(agg), '[]')
+  //    SELECT JSON_ARRAY(agg), '[]')
   //    FROM (
   //        SELECT "l.id", "l.name", "lu.order", "l.logo_path"
   //        FROM "language_user" AS "lu"
@@ -38,7 +41,7 @@ const users = async (userId: number) => {
   //    ) AS agg
   //  ) AS "languages",
   // (
-  //    SELECT JSON_AGG(agg), '[]')
+  //    SELECT JSON_ARRAY(agg), '[]')
   //    FROM (
   //        SELECT "t.id", "t.name", "tu.order", "t.logo_path"
   //        FROM "technology_user" AS "tu"
@@ -49,7 +52,7 @@ const users = async (userId: number) => {
   //    ) AS agg
   //  ) AS "technologies",
   // (
-  //    SELECT JSON_AGG(agg), '[]')
+  //    SELECT JSON_ARRAY(agg), '[]')
   //    FROM (
   //        SELECT "hc.name" AS "category", "h.id", "h.name", "hu.order"
   //        FROM "hobby_user" AS "hu"
@@ -59,7 +62,7 @@ const users = async (userId: number) => {
   //    ) AS agg
   //  ) AS "hobbies",
   // (
-  //    SELECT JSON_AGG(agg), '[]')
+  //    SELECT JSON_ARRAY(agg), '[]')
   //    FROM (
   //        SELECT "p.id", "p.order", "p.picture_path"
   //        FROM "picture" AS "p"
@@ -75,6 +78,8 @@ const users = async (userId: number) => {
   //    AND "u.gender" IS NOT NULL
   //    AND "u.city_id" IS NOT NULL
   //    AND "u.activate_at" IS NOT NULL
+  //    AND "u.gender" = userPreferences[0].gender_pref
+  //    AND "lu.language_id" = userPreferences[0].language_pref_id
   // )
   // AND "u.id" NOT IN (
   //    SELECT "ua.receiver_id"
@@ -83,6 +88,7 @@ const users = async (userId: number) => {
   // )
   const users = await db
     .selectFrom('user as u')
+    .innerJoin('language_user as lu', 'u.id', 'lu.user_id')
     .select((eb) => [
       'u.id',
       'u.name',
@@ -90,7 +96,7 @@ const users = async (userId: number) => {
       'u.gender',
       'u.biography',
       'u.account_github',
-      jsonArrayFrom(
+      jsonObjectFrom(
         eb
           .selectFrom('city as c')
           .select(['c.id', 'c.name as city_name', 'c.coordinates'])
@@ -140,6 +146,12 @@ const users = async (userId: number) => {
         eb('u.activate_at', 'is not', null),
       ]),
     )
+    .where((eb) =>
+      eb.and([
+        eb('u.gender', '=', userPreferences[0].gender_pref),
+        eb('lu.language_id', '=', userPreferences[0].language_pref_id),
+      ]),
+    )
     .where('u.id', 'not in', (eb) =>
       eb
         .selectFrom('user_action as ua')
@@ -161,15 +173,21 @@ export const getUsers = async (
 ) => {
   try {
     const userId = req.userId;
+    const userPreferences = req.userPreferences;
 
     if (userId === undefined) {
       return res.status(401).json({
         success: false,
         error: 'Unauthorized!',
       });
+    } else if (userPreferences === undefined) {
+      return res.status(404).json({
+        success: false,
+        error: 'User preferences not found!',
+      });
     }
 
-    const usersList = await users(userId);
+    const usersList = await users(userId, userPreferences);
     req.usersList = usersList;
 
     next();
