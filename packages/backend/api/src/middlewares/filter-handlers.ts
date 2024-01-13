@@ -28,7 +28,7 @@ const userPreferenceId = async (userId: number) => {
   return result;
 };
 
-// Get the user preferences id
+// Get the user preferences
 const userPreferences = async (userPreferenceId: number) => {
   const result = await db
     .selectFrom('preference')

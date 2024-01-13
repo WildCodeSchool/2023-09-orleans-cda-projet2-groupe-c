@@ -6,6 +6,6 @@ export interface RequestBody {
   languagePref?: number;
 }
 
-export interface UserPreference {
+export interface UserPreferenceId {
   preference_id: number;
 }

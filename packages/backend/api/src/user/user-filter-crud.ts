@@ -4,14 +4,14 @@ import { db } from '@app/backend-shared';
 import type {
   Request as ExpressRequest,
   RequestBody,
-  UserPreference,
+  UserPreferenceId,
 } from '@app/shared';
 
 import { getUserId } from '@/middlewares/auth-handlers';
 import { getUserPreferenceId } from '@/middlewares/filter-handlers';
 
 interface Request extends ExpressRequest {
-  userPreferenceId?: UserPreference[];
+  userPreferenceId?: UserPreferenceId[];
   body: RequestBody;
 }
 
