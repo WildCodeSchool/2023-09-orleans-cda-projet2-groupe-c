@@ -5,7 +5,6 @@ import type { Request as ExpressRequest } from '@app/shared';
 import { getUserId } from '@/middlewares/auth-handlers';
 import {
   filteredUsersByDistance,
-  getUserPreferenceId,
   getUserPreferences,
 } from '@/middlewares/filter-handlers';
 import { type Users, getUsers } from '@/middlewares/user-handlers';
@@ -20,7 +19,6 @@ const userRouter = express.Router();
 userRouter.get(
   '/:userId',
   getUserId,
-  getUserPreferenceId,
   getUserPreferences,
   getUsers,
   filteredUsersByDistance,

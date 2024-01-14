@@ -166,28 +166,18 @@ const users = async (userId: number, userPreferences: PreferenceBody) => {
   return filteredUsers;
 };
 
+// Get a list of users filtered by preferences and without the user logged in
 export const getUsers = async (
   req: Request,
   res: Response,
   next: () => void,
 ) => {
   try {
-    const userId = req.userId;
-    const userPreferences = req.userPreferences;
-
-    if (userId === undefined) {
-      return res.status(401).json({
-        success: false,
-        error: 'Unauthorized!',
-      });
-    } else if (userPreferences === undefined) {
-      return res.status(404).json({
-        success: false,
-        error: 'User preferences not found!',
-      });
-    }
+    const userId = req.userId as number;
+    const userPreferences = req.userPreferences as PreferenceBody;
 
     const usersList = await users(userId, userPreferences);
+
     req.usersList = usersList;
 
     next();

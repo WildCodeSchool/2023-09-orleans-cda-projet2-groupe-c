@@ -29,11 +29,12 @@ const userPreferenceId = async (userId: number) => {
 };
 
 // Get the user preferences
-const userPreferences = async (userPreferenceId: number) => {
+const userPreferences = async (userId: number) => {
   const result = await db
-    .selectFrom('preference')
-    .selectAll()
-    .where('preference.id', '=', userPreferenceId)
+    .selectFrom('preference as p')
+    .innerJoin('user', 'user.preference_id', 'p.id')
+    .select(['p.id', 'p.distance', 'p.gender_pref', 'p.language_pref_id'])
+    .where('user.id', '=', userId)
     .execute();
 
   return result;
@@ -43,7 +44,7 @@ const userPreferences = async (userPreferenceId: number) => {
 const filteredByDistance = async (
   userId: number,
   users: Users,
-  range: number,
+  range: PreferenceBody,
 ) => {
   // Get the user logged in coordinates
   const userCoordinates = await db
@@ -72,9 +73,8 @@ const filteredByDistance = async (
     );
 
     // Convert distance to kilometers and return the users that are in the range
-    return Math.floor(distance / 1000) <= Number(range);
+    return Math.floor(distance / 1000) <= Number(range[0].distance);
   });
-
   return filteredUsersByDistance;
 };
 
@@ -86,13 +86,6 @@ export const getUserPreferenceId = async (
 ) => {
   try {
     const userId = req.userId as number;
-
-    if (!userId) {
-      return res.status(401).json({
-        success: false,
-        error: 'Unauthorized!',
-      });
-    }
 
     const preferenceId = await userPreferenceId(userId);
     req.userPreferenceId = preferenceId;
@@ -113,20 +106,9 @@ export const getUserPreferences = async (
   next: () => void,
 ) => {
   try {
-    const userPreferenceId = req.userPreferenceId;
+    const userId = req.userId as number;
 
-    // Check if the user preference id is undefined
-    if (!userPreferenceId || userPreferenceId[0].preference_id === undefined) {
-      return res.status(401).json({
-        success: false,
-        error: 'User preferences not found!',
-      });
-    }
-
-    const preferences = await userPreferences(
-      userPreferenceId[0].preference_id,
-    );
-
+    const preferences = await userPreferences(userId);
     req.userPreferences = preferences;
 
     next();
@@ -146,25 +128,11 @@ export const filteredUsersByDistance = async (
 ) => {
   try {
     const userId = req.userId as number;
-    const users = req.usersList;
-    const range = req.userPreferences
-      ? req.userPreferences[0].distance
-      : undefined;
-
-    // Check if the user logged in is undefined
-    if (users === undefined) {
-      return res.status(401).json({
-        success: false,
-        error: 'Unauthorized!',
-      });
-    } else if (range === undefined) {
-      return res.status(404).json({
-        success: false,
-        error: 'Range not defined!',
-      });
-    }
+    const users = req.usersList as Users;
+    const range = req.userPreferences as PreferenceBody;
 
     const filter = await filteredByDistance(userId, users, range);
+
     req.userListFiltered = filter;
 
     next();
