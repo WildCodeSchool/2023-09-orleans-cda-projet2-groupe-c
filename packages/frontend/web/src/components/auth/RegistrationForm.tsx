@@ -1,11 +1,9 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { type SubmitHandler, useForm } from 'react-hook-form';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import type { RegisterBody } from '@app/shared';
 import { registrationSchema } from '@app/shared';
-
-import { useAuth } from '@/contexts/AuthContext';
 
 import Button from '../Button';
 
@@ -14,9 +12,6 @@ const API_URL = import.meta.env.VITE_API_URL;
 export default function RegistrationForm() {
   // Get the navigate function from the router
   const navigate = useNavigate();
-
-  // Get the state isLoggedIn from the AuthContext
-  const { isLoggedIn } = useAuth();
 
   // Destructure the useForm hook
   // Use zodResolver to validate the form
@@ -45,11 +40,6 @@ export default function RegistrationForm() {
       navigate('/registration/success');
     }
   };
-
-  // If the user is already logged in, redirect to the home page
-  if (isLoggedIn) {
-    return <Navigate to='/' />;
-  }
 
   return (
     <div className='p-8'>

@@ -65,7 +65,7 @@ export const getUserId = async (
   } catch {
     return res.status(401).json({
       success: false,
-      error: 'Fail to get userId!',
+      error: 'Unauthorized!',
     });
   }
 };

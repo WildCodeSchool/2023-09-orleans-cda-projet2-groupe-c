@@ -1,19 +1,9 @@
-import { Link, Navigate } from 'react-router-dom';
-
-import { useAuth } from '@/contexts/AuthContext';
+import { Link } from 'react-router-dom';
 
 import Button from '../Button';
 import CheckIcon from '../icons/CheckIcon';
 
 export default function Success() {
-  // Get the state isLoggedIn from the AuthContext
-  const { isLoggedIn } = useAuth();
-
-  // If the user is already logged in, redirect to the home page
-  if (isLoggedIn) {
-    return <Navigate to='/' />;
-  }
-
   return (
     <>
       <div className='p-8'>

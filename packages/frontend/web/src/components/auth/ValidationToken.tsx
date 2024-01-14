@@ -21,7 +21,7 @@ export default function ValidationToken() {
   const { userId } = useAuth();
 
   // Get the login states from the AuthContext
-  const { isLoggedIn, setIsLoggedIn } = useAuth();
+  const { setIsLoggedIn } = useAuth();
 
   // Desctructure the useForm hook
   const { register, handleSubmit, formState } = useForm<ActivationCode>({
@@ -83,11 +83,6 @@ export default function ValidationToken() {
       controller.abort();
     };
   }, [userId]);
-
-  // If the user is already logged in, redirect to the home page
-  if (isLoggedIn) {
-    return <Navigate to='/' />;
-  }
 
   return (
     <div className='p-8'>
