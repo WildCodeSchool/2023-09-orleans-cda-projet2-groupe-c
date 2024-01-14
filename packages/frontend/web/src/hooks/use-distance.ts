@@ -26,28 +26,26 @@ export default function useDistance({ userId, selectedUser }: DistanceProps) {
 
   // Fetch coordinates of the user logged in
   useEffect(() => {
-    if (userId !== undefined) {
-      const controller = new AbortController();
-      const { signal } = controller;
+    const controller = new AbortController();
+    const { signal } = controller;
 
-      const fetchDistance = async () => {
-        const res = await fetch(`${API_URL}/users/${userId}/profile`, {
-          signal,
-          credentials: 'include',
-        });
-
-        const data = await res.json();
-        setCoordinates(data[0].city.coordinates);
-      };
-
-      fetchDistance().catch((error) => {
-        throw new Error(`Fail to fetch distance: ${String(error)}`);
+    const fetchDistance = async () => {
+      const res = await fetch(`${API_URL}/users/${userId}/profile`, {
+        signal,
+        credentials: 'include',
       });
 
-      return () => {
-        controller.abort();
-      };
-    }
+      const data = await res.json();
+      setCoordinates(data[0].city.coordinates);
+    };
+
+    fetchDistance().catch((error) => {
+      throw new Error(`Fail to fetch distance: ${error}`);
+    });
+
+    return () => {
+      controller.abort();
+    };
   }, [userId]);
 
   // Use Geolib to calculate the distance between the user logged in and the selected user
