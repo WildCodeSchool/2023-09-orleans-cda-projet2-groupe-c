@@ -143,16 +143,17 @@ interactionRouter.post(
 
       // Use safeParse from zod to validate the request body
       // Return an object with success or error and data properties
-      const result = actionSchema.safeParse(actionBody);
+      const parsed = actionSchema.safeParse(actionBody);
 
       // If one of the property values is incorrect, returns an error
-      if (!result.success) {
-        res.status(400).json({ success: false, error: result.error.message });
-        return;
+      if (!parsed.success) {
+        return res
+          .status(400)
+          .json({ success: false, error: parsed.error.message });
       }
 
       // Insert like interaction in database with zod parsed data
-      await db.insertInto('user_action').values(result.data).execute();
+      await db.insertInto('user_action').values(parsed.data).execute();
 
       res.json({ success: true });
     } catch {

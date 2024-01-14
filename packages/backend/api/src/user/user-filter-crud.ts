@@ -1,10 +1,11 @@
 import express from 'express';
 
 import { db } from '@app/backend-shared';
-import type {
-  Request as ExpressRequest,
-  RequestPreferencesBody,
-  UserPreferenceId,
+import {
+  type Request as ExpressRequest,
+  type RequestPreferencesBody,
+  type UserPreferenceId,
+  requestPreferencesSchema,
 } from '@app/shared';
 
 import { getUserId } from '@/middlewares/auth-handlers';
@@ -28,19 +29,22 @@ filterRouter.put(
       const userPreferenceId = req.userPreferenceId;
 
       // Get the body from the request
-      const distance = req.body.distance;
-      const genderPref = req.body.genderPref;
-      const languagePref = req.body.languagePref;
+      // Use parse from zod to validate the request body
+      const parsed = requestPreferencesSchema.safeParse(req.body);
+
+      // If one of the property values is incorrect, returns an error
+      if (!parsed.success) {
+        return res.status(400).json({
+          success: false,
+          error: parsed.error.message,
+        });
+      }
 
       // Update the preference table with the new values
       if (userPreferenceId) {
         await db
           .updateTable('preference')
-          .set({
-            distance: distance,
-            gender_pref: genderPref,
-            language_pref_id: languagePref,
-          })
+          .set(parsed.data)
           .where('preference.id', '=', userPreferenceId[0].preference_id)
           .execute();
 
@@ -52,12 +56,13 @@ filterRouter.put(
 
       res.status(404).json({
         success: false,
-        error: 'User preference not found!',
+        error: 'User preferences not found!',
       });
-    } catch {
+    } catch (error) {
       res.status(500).json({
         success: false,
-        error: 'Fail to update your preference!',
+        message: 'Fail to update your preference!',
+        error,
       });
     }
   },
