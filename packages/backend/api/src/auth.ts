@@ -15,7 +15,7 @@ import { getUserId, hashPassword } from '@/middlewares/auth-handlers';
 import { tokenGenerator } from '@/utils/token-generator';
 
 const JWT_SECRET = process.env.JWT_SECRET;
-const FRONTEND_URL = 'http://localhost';
+const FRONTEND_URL = process.env.FRONTEND_URL;
 
 // Throw an error if the JWT_SECRET environment variable is not defined
 if (JWT_SECRET === undefined) {
@@ -59,8 +59,8 @@ authRouter.post('/registration', hashPassword, async (req, res) => {
     const jwt = await new jose.SignJWT({ sub: email, userId })
       .setProtectedHeader({ alg: 'HS256' })
       .setIssuedAt()
-      .setIssuer(FRONTEND_URL)
-      .setAudience(FRONTEND_URL)
+      .setIssuer(String(FRONTEND_URL))
+      .setAudience(String(FRONTEND_URL))
       .setExpirationTime('2h')
       .sign(secret);
 
@@ -116,13 +116,17 @@ authRouter.post(
           activate_at: new Date(),
         };
 
+        // Update the activation code and the activation date in the database
         await db
           .updateTable('user')
           .set(code)
           .where('id', '=', userId)
           .execute();
+
+        res.json({ ok: true, isLoggedIn: true });
       }
-      res.json({ ok: true, isLoggedIn: true });
+
+      res.json({ ok: false, isLoggedIn: false });
     } catch {
       return res.json({
         ok: false,
@@ -177,6 +181,25 @@ authRouter.get('/verify', async (req, res) => {
       audience: FRONTEND_URL,
     });
 
+    // Get the user id from the payload from the JWT
+    const userId = payload.userId as number;
+
+    // Get the activation date from the database
+    const user = await db
+      .selectFrom('user')
+      .select('activate_at')
+      .where('id', '=', userId)
+      .executeTakeFirst();
+
+    // If the account is not activated, return an error
+    if (!user?.activate_at) {
+      return res.json({
+        ok: false,
+        isLoggedIn: false,
+        error: 'Account not activated!',
+      });
+    }
+
     return res.json({
       ok: true,
       isLoggedIn: true,
@@ -208,7 +231,7 @@ authRouter.post('/login', async (req, res) => {
     // Get the user from the database
     const user = await db
       .selectFrom('user')
-      .select(['user.id', 'user.password'])
+      .select(['user.id', 'user.password', 'activate_at'])
       .where('user.email', '=', email)
       .executeTakeFirst();
 
@@ -236,6 +259,14 @@ authRouter.post('/login', async (req, res) => {
       });
     }
 
+    if (!user.activate_at) {
+      return res.json({
+        ok: false,
+        isLoggedIn: false,
+        error: 'Account not activated!',
+      });
+    }
+
     // Create a new JWT with the library jose
     const jwt = await new jose.SignJWT({
       sub: email,
@@ -245,8 +276,8 @@ authRouter.post('/login', async (req, res) => {
         alg: 'HS256',
       })
       .setIssuedAt()
-      .setIssuer(FRONTEND_URL)
-      .setAudience(FRONTEND_URL)
+      .setIssuer(String(FRONTEND_URL))
+      .setAudience(String(FRONTEND_URL))
       .setExpirationTime('2h')
       .sign(secret);
 

@@ -6,10 +6,12 @@ import Button from '../Button';
 import CheckIcon from '../icons/CheckIcon';
 
 export default function Success() {
+  // Get the state isLoggedIn from the AuthContext
   const { isLoggedIn } = useAuth();
 
-  if (!isLoggedIn) {
-    return <Navigate to='/login' />;
+  // If the user is already logged in, redirect to the home page
+  if (isLoggedIn) {
+    return <Navigate to='/' />;
   }
 
   return (

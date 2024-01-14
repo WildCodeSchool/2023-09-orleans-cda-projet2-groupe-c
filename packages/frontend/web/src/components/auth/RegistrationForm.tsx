@@ -1,6 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { type SubmitHandler, useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 
 import type { RegisterBody } from '@app/shared';
 import { registrationSchema } from '@app/shared';
@@ -12,40 +12,44 @@ import Button from '../Button';
 const API_URL = import.meta.env.VITE_API_URL;
 
 export default function RegistrationForm() {
+  // Get the navigate function from the router
   const navigate = useNavigate();
+
+  // Get the state isLoggedIn from the AuthContext
+  const { isLoggedIn } = useAuth();
+
+  // Destructure the useForm hook
+  // Use zodResolver to validate the form
   const { register, handleSubmit, formState } = useForm<RegisterBody>({
     resolver: zodResolver(registrationSchema),
   });
 
+  // Destructure the formState object
   const { isValid, errors } = formState;
-
-  const { setIsLoggedIn } = useAuth();
 
   // onSubmit function to handle form submission
   const onSubmit: SubmitHandler<RegisterBody> = async (data) => {
-    try {
-      if (isValid) {
-        // Send a POST request to the API to register the user
-        await fetch(`${API_URL}/auth/registration`, {
-          method: 'POST',
-          headers: { 'content-type': 'application/json' },
-          credentials: 'include',
-          body: JSON.stringify({
-            email: data.email,
-            password: data.password,
-          }),
-        });
+    if (isValid) {
+      // Send a POST request to the API to register the user
+      await fetch(`${API_URL}/auth/registration`, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          email: data.email,
+          password: data.password,
+        }),
+      });
 
-        setIsLoggedIn(true);
-
-        // Navigate to the success page if the form is valid with useNavigate
-        navigate('/registration/success');
-      }
-    } catch (error) {
-      // Throw an error if the request fails
-      throw new Error(`Failed to register : ${String(error)}`);
+      // Navigate to the success page if the form is valid with useNavigate
+      navigate('/registration/success');
     }
   };
+
+  // If the user is already logged in, redirect to the home page
+  if (isLoggedIn) {
+    return <Navigate to='/' />;
+  }
 
   return (
     <div className='p-8'>

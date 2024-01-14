@@ -18,7 +18,10 @@ export default function ValidationToken() {
   const navigate = useNavigate();
 
   // Get states from the AuthContext
-  const { isLoggedIn, userId } = useAuth();
+  const { userId } = useAuth();
+
+  // Get the login states from the AuthContext
+  const { isLoggedIn, setIsLoggedIn } = useAuth();
 
   // Desctructure the useForm hook
   const { register, handleSubmit, formState } = useForm<ActivationCode>({
@@ -28,27 +31,26 @@ export default function ValidationToken() {
   // Desctructure the formState object
   const { isValid, errors } = formState;
 
+  // onSubmit function to handle form submission
   const onSubmit: SubmitHandler<ActivationCode> = async (data) => {
-    try {
-      if (isValid) {
-        const res = await fetch(`${API_URL}/auth/registration/validation`, {
-          method: 'POST',
-          credentials: 'include',
-          headers: { 'content-type': 'application/json' },
-          body: JSON.stringify(data),
-        });
+    if (isValid) {
+      // Send a POST request to the API to activate the user's account
+      const res = await fetch(`${API_URL}/auth/registration/validation`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify(data),
+      });
 
-        const resData = (await res.json()) as {
-          ok: boolean;
-          isLoggedIn: boolean;
-        };
+      const resData = (await res.json()) as {
+        isLoggedIn: boolean;
+      };
 
-        if (resData.isLoggedIn) {
-          navigate('/');
-        }
+      // If the user is logged in, redirect to the home page
+      if (resData.isLoggedIn) {
+        setIsLoggedIn(true);
+        navigate('/');
       }
-    } catch {
-      throw new Error('ⓘ Token is incorrect');
     }
   };
 
@@ -82,8 +84,9 @@ export default function ValidationToken() {
     };
   }, [userId]);
 
-  if (!isLoggedIn) {
-    return <Navigate to='/login' />;
+  // If the user is already logged in, redirect to the home page
+  if (isLoggedIn) {
+    return <Navigate to='/' />;
   }
 
   return (

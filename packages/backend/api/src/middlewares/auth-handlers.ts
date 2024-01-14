@@ -4,7 +4,7 @@ import * as jose from 'jose';
 import type { RegisterBody, Request } from '@app/shared';
 
 const JWT_SECRET = process.env.JWT_SECRET;
-const FRONTEND_URL = 'http://localhost';
+const FRONTEND_URL = process.env.FRONTEND_URL;
 
 const secret = new TextEncoder().encode(JWT_SECRET);
 
@@ -65,7 +65,7 @@ export const getUserId = async (
   } catch {
     return res.status(401).json({
       success: false,
-      error: 'Unauthorized!',
+      error: 'Fail to get userId!',
     });
   }
 };
