@@ -1,6 +1,6 @@
 import type { Gender } from './database';
 
-export interface RequestBody {
+export interface RequestPreferencesBody {
   distance?: number;
   genderPref?: Gender;
   languagePref?: number;

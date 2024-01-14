@@ -3,7 +3,7 @@ import express from 'express';
 import { db } from '@app/backend-shared';
 import type {
   Request as ExpressRequest,
-  RequestBody,
+  RequestPreferencesBody,
   UserPreferenceId,
 } from '@app/shared';
 
@@ -12,7 +12,7 @@ import { getUserPreferenceId } from '@/middlewares/filter-handlers';
 
 interface Request extends ExpressRequest {
   userPreferenceId?: UserPreferenceId[];
-  body: RequestBody;
+  body: RequestPreferencesBody;
 }
 
 const filterRouter = express.Router();
