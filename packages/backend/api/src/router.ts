@@ -1,6 +1,6 @@
 import express from 'express';
 
-import authRouter from './auth';
+import authRouter from './auth/auth';
 import categoriesRouter from './category/category-crud';
 import interactionRouter from './interaction/interaction-crud';
 import userRouter from './user/user-crud';
