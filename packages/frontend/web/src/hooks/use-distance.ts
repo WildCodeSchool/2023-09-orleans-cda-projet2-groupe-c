@@ -27,7 +27,7 @@ export default function useDistance({ userId, selectedUser }: DistanceProps) {
   // Fetch coordinates of the user logged in
   useEffect(() => {
     const controller = new AbortController();
-    const { signal } = controller;
+    const signal = controller.signal;
 
     const fetchDistance = async () => {
       const res = await fetch(`${API_URL}/users/${userId}/profile`, {
