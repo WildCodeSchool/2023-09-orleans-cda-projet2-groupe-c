@@ -1,4 +1,4 @@
-import type { Point } from './database';
+import type { GeoJson, Point } from './database';
 
 export * from './database';
 export * from './auth';
@@ -14,7 +14,7 @@ export interface UserBody {
   city: {
     id: number;
     city_name: string;
-    coordinates: Point;
+    coordinates: Point & GeoJson;
   };
   hobbies: {
     id: number;
