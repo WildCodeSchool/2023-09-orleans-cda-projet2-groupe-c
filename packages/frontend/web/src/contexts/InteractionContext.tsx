@@ -1,6 +1,6 @@
 import { createContext, useContext, useMemo } from 'react';
 
-import type { UserTable } from '@app/shared';
+import type { UserBody } from '@app/shared';
 
 import { useAuth } from '@/contexts/AuthContext';
 import useDistance from '@/hooks/use-distance';
@@ -11,7 +11,7 @@ type HomeProviderProps = {
 };
 
 type HomeProviderState = {
-  selectedUser: UserTable | undefined;
+  selectedUser: UserBody | undefined;
   superLikesCount: number;
   handleInteraction: (action: string) => void;
   distance: number;

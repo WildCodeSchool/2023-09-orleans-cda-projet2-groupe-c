@@ -30,7 +30,6 @@ userRouter.get('/:userId/profile', getUserId, async (req: Request, res) => {
             .whereRef('user.city_id', '=', 'city.id'),
         ).as('city'),
       ])
-      .whereRef('user.city_id', '=', 'city.id')
       .where('user.id', '=', userId)
       .execute();
 

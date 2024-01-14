@@ -1,20 +1,25 @@
 import getDistance from 'geolib/es/getDistance';
 import { useEffect, useState } from 'react';
 
+import type { UserBody } from '@app/shared';
+
 const API_URL = import.meta.env.VITE_API_URL;
 
 interface CoordinatesBody {
   coordinates: number[];
 }
 
-export default function useDistance({ ...props }) {
-  const { userId, selectedUser } = props;
+interface DistanceProps {
+  userId: number | undefined;
+  selectedUser: UserBody | undefined;
+}
 
+export default function useDistance({ userId, selectedUser }: DistanceProps) {
   // State coordinates of the user looged in
   const [coordinates, setCoordinates] = useState<CoordinatesBody>();
 
   // Get coordinates of the selected user
-  const coordinatesSelectedUser = selectedUser?.city[0].coordinates;
+  const coordinatesSelectedUser = selectedUser?.city.coordinates;
 
   // State distance between the user logged in and the selected user
   const [distance, setDistance] = useState<number>(0);
@@ -47,7 +52,7 @@ export default function useDistance({ ...props }) {
 
   // Use Geolib to calculate the distance between the user logged in and the selected user
   useEffect(() => {
-    if (coordinates && Boolean(coordinatesSelectedUser)) {
+    if (coordinates && coordinatesSelectedUser) {
       const distanceInMeters = getDistance(
         {
           latitude: coordinates.coordinates[0],
