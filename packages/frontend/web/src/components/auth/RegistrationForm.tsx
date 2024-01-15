@@ -43,9 +43,7 @@ export default function RegistrationForm() {
         navigate('/registration/success');
       }
     } catch {
-      setErrorsRegistration(
-        'ⓘ An error occurred during registration. Try again!',
-      );
+      throw new Error('ⓘ An error occurred during registration. Try again!');
     }
   };
 
@@ -98,9 +96,7 @@ export default function RegistrationForm() {
                 {errors.password.message}
               </p>
             ) : undefined}
-            {Boolean(errorsRegistration) ? (
-              <p>{errorsRegistration}</p>
-            ) : undefined}
+            {Boolean(errorsRegistration) && <p>{errorsRegistration}</p>}
             <div className='mt-[20rem] flex flex-col'>
               <Button type='submit' isOutline={false}>
                 {'Validate'}

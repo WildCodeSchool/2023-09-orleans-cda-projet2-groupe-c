@@ -153,7 +153,7 @@ export default function Login() {
                 <p className='mt-1 flex'>{errors.password.message}</p>
               ) : undefined}
             </div>
-            {Boolean(errorLogin) ? <p>{errorLogin}</p> : undefined}
+            {Boolean(errorLogin) && <p>{errorLogin}</p>}
             <div className='mt-5 w-full'>
               <p>{`No account yet ?`}</p>
               <Link

@@ -123,9 +123,7 @@ export default function ValidationToken() {
                 'activation_code',
               )} /* The user has to type the shown code as a captcha to complete the validation */
             />
-            {Boolean(errorRegistration) ? (
-              <p>{errorRegistration}</p>
-            ) : undefined}
+            {Boolean(errorRegistration) && <p>{errorRegistration}</p>}
             <p>{errors.activation_code?.message}</p>
             <div className='flex flex-col items-center'>
               <Button isOutline={false} type='submit'>
