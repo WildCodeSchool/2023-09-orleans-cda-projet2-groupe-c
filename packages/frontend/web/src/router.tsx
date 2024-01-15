@@ -21,7 +21,7 @@ const router = createBrowserRouter([
     ],
   },
   {
-    path: '/register/profile',
+    path: '/registration/profile',
     element: <FormProfile />,
   },
 ]);

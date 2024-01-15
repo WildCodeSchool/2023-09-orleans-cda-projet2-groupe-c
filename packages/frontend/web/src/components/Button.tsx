@@ -12,7 +12,6 @@ export default function Button({
   isOutline,
   onClick,
 }: ButtonProps) {
-  useTheme();
   const { theme } = useTheme();
 
   return (
