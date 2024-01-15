@@ -20,16 +20,20 @@ export default function useSelectedItems({
     const targetId = targetValue.id;
 
     let newItems = selectedItems;
-
+    //This function checks if the element is already in the array.
+    //If so, it removes it.
     if (selectedItems.some((item) => item.id === targetId)) {
       newItems = selectedItems.filter((item) => item.id !== targetId);
     } else if (selectedItems.length < 6) {
+      //Otherwise, it adds the item to the end.
       newItems = [
         ...selectedItems,
         { id: targetId, order: selectedItems.length + 1 },
       ];
     }
     setSelectedItems(newItems);
+    //use localStorage.setItem method to store data in the user's browser's local storage.
+    //and converted into a JSON string using JSON.stringify
     localStorage.setItem(fieldNameItems, JSON.stringify(newItems));
   };
 

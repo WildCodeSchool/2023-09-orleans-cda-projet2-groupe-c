@@ -4,7 +4,7 @@ import { type FormIamValidation, formIamSchema } from '@app/shared';
 
 import FormContainer from './FormContainer';
 
-export default function FormIAm() {
+export default function FormGender() {
   const { register, watch, setValue, formState } =
     useFormContext<FormIamValidation>();
   const { errors } = formState;

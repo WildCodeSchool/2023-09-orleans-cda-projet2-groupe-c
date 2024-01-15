@@ -14,9 +14,9 @@ export default function FormName() {
         {'The maximum allowed number of character is 100.'}
       </span>
       <div className='flex'>
-        <label htmlFor='name'>{'Username'}</label>
-        <label className='text-primary' htmlFor='name'>
-          {'*'}
+        <label htmlFor='name'>
+          {'Username'}
+          <span className='text-primary'> {'*'}</span>
         </label>
       </div>
       <input

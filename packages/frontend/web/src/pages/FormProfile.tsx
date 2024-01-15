@@ -9,9 +9,9 @@ import FormBio from '@/components/forms/FormBio';
 import FormBirthDate from '@/components/forms/FormBirthDate';
 import FormCity from '@/components/forms/FormCity';
 import FormEnd from '@/components/forms/FormEnd';
+import FormGender from '@/components/forms/FormGender';
 import FormGitHub from '@/components/forms/FormGitHub';
 import FormHobby from '@/components/forms/FormHobby';
-import FormIAm from '@/components/forms/FormIAm';
 import FormLanguage from '@/components/forms/FormLanguage';
 import FormName from '@/components/forms/FormName';
 import FormTechnology from '@/components/forms/FormTechnology';
@@ -20,7 +20,7 @@ import FormTest from '@/components/forms/FormTest';
 const PAGES = [
   { currentPage: 0, component: <FormName /> },
   { currentPage: 1, component: <FormBirthDate /> },
-  { currentPage: 2, component: <FormIAm /> },
+  { currentPage: 2, component: <FormGender /> },
   { currentPage: 3, component: <FormCity /> },
   { currentPage: 4, component: <FormLanguage /> },
   { currentPage: 5, component: <FormTechnology /> },

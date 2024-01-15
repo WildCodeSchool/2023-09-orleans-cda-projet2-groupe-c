@@ -72,14 +72,16 @@ export default function FormHobby() {
           </div>
         ))}
       </div>
-      {selectedItems.length >= 6 && (
-        <p className='text-base'>{'ⓘ You have already selected 6 !'}</p>
-      )}
-      {errors.hobbies ? (
-        <p className='error-message'>{errors.hobbies.message}</p>
-      ) : (
-        ''
-      )}
+      <div className='text-secondary absolute bottom-4'>
+        {selectedItems.length >= 6 && (
+          <p className='text-base'>{'ⓘ You have already selected 6 !'}</p>
+        )}
+        {errors.hobbies ? (
+          <p className='text-base'>{errors.hobbies.message}</p>
+        ) : (
+          ''
+        )}
+      </div>
     </FormContainer>
   );
 }
