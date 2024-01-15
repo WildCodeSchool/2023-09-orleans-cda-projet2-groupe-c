@@ -14,6 +14,9 @@ export default function ValidationToken() {
   // State to store the user's code
   const [code, setCode] = useState<string>();
 
+  // State to store the error message
+  const [errorRegistration, setErrorRegistration] = useState<string>();
+
   // Get the navigate function from the router
   const navigate = useNavigate();
 
@@ -33,24 +36,30 @@ export default function ValidationToken() {
 
   // onSubmit function to handle form submission
   const onSubmit: SubmitHandler<ActivationCode> = async (data) => {
-    if (isValid) {
-      // Send a POST request to the API to activate the user's account
-      const res = await fetch(`${API_URL}/auth/registration/validation`, {
-        method: 'POST',
-        credentials: 'include',
-        headers: { 'content-type': 'application/json' },
-        body: JSON.stringify(data),
-      });
+    try {
+      if (isValid) {
+        // Send a POST request to the API to activate the user's account
+        const res = await fetch(`${API_URL}/auth/registration/validation`, {
+          method: 'POST',
+          credentials: 'include',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify(data),
+        });
 
-      const resData = (await res.json()) as {
-        isLoggedIn: boolean;
-      };
+        const resData = (await res.json()) as {
+          isLoggedIn: boolean;
+        };
 
-      // If the user is logged in, redirect to the home page
-      if (resData.isLoggedIn) {
-        setIsLoggedIn(true);
-        navigate('/');
+        // If the user is logged in, redirect to the home page
+        if (resData.isLoggedIn) {
+          setIsLoggedIn(true);
+          navigate('/');
+        }
       }
+    } catch {
+      setErrorRegistration(
+        'ⓘ An error occurred while activating your account. Try Again!',
+      );
     }
   };
 
@@ -114,6 +123,9 @@ export default function ValidationToken() {
                 'activation_code',
               )} /* The user has to type the shown code as a captcha to complete the validation */
             />
+            {Boolean(errorRegistration) ? (
+              <p>{errorRegistration}</p>
+            ) : undefined}
             <p>{errors.activation_code?.message}</p>
             <div className='flex flex-col items-center'>
               <Button isOutline={false} type='submit'>
