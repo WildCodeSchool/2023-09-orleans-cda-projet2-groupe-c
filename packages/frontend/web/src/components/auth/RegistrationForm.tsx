@@ -11,7 +11,7 @@ import Button from '../Button';
 const API_URL = import.meta.env.VITE_API_URL;
 
 export default function RegistrationForm() {
-  const [errorsRegistration, setErrorsRegistration] = useState<string>();
+  const [errorRegistration, setErrorRegistration] = useState<string>();
   // Get the navigate function from the router
   const navigate = useNavigate();
 
@@ -43,7 +43,9 @@ export default function RegistrationForm() {
         navigate('/registration/success');
       }
     } catch {
-      throw new Error('ⓘ An error occurred during registration. Try again!');
+      setErrorRegistration(
+        'ⓘ An error occurred during registration. Try again!',
+      );
     }
   };
 
@@ -96,7 +98,7 @@ export default function RegistrationForm() {
                 {errors.password.message}
               </p>
             ) : undefined}
-            {Boolean(errorsRegistration) && <p>{errorsRegistration}</p>}
+            {Boolean(errorRegistration) && <p>{errorRegistration}</p>}
             <div className='mt-[20rem] flex flex-col'>
               <Button type='submit' isOutline={false}>
                 {'Validate'}
