@@ -1,3 +1,4 @@
+/* eslint-disable unicorn/no-null */
 import express from 'express';
 
 import { db } from '@app/backend-shared';
@@ -162,6 +163,44 @@ interactionRouter.post(
       });
     }
   },
+
+  interactionRouter.delete('/:userId/interactions/back', async (req, res) => {
+    try {
+      // Get the userId from the request
+      const userId = 1;
+
+      // Get all interactions from the user logged in
+      const result = await db
+        .selectFrom('user_action as ua')
+        .innerJoin('user as initiator', 'initiator.id', 'ua.initiator_id')
+        .innerJoin('user as receiver', 'receiver.id', 'ua.receiver_id')
+        .where('ua.initiator_id', '=', userId)
+        .where('ua.canceled_at', 'is not', null)
+        .select([
+          'ua.id',
+          'receiver.name',
+          'ua.liked_at',
+          'ua.next_at',
+          'ua.superlike_at',
+          'ua.canceled_at',
+        ])
+        .execute();
+
+      // Get the last action from the user logged in
+      const index = 1;
+      const lastAction = result[result.length - index];
+
+      // Delete the last action from the user logged in
+      await db
+        .deleteFrom('user_action as ua')
+        .where('id', '=', lastAction.id)
+        .execute();
+
+      res.json({ success: true });
+    } catch {
+      throw new Error('An error occurred during user interaction.');
+    }
+  }),
 );
 
 export default interactionRouter;

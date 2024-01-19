@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 
 import { useInteraction } from '../../contexts/InteractionContext';
 import BulletBase from '../BulletBase';
+import BackIcon from '../icons/BackIcon';
 import LikeIcon from '../icons/LikeIcon';
 import NextIcon from '../icons/NextIcon';
 import SuperLikeIcon from '../icons/SuperLikeIcon';
@@ -20,13 +21,27 @@ const interactionVariants = {
 };
 
 export default function Interactions() {
-  const { selectedUser, handleInteraction, superLikesCount } = useInteraction();
+  const {
+    selectedUser,
+    handleInteraction,
+    superLikesCount,
+    handleBackInteraction,
+  } = useInteraction();
 
   return (
     <div>
       <p>{selectedUser?.name}</p>
       <div className='flex justify-center'>
         <div className='flex w-full max-w-[500px] items-center justify-between px-5'>
+          <BulletBase
+            size='14'
+            onClick={() => {
+              handleBackInteraction();
+            }}
+          >
+            <BackIcon className='fill-secondary w-7' />
+          </BulletBase>
+
           <BulletBase
             size='20'
             onClick={() => {
@@ -37,7 +52,7 @@ export default function Interactions() {
           </BulletBase>
 
           <BulletBase
-            size='16'
+            size='20'
             onClick={() => {
               handleInteraction('superlike');
             }}
@@ -48,8 +63,8 @@ export default function Interactions() {
               animate={superLikesCount > 0 ? 'visible' : undefined} // Disable the animation if superLikesCount is 0
               className='relative flex items-center justify-center'
             >
-              <SuperLikeIcon className='w-10 fill-[#59C3FF]' />
-              <p className='font-title text-light absolute translate-y-[4px] text-sm font-black'>
+              <SuperLikeIcon className='w-12 fill-[#59C3FF]' />
+              <p className='font-title text-light absolute translate-y-[4px] text-lg font-black'>
                 {superLikesCount}
               </p>
             </motion.div>
