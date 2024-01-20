@@ -1,7 +1,7 @@
-export default function StopIcon({ size }: { readonly size: string }) {
+export default function StopIcon() {
   return (
     <svg
-      className={`w-${size} h-${size} fill-primary`}
+      className='fill-primary w-[50vw] max-w-[250px]'
       xmlns='http://www.w3.org/2000/svg'
       viewBox='0 0 1536.4 1536.4'
     >

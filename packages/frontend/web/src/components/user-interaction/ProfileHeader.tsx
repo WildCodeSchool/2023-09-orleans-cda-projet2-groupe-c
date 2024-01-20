@@ -6,7 +6,7 @@ export default function ProfileHeader({
   readonly isVisible: boolean;
 }) {
   return (
-    <nav className='text-light-medium bg-light-hard flex h-16 items-center justify-around gap-4 px-5 py-3 shadow-md'>
+    <nav className='text-light-medium bg-light-hard flex h-16 items-center justify-around gap-4 px-4 py-3 shadow-md lg:mx-5 lg:mt-16 lg:rounded-lg'>
       <button
         type='button'
         onClick={handleClick}

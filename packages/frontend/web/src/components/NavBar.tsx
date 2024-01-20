@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 
 import { useAuth } from '@/contexts/AuthContext';
 
+import BulletBase from './BulletBase';
 import ThemeSwitcher from './ThemeSwitcher';
 import FilterIcon from './icons/FilterIcon';
 import LikeIcon from './icons/LikeIcon';
@@ -22,21 +23,21 @@ export default function NavBar() {
   const dataIcon: NavigationBody[] = [
     {
       id: 'user',
-      icon: <UserIcon className='text-secondary h-4 w-4 md:h-6 md:w-6' />,
+      icon: <UserIcon className='fill-secondary h-5 w-5' />,
     },
     {
       id: 'like',
-      icon: <LikeIcon className='text-primary h-5 w-5 md:h-6 md:w-6' />,
-      route: `/profile/${userId}/interaction`,
+      icon: <LikeIcon className='fill-primary h-5 w-5' />,
+      route: `/profile/${userId}/interactions`,
     },
     {
       id: 'message',
-      icon: <MessageIcon className='text-secondary h-4 w-4 md:h-5 md:w-5' />,
+      icon: <MessageIcon className='fill-secondary h-5 w-5' />,
       lgHidden: true,
     },
     {
       id: 'filter',
-      icon: <FilterIcon className='text-secondary h-3 w-3 md:h-4 md:w-4' />,
+      icon: <FilterIcon className='fill-secondary h-4 w-4' />,
       lgHidden: true,
     },
     {
@@ -54,28 +55,20 @@ export default function NavBar() {
           <span className='text-primary font-title'>{'DEV'}</span>
         </div>
       </Link>
-      <div className='flex grow justify-end lg:justify-center'>
-        {dataIcon.map(({ id, icon, lgHidden, route }) => (
-          <div
-            key={id}
-            className={`flex items-center px-1 md:px-2 lg:px-24 ${
-              lgHidden ?? false ? 'lg:hidden' : ''
-            }`}
-          >
-            {Boolean(route) ? (
-              <Link
-                to={String(route)}
-                className='bg-light active:shadow-divider-dark flex h-8 w-8 cursor-pointer items-center justify-center rounded-full shadow-md duration-200 active:translate-y-[2px] active:shadow-inner md:h-10 md:w-10'
-              >
+      <div className='flex grow justify-end gap-2 sm:gap-4 lg:justify-center lg:gap-52'>
+        {dataIcon.map(({ id, icon, lgHidden, route }) =>
+          Boolean(route) ? (
+            <Link to={String(route)} key={id}>
+              <BulletBase size='8' lgHidden={lgHidden}>
                 {icon}
-              </Link>
-            ) : (
-              <div className='bg-light active:shadow-divider-dark flex h-8 w-8 cursor-pointer items-center justify-center rounded-full shadow-md duration-200 active:translate-y-[2px] active:shadow-inner md:h-10 md:w-10'>
-                {icon}
-              </div>
-            )}
-          </div>
-        ))}
+              </BulletBase>
+            </Link>
+          ) : (
+            <BulletBase size='8' key={id} lgHidden={lgHidden}>
+              {icon}
+            </BulletBase>
+          ),
+        )}
       </div>
     </nav>
   );

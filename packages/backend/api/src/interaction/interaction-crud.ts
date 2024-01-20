@@ -1,6 +1,6 @@
 /* eslint-disable unicorn/no-null */
 import express from 'express';
-import { jsonArrayFrom, jsonObjectFrom } from 'kysely/helpers/mysql';
+import { jsonObjectFrom } from 'kysely/helpers/mysql';
 
 import { db } from '@app/backend-shared';
 import { type ActionBody, actionSchema, receiverSchema } from '@app/shared';

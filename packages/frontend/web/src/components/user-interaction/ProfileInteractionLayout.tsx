@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
-import ErrorMessage from '@/components/error/ErrorLayout';
 import ProfileCard from '@/components/user-interaction/ProfileCard';
 import ProfileHeader from '@/components/user-interaction/ProfileHeader';
 import { useAuth } from '@/contexts/AuthContext';
@@ -48,14 +47,10 @@ export interface InteractionBody {
 
 export default function ProfileInteractionLayout() {
   const [interactions, setInteractions] = useState<InteractionBody[]>([]);
-  const [userLikedMe, setUserLikedMe] = useState([]);
+  // const [userLikedMe, setUserLikedMe] = useState([]);
 
   // State to toggle the visibility of the profile header
   const [isVisible, setIsVisible] = useState<boolean>(true);
-
-  // State to store the error
-  const [error, setError] = useState<string | undefined>();
-  const navigate = useNavigate();
 
   // Get the user id from the JWT
   const { userId } = useAuth();
@@ -63,12 +58,14 @@ export default function ProfileInteractionLayout() {
   // Get the profile id from the URL
   const { profileId } = useParams();
 
+  const navigate = useNavigate();
+
   // Check if the user is allowed to see this page
   useEffect(() => {
     if (userId !== Number(profileId)) {
-      setError('You are not allowed to see this page!');
+      navigate('/error');
     }
-  }, [profileId, userId]);
+  }, [navigate, profileId, userId]);
 
   // Fetch the users the user logged in have interacted with
   useEffect(() => {
@@ -103,23 +100,21 @@ export default function ProfileInteractionLayout() {
     setIsVisible(!isVisible);
   };
 
-  // If there is an error, display the error
-  if (Boolean(error)) {
-    navigate('/error');
-  }
-
   return (
-    <section>
+    <section className='lg:mx-auto lg:max-w-[1200px]'>
       <ProfileHeader handleClick={handleClick} isVisible={isVisible} />
-      <section className='mx-5 my-4'>
-        <div className='font-base grid grid-cols-2 gap-2 text-white md:grid-cols-3 lg:grid-cols-4'>
-          {isVisible
-            ? interactions.map((interaction) => (
-                <ProfileCard key={interaction.id} interaction={interaction} />
-              ))
-            : undefined}
-        </div>
-      </section>
+
+      <div className='mx-5 my-10'>
+        {isVisible && interactions.length > 0 ? (
+          <div className='font-base grid grid-cols-2 gap-2 text-white md:grid-cols-3 lg:grid-cols-4'>
+            {interactions.map((interaction) => (
+              <ProfileCard key={interaction.id} interaction={interaction} />
+            ))}
+          </div>
+        ) : (
+          <p className='text-secondary font-base'>{`There are no interactions yet!`}</p>
+        )}
+      </div>
     </section>
   );
 }
