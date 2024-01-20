@@ -1,12 +1,14 @@
+import type { InteractionSentBody } from '@app/shared';
+
 import LocationIcon from '../icons/LocationIcon';
-import type { InteractionBody } from './ProfileInteractionLayout';
 import Stamp from './Stamp';
 
 export default function ProfileCard({
   interaction,
 }: {
-  readonly interaction: InteractionBody;
+  readonly interaction: InteractionSentBody;
 }) {
+  // TODO : replace this const with the hook to display the correct age
   const age = 18;
 
   return (

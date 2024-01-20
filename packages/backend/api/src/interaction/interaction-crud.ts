@@ -17,7 +17,7 @@ const interactionRouter = express.Router();
 
 // Get all interactions from the user
 interactionRouter.get(
-  '/:userId/interactions',
+  '/:userId/interactions/sent',
   getUserId,
   async (req: Request, res) => {
     try {
@@ -108,9 +108,9 @@ interactionRouter.get(
   },
 );
 
-// Get user liked med
+// Get all interactions received by the user
 interactionRouter.get(
-  '/:userId/interactions/liked',
+  '/:userId/interactions/received',
   getUserId,
   async (req: Request, res) => {
     try {
@@ -118,18 +118,36 @@ interactionRouter.get(
 
       const userLikedMe = await db
         .selectFrom('user_action as ua')
-        .innerJoin('user as initiator', 'initiator.id', 'ua.initiator_id')
-        .innerJoin('user as receiver', 'receiver.id', 'ua.receiver_id')
-        .select(['initiator.name'])
-        .whereRef('ua.receiver_id', '=', 'receiver.id')
+        .select((eb) => [
+          jsonObjectFrom(
+            eb
+              .selectFrom('user as initiator')
+              .select(['initiator.id', 'initiator.name'])
+              .whereRef('ua.initiator_id', '=', 'initiator.id'),
+          ).as('initiator'),
+          jsonObjectFrom(
+            eb
+              .selectFrom('user as receiver')
+              .select([
+                'ua.id',
+                'ua.liked_at',
+                'ua.superlike_at',
+                'ua.next_at',
+                'ua.canceled_at',
+              ])
+              .whereRef('ua.receiver_id', '=', 'receiver.id'),
+          ).as('action'),
+        ])
         .where('receiver_id', '=', userId)
+        .where('ua.canceled_at', 'is not', null)
         .execute();
 
       res.status(200).json(userLikedMe);
     } catch {
-      res
-        .status(500)
-        .json({ error: 'An error occurred while fetching superlike count.' });
+      res.status(500).json({
+        success: false,
+        error: 'An error occurred while retrieving received interactions.',
+      });
     }
   },
 );
@@ -145,9 +163,10 @@ interactionRouter.get(
 
       res.status(200).json(remainingSuperLikes);
     } catch {
-      res
-        .status(500)
-        .json({ error: 'An error occurred while fetching superlike count.' });
+      res.status(500).json({
+        success: false,
+        error: 'An error occurred while fetching superlike count.',
+      });
     }
   },
 );
