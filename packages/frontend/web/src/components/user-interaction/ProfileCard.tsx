@@ -12,7 +12,7 @@ export default function ProfileCard({
   return (
     <div
       key={interaction.id}
-      className='relative h-[70vw] max-h-[400px] flex-1 rounded-xl shadow-md'
+      className='relative h-[70vw] max-h-[400px] flex-1 rounded-xl shadow-md lg:max-h-[500px]'
     >
       <div className='absolute left-1/2 top-1/2 z-50 -translate-x-1/2 -translate-y-1/2'>
         <Stamp

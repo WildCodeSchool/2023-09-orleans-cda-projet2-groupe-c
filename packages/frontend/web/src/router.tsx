@@ -2,6 +2,7 @@ import { createBrowserRouter } from 'react-router-dom';
 
 import AuthLayout from './components/AuthLayout';
 import Login from './components/auth/Login';
+import ErrorLayout from './components/error/ErrorLayout';
 import ProfileInteractionLayout from './components/user-interaction/ProfileInteractionLayout';
 import Home from './pages/Home';
 
@@ -15,7 +16,7 @@ const router = createBrowserRouter([
         element: <AuthLayout />,
         children: [
           {
-            path: '/profile-interaction',
+            path: '/profile/:profileId/interaction',
             element: <ProfileInteractionLayout />,
           },
         ],
@@ -25,6 +26,10 @@ const router = createBrowserRouter([
         element: <Login />,
       },
     ],
+  },
+  {
+    path: '*',
+    element: <ErrorLayout />,
   },
 ]);
 

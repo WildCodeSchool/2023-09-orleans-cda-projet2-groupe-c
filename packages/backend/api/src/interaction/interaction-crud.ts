@@ -1,3 +1,4 @@
+/* eslint-disable unicorn/no-null */
 import express from 'express';
 import { jsonArrayFrom, jsonObjectFrom } from 'kysely/helpers/mysql';
 
@@ -88,6 +89,13 @@ interactionRouter.get(
           ).as('receiver'),
         ])
         .where('initiator_id', '=', userId)
+        .where((eb) =>
+          eb.or([
+            eb('ua.liked_at', 'is not', null),
+            eb('ua.superlike_at', 'is not', null),
+          ]),
+        )
+        .where('canceled_at', 'is not', null)
         .execute();
 
       res.status(200).json(userActions);
@@ -101,28 +109,30 @@ interactionRouter.get(
 );
 
 // Get user liked med
-interactionRouter.get('/:userId/interactions/liked', async (req, res) => {
-  try {
-    const userId = req.params.userId;
+interactionRouter.get(
+  '/:userId/interactions/liked',
+  getUserId,
+  async (req: Request, res) => {
+    try {
+      const userId = req.userId as number;
 
-    const userLikedMe = await db
-      .selectFrom('user_action as ua')
-      .innerJoin('user as initiator', 'initiator.id', 'ua.initiator_id')
-      .innerJoin('user as receiver', 'receiver.id', 'ua.receiver_id')
-      .select(['initiator.name'])
-      .whereRef('ua.receiver_id', '=', 'receiver.id')
-      .where('receiver_id', '=', userId)
-      .execute();
+      const userLikedMe = await db
+        .selectFrom('user_action as ua')
+        .innerJoin('user as initiator', 'initiator.id', 'ua.initiator_id')
+        .innerJoin('user as receiver', 'receiver.id', 'ua.receiver_id')
+        .select(['initiator.name'])
+        .whereRef('ua.receiver_id', '=', 'receiver.id')
+        .where('receiver_id', '=', userId)
+        .execute();
 
-    console.log(userLikedMe);
-
-    res.status(200).json(userLikedMe);
-  } catch {
-    res
-      .status(500)
-      .json({ error: 'An error occurred while fetching superlike count.' });
-  }
-});
+      res.status(200).json(userLikedMe);
+    } catch {
+      res
+        .status(500)
+        .json({ error: 'An error occurred while fetching superlike count.' });
+    }
+  },
+);
 
 // Get superlikes count from the user between the current date and the next date
 interactionRouter.get(

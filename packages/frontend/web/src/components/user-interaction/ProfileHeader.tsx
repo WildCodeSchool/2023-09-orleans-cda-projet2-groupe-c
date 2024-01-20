@@ -17,9 +17,15 @@ export default function ProfileHeader({
         <p>{`Profile liked`}</p>
       </button>
       <div className='h-full w-[1px] bg-[#aaaaaa]' />
-      <div className='bg-primary flex grow items-center justify-center rounded-md py-2'>
+      <button
+        type='button'
+        onClick={handleClick}
+        className={`${
+          isVisible ? 'text-secondary' : 'bg-primary text-light-medium'
+        } flex grow items-center justify-center rounded-md py-2`}
+      >
         <p>{`Users liked me`}</p>
-      </div>
+      </button>
     </nav>
   );
 }

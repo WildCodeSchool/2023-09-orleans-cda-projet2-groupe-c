@@ -1,9 +1,9 @@
-import ProfileInteractionLayout from '../user-interaction/ProfileInteractionLayout';
+import { Outlet } from 'react-router-dom';
 
 export default function HomeCards() {
   return (
     <div className='z-50'>
-      <ProfileInteractionLayout />
+      <Outlet />
     </div>
   );
 }
