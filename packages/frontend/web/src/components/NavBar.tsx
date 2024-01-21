@@ -1,22 +1,15 @@
-import { Link } from 'react-router-dom';
-import { useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 
+import type { NavigationBody } from '@app/shared';
+
+import BulletBase from '@/components/BulletBase';
+import ThemeSwitcher from '@/components/ThemeSwitcher';
+import FilterIcon from '@/components/icons/FilterIcon';
+import LikeIcon from '@/components/icons/LikeIcon';
+import LogoIcon from '@/components/icons/LogoIcon';
+import MessageIcon from '@/components/icons/MessageIcon';
+import UserIcon from '@/components/icons/UserIcon';
 import { useAuth } from '@/contexts/AuthContext';
-
-import BulletBase from './BulletBase';
-import ThemeSwitcher from './ThemeSwitcher';
-import FilterIcon from './icons/FilterIcon';
-import LikeIcon from './icons/LikeIcon';
-import LogoIcon from './icons/LogoIcon';
-import MessageIcon from './icons/MessageIcon';
-import UserIcon from './icons/UserIcon';
-
-interface NavigationBody {
-  id: string;
-  icon: JSX.Element;
-  lgHidden?: boolean;
-  route?: string;
-}
 
 export default function NavBar() {
   const { userId } = useAuth();
@@ -26,6 +19,8 @@ export default function NavBar() {
   const location = useLocation();
   const isHomePage = location.pathname === '/';
 
+  const navigate = useNavigate();
+
   const dataIcon: NavigationBody[] = [
     {
       id: 'user',
@@ -34,7 +29,9 @@ export default function NavBar() {
     {
       id: 'like',
       icon: <LikeIcon className='fill-primary h-5 w-5' />,
-      route: `/profile/${userId}/interactions`,
+      onClick: () => {
+        navigate(`/profile/${userId}/interactions`);
+      },
     },
     {
       id: 'message',
@@ -66,19 +63,11 @@ export default function NavBar() {
         </div>
       </Link>
       <div className='flex grow justify-end gap-2 sm:gap-4 lg:justify-center lg:gap-52'>
-        {dataIcon.map(({ id, icon, lgHidden, route }) =>
-          Boolean(route) ? (
-            <Link to={String(route)} key={id}>
-              <BulletBase size='8' lgHidden={lgHidden}>
-                {icon}
-              </BulletBase>
-            </Link>
-          ) : (
-            <BulletBase size='8' key={id} lgHidden={lgHidden}>
-              {icon}
-            </BulletBase>
-          ),
-        )}
+        {dataIcon.map(({ id, icon, lgHidden, onClick }) => (
+          <BulletBase size='8' key={id} lgHidden={lgHidden} onClick={onClick}>
+            {icon}
+          </BulletBase>
+        ))}
       </div>
     </nav>
   );
