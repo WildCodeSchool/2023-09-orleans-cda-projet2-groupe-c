@@ -66,15 +66,20 @@ export interface InteractionSentBody {
 }
 
 export interface InteractionReceivedBody {
+  id: number;
+  next_at?: string;
+  liked_at?: string;
+  superlike_at?: string;
+  canceled_at: string;
   initiator: {
     id: number;
     name: string;
+    pictures: {
+      path: string;
+    };
   };
-  action: {
+  receiver: {
     id: number;
-    next_at?: string;
-    liked_at?: string;
-    superlike_at?: string;
-    cenceled_at: string;
+    name: string;
   };
 }

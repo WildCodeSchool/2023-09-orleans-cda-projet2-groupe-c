@@ -6,7 +6,7 @@ export default function ProfileHeader({
   readonly isVisible: boolean;
 }) {
   return (
-    <nav className='text-light-medium bg-light-hard flex h-16 items-center justify-between gap-4 px-4 py-3 shadow-md'>
+    <nav className='text-light-medium bg-light-hard z-50 flex h-16 items-center justify-between gap-4 px-4 py-3 shadow-md'>
       <div className='mx-auto flex h-full w-full items-center justify-between gap-4 lg:max-w-[1000px]'>
         <button
           type='button'

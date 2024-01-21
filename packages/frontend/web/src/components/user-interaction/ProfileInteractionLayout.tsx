@@ -1,3 +1,4 @@
+/* eslint-disable unicorn/no-nested-ternary */
 import { AnimatePresence, motion } from 'framer-motion';
 
 import ProfileCard from '@/components/user-interaction/ProfileCard';
@@ -30,20 +31,43 @@ const cardVariants = {
 };
 
 export default function ProfileInteractionLayout() {
-  const { interactionsSent, isVisible, handleClick } = useUsersInteractions();
+  const { interactionsSent, interactionsReceived, isVisible, handleClick } =
+    useUsersInteractions();
 
   return (
-    <section className=''>
+    <section>
       <ProfileHeader handleClick={handleClick} isVisible={isVisible} />
 
       <div className='mx-auto my-10 px-5 lg:max-w-[1000px] lg:px-0'>
-        <AnimatePresence mode='popLayout'>
-          {isVisible && interactionsSent.length > 0 ? (
-            <motion.div
-              key='interactionsSent' // AnimatePresence need this unique key to detecte entry and exit animation
-              className='font-base grid grid-cols-2 gap-2 text-white md:grid-cols-3 lg:grid-cols-4'
-            >
-              {interactionsSent.map((interaction, index) => (
+        <div className='font-base grid grid-cols-2 gap-2 text-white md:grid-cols-3 lg:grid-cols-4'>
+          <AnimatePresence mode='popLayout'>
+            {/* If is visible, display the interactions sent */}
+            {isVisible ? (
+              // If there is at least one interaction, display the interactions sent to users
+              interactionsSent.length > 0 ? (
+                interactionsSent.map((interaction, index) => (
+                  <motion.div
+                    key={interaction.id}
+                    variants={cardVariants}
+                    initial='hidden'
+                    animate='visible'
+                    exit='exit'
+                    custom={index % interactionsSent.length}
+                  >
+                    <ProfileCard
+                      interaction={interaction}
+                      isVisible={isVisible}
+                    />
+                  </motion.div>
+                ))
+              ) : (
+                // If there is no interaction sent, display a message
+                <p className='text-secondary absolute'>{`You have interacted with no users.`}</p>
+              )
+            ) : // Else display the interactions received
+            // If there is at least one interaction, display the interactions received from users
+            interactionsReceived.length > 0 ? (
+              interactionsReceived.map((interaction, index) => (
                 <motion.div
                   key={interaction.id}
                   variants={cardVariants}
@@ -52,14 +76,18 @@ export default function ProfileInteractionLayout() {
                   exit='exit'
                   custom={index % interactionsSent.length}
                 >
-                  <ProfileCard interaction={interaction} />
+                  <ProfileCard
+                    interaction={interaction}
+                    isVisible={isVisible}
+                  />
                 </motion.div>
-              ))}
-            </motion.div>
-          ) : (
-            <p>{`No interactions.`}</p>
-          )}
-        </AnimatePresence>
+              ))
+            ) : (
+              // If there is no interaction received, display a message
+              <p className='text-secondary absolute'>{`No users have interacted with you.`}</p>
+            )}
+          </AnimatePresence>
+        </div>
       </div>
     </section>
   );

@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 
 import { useAuth } from '@/contexts/AuthContext';
 
@@ -19,6 +20,11 @@ interface NavigationBody {
 
 export default function NavBar() {
   const { userId } = useAuth();
+
+  // Check if the user is on the home page
+  // Using to add a class to the navbar
+  const location = useLocation();
+  const isHomePage = location.pathname === '/';
 
   const dataIcon: NavigationBody[] = [
     {
@@ -47,7 +53,11 @@ export default function NavBar() {
   ];
 
   return (
-    <nav className='bg-light-hard relative flex w-full items-center p-3 shadow-md'>
+    <nav
+      className={`bg-light-hard sticky top-0 z-50 flex w-full items-center p-3 ${
+        isHomePage ? 'shadow-md' : ''
+      }`}
+    >
       <Link to='/' className='absolute flex items-center gap-2 pl-2'>
         <LogoIcon className='text-secondary w-clamp fill-primary' />
         <div className='mt-1 text-xl md:text-3xl'>

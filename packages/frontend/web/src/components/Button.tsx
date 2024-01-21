@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   readonly isOutline: boolean;
   readonly type: 'button' | 'submit' | 'reset';
-  readonly onClick: () => void;
+  readonly onClick?: () => void;
 }
 
 export default function Button({

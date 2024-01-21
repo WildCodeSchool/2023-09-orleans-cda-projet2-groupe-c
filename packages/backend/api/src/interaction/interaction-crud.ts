@@ -118,28 +118,46 @@ interactionRouter.get(
 
       const userLikedMe = await db
         .selectFrom('user_action as ua')
+        .innerJoin('user as initiator', 'initiator.id', 'ua.initiator_id')
+        .innerJoin('user as receiver', 'receiver.id', 'ua.receiver_id')
         .select((eb) => [
+          'ua.id',
+          'next_at',
+          'liked_at',
+          'superlike_at',
+          'canceled_at',
           jsonObjectFrom(
             eb
               .selectFrom('user as initiator')
-              .select(['initiator.id', 'initiator.name'])
-              .whereRef('ua.initiator_id', '=', 'initiator.id'),
+              .select([
+                'initiator.id',
+                'initiator.name',
+                jsonObjectFrom(
+                  eb
+                    .selectFrom('picture as p')
+                    .select('p.picture_path as path')
+                    .whereRef('p.user_id', '=', 'initiator.id')
+                    .orderBy('order', 'asc')
+                    .limit(1),
+                ).as('pictures'),
+              ])
+              .whereRef('initiator.id', '=', 'ua.initiator_id'),
           ).as('initiator'),
           jsonObjectFrom(
             eb
               .selectFrom('user as receiver')
-              .select([
-                'ua.id',
-                'ua.liked_at',
-                'ua.superlike_at',
-                'ua.next_at',
-                'ua.canceled_at',
-              ])
-              .whereRef('ua.receiver_id', '=', 'receiver.id'),
-          ).as('action'),
+              .select(['receiver.id', 'receiver.name'])
+              .whereRef('receiver.id', '=', 'ua.receiver_id'),
+          ).as('receiver'),
         ])
         .where('receiver_id', '=', userId)
-        .where('ua.canceled_at', 'is not', null)
+        .where((eb) =>
+          eb.or([
+            eb('ua.liked_at', 'is not', null),
+            eb('ua.superlike_at', 'is not', null),
+          ]),
+        )
+        .where('canceled_at', 'is not', null)
         .execute();
 
       res.status(200).json(userLikedMe);
