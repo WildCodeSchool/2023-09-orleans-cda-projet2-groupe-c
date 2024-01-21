@@ -60,7 +60,7 @@ export default function AuthContext({ children, ...props }: AuthProviderProps) {
     return () => {
       controller.abort();
     };
-  }, []);
+  }, [isLoggedIn]);
 
   // Memoize the values
   const value = useMemo(() => {

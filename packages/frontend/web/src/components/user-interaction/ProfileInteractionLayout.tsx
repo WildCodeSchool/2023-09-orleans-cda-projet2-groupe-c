@@ -30,13 +30,14 @@ const cardVariants = {
 };
 
 export default function ProfileInteractionLayout() {
-  const { interactionsSent, isVisible, handleClick } = useUsersInteractions();
+  const { interactionsSent, interactionsReceived, isVisible, handleClick } =
+    useUsersInteractions();
 
   return (
-    <section className='lg:mx-auto lg:max-w-[1200px]'>
+    <section className=''>
       <ProfileHeader handleClick={handleClick} isVisible={isVisible} />
 
-      <div className='mx-5 my-10'>
+      <div className='mx-auto my-10 px-5 lg:max-w-[1000px] lg:px-0'>
         <AnimatePresence mode='popLayout'>
           {isVisible && interactionsSent.length > 0 ? (
             <motion.div
