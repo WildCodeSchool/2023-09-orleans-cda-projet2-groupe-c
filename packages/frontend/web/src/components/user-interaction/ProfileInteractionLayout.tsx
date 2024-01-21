@@ -30,8 +30,7 @@ const cardVariants = {
 };
 
 export default function ProfileInteractionLayout() {
-  const { interactionsSent, interactionsReceived, isVisible, handleClick } =
-    useUsersInteractions();
+  const { interactionsSent, isVisible, handleClick } = useUsersInteractions();
 
   return (
     <section className=''>
