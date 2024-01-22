@@ -1,5 +1,6 @@
 import { Fragment, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
 
 import type { ProfileForm, SelectedItemBody } from '@app/shared';
 
@@ -31,6 +32,7 @@ const PAGES = [
 ];
 
 export default function FormProfile() {
+  const navigate = useNavigate();
   const [page, setPage] = useState<number>(0);
   //I use the const methods to send all useForm properties to my child elements
   const methods = useForm<ProfileForm>();
@@ -62,6 +64,7 @@ export default function FormProfile() {
           },
           body: JSON.stringify(transformedData),
         });
+        navigate('/');
       } catch (error) {
         throw new Error(`${String(error)}`);
       }

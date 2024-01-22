@@ -1,12 +1,39 @@
 import type { Response } from 'express';
 import * as jose from 'jose';
 
-import type { Request } from '@app/shared';
+import type { RegisterBody, Request } from '@app/shared';
 
 const JWT_SECRET = process.env.JWT_SECRET;
-const FRONTEND_URL = 'http://localhost';
+const FRONTEND_URL = process.env.FRONTEND_URL;
 
 const secret = new TextEncoder().encode(JWT_SECRET);
+
+export const hashPassword = async (
+  req: Request,
+  res: Response,
+  next: () => void,
+) => {
+  try {
+    // Get the password from the request body
+    const { password } = req.body as RegisterBody;
+
+    // Hash the password with bcrypt
+    const hashedPassword = await Bun.password.hash(password, {
+      algorithm: 'bcrypt',
+      cost: 10,
+    });
+
+    // Set the hashed password on the request
+    req.body.password = hashedPassword;
+
+    next();
+  } catch {
+    return res.status(500).json({
+      success: false,
+      error: 'An error occurred while hashing the password.',
+    });
+  }
+};
 
 export const getUserId = async (
   req: Request,
