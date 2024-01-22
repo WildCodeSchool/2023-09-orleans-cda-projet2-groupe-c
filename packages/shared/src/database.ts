@@ -159,5 +159,4 @@ export interface Database {
   language_user: LanguageUserTable;
   hobby_user: HobbyUserTable;
   user_action: UserActionTable;
-  preference: PreferenceTable;
 }
