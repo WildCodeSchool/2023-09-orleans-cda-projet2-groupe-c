@@ -48,7 +48,6 @@ export interface UserTable {
   activation_code?: string;
   activate_at?: Date;
   city_id?: number;
-  preference_id?: number;
 }
 
 export interface HobbyTable {
@@ -99,13 +98,6 @@ export interface UserActionTable {
   canceled_at?: Date;
 }
 
-export interface PreferenceTable {
-  id: Generated<number>;
-  distance: number;
-  language_pref_id: number;
-  gender_pref: Gender;
-}
-
 export type Technology = Selectable<TechnologyTable>;
 export type NewTechnology = Insertable<TechnologyTable>;
 export type TechnologyUpdate = Updateable<TechnologyTable>;
@@ -153,10 +145,6 @@ export type HobbyUserUpdate = Updateable<HobbyUserTable>;
 export type UserAction = Selectable<UserActionTable>;
 export type NewUserAction = Insertable<UserActionTable>;
 export type UserActionUpdate = Updateable<UserActionTable>;
-
-export type Preference = Selectable<PreferenceTable>;
-export type NewPreference = Insertable<PreferenceTable>;
-export type PreferenceUpdate = Updateable<PreferenceTable>;
 
 export interface Database {
   hobby_category: HobbyCategoryTable;
