@@ -29,6 +29,8 @@ export type Point = {
 };
 
 export type GeoJson = {
+  x: number;
+  y: number;
   coordinates: [number, number];
 };
 

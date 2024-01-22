@@ -11,6 +11,7 @@
     --light-hard: #eae3e3;
     --light-medium: #f4efef;
     --light: #fcfcfc;
+    --divider: #ccced7;
     --moon: 0;
     --sun: 1;
   }
@@ -21,6 +22,7 @@
     --light-hard: #111214;
     --light-medium: #1c1c1f;
     --light: #272721;
+    --divider: #4d4f58;
     --moon: 1;
     --sun: 0;
   }
