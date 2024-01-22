@@ -24,6 +24,8 @@ export default function useDistance({ userId, selectedUser }: DistanceProps) {
   // State distance between the user logged in and the selected user
   const [distance, setDistance] = useState<number>(0);
 
+  const [error, setError] = useState<string | null>();
+
   // Fetch coordinates of the user logged in
   useEffect(() => {
     const controller = new AbortController();
@@ -39,8 +41,8 @@ export default function useDistance({ userId, selectedUser }: DistanceProps) {
       setCoordinates(data[0].city.coordinates);
     };
 
-    fetchDistance().catch((error) => {
-      throw new Error(`Fail to fetch distance: ${error}`);
+    fetchDistance().catch(() => {
+      setError(`Fail to fetch distance.`);
     });
 
     return () => {
@@ -50,7 +52,7 @@ export default function useDistance({ userId, selectedUser }: DistanceProps) {
 
   // Use Geolib to calculate the distance between the user logged in and the selected user
   useEffect(() => {
-    if (coordinates && coordinatesSelectedUser) {
+    if (coordinates && coordinatesSelectedUser !== undefined) {
       const distanceInMeters = getDistance(
         {
           latitude: coordinates.coordinates[0],
@@ -67,5 +69,5 @@ export default function useDistance({ userId, selectedUser }: DistanceProps) {
     }
   }, [coordinates, coordinatesSelectedUser]);
 
-  return { distance };
+  return { distance, error };
 }
