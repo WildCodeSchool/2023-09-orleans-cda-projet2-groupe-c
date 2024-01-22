@@ -26,7 +26,7 @@ export default function FormTest() {
             pattern: {
               value:
                 /^[\w!#$%&'*+./=?^`{|}~-]+@[\dA-Za-z-]+(?:\.[\dA-Za-z-]+)*$/,
-              message: 'Invalid Email. ',
+              message: 'Invalid Email.',
             },
             required: {
               value: true,

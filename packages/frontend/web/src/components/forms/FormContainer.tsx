@@ -1,5 +1,5 @@
-interface Container extends React.HTMLAttributes<HTMLDivElement> {}
-export default function FormContainer({ children, title }: Container) {
+interface FormContainerProps extends React.HTMLAttributes<HTMLDivElement> {}
+export default function FormContainer({ children, title }: FormContainerProps) {
   return (
     <div className='font-base w-full flex-col items-center pt-20 md:pt-36'>
       <h1 className='text-primary font-title mb-4 text-2xl lg:text-3xl'>

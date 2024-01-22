@@ -4,6 +4,12 @@ import { type FormIamValidation, formIamSchema } from '@app/shared';
 
 import FormContainer from './FormContainer';
 
+const genderOptions = [
+  { id: 'man', label: 'Man', value: 'man' },
+  { id: 'woman', label: 'Woman', value: 'woman' },
+  { id: 'non-binary', label: 'Non Binary', value: 'non-binary' },
+];
+
 export default function FormGender() {
   const { register, watch, setValue, formState } =
     useFormContext<FormIamValidation>();
@@ -14,12 +20,6 @@ export default function FormGender() {
   const handleClick = () => {
     setValue('gender', selectedOption);
   };
-
-  const genderOptions = [
-    { id: 'man', label: 'Man', value: 'man' },
-    { id: 'woman', label: 'Woman', value: 'woman' },
-    { id: 'non-binary', label: 'Non Binary', value: 'non-binary' },
-  ];
 
   return (
     <FormContainer title='I AM...'>

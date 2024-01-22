@@ -1,5 +1,4 @@
-import React from 'react';
-import { useState } from 'react';
+import { Fragment, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 
 import type { ProfileForm, SelectedItemBody } from '@app/shared';
@@ -81,7 +80,7 @@ export default function FormProfile() {
             {PAGES.map(
               ({ currentPage, component }) =>
                 currentPage === page && (
-                  <React.Fragment key={currentPage}>{component}</React.Fragment>
+                  <Fragment key={currentPage}>{component}</Fragment>
                 ),
             )}
             <div className='flex w-full flex-col gap-6 pb-5 md:pb-40'>
