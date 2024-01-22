@@ -38,6 +38,9 @@ export default function Login() {
   // State to show or hide the password
   const [isVisible, setIsVisible] = useState<boolean>(false);
 
+  // State to store the error message
+  const [errorLogin, setErrorLogin] = useState<string>();
+
   // Get the navigate function from the router
   const navigate = useNavigate();
 
@@ -56,7 +59,6 @@ export default function Login() {
   const onSubmit: SubmitHandler<AuthBody> = async (data) => {
     try {
       // Validation of user entered data using a validation schema
-
       if (isValid) {
         // Send the login request to the server
         const res = await fetch(`${API_URL}/auth/login`, {
@@ -84,7 +86,7 @@ export default function Login() {
         }
       }
     } catch {
-      throw new Error('ⓘ Email or password is incorrect');
+      setErrorLogin('ⓘ An error occurred during authentication. Try again!');
     }
   };
 
@@ -110,7 +112,7 @@ export default function Login() {
             <div>
               <label htmlFor='email'>
                 <div className='flex items-center gap-2'>
-                  <UserIcon className='h-[18px] w-[15px]' />
+                  <UserIcon className='h-[18px] w-[15px] fill-white' />
                   <p className='text-base'>{`Email*`}</p>
                 </div>
               </label>
@@ -151,9 +153,9 @@ export default function Login() {
                 <p className='mt-1 flex'>{errors.password.message}</p>
               ) : undefined}
             </div>
+            {Boolean(errorLogin) && <p>{errorLogin}</p>}
             <div className='mt-5 w-full'>
               <p>{`No account yet ?`}</p>
-
               <Link
                 to='/registration'
                 className='text-primary font-semibold underline'
