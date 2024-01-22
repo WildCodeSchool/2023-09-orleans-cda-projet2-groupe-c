@@ -126,7 +126,13 @@ const users = async (userId: number, userPreferences: PreferenceBody) => {
           .innerJoin('hobby as h', 'hu.hobby_id', 'h.id')
           .innerJoin('hobby_category as hc', 'h.hobby_category_id', 'hc.id')
           .whereRef('hu.user_id', '=', 'u.id')
-          .select(['hc.name as category', 'h.id', 'h.name', 'hu.order']),
+          .select([
+            'hc.name as category',
+            'hc.logo_path',
+            'h.id',
+            'h.name',
+            'hu.order',
+          ]),
       ).as('hobbies'),
       jsonArrayFrom(
         eb
