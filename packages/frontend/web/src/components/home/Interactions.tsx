@@ -21,16 +21,11 @@ const interactionVariants = {
 };
 
 export default function Interactions() {
-  const {
-    selectedUser,
-    handleInteraction,
-    superLikesCount,
-    handleBackInteraction,
-  } = useInteraction();
+  const { handleInteraction, superLikesCount, handleBackInteraction } =
+    useInteraction();
 
   return (
     <div>
-      <p>{selectedUser?.name}</p>
       <div className='flex justify-center'>
         <div className='flex w-full max-w-[500px] items-center justify-between px-5'>
           <BulletBase
