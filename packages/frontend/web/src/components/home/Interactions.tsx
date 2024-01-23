@@ -20,50 +20,47 @@ const interactionVariants = {
 };
 
 export default function Interactions() {
-  const { selectedUser, handleInteraction, superLikesCount } = useInteraction();
+  const { handleInteraction, superLikesCount } = useInteraction();
 
   return (
-    <div>
-      <p>{selectedUser?.name}</p>
-      <div className='flex justify-center'>
-        <div className='flex w-full max-w-[500px] items-center justify-between px-5'>
-          <BulletBase
-            size='20'
-            onClick={() => {
-              handleInteraction('next');
-            }}
-          >
-            <NextIcon className='w-10 fill-[#D52121]' />
-          </BulletBase>
+    <div className='flex justify-center'>
+      <div className='flex w-full max-w-[500px] items-center justify-between px-5'>
+        <BulletBase
+          size='20'
+          onClick={() => {
+            handleInteraction('next');
+          }}
+        >
+          <NextIcon className='fill-next w-10' />
+        </BulletBase>
 
-          <BulletBase
-            size='16'
-            onClick={() => {
-              handleInteraction('superlike');
-            }}
-            disabled={superLikesCount > 0 ? false : true} // Disable the button if superLikesCount is 0
+        <BulletBase
+          size='16'
+          onClick={() => {
+            handleInteraction('superlike');
+          }}
+          disabled={superLikesCount > 0 ? false : true} // Disable the button if superLikesCount is 0
+        >
+          <motion.div
+            variants={interactionVariants}
+            animate={superLikesCount > 0 ? 'visible' : undefined} // Disable the animation if superLikesCount is 0
+            className='relative flex items-center justify-center'
           >
-            <motion.div
-              variants={interactionVariants}
-              animate={superLikesCount > 0 ? 'visible' : undefined} // Disable the animation if superLikesCount is 0
-              className='relative flex items-center justify-center'
-            >
-              <SuperLikeIcon className='w-10 fill-[#59C3FF]' />
-              <p className='font-title text-light absolute translate-y-[4px] text-sm font-black'>
-                {superLikesCount}
-              </p>
-            </motion.div>
-          </BulletBase>
+            <SuperLikeIcon className='w-10 fill-[#59C3FF]' />
+            <p className='font-title text-light absolute translate-y-[4px] text-sm font-black'>
+              {superLikesCount}
+            </p>
+          </motion.div>
+        </BulletBase>
 
-          <BulletBase
-            size='20'
-            onClick={() => {
-              handleInteraction('like');
-            }}
-          >
-            <LikeIcon className='fill-primary w-12' />
-          </BulletBase>
-        </div>
+        <BulletBase
+          size='20'
+          onClick={() => {
+            handleInteraction('like');
+          }}
+        >
+          <LikeIcon className='fill-primary w-12' />
+        </BulletBase>
       </div>
     </div>
   );

@@ -1,7 +1,5 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 
-import type { NavigationBody } from '@app/shared';
-
 import BulletBase from '@/components/BulletBase';
 import ThemeSwitcher from '@/components/ThemeSwitcher';
 import FilterIcon from '@/components/icons/FilterIcon';
@@ -10,6 +8,13 @@ import LogoIcon from '@/components/icons/LogoIcon';
 import MessageIcon from '@/components/icons/MessageIcon';
 import UserIcon from '@/components/icons/UserIcon';
 import { useAuth } from '@/contexts/AuthContext';
+
+interface NavigationBody {
+  id: string;
+  icon: JSX.Element;
+  lgHidden?: boolean;
+  onClick?: () => void;
+}
 
 export default function NavBar() {
   const { userId } = useAuth();
