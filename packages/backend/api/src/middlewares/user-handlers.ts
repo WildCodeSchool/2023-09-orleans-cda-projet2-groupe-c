@@ -7,9 +7,11 @@ import type { Request as ExpressRequest } from '@app/shared';
 
 // Unwrap the type of the Promise
 export type Users = Awaited<ReturnType<typeof users>>;
+export type UserProfile = Awaited<ReturnType<typeof userProfile>>;
 
 interface Request extends ExpressRequest {
   usersList?: Users;
+  userProfile?: UserProfile;
 }
 
 const users = async (userId: number) => {
@@ -160,20 +162,76 @@ const users = async (userId: number) => {
   return filteredUsers;
 };
 
+const userProfile = async (userId: number) => {
+  const user = await db
+    .selectFrom('user as u')
+    .select((eb) => [
+      'u.id',
+      'u.name',
+      'u.birthdate',
+      'u.gender',
+      'u.biography',
+      'u.account_github',
+      jsonObjectFrom(
+        eb
+          .selectFrom('city as c')
+          .select(['c.id', 'c.name as city_name', 'c.coordinates'])
+          .whereRef('c.id', '=', 'u.city_id'),
+      ).as('city'),
+      jsonArrayFrom(
+        eb
+          .selectFrom('language_user as lu')
+          .innerJoin('language as l', 'lu.language_id', 'l.id')
+          .whereRef('lu.user_id', '=', 'u.id')
+          .select(['l.id', 'l.name', 'lu.order', 'l.logo_path'])
+          .orderBy('lu.order', 'asc')
+          .limit(6),
+      ).as('languages'),
+      jsonArrayFrom(
+        eb
+          .selectFrom('technology_user as tu')
+          .innerJoin('technology as t', 'tu.technology_id', 't.id')
+          .whereRef('tu.user_id', '=', 'u.id')
+          .select(['t.id', 't.name', 'tu.order', 't.logo_path'])
+          .orderBy('tu.order', 'asc')
+          .limit(6),
+      ).as('technologies'),
+      jsonArrayFrom(
+        eb
+          .selectFrom('hobby_user as hu')
+          .innerJoin('hobby as h', 'hu.hobby_id', 'h.id')
+          .innerJoin('hobby_category as hc', 'h.hobby_category_id', 'hc.id')
+          .whereRef('hu.user_id', '=', 'u.id')
+          .select([
+            'hc.name as category',
+            'hc.logo_path',
+            'h.id',
+            'h.name',
+            'hu.order',
+          ]),
+      ).as('hobbies'),
+      jsonArrayFrom(
+        eb
+          .selectFrom('picture as p')
+          .whereRef('p.user_id', '=', 'u.id')
+          .select(['p.id', 'p.order', 'p.picture_path'])
+          .orderBy('p.order', 'asc')
+          .limit(6),
+      ).as('pictures'),
+    ])
+    .where('u.id', '=', userId)
+    .execute();
+
+  return user;
+};
+
 export const getUsers = async (
   req: Request,
   res: Response,
   next: () => void,
 ) => {
   try {
-    const userId = req.userId;
-
-    if (userId === undefined) {
-      return res.status(401).json({
-        success: false,
-        error: 'Unauthorized!',
-      });
-    }
+    const userId = req.userId as number;
 
     const usersList = await users(userId);
     req.usersList = usersList;
@@ -184,5 +242,44 @@ export const getUsers = async (
       success: false,
       error: 'Internal server error!',
     });
+  }
+};
+
+export const getUserProfile = async (
+  req: Request,
+  res: Response,
+  next: () => void,
+) => {
+  try {
+    const userId = req.userId as number;
+
+    const user = await userProfile(userId);
+    req.userProfile = user;
+
+    next();
+  } catch {
+    return res.status(500).json({
+      success: false,
+      error: 'Internal server error!',
+    });
+  }
+};
+
+// Check if the user id in the request parameter is the same as the user id in the JWT
+export const checkUserId = (req: Request, res: Response, next: () => void) => {
+  try {
+    const userId = req.userId as number;
+    const userIdParameter = req.params.userId;
+
+    // Check if the user id from the JWT is defined
+    // Check if the user id from the request parameter is defined
+    // Check if the user id from the JWT is the same as the user id from the request parameter
+    if (!userId || !userIdParameter || userId !== Number(userIdParameter)) {
+      return res.status(401).json({ success: false, error: 'Unauthorized!' });
+    }
+
+    next();
+  } catch {
+    return res.status(500).json({ error: 'Internal server error!' });
   }
 };

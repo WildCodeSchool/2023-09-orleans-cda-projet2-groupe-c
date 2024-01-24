@@ -5,6 +5,7 @@ import Login from './components/auth/Login';
 import RegistrationForm from './components/auth/RegistrationForm';
 import Success from './components/auth/Success';
 import ValidationToken from './components/auth/ValidationToken';
+import Profile from './components/profile/Profile';
 import Home from './pages/Home';
 import Registration from './pages/Registration';
 
@@ -20,6 +21,10 @@ const router = createBrowserRouter([
       {
         path: 'login',
         element: <Login />,
+      },
+      {
+        path: 'users/:profileId/profile',
+        element: <Profile />,
       },
     ],
   },
