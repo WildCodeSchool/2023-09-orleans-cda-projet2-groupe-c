@@ -163,6 +163,7 @@ const users = async (userId: number) => {
 };
 
 const userProfile = async (userId: number) => {
+  // Select information about the user logged in
   const user = await db
     .selectFrom('user as u')
     .select((eb) => [

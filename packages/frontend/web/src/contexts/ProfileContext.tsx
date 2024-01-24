@@ -22,6 +22,8 @@ type ProfileProviderState = {
   birthdateFormatted: string | undefined;
   age: number;
   error: string | undefined;
+  isToogleModal: boolean;
+  setIsToogleModal: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const profileProviderContext = createContext<ProfileProviderState | undefined>(
@@ -43,6 +45,9 @@ export default function ProfileContext({
 
   // State to store the error message
   const [error, setError] = useState<string>();
+
+  // State to toogle the modal
+  const [isToogleModal, setIsToogleModal] = useState<boolean>(false);
 
   // Navigate to another page using the hook "useNavigate"
   const navigate = useNavigate();
@@ -95,8 +100,18 @@ export default function ProfileContext({
       birthdateFormatted,
       age,
       error,
+      isToogleModal,
+      setIsToogleModal,
     };
-  }, [age, birthdateFormatted, percentage, user, error]);
+  }, [
+    age,
+    birthdateFormatted,
+    percentage,
+    user,
+    error,
+    isToogleModal,
+    setIsToogleModal,
+  ]);
 
   return (
     <profileProviderContext.Provider {...props} value={value}>

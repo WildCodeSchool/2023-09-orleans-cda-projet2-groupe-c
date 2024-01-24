@@ -2,13 +2,17 @@ import { useEffect, useState } from 'react';
 
 import type { UserBody } from '@app/shared';
 
+const MAX_PERCENTAGE = 100;
+const FIELD_LENGTH = 9;
+
 export default function useProgressBar({ userData }: { userData?: UserBody }) {
   // State to store the percentage of the profile completed
   const [percentage, setPercentage] = useState<number>(0);
 
+  // Check if the user data is complete and update the percentage
   useEffect(() => {
     let newPercentage = 0;
-    const valuePerField = 100 / 9;
+    const valuePerField = MAX_PERCENTAGE / FIELD_LENGTH;
 
     if (Boolean(userData?.name)) {
       newPercentage += valuePerField;
@@ -38,6 +42,7 @@ export default function useProgressBar({ userData }: { userData?: UserBody }) {
       newPercentage += valuePerField;
     }
 
+    // Set the final percentage in the state
     setPercentage(Math.floor(newPercentage));
   }, [userData]);
 
