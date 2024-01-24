@@ -4,7 +4,7 @@ export interface UserBody {
   id: number;
   name: string;
   birthdate: string;
-  gender: string;
+  gender: Gender;
   biography: string;
   account_github: string;
   city: {
