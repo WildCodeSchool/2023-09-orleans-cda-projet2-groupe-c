@@ -54,27 +54,30 @@ export default function ProfileContext({
 
   // Fetch information about the user logged in
   useEffect(() => {
-    const controller = new AbortController();
-    const signal = controller.signal;
+    if (Boolean(userId)) {
+      const controller = new AbortController();
+      const signal = controller.signal;
 
-    const fetchUser = async () => {
-      const res = await fetch(`${API_URL}/users/${userId}/profile`, {
-        signal,
-        credentials: 'include',
+      const fetchUser = async () => {
+        const res = await fetch(`${API_URL}/users/${userId}/profile`, {
+          signal,
+          credentials: 'include',
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          setUser(data[0]);
+        }
+      };
+
+      fetchUser().catch(() => {
+        setError('Failed to fetch user');
       });
 
-      const data = await res.json();
-
-      setUser(data[0]);
-    };
-
-    fetchUser().catch(() => {
-      setError('Failed to fetch user');
-    });
-
-    return () => {
-      controller.abort();
-    };
+      return () => {
+        controller.abort();
+      };
+    }
   }, [userId]);
 
   // Check if the user is define and if is allowed to access this page
