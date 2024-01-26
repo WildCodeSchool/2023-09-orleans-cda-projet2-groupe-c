@@ -1,7 +1,7 @@
 export default function ProgressBar({
   percentage,
 }: {
-  readonly percentage?: number;
+  readonly percentage: number;
 }) {
   return (
     <div className='relative w-full'>
