@@ -12,16 +12,20 @@ type SomeObject = {
 };
 
 function processPoint(value: SomeObject) {
-  if (value.type === 'Point' && Array.isArray(value.coordinates)) {
-    const [x, y] = value.coordinates as [number, number];
-    return { x, y };
-  }
-
-  if (typeof value === 'object') {
-    for (const key of Object.keys(value)) {
-      value[key] = processPoint(value[key] as SomeObject);
+  try {
+    if (value.type === 'Point' && Array.isArray(value.coordinates)) {
+      const [x, y] = value.coordinates as [number, number];
+      return { x, y };
     }
-    return value;
+
+    if (typeof value === 'object') {
+      for (const key of Object.keys(value)) {
+        value[key] = processPoint(value[key] as SomeObject);
+      }
+      return value;
+    }
+  } catch {
+    return;
   }
 
   return value;
@@ -73,11 +77,15 @@ export class PointPlugin implements KyselyPlugin {
     // eslint-disable-next-line unicorn/prevent-abbreviations
     args: PluginTransformResultArgs,
   ): Promise<QueryResult<UnknownRow>> {
-    const { result } = args;
-    const { rows } = result;
+    try {
+      const { result } = args;
+      const { rows } = result;
 
-    processRows(rows);
+      processRows(rows);
 
-    return result;
+      return result;
+    } catch {
+      throw new Error('Error transforming result');
+    }
   }
 }

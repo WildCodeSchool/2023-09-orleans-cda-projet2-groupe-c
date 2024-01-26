@@ -28,12 +28,6 @@ export type Point = {
   y: number;
 };
 
-export type GeoJson = {
-  x: number;
-  y: number;
-  coordinates: [number, number];
-};
-
 export interface UserTable {
   id: Generated<number>;
   name?: string;
@@ -59,7 +53,7 @@ export interface HobbyTable {
 export interface CityTable {
   id: Generated<number>;
   name: string;
-  coordinates: Point & GeoJson;
+  coordinates: Point;
 }
 
 export interface MessageTable {

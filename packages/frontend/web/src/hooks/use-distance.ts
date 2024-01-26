@@ -2,12 +2,9 @@ import getDistance from 'geolib/es/getDistance';
 import { useEffect, useState } from 'react';
 
 import type { UserBody } from '@app/shared';
+import type { Point } from '@app/shared';
 
 const API_URL = import.meta.env.VITE_API_URL;
-
-interface CoordinatesBody {
-  coordinates: number[];
-}
 
 interface DistanceProps {
   userId: number | undefined;
@@ -16,7 +13,7 @@ interface DistanceProps {
 
 export default function useDistance({ userId, selectedUser }: DistanceProps) {
   // State coordinates of the user looged in
-  const [coordinates, setCoordinates] = useState<CoordinatesBody>();
+  const [coordinates, setCoordinates] = useState<Point>();
 
   // Get coordinates of the selected user
   const coordinatesSelectedUser = selectedUser?.city.coordinates;
@@ -55,12 +52,12 @@ export default function useDistance({ userId, selectedUser }: DistanceProps) {
     if (coordinates && coordinatesSelectedUser !== undefined) {
       const distanceInMeters = getDistance(
         {
-          latitude: coordinates.coordinates[0],
-          longitude: coordinates.coordinates[1],
+          latitude: coordinates.x,
+          longitude: coordinates.y,
         },
         {
-          latitude: coordinatesSelectedUser.coordinates[0],
-          longitude: coordinatesSelectedUser.coordinates[1],
+          latitude: coordinatesSelectedUser.x,
+          longitude: coordinatesSelectedUser.y,
         },
       );
 
