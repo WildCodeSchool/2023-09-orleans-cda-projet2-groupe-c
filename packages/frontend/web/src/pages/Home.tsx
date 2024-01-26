@@ -2,6 +2,7 @@ import { Outlet } from 'react-router-dom';
 
 import NavBar from '@/components/NavBar';
 import RandomSentence from '@/components/home/RandomSentence';
+import FakeComponent from '@/components/message/FakeComponent';
 import { useAuth } from '@/contexts/AuthContext';
 
 import Loading from '../components/Loading';
@@ -16,9 +17,13 @@ export default function Home() {
 
   if (isLoggedIn) {
     return (
-      <main>
+      <main className='h-screen overflow-hidden'>
         <NavBar />
-        <Outlet />
+        <div className='font-base relative flex h-[calc(100vh-56px)] w-full justify-between'>
+          <FakeComponent />
+          <Outlet />
+          <FakeComponent />
+        </div>
       </main>
     );
   }

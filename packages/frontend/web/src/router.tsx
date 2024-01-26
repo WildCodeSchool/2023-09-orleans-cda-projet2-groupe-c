@@ -5,6 +5,8 @@ import Login from './components/auth/Login';
 import RegistrationForm from './components/auth/RegistrationForm';
 import Success from './components/auth/Success';
 import ValidationToken from './components/auth/ValidationToken';
+import HomeCards from './components/home/HomeCards';
+import Conversation from './components/message/Conversation';
 import Home from './pages/Home';
 import Registration from './pages/Registration';
 
@@ -16,6 +18,16 @@ const router = createBrowserRouter([
       {
         path: '/',
         element: <AuthLayout />,
+        children: [
+          {
+            path: '',
+            element: <HomeCards />,
+          },
+          {
+            path: '/users/:userId/conversations/:conversationId',
+            element: <Conversation />,
+          },
+        ],
       },
       {
         path: 'login',
