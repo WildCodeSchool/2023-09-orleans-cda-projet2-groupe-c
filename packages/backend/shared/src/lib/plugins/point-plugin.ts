@@ -25,9 +25,8 @@ function processPoint(value: SomeObject) {
       return value;
     }
   } catch {
-    return;
+    return value;
   }
-
   return value;
 }
 
