@@ -62,8 +62,8 @@ const filteredByDistance = async (
   // Filter the users by distance
   const filteredUsersByDistance = users.filter((user) => {
     const selectedUserCoordinates = {
-      latitude: user.city?.coordinates.coordinates[0] as number,
-      longitude: user.city?.coordinates.coordinates[1] as number,
+      latitude: user.city?.coordinates.x as number,
+      longitude: user.city?.coordinates.y as number,
     };
 
     // Use getDistance from geolib to calculate the distance between two points
@@ -94,7 +94,7 @@ export const getUserPreferenceId = async (
   } catch {
     return res.status(500).json({
       success: false,
-      error: 'Internal server error!',
+      error: 'Error retrieving user preference ID.',
     });
   }
 };
@@ -115,7 +115,7 @@ export const getUserPreferences = async (
   } catch {
     return res.status(500).json({
       success: false,
-      error: 'Internal server error!',
+      error: 'Error retrieving user preferences.',
     });
   }
 };
@@ -139,7 +139,7 @@ export const filteredUsersByDistance = async (
   } catch {
     return res.status(500).json({
       success: false,
-      error: 'Internal server error!',
+      error: 'Error filtering users by distance.',
     });
   }
 };
