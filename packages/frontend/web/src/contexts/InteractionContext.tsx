@@ -3,6 +3,7 @@ import { createContext, useContext, useMemo } from 'react';
 import type { UserBody } from '@app/shared';
 
 import { useAuth } from '@/contexts/AuthContext';
+import useDistance from '@/hooks/use-distance';
 import useInteractions from '@/hooks/use-interactions';
 
 type HomeProviderProps = {
@@ -10,9 +11,10 @@ type HomeProviderProps = {
 };
 
 type HomeProviderState = {
-  selectedUser: UserBody | undefined;
+  selectedUser?: UserBody;
   superLikesCount: number;
   handleInteraction: (action: string) => void;
+  distance: number;
 };
 
 // Create a context
@@ -32,6 +34,12 @@ export default function InteractionContext({
     userId,
   });
 
+  // Get the distance between the current user and the selected user
+  const { distance } = useDistance({
+    userId,
+    selectedUser,
+  });
+
   // Create an objet with the value to be shared
   // Memorize the value to avoid re-rendering
   const value = useMemo(() => {
@@ -39,8 +47,9 @@ export default function InteractionContext({
       selectedUser,
       superLikesCount,
       handleInteraction,
+      distance,
     };
-  }, [selectedUser, superLikesCount, handleInteraction]);
+  }, [selectedUser, superLikesCount, handleInteraction, distance]);
 
   return (
     <interactionProviderContext.Provider {...props} value={value}>
