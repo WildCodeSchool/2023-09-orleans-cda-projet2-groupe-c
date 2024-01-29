@@ -7,9 +7,7 @@ import {
   requestPreferencesSchema,
 } from '@app/shared';
 
-import { useAuth } from '@/contexts/AuthContext';
 import { usePreference } from '@/contexts/PreferenceContext';
-import useInteractions from '@/hooks/use-interactions';
 
 import BulletBase from '../BulletBase';
 import Button from '../Button';

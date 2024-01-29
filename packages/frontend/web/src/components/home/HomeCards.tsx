@@ -7,8 +7,6 @@ import Interactions from './Interactions';
 export default function HomeCards() {
   const { selectedUser } = useInteraction();
 
-  console.log(selectedUser);
-
   if (!selectedUser) {
     return <Loading />;
   }
