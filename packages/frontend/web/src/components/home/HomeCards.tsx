@@ -7,12 +7,14 @@ import Interactions from './Interactions';
 export default function HomeCards() {
   const { selectedUser } = useInteraction();
 
+  console.log(selectedUser);
+
   if (!selectedUser) {
     return <Loading />;
   }
 
   return (
-    <div className='font-base mx-auto flex h-[calc(100vh-56px)] w-full max-w-[500px] flex-col justify-between gap-5 overflow-y-auto px-5 py-10 text-white'>
+    <div className='font-base mx-auto flex w-full max-w-[500px] flex-col justify-between gap-5 overflow-y-auto px-5 py-10 text-white'>
       <Card user={selectedUser} />
       <Interactions />
     </div>

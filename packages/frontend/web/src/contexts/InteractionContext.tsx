@@ -10,9 +10,10 @@ type HomeProviderProps = {
 };
 
 type HomeProviderState = {
-  selectedUser: UserBody | undefined;
+  selectedUser?: UserBody;
   superLikesCount: number;
   handleInteraction: (action: string) => void;
+  fetchUsers: ({ signal }: { signal: AbortSignal }) => Promise<void>;
 };
 
 // Create a context
@@ -28,9 +29,10 @@ export default function InteractionContext({
   const { userId } = useAuth();
 
   // Get the selected user, superlike count and the functions to handle the interactions from the custom hook "useInteractions"
-  const { selectedUser, superLikesCount, handleInteraction } = useInteractions({
-    userId,
-  });
+  const { selectedUser, superLikesCount, handleInteraction, fetchUsers } =
+    useInteractions({
+      userId,
+    });
 
   // Create an objet with the value to be shared
   // Memorize the value to avoid re-rendering
@@ -39,8 +41,9 @@ export default function InteractionContext({
       selectedUser,
       superLikesCount,
       handleInteraction,
+      fetchUsers,
     };
-  }, [selectedUser, superLikesCount, handleInteraction]);
+  }, [selectedUser, superLikesCount, handleInteraction, fetchUsers]);
 
   return (
     <interactionProviderContext.Provider {...props} value={value}>
