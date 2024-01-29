@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 
 import type { UserBody } from '@app/shared';
 
+import { useInteraction } from '@/contexts/InteractionContext';
+
 import Badge from '../Badge';
 import GitHubIcon from '../icons/GitHubIcon';
 import LocationIcon from '../icons/LocationIcon';
@@ -14,6 +16,7 @@ interface CardProps {
 
 export default function Card({ user }: CardProps) {
   const [age, setAge] = useState<number>(0);
+  const { distance } = useInteraction();
 
   // Calculate the age of the user
   useEffect(() => {
@@ -30,36 +33,42 @@ export default function Card({ user }: CardProps) {
     <div className='flex-1 overflow-y-auto rounded-lg shadow-lg'>
       <div className='relative h-full'>
         <div className='absolute bottom-0 left-0 h-80 w-full bg-gradient-to-t from-black to-black/0' />
-        <div className='absolute bottom-0 left-0 flex h-48 w-full flex-col justify-between p-3'>
+        <div className='absolute bottom-0 left-0 flex w-full flex-col justify-between p-3'>
           <div className='flex'>
             <div className='w-4/5'>
               <p className='mb-4 text-xl'>{`${user.name} • ${age}`}</p>
-              <div className='text-secondary flex flex-wrap gap-2'>
-                {user.hobbies.map((hobby) => (
-                  <div key={hobby.id}>
-                    <Badge>
-                      <div className='w-4'>
-                        <img src={hobby.logo_path} alt={hobby.category} />
-                      </div>
-                      <p className='text-xs'>
-                        {hobby.name.charAt(0).toUpperCase() +
-                          hobby.name.slice(1)}
-                      </p>
-                    </Badge>
-                  </div>
-                ))}
+              <div className='flex flex-col gap-6'>
+                <div className='text-secondary flex flex-wrap gap-2'>
+                  {user.hobbies.map((hobby) => (
+                    <div key={hobby.id}>
+                      <Badge>
+                        <div className='w-4'>
+                          <img src={hobby.logo_path} alt={hobby.category} />
+                        </div>
+                        <p className='text-xs'>
+                          {hobby.name.charAt(0).toUpperCase() +
+                            hobby.name.slice(1)}
+                        </p>
+                      </Badge>
+                    </div>
+                  ))}
+                </div>
+                <div className='align-center flex gap-2'>
+                  <LocationIcon />
+                  <p className='translate-y-[1px] truncate text-sm'>
+                    {user.city.city_name} <span>{`• ${distance} km`}</span>
+                  </p>
+                </div>
               </div>
             </div>
-            <div className='absolute bottom-4 right-4 h-16 w-16'>
-              <img
-                src={user.languages[0].logo_path}
-                alt={user.languages[0].name}
-              />
+            <div className='flex grow items-end'>
+              <div className='w-full pl-3'>
+                <img
+                  src={user.languages[0].logo_path}
+                  alt={user.languages[0].name}
+                />
+              </div>
             </div>
-          </div>
-          <div className='align-center flex gap-2'>
-            <LocationIcon />
-            <p className='translate-y-[1px] text-sm'>{user.city.city_name}</p>
           </div>
         </div>
         <div className='flex h-full w-full items-center justify-center'>
