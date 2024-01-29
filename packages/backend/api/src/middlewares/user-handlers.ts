@@ -184,8 +184,6 @@ export const getUsers = async (
 
     const usersList = await users(userId, userPreferences);
 
-    console.log(usersList);
-
     req.usersList = usersList;
 
     next();

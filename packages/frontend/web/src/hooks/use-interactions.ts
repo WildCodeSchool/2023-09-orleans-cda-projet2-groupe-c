@@ -2,8 +2,6 @@ import { useCallback, useEffect, useState } from 'react';
 
 import type { UserBody } from '@app/shared';
 
-import { usePreference } from '@/contexts/PreferenceContext';
-
 const API_URL = import.meta.env.VITE_API_URL;
 
 export default function useInteractions({ ...props }) {

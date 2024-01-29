@@ -10,7 +10,6 @@ import {
 import type { RequestPreferencesBody } from '@app/shared';
 
 import { useAuth } from '@/contexts/AuthContext';
-import useInteractions from '@/hooks/use-interactions';
 
 import { useInteraction } from './InteractionContext';
 
