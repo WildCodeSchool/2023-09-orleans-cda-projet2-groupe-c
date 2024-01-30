@@ -45,7 +45,6 @@ const upload = multer({
 const registerRouter = express.Router();
 
 // Upload route
-// Upload route
 registerRouter.post(
   '/upload',
   getUserId,
