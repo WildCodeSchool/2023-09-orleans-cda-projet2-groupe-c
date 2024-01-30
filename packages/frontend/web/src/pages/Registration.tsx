@@ -1,17 +1,13 @@
-import { Navigate, Outlet } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 
 import Loading from '@/components/Loading';
 import { useAuth } from '@/contexts/AuthContext';
 
 export default function Registration() {
-  const { isLoading, isLoggedIn } = useAuth();
+  const { isLoading } = useAuth();
 
   if (isLoading) {
     return <Loading />;
-  }
-
-  if (isLoggedIn) {
-    return <Navigate to='/' />;
   }
 
   return (

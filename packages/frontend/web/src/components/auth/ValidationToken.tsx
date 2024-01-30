@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect, useState } from 'react';
 import { type SubmitHandler, useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 
 import { type ActivationCode, activationCodeSchema } from '@app/shared';
 
@@ -20,11 +20,8 @@ export default function ValidationToken() {
   // Get the navigate function from the router
   const navigate = useNavigate();
 
-  // Get states from the AuthContext
-  const { userId } = useAuth();
-
   // Get the login states from the AuthContext
-  const { setIsLoggedIn } = useAuth();
+  const { setIsLoggedIn, isLoggedIn, userId } = useAuth();
 
   // Desctructure the useForm hook
   const { register, handleSubmit, formState } = useForm<ActivationCode>({
@@ -53,7 +50,7 @@ export default function ValidationToken() {
         // If the user is logged in, redirect to the home page
         if (resData.isLoggedIn) {
           setIsLoggedIn(true);
-          navigate('/');
+          navigate('/registration/profile');
         }
       }
     } catch {
@@ -92,6 +89,10 @@ export default function ValidationToken() {
       controller.abort();
     };
   }, [userId]);
+
+  if (!isLoggedIn) {
+    return <Navigate to='/registration' />;
+  }
 
   return (
     <div className='p-8'>
