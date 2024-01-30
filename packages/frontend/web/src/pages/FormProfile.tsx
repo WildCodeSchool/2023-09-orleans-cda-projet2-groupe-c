@@ -15,7 +15,6 @@ import FormHobby from '@/components/forms/FormHobby';
 import FormLanguage from '@/components/forms/FormLanguage';
 import FormName from '@/components/forms/FormName';
 import FormTechnology from '@/components/forms/FormTechnology';
-import FormTest from '@/components/forms/FormTest';
 import { useAuth } from '@/contexts/AuthContext';
 
 const PAGES = [
@@ -28,8 +27,7 @@ const PAGES = [
   { currentPage: 6, component: <FormHobby /> },
   { currentPage: 7, component: <FormBio /> },
   { currentPage: 8, component: <FormGitHub /> },
-  { currentPage: 9, component: <FormTest /> },
-  { currentPage: 10, component: <FormEnd /> },
+  { currentPage: 9, component: <FormEnd /> },
 ];
 
 export default function FormProfile() {
@@ -42,7 +40,7 @@ export default function FormProfile() {
 
   const formSubmit = async (data: ProfileForm) => {
     // If the current page is less than 10, move to the next page
-    if (page < 10) {
+    if (page < 9) {
       setPage(page + 1);
       // Otherwise, attempt to submit the form data
     } else {
@@ -61,6 +59,7 @@ export default function FormProfile() {
 
         await fetch(`${import.meta.env.VITE_API_URL}/register`, {
           method: 'POST',
+          credentials: 'include',
           headers: {
             'Content-Type': 'application/json',
           },
@@ -94,9 +93,9 @@ export default function FormProfile() {
             )}
             <div className='flex w-full flex-col gap-6 pb-5 md:pb-40'>
               <Button isOutline={false} type='submit'>
-                {page >= 10 ? 'Start matching' : 'Next'}
+                {page >= 9 ? 'Start matching' : 'Next'}
               </Button>
-              {page > 0 && page < 10 ? (
+              {page > 0 && page < 9 ? (
                 <Button
                   isOutline
                   type='button'

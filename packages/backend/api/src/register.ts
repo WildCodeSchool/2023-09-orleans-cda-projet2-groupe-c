@@ -2,47 +2,43 @@ import express from 'express';
 
 import { db } from '@app/backend-shared';
 import type { FormBackValidation } from '@app/shared';
+import type { Request } from '@app/shared';
+
+import { getUserId } from './middlewares/auth-handlers';
 
 const register = express.Router();
 
-register.post('/', async (req, res) => {
+register.post('/', getUserId, async (req: Request, res) => {
   try {
     const {
       name,
-      role,
       birthdate,
       gender,
       cityId,
       biography,
       accountGithub,
-      email,
-      password,
       languages,
       technologies,
       hobbies,
     } = req.body as FormBackValidation;
 
+    const userId = req.userId as number;
+
     //use the transaction property allows us to cancel the request if an
     //error has arrived during the submission of the data
     await db.transaction().execute(async (trx) => {
-      const userResult = await trx
-        .insertInto('user')
-        .values({
+      await trx
+        .updateTable('user')
+        .set({
           name,
-          role,
           birthdate,
           gender,
-          city_id: cityId,
+          city_id: Number(cityId),
           biography,
           account_github: accountGithub,
-          email,
-          password,
         })
-
+        .where('user.id', '=', userId)
         .executeTakeFirstOrThrow();
-
-      //get the user id newly created
-      const userId = userResult.insertId;
 
       // It maps over the 'languages, technologies and hobbies' array, which contains objects with 'id' and 'order' properties.
       // e.g For each language, it creates a new record with 'language_id' set to the language's 'id',
