@@ -1,7 +1,6 @@
 import { useInteraction } from '@/contexts/InteractionContext';
 
 import Loading from '../Loading';
-import FormPicture from '../forms/FormPicture';
 import Card from './Card';
 import Interactions from './Interactions';
 
