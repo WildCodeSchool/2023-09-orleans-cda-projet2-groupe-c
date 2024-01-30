@@ -19,7 +19,7 @@ export default function ProfileHeader({
         >
           <p>{`Profile liked`}</p>
         </button>
-        <div className='h-full w-[1px] bg-[#aaaaaa]' />
+        <div className='bg-divider h-full w-[1px]' />
         <button
           type='button'
           onClick={() => {

@@ -57,7 +57,7 @@ export default function NavBar() {
   return (
     <nav
       className={`bg-light-hard sticky top-0 z-50 flex w-full items-center p-3 ${
-        isHomePage ? 'shadow-md' : ''
+        isHomePage && 'shadow-md'
       }`}
     >
       <Link to='/' className='absolute flex items-center gap-2 pl-2'>

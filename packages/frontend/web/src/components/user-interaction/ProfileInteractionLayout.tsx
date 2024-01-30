@@ -1,9 +1,12 @@
 /* eslint-disable unicorn/no-nested-ternary */
 import { AnimatePresence, motion } from 'framer-motion';
+import { useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import ProfileCard from '@/components/user-interaction/ProfileCard';
 import ProfileHeader from '@/components/user-interaction/ProfileHeader';
-import useUsersInteractions from '@/hooks/use-users-interactions';
+import { useAuth } from '@/contexts/AuthContext';
+import { useUsersInteractions } from '@/contexts/UsersInteractionsContext';
 
 const cardVariants = {
   hidden: {
@@ -31,8 +34,25 @@ const cardVariants = {
 };
 
 export default function ProfileInteractionLayout() {
+  // Get the states and function from the context "UsersInteractionsContext"
   const { interactionsSent, interactionsReceived, isVisible, handleClick } =
     useUsersInteractions();
+
+  // Get the user id JWT from the context
+  const { userId } = useAuth();
+
+  // Get the profile id from the URL
+  const { profileId } = useParams();
+
+  // Hook to navigate to another page
+  const navigate = useNavigate();
+
+  // Check if the user is allowed to see this page
+  useEffect(() => {
+    if (userId !== Number(profileId)) {
+      navigate('/error');
+    }
+  }, [userId, profileId, navigate]);
 
   return (
     <section>

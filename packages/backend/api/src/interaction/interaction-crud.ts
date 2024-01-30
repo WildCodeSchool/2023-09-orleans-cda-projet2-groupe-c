@@ -15,6 +15,94 @@ interface Request extends ExpressRequest {
 
 const interactionRouter = express.Router();
 
+// Function to get interactions from the user or received by the user
+const getInteractions = async (initiator: string, userId: number) => {
+  let query = db
+    .selectFrom('user_action as ua')
+    .innerJoin('user as initiator', 'initiator.id', 'ua.initiator_id')
+    .innerJoin('user as receiver', 'receiver.id', 'ua.receiver_id')
+    .select((eb) => [
+      'ua.id',
+      'next_at',
+      'liked_at',
+      'superlike_at',
+      'canceled_at',
+      jsonObjectFrom(
+        eb
+          .selectFrom('user as initiator')
+          .select([
+            'initiator.id',
+            'initiator.name',
+            jsonObjectFrom(
+              eb
+                .selectFrom('picture as p')
+                .select('p.picture_path as path')
+                .whereRef('p.user_id', '=', 'initiator.id')
+                .orderBy('order', 'asc')
+                .limit(1),
+            ).as('pictures'),
+            jsonObjectFrom(
+              eb
+                .selectFrom('city as c')
+                .select('coordinates')
+                .whereRef('c.id', '=', 'initiator.city_id'),
+            ).as('city'),
+          ])
+          .whereRef('initiator.id', '=', 'ua.initiator_id'),
+      ).as('initiator'),
+      jsonObjectFrom(
+        eb
+          .selectFrom('user as receiver')
+          .select([
+            'receiver.id',
+            'receiver.name',
+            'receiver.birthdate',
+            jsonObjectFrom(
+              eb
+                .selectFrom('picture as p')
+                .select('p.picture_path as path')
+                .whereRef('p.user_id', '=', 'receiver.id')
+                .orderBy('order', 'asc')
+                .limit(1),
+            ).as('pictures'),
+            jsonObjectFrom(
+              eb
+                .selectFrom('city as c')
+                .select(['c.id', 'c.name', 'c.coordinates'])
+                .whereRef('c.id', '=', 'receiver.city_id'),
+            ).as('city'),
+            jsonObjectFrom(
+              eb
+                .selectFrom('language as l')
+                .innerJoin('language_user as lu', 'lu.user_id', 'receiver.id')
+                .select(['l.id', 'name'])
+                .whereRef('l.id', '=', 'lu.language_id')
+                .orderBy('lu.order', 'asc')
+                .limit(1),
+            ).as('languages'),
+          ])
+          .whereRef('receiver.id', '=', 'ua.receiver_id'),
+      ).as('receiver'),
+    ])
+    .where((eb) =>
+      eb.or([
+        eb('ua.liked_at', 'is not', null),
+        eb('ua.superlike_at', 'is not', null),
+      ]),
+    )
+    .where('canceled_at', 'is not', null);
+
+  if (initiator === 'initiator') {
+    query = query.where('initiator_id', '=', userId);
+  }
+
+  if (initiator === 'receiver') {
+    query = query.where('receiver_id', '=', userId);
+  }
+
+  return query.execute();
+};
+
 // Get all interactions from the user
 interactionRouter.get(
   '/:userId/interactions/sent',
@@ -25,78 +113,7 @@ interactionRouter.get(
       const userId = req.userId as number;
 
       // Select all interactions from the user
-      const userActions = await db
-        .selectFrom('user_action as ua')
-        .innerJoin('user as initiator', 'initiator.id', 'ua.initiator_id')
-        .innerJoin('user as receiver', 'receiver.id', 'ua.receiver_id')
-        .select((eb) => [
-          'ua.id',
-          'next_at',
-          'liked_at',
-          'superlike_at',
-          'canceled_at',
-          jsonObjectFrom(
-            eb
-              .selectFrom('user as initiator')
-              .select([
-                'initiator.id',
-                'initiator.name',
-                jsonObjectFrom(
-                  eb
-                    .selectFrom('city as c')
-                    .select('coordinates')
-                    .whereRef('c.id', '=', 'initiator.city_id'),
-                ).as('city'),
-              ])
-              .whereRef('initiator.id', '=', 'ua.initiator_id'),
-          ).as('initiator'),
-          jsonObjectFrom(
-            eb
-              .selectFrom('user as receiver')
-              .select([
-                'receiver.id',
-                'receiver.name',
-                'receiver.birthdate',
-                jsonObjectFrom(
-                  eb
-                    .selectFrom('picture as p')
-                    .select('p.picture_path as path')
-                    .whereRef('p.user_id', '=', 'receiver.id')
-                    .orderBy('order', 'asc')
-                    .limit(1),
-                ).as('pictures'),
-                jsonObjectFrom(
-                  eb
-                    .selectFrom('city as c')
-                    .select(['c.id', 'c.name', 'c.coordinates'])
-                    .whereRef('c.id', '=', 'receiver.city_id'),
-                ).as('city'),
-                jsonObjectFrom(
-                  eb
-                    .selectFrom('language as l')
-                    .innerJoin(
-                      'language_user as lu',
-                      'lu.user_id',
-                      'receiver.id',
-                    )
-                    .select(['l.id', 'name'])
-                    .whereRef('l.id', '=', 'lu.language_id')
-                    .orderBy('lu.order', 'asc')
-                    .limit(1),
-                ).as('languages'),
-              ])
-              .whereRef('receiver.id', '=', 'ua.receiver_id'),
-          ).as('receiver'),
-        ])
-        .where('initiator_id', '=', userId)
-        .where((eb) =>
-          eb.or([
-            eb('ua.liked_at', 'is not', null),
-            eb('ua.superlike_at', 'is not', null),
-          ]),
-        )
-        .where('canceled_at', 'is not', null)
-        .execute();
+      const userActions = await getInteractions('initiator', userId);
 
       res.status(200).json(userActions);
     } catch {
@@ -116,49 +133,7 @@ interactionRouter.get(
     try {
       const userId = req.userId as number;
 
-      const userLikedMe = await db
-        .selectFrom('user_action as ua')
-        .innerJoin('user as initiator', 'initiator.id', 'ua.initiator_id')
-        .innerJoin('user as receiver', 'receiver.id', 'ua.receiver_id')
-        .select((eb) => [
-          'ua.id',
-          'next_at',
-          'liked_at',
-          'superlike_at',
-          'canceled_at',
-          jsonObjectFrom(
-            eb
-              .selectFrom('user as initiator')
-              .select([
-                'initiator.id',
-                'initiator.name',
-                jsonObjectFrom(
-                  eb
-                    .selectFrom('picture as p')
-                    .select('p.picture_path as path')
-                    .whereRef('p.user_id', '=', 'initiator.id')
-                    .orderBy('order', 'asc')
-                    .limit(1),
-                ).as('pictures'),
-              ])
-              .whereRef('initiator.id', '=', 'ua.initiator_id'),
-          ).as('initiator'),
-          jsonObjectFrom(
-            eb
-              .selectFrom('user as receiver')
-              .select(['receiver.id', 'receiver.name'])
-              .whereRef('receiver.id', '=', 'ua.receiver_id'),
-          ).as('receiver'),
-        ])
-        .where('receiver_id', '=', userId)
-        .where((eb) =>
-          eb.or([
-            eb('ua.liked_at', 'is not', null),
-            eb('ua.superlike_at', 'is not', null),
-          ]),
-        )
-        .where('canceled_at', 'is not', null)
-        .execute();
+      const userLikedMe = await getInteractions('receiver', userId);
 
       res.status(200).json(userLikedMe);
     } catch {

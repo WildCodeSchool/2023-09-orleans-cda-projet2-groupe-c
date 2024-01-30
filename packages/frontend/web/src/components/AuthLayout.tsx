@@ -1,8 +1,10 @@
+import { Outlet } from 'react-router-dom';
+
 import InteractionContext from '@/contexts/InteractionContext';
+import UsersInteractionsContext from '@/contexts/UsersInteractionsContext';
 
 import { useAuth } from '../contexts/AuthContext';
 import HomeButtons from './home/HomeButtons';
-import HomeCards from './home/HomeCards';
 
 export default function AuthLayout() {
   const { isLoggedIn } = useAuth();
@@ -11,7 +13,9 @@ export default function AuthLayout() {
   if (isLoggedIn) {
     return (
       <InteractionContext>
-        <HomeCards />
+        <UsersInteractionsContext>
+          <Outlet />
+        </UsersInteractionsContext>
       </InteractionContext>
     );
   }
