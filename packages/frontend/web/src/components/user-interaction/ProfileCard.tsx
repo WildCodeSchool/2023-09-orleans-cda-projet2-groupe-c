@@ -12,7 +12,6 @@ export default function ProfileCard({
   readonly interaction: InteractionBody;
   readonly isVisible: boolean;
 }) {
-  // Check if the field birthdate is present in the interaction receiver
   // Calculate the age of the user with the custom hook useAge
   const age = useAge({ userBirthdate: interaction.receiver.birthdate });
 
