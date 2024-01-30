@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 import { useAuth } from '@/contexts/AuthContext';
@@ -30,13 +30,20 @@ interface Conversation {
 export default function Conversation() {
   const { userId } = useAuth();
   const [conversation, setConversation] = useState<Conversation>();
-  const { register, handleSubmit, getValues } = useForm();
-  console.log(getValues('content'));
+  const { register, handleSubmit, getValues, reset } = useForm();
+  const messageEndReference = useRef<HTMLDivElement | null>(null);
+  /*  console.log(getValues('content')); */
+
+  const scrollToBottom = () => {
+    messageEndReference.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  useEffect(scrollToBottom, [conversation]);
 
   useEffect(() => {
     const controller = new AbortController();
 
-    (async () => {
+    const fetchMessage = async () => {
       const response = await fetch(
         `${import.meta.env.VITE_API_URL}/users/${userId}/conversations/38`,
         {
@@ -46,14 +53,19 @@ export default function Conversation() {
       );
       const data = await response.json();
       setConversation(data[0]);
-    })();
+    };
+
+    void fetchMessage();
+
+    const intervalId = setInterval(fetchMessage, 1000);
 
     return () => {
+      clearInterval(intervalId);
       controller.abort();
     };
   }, [userId]);
 
-  const formSubmit = async (data: Message) => {
+  const formSubmit = async (data: { content?: Message['content'] }) => {
     try {
       await fetch(
         `${import.meta.env.VITE_API_URL}/users/${userId}/conversations/38/message`,
@@ -69,6 +81,7 @@ export default function Conversation() {
     } catch (error) {
       throw new Error(`${String(error)}`);
     }
+    reset();
   };
 
   return (
@@ -89,10 +102,11 @@ export default function Conversation() {
         </div>
         <div className='flex h-[calc(100%-3.5rem)] w-full flex-col gap-5'>
           <div className='h-full w-full overflow-y-auto'>
-            <div className={`flex h-full flex-col gap-6 overflow-y-auto pb-2 `}>
+            <div className='flex h-full flex-col gap-6 overflow-y-auto pb-2'>
               {conversation?.messages.map((message) => (
                 <div
                   key={message.id}
+                  ref={messageEndReference}
                   className={`$ flex w-full items-end gap-3 px-7 ${message.sender_name === conversation.sender.name ? 'flex-row-reverse' : ''}`}
                 >
                   <BulletConversation
@@ -110,14 +124,14 @@ export default function Conversation() {
           </div>
 
           <form
-            /*   onSubmit={handleSubmit(formSubmit)} */
-            action=''
+            onSubmit={handleSubmit(formSubmit)}
             className='relative mb-5 flex h-10 w-full items-center px-7'
           >
-            <textarea
-              className='text-secondary bg-light flex h-full w-full resize-none items-center rounded-l-full border-none pl-4 pt-2 shadow-md outline-none'
+            <input
+              className='text-secondary bg-light flex h-full w-full resize-none items-center rounded-l-full pl-4 pt-2 shadow-md outline-none'
               placeholder='Aa'
               {...register('content')}
+              required
             />
             <div className='bg-light flex h-full w-12 items-center justify-center rounded-r-full shadow-md'>
               <button type='submit'>
