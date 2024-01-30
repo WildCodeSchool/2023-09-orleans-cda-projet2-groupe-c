@@ -10,10 +10,10 @@ export default function FormBirthDate() {
   const { errors } = formState;
   return (
     <FormContainer title='MY BIRTHDAY'>
-      <span className=' flex justify-start'>
+      <span className='flex justify-start'>
         {'Your age will be visible to everyone.'}
       </span>
-      <span className=' flex justify-start pb-8'>
+      <span className='flex justify-start pb-8'>
         {'You must be of legal age to register.'}
       </span>
       <input

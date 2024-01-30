@@ -2,11 +2,11 @@ import express from 'express';
 import * as jose from 'jose';
 
 import { db } from '@app/backend-shared';
-import type { Request as ExpressRequest } from '@app/shared';
 import type {
   ActivationCode,
   ActivationToken,
   AuthBody,
+  Request as ExpressRequest,
   RegisterBody,
   RegisterWithActivationCode,
 } from '@app/shared';
@@ -231,7 +231,7 @@ authRouter.post('/login', async (req, res) => {
     // Get the user from the database
     const user = await db
       .selectFrom('user')
-      .select(['user.id', 'user.password', 'activate_at'])
+      .select(['user.id', 'user.password', 'user.activate_at'])
       .where('user.email', '=', email)
       .executeTakeFirst();
 
