@@ -14,15 +14,27 @@ export const authSchema = z
         new RegExp(/^[A-Za-z]+['s-]?[ A-Za-z]+$/),
         'ⓘ Name should contain only alphabets',
       ),
-    birthdate: z.date().refine(
-      (date) => {
-        // Calculate user age for registration, user must be >= 18 years old
-        const age = new Date().getFullYear() - date.getFullYear();
+    birthdate: z
+      .date()
+      .refine(
+        (date) => {
+          // Calculate user age for registration, user must be >= 18 years old
+          const age = new Date().getFullYear() - date.getFullYear();
 
-        return age >= 18;
-      },
-      { message: 'ⓘ You must be 18 years old to register.' },
-    ),
+          return age >= 18;
+        },
+        { message: 'ⓘ You must be 18 years old to register.' },
+      )
+      .refine(
+        (date) => {
+          const age = new Date().getFullYear() - date.getFullYear();
+
+          return age <= 100;
+        },
+        {
+          message: 'ⓘ You must be less than 100 years old to register.',
+        },
+      ),
     gender: z.enum(['man', 'woman', 'non-binary'], {
       invalid_type_error: 'ⓘ Please select one of the options.',
     }),

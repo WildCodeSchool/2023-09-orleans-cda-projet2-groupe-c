@@ -18,11 +18,11 @@ import FormTechnology from '@/components/forms/FormTechnology';
 import { useAuth } from '@/contexts/AuthContext';
 
 const PAGES = [
-  { currentPage: 0, component: <FormName /> },
+  { currentPage: 4, component: <FormName /> },
   { currentPage: 1, component: <FormBirthDate /> },
   { currentPage: 2, component: <FormGender /> },
   { currentPage: 3, component: <FormCity /> },
-  { currentPage: 4, component: <FormLanguage /> },
+  { currentPage: 0, component: <FormLanguage /> },
   { currentPage: 5, component: <FormTechnology /> },
   { currentPage: 6, component: <FormHobby /> },
   { currentPage: 7, component: <FormBio /> },
@@ -36,11 +36,14 @@ export default function FormProfile() {
   const { isLoggedIn } = useAuth();
   //I use the const methods to send all useForm properties to my child elements
   const methods = useForm<ProfileForm>();
-  const { handleSubmit } = methods;
+  const { handleSubmit, formState, getValues } = methods;
+
+  console.log('getValues :', getValues());
+  console.log('errors :', formState.errors);
 
   const formSubmit = async (data: ProfileForm) => {
     // If the current page is less than 10, move to the next page
-    if (page < 9) {
+    if (page < PAGES.length - 1) {
       setPage(page + 1);
       // Otherwise, attempt to submit the form data
     } else {

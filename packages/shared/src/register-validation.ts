@@ -31,14 +31,26 @@ export const formSchema = authSchema.omit({
 
 export const formArrayStringSchema = z.object({
   technologies: z
-    .array(z.string(), {
-      invalid_type_error: 'ⓘ Select at least one technology.',
-    })
+    .array(
+      z.object({
+        id: z.number().positive(),
+        order: z.number().positive(),
+      }),
+      {
+        invalid_type_error: 'ⓘ Select at least one technology.',
+      },
+    )
     .nonempty({ message: 'ⓘ Select at least one technology.' }),
   languages: z
-    .array(z.string(), {
-      invalid_type_error: 'ⓘ Select at least one language.',
-    })
+    .array(
+      z.object({
+        id: z.number().positive(),
+        order: z.number().positive(),
+      }),
+      {
+        invalid_type_error: 'ⓘ Select at least one language.',
+      },
+    )
     .nonempty({ message: 'ⓘ Select at least one language.' }),
   hobbies: z
     .array(z.string(), { invalid_type_error: 'ⓘ Select at least one hobby.' })
