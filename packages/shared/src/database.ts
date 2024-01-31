@@ -98,6 +98,7 @@ export interface PreferenceTable {
   distance: number;
   language_pref_id: number;
   gender_pref?: Gender;
+  user_id: number;
 }
 
 export type Technology = Selectable<TechnologyTable>;

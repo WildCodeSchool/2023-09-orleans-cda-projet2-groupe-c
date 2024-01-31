@@ -1,21 +1,14 @@
 /* eslint-disable unicorn/no-null */
-import type { Response } from 'express';
 import { jsonArrayFrom, jsonObjectFrom } from 'kysely/helpers/mysql';
 
 import { db } from '@app/backend-shared';
-import type { Request as ExpressRequest } from '@app/shared';
 
-import type { PreferenceBody } from '@/middlewares/filter-handlers';
+import type { PreferenceBody } from '@/services/preferences';
 
 // Unwrap the type of the Promise
-export type Users = Awaited<ReturnType<typeof users>>;
+export type Users = Awaited<ReturnType<typeof usersList>>;
 
-interface Request extends ExpressRequest {
-  usersList?: Users;
-  userPreferences?: PreferenceBody;
-}
-
-const users = async (userId: number, userPreferences: PreferenceBody) => {
+const usersList = async (userId: number, userPreferences: PreferenceBody) => {
   // Select all users with whom the initiator has not interacted and who match the user's preferences
   //
   // MySQL query:
@@ -86,7 +79,7 @@ const users = async (userId: number, userPreferences: PreferenceBody) => {
   //    FROM "user_action" AS "ua"
   //    WHERE "ua.initiator_id" = ?
   // )
-  const users = await db
+  const result = await db
     .selectFrom('user as u')
     .innerJoin('language_user as lu', 'u.id', 'lu.user_id')
     .select((eb) => [
@@ -167,30 +160,48 @@ const users = async (userId: number, userPreferences: PreferenceBody) => {
     .execute();
 
   // Remove the user logged in from the list of users
-  const filteredUsers = users.filter((user) => Number(user.id) !== userId);
+  const filteredUsers = result.filter((user) => Number(user.id) !== userId);
 
   return filteredUsers;
 };
 
-// Get a list of users filtered by preferences and without the user logged in
-export const getUsers = async (
-  req: Request,
-  res: Response,
-  next: () => void,
-) => {
-  try {
-    const userId = req.userId as number;
-    const userPreferences = req.userPreferences as PreferenceBody;
+const users = {
+  // Get users filtered by preferences
+  getUsers: async ({
+    userId,
+    userPreferences,
+  }: {
+    userId: number;
+    userPreferences: PreferenceBody;
+  }) => {
+    try {
+      const users = await usersList(userId, userPreferences);
 
-    const usersList = await users(userId, userPreferences);
+      return users;
+    } catch {
+      throw new Error('An error occurred while fetching users.');
+    }
+  },
 
-    req.usersList = usersList;
+  getUserProfile: async (userId: number) => {
+    const userProfile = await db
+      .selectFrom('user')
+      .innerJoin('city', 'user.city_id', 'city.id')
+      .select((eb) => [
+        'user.id',
+        'user.name',
+        jsonObjectFrom(
+          eb
+            .selectFrom('city')
+            .select(['city.name', 'city.coordinates'])
+            .whereRef('user.city_id', '=', 'city.id'),
+        ).as('city'),
+      ])
+      .where('user.id', '=', userId)
+      .execute();
 
-    next();
-  } catch {
-    return res.status(500).json({
-      success: false,
-      error: 'Internal server error!',
-    });
-  }
+    return userProfile;
+  },
 };
+
+export default users;

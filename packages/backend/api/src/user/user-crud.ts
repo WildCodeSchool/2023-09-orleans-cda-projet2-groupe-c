@@ -1,41 +1,21 @@
 import express from 'express';
-import { jsonObjectFrom } from 'kysely/helpers/mysql';
 
-import { db } from '@app/backend-shared';
-import type { Request as ExpressRequest } from '@app/shared';
+import type { Request } from '@app/shared';
 
 import { getUserId } from '@/middlewares/auth-handlers';
-import {
-  filteredUsersByDistance,
-  getUserPreferences,
-} from '@/middlewares/filter-handlers';
-import { type Users, getUsers } from '@/middlewares/user-handlers';
-
-interface Request extends ExpressRequest {
-  userListFiltered?: Users;
-}
+import { filteredUsersByDistance } from '@/services/filter-by-distance';
+import preferences from '@/services/preferences';
+import users from '@/services/users';
 
 const userRouter = express.Router();
 
 userRouter.get('/:userId/profile', getUserId, async (req: Request, res) => {
   try {
+    // Get the user id from JWT
     const userId = req.userId as number;
 
-    const user = await db
-      .selectFrom('user')
-      .innerJoin('city', 'user.city_id', 'city.id')
-      .select((eb) => [
-        'user.id',
-        'user.name',
-        jsonObjectFrom(
-          eb
-            .selectFrom('city')
-            .select(['city.name', 'city.coordinates'])
-            .whereRef('user.city_id', '=', 'city.id'),
-        ).as('city'),
-      ])
-      .where('user.id', '=', userId)
-      .execute();
+    // Get the user profile with the users service
+    const user = await users.getUserProfile(userId);
 
     res.status(200).json(user);
   } catch {
@@ -44,21 +24,28 @@ userRouter.get('/:userId/profile', getUserId, async (req: Request, res) => {
 });
 
 // Fetch a list of users without the user logged in
-userRouter.get(
-  '/:userId',
-  getUserId,
-  getUserPreferences,
-  getUsers,
-  filteredUsersByDistance,
-  (req: Request, res) => {
-    try {
-      const userListFiltered = req.userListFiltered;
+userRouter.get('/:userId', getUserId, async (req: Request, res) => {
+  try {
+    // Get the user id from JWT
+    const userId = req.userId as number;
 
-      res.status(200).json(userListFiltered);
-    } catch {
-      res.status(500).json({ error: 'An error occurred while fetching users' });
-    }
-  },
-);
+    // Get the user preferences with the preferences service
+    const userPreferences = await preferences.getUserPreferences(userId);
+
+    // Get the users list with the users service
+    const usersList = await users.getUsers({ userId, userPreferences });
+
+    // Use "filterByDistance" service to filter the users by distance
+    const filteredUsers = await filteredUsersByDistance({
+      userId,
+      users: usersList,
+      range: userPreferences[0].distance,
+    });
+
+    res.status(200).json(filteredUsers);
+  } catch {
+    res.status(500).json({ error: 'An error occurred while fetching users' });
+  }
+});
 
 export default userRouter;

@@ -20,6 +20,14 @@ export async function up(db: Kysely<Database>): Promise<void> {
         sql`enum('man', 'woman', 'non-binary')`,
         (col) => col.notNull(),
       )
+      .addColumn('user_id', 'int4', (col) => col.unsigned().notNull())
+      .addForeignKeyConstraint(
+        'preference_user_id_fk',
+        ['user_id'],
+        'user',
+        ['id'],
+        (callBack) => callBack.onDelete('cascade'),
+      )
       .addForeignKeyConstraint(
         'language_pref_id_fk',
         ['language_pref_id'],
@@ -28,32 +36,12 @@ export async function up(db: Kysely<Database>): Promise<void> {
         (callBack) => callBack.onDelete('cascade'),
       )
       .execute();
-
-    await trx.schema
-      .alterTable('user')
-      .addColumn('preference_id', 'int2', (col) => col.unsigned())
-      .execute();
-
-    await trx.schema
-      .alterTable('user')
-      .addForeignKeyConstraint(
-        'preference_id_fk',
-        ['preference_id'],
-        'preference',
-        ['id'],
-      )
-      .execute();
   });
 }
 
 export async function down(db: Kysely<Database>): Promise<void> {
   // Migration code that reverts the database to the previous state.
   await db.transaction().execute(async (trx) => {
-    await trx.schema
-      .alterTable('user')
-      .dropConstraint('preference_id_fk')
-      .execute();
-    await trx.schema.alterTable('user').dropColumn('preference_id').execute();
     await trx.schema.dropTable('preference').ifExists().execute();
   });
 }

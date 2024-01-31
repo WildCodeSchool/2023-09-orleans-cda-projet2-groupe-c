@@ -26,7 +26,7 @@ filterRouter.put(
   async (req: Request, res) => {
     try {
       // Get the user preference id from the request
-      const userPreferenceId = req.userPreferenceId;
+      const userId = req.userId as number;
 
       // Get the body from the request
       // Use parse from zod to validate the request body
@@ -41,18 +41,16 @@ filterRouter.put(
       }
 
       // Update the preference table with the new values
-      if (userPreferenceId) {
-        await db
-          .updateTable('preference')
-          .set(parsed.data)
-          .where('preference.id', '=', userPreferenceId[0].preference_id)
-          .execute();
+      await db
+        .updateTable('preference')
+        .set(parsed.data)
+        .where('preference.user_id', '=', userId)
+        .execute();
 
-        res.status(200).json({
-          success: true,
-          message: 'Your preferences have been updated.',
-        });
-      }
+      res.status(200).json({
+        success: true,
+        message: 'Your preferences have been updated.',
+      });
 
       res.status(404).json({
         success: false,

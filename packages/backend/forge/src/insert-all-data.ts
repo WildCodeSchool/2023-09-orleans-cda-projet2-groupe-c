@@ -44,9 +44,8 @@ const insertAllData = async () => {
 
     await insertLanguages();
 
-    await insertUsersPreferences();
-
     await insertUsers();
+    await insertUsersPreferences();
     await insertUsersLanguages();
     await insertUsersHobbies();
     await insertUsersTechnologies();

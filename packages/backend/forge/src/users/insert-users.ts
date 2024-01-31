@@ -10,10 +10,6 @@ interface City {
   id: number;
 }
 
-interface Preference {
-  id: number;
-}
-
 export const insertUsers = async () => {
   try {
     // Get all cities id
@@ -23,16 +19,6 @@ export const insertUsers = async () => {
     const randomCityId = (): number => {
       const randomIndex = Math.floor(Math.random() * citiesId.length);
       return citiesId[randomIndex].id;
-    };
-
-    const preferencesId: Preference[] = await db
-      .selectFrom('preference')
-      .select('id')
-      .execute();
-
-    const randomPreferenceId = (): number => {
-      const randomIndex = Math.floor(Math.random() * preferencesId.length);
-      return preferencesId[randomIndex].id;
     };
 
     // Get a list of admins with hashed passwords
@@ -58,7 +44,6 @@ export const insertUsers = async () => {
           activation_code: '',
           activate_at: new Date(),
           city_id: randomCityId(),
-          preference_id: randomPreferenceId(),
         };
       }),
     );
@@ -86,7 +71,6 @@ export const insertUsers = async () => {
           activation_code: '',
           activate_at: new Date(),
           city_id: randomCityId(),
-          preference_id: randomPreferenceId(),
         };
       }),
     );

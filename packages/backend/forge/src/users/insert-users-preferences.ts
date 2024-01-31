@@ -8,31 +8,38 @@ enum GENDER {
 
 export const insertUsersPreferences = async () => {
   try {
+    // Get all users id
+    const users = await db
+      .selectFrom('user')
+      .select('id')
+      .orderBy('id')
+      .execute();
+
     // Get all languages id
     const languagesId = await db.selectFrom('language').select('id').execute();
+
+    const preferences = [];
 
     // Get a random language id
     const randomLanguageId = () => {
       return languagesId[Math.floor(Math.random() * languagesId.length)].id;
     };
 
-    const preferences = [
-      {
-        distance: 300,
-        language_pref_id: randomLanguageId(),
-        gender_pref: GENDER.Woman,
-      },
-      {
-        distance: 500,
-        language_pref_id: randomLanguageId(),
-        gender_pref: GENDER.Man,
-      },
-      {
-        distance: 1000,
-        language_pref_id: randomLanguageId(),
-        gender_pref: GENDER.NonBinary,
-      },
-    ];
+    const randomGender = () => {
+      const genders = Object.values(GENDER);
+      return genders[Math.floor(Math.random() * genders.length)];
+    };
+
+    for (const user of users) {
+      const data = {
+        distance: Math.floor(Math.random() * 1000) + 1, // Generate a random distance between 1 and 4040
+        language_pref_id: randomLanguageId(), // Generate a random language id
+        gender_pref: randomGender(),
+        user_id: user.id,
+      };
+
+      preferences.push(data);
+    }
 
     await db.insertInto('preference').values(preferences).execute();
   } catch (error) {
