@@ -9,7 +9,6 @@ import {
 } from '@app/shared';
 
 import { getUserId } from '@/middlewares/auth-handlers';
-import { getUserPreferenceId } from '@/middlewares/filter-handlers';
 
 interface Request extends ExpressRequest {
   userPreferenceId?: UserPreferenceId[];
@@ -22,7 +21,6 @@ const filterRouter = express.Router();
 filterRouter.put(
   '/:userId/preferences',
   getUserId,
-  getUserPreferenceId,
   async (req: Request, res) => {
     try {
       // Get the user preference id from the request
@@ -43,7 +41,11 @@ filterRouter.put(
       // Update the preference table with the new values
       await db
         .updateTable('preference')
-        .set(parsed.data)
+        .set({
+          distance: parsed.data.distance,
+          gender_pref: parsed.data.gender_pref,
+          language_pref_id: parsed.data.language_pref_id,
+        })
         .where('preference.user_id', '=', userId)
         .execute();
 
