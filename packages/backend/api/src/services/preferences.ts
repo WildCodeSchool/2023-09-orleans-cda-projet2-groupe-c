@@ -30,17 +30,6 @@ const preferences = {
       throw new Error('An error occurred while fetching user preferences.');
     }
   },
-
-  // Get the user preference id
-  getUserPreferenceId: async ({ userId }: { userId: number }) => {
-    try {
-      const preferenceId = await userPreferences(userId);
-
-      return preferenceId[0].id;
-    } catch {
-      throw new Error('An error occurred while fetching user preference id.');
-    }
-  },
 };
 
 export default preferences;
