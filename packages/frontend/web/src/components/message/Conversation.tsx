@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
-import { useAuth } from '@/contexts/AuthContext';
+import { useConversation } from '@/contexts/ConversationContext';
 
 import CrossIcon from '../icons/CrossIcon';
 import SendIcon from '../icons/SendIcon';
@@ -28,47 +28,47 @@ interface Conversation {
 }
 
 export default function Conversation() {
-  const { userId } = useAuth();
-  const [conversation, setConversation] = useState<Conversation>();
-  const { register, handleSubmit, getValues, reset } = useForm();
+  const { userId, conversationsList } = useConversation();
+  const [conversation, setConversation] = useState<Conversation[]>([]);
+  const { register, handleSubmit, reset } = useForm();
   const messageEndReference = useRef<HTMLDivElement | null>(null);
-  /*  console.log(getValues('content')); */
-
-  const scrollToBottom = () => {
-    messageEndReference.current?.scrollIntoView({ behavior: 'smooth' });
-  };
-
-  useEffect(scrollToBottom, [conversation]);
+  console.log(conversation[selectedId].conversation_id);
+  console.log(conversationsList);
 
   useEffect(() => {
-    const controller = new AbortController();
+    messageEndReference.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [conversation]);
 
-    const fetchMessage = async () => {
-      const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/users/${userId}/conversations/38`,
-        {
-          signal: controller.signal,
-          credentials: 'include',
-        },
-      );
-      const data = await response.json();
-      setConversation(data[0]);
-    };
+  useEffect(() => {
+    if (conversationsList) {
+      const controller = new AbortController();
 
-    void fetchMessage();
+      const fetchMessage = async () => {
+        const response = await fetch(
+          `${import.meta.env.VITE_API_URL}/users/${userId}/conversations/${selectedId}`,
+          {
+            signal: controller.signal,
+            credentials: 'include',
+          },
+        );
+        const data = await response.json();
+        setConversation(data[0]);
+      };
 
-    const intervalId = setInterval(fetchMessage, 1000);
+      void fetchMessage();
+      const intervalId = setInterval(fetchMessage, 9000);
 
-    return () => {
-      clearInterval(intervalId);
-      controller.abort();
-    };
-  }, [userId]);
+      return () => {
+        clearInterval(intervalId);
+        controller.abort();
+      };
+    }
+  }, [conversation, conversationsList, selectedId, userId]);
 
   const formSubmit = async (data: { content?: Message['content'] }) => {
     try {
       await fetch(
-        `${import.meta.env.VITE_API_URL}/users/${userId}/conversations/38/message`,
+        `${import.meta.env.VITE_API_URL}/users/${userId}/conversations/${conversation?.conversation_id}/message`,
         {
           method: 'POST',
           headers: {
@@ -85,7 +85,7 @@ export default function Conversation() {
   };
 
   return (
-    <div className='bg-light-medium absolute right-0 z-50 ml-auto flex h-[calc(100vh-56px)] w-[75%]'>
+    <div className='bg-light-medium ml-auto flex h-[calc(100vh-56px)] w-full lg:w-[75%]'>
       <div className='h-full w-full flex-grow'>
         <div className='flex h-14 w-full items-center justify-between bg-[#3f436a] p-3'>
           <div className='flex items-center gap-3 text-white'>

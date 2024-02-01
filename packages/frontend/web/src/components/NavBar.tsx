@@ -1,3 +1,4 @@
+import { useConversation } from '@/contexts/ConversationContext';
 import BulletBase from './BulletBase';
 import ThemeSwitcher from './ThemeSwitcher';
 import FilterIcon from './icons/FilterIcon';
@@ -19,6 +20,7 @@ const dataIcon = [
     id: 'message',
     icon: <MessageIcon className='fill-secondary h-5 w-5' />,
     lgHidden: true,
+    onClick: true
   },
   {
     id: 'filter',
@@ -32,6 +34,8 @@ const dataIcon = [
 ];
 
 function NavBar() {
+
+  const {handleClick} = useConversation()
   return (
     <nav className='bg-light-hard relative flex w-full items-center p-3 shadow-md'>
       <div className='absolute flex items-center gap-2 pl-2'>
@@ -42,8 +46,8 @@ function NavBar() {
         </div>
       </div>
       <div className='flex grow justify-end gap-2 sm:gap-4 lg:justify-center lg:gap-52'>
-        {dataIcon.map(({ id, icon, lgHidden }) => (
-          <BulletBase size='8' key={id} lgHidden={lgHidden}>
+        {dataIcon.map(({ id, icon, lgHidden, onClick }) => (
+          <BulletBase size='8' key={id} lgHidden={lgHidden} onClick={Boolean(onClick) ? handleClick : undefined}>
             {icon}
           </BulletBase>
         ))}

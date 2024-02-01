@@ -2,8 +2,10 @@ import { Outlet } from 'react-router-dom';
 
 import NavBar from '@/components/NavBar';
 import RandomSentence from '@/components/home/RandomSentence';
+import ConversationsList from '@/components/message/ConversationsList';
 import FakeComponent from '@/components/message/FakeComponent';
 import { useAuth } from '@/contexts/AuthContext';
+import ConversationContext from '@/contexts/ConversationContext';
 
 import Loading from '../components/Loading';
 import Logo from '../components/icons/LogoHomeIcon';
@@ -17,14 +19,16 @@ export default function Home() {
 
   if (isLoggedIn) {
     return (
-      <main className='h-screen overflow-hidden'>
-        <NavBar />
-        <div className='font-base relative flex h-[calc(100vh-56px)] w-full justify-between'>
-          <FakeComponent />
-          <Outlet />
-          <FakeComponent />
-        </div>
-      </main>
+      <ConversationContext>
+        <main className='h-screen overflow-hidden'>
+          <NavBar />
+          <div className='font-base relative flex h-[calc(100vh-56px)] w-full justify-between'>
+            <ConversationsList />
+            <Outlet />
+            {/*  <FakeComponent /> */}
+          </div>
+        </main>
+      </ConversationContext>
     );
   }
 
