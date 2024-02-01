@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom/client';
 import { RouterProvider } from 'react-router-dom';
 
 import AuthContext from './contexts/AuthContext.tsx';
-import ConversationContext from './contexts/ConversationContext.tsx';
 import InteractionContext from './contexts/InteractionContext.tsx';
 import { ThemeContext } from './contexts/ThemeContext.tsx';
 import './globals.css';
@@ -17,9 +16,7 @@ if (rootElement) {
       <AuthContext>
         <ThemeContext>
           <InteractionContext>
-           {/*  <ConversationContext> */}
-              <RouterProvider router={router} />
-          {/*   </ConversationContext> */}
+            <RouterProvider router={router} />
           </InteractionContext>
         </ThemeContext>
       </AuthContext>

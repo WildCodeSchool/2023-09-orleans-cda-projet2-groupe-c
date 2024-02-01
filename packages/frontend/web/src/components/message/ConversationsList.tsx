@@ -1,12 +1,9 @@
 import { AnimatePresence, motion } from 'framer-motion';
-import { useEffect, useState } from 'react';
-import {Link} from 'react-router-dom'
+import { useEffect } from 'react';
 
 import { useConversation } from '@/contexts/ConversationContext';
 
 import DateComponent from './DateComponent';
-
-const API_URL = import.meta.env.VITE_API_URL;
 
 interface Conversation {
   conversation_id: number;
@@ -54,21 +51,12 @@ const modalVariant = {
 };
 
 export default function ConversationsList() {
-/*   const [selectedId, setSelectedId] = useState<number>();
-
-  const selectedConversation = (index: number,) => {
-    if (conversationsList !== undefined) {
-      setSelectedId(conversationsList[index].conversation_id);
-    }
-  }; */
-
   const {
-    userId,
     isVisible,
     setIsVisible,
-    selectedConversation, 
     conversationsList,
-    messagesCount
+    messagesCount,
+    selectedConversation,
   } = useConversation();
 
   useEffect(() => {
@@ -112,13 +100,12 @@ export default function ConversationsList() {
             </div>
             <div className='mx-4 my-3 flex flex-col gap-[2px] overflow-hidden rounded-lg shadow-lg'>
               {conversationsList && conversationsList.length > 0 ? (
-                conversationsList.map((conversation, index) => {
+                conversationsList.map((conversation) => {
                   return (
-
                     <div
                       key={conversation.conversation_id}
                       onClick={() => {
-                        selectedConversation(index);
+                        selectedConversation(conversation.conversation_id);
                       }}
                       className='bg-light flex w-full items-stretch justify-between gap-4 p-4'
                     >

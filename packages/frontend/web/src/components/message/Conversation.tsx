@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { Link, useNavigate } from 'react-router-dom';
 
 import { useConversation } from '@/contexts/ConversationContext';
 
@@ -28,43 +29,25 @@ interface Conversation {
 }
 
 export default function Conversation() {
-  const { userId, conversationsList } = useConversation();
-  const [conversation, setConversation] = useState<Conversation[]>([]);
+  const { userId, conversation, setIsVisible, error } = useConversation();
+
   const { register, handleSubmit, reset } = useForm();
+
+  const navigate = useNavigate();
+
   const messageEndReference = useRef<HTMLDivElement | null>(null);
-  console.log(conversation[selectedId].conversation_id);
-  console.log(conversationsList);
 
   useEffect(() => {
     messageEndReference.current?.scrollIntoView({ behavior: 'smooth' });
   }, [conversation]);
 
-  useEffect(() => {
-    if (conversationsList) {
-      const controller = new AbortController();
-
-      const fetchMessage = async () => {
-        const response = await fetch(
-          `${import.meta.env.VITE_API_URL}/users/${userId}/conversations/${selectedId}`,
-          {
-            signal: controller.signal,
-            credentials: 'include',
-          },
-        );
-        const data = await response.json();
-        setConversation(data[0]);
-      };
-
-      void fetchMessage();
-      const intervalId = setInterval(fetchMessage, 9000);
-
-      return () => {
-        clearInterval(intervalId);
-        controller.abort();
-      };
+  const handleCloseConversation = () => {
+    if (window.innerWidth < 1024) {
+      setIsVisible(true);
+    } else {
+      navigate('/');
     }
-  }, [conversation, conversationsList, selectedId, userId]);
-
+  };
   const formSubmit = async (data: { content?: Message['content'] }) => {
     try {
       await fetch(
@@ -97,29 +80,36 @@ export default function Conversation() {
             <p>{conversation?.receiver.name}</p>
           </div>
           <div>
-            <CrossIcon className='h-5 cursor-pointer fill-white' />
+            <CrossIcon
+              onClick={handleCloseConversation}
+              className='h-5 cursor-pointer fill-white'
+            />
           </div>
         </div>
         <div className='flex h-[calc(100%-3.5rem)] w-full flex-col gap-5'>
           <div className='h-full w-full overflow-y-auto'>
-            <div className='flex h-full flex-col gap-6 overflow-y-auto pb-2'>
-              {conversation?.messages.map((message) => (
-                <div
-                  key={message.id}
-                  ref={messageEndReference}
-                  className={`$ flex w-full items-end gap-3 px-7 ${message.sender_name === conversation.sender.name ? 'flex-row-reverse' : ''}`}
-                >
-                  <BulletConversation
-                    imageUrl={
-                      message.sender_name === conversation.sender.name
-                        ? conversation.sender.picture_path
-                        : conversation.receiver.picture_path
-                    }
-                    texte={message.content}
-                    date={new Date(message.sent_at)}
-                  />
-                </div>
-              ))}
+            <div className='flex h-full flex-col justify-end gap-6 overflow-y-auto pb-2'>
+              {Boolean(error) ? (
+                <p>{error}</p>
+              ) : (
+                conversation?.messages.map((message) => (
+                  <div
+                    key={message.id}
+                    ref={messageEndReference}
+                    className={`$ flex w-full items-end gap-3 px-7 ${message.sender_name === conversation.sender.name ? 'flex-row-reverse' : ''}`}
+                  >
+                    <BulletConversation
+                      imageUrl={
+                        message.sender_name === conversation.sender.name
+                          ? conversation.sender.picture_path
+                          : conversation.receiver.picture_path
+                      }
+                      texte={message.content}
+                      date={new Date(message.sent_at)}
+                    />
+                  </div>
+                ))
+              )}
             </div>
           </div>
 

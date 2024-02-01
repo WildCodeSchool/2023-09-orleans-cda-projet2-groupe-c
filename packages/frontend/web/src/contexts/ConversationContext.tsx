@@ -12,6 +12,25 @@ import useAllConversations from '@/hooks/use-all-conversations';
 
 import { useAuth } from './AuthContext';
 
+interface AllConversation {
+  conversation_id: number;
+  messages: {
+    id: number;
+    content: string;
+    sent_at: string;
+  }[];
+  receiver: {
+    id: number;
+    picture_path: string;
+    receiver_name: string;
+  }[];
+  sender: {
+    id: number;
+    picture_path: string;
+    sender_name: string;
+  }[];
+}
+
 interface User {
   id: number;
   name: string;
@@ -32,38 +51,21 @@ interface Conversation {
   messages: Message[];
 }
 
-interface AllConversation {
-  conversation_id: number;
-  messages: {
-    id: number;
-    content: string;
-    sent_at: string;
-  }[];
-  receiver: {
-    id: number;
-    picture_path: string;
-    receiver_name: string;
-  }[];
-  sender: {
-    id: number;
-    picture_path: string;
-    sender_name: string;
-  }[];
-}
-
 type ConversationProviderProps = {
   readonly children: React.ReactNode;
 };
 
 type ConversationState = {
   userId?: number;
-  conversation?: Conversation[];
   isVisible: boolean;
   setIsVisible: React.Dispatch<React.SetStateAction<boolean>>;
   handleClick: () => void;
   messagesCount: number;
   conversationsList?: AllConversation[];
   selectedConversation: (index: number) => void;
+  conversationId?: number;
+  conversation?: Conversation;
+  error?: string;
 };
 
 // Create context
@@ -77,11 +79,13 @@ export default function ConversationContext({
 }: ConversationProviderProps) {
   const { userId } = useAuth();
 
- /*  const [conversation, setConversation] = useState<Conversation[]>([]); */
-  const [selectedId, setSelectedId] = useState<number>();
-  const [isVisible, setIsVisible] = useState<boolean>(false);
-/*   console.log(selectedId); */
+  const [conversation, setConversation] = useState<Conversation>();
 
+  const [error, setError] = useState<string>();
+
+  const [conversationId, setConversationId] = useState<number>();
+
+  const [isVisible, setIsVisible] = useState<boolean>(false);
 
   const { conversationsList, messagesCount } = useAllConversations();
 
@@ -89,36 +93,65 @@ export default function ConversationContext({
 
   const selectedConversation = useCallback(
     (index: number) => {
-      if (conversationsList !== undefined) {
-        setSelectedId(index);
-       /*  console.log(conversationsList[index].conversation_id); */
-  
-        if (index !== undefined) {
-          navigate(`/users/${userId}/conversations/${conversationsList[index].conversation_id}`);
-        }
+      if (conversationsList) {
+        setConversationId(index);
+
+        navigate(`/users/${userId}/conversations/${conversationId}`);
+      }
+
+      if (window.innerWidth < 1024) {
+        setIsVisible(false);
       }
     },
-    [conversationsList, navigate, userId],
+    [conversationsList, navigate, userId, conversationId],
   );
-
-  /*   console.log(selectedId, 'id');  */
 
   const handleClick = () => {
     setIsVisible((prev) => !prev);
   };
 
+  useEffect(() => {
+    if (Boolean(conversationId) && conversationsList !== undefined) {
+      const controller = new AbortController();
+
+      const fetchMessage = async () => {
+        const response = await fetch(
+          `${import.meta.env.VITE_API_URL}/users/${userId}/conversations/${conversationId}`,
+          {
+            signal: controller.signal,
+            credentials: 'include',
+          },
+        );
+
+        const data = await response.json();
+
+        setConversation(data[0]);
+      };
+
+      fetchMessage().catch(() => {
+        setError('An occurred while fetching the message.');
+      });
+      // const intervalId = setInterval(fetchMessage, 1000);
+
+      return () => {
+        // clearInterval(intervalId);
+        controller.abort();
+      };
+    }
+  }, [conversationId, conversationsList, userId]);
 
   const value = useMemo(() => {
     return {
       userId,
-
       isVisible,
       setIsVisible,
       handleClick,
       messagesCount,
       conversationsList,
       selectedConversation,
-      selectedId
+      conversationId,
+      conversation,
+      error,
     };
   }, [
     userId,
@@ -126,7 +159,9 @@ export default function ConversationContext({
     messagesCount,
     conversationsList,
     selectedConversation,
-    selectedId
+    conversationId,
+    conversation,
+    error,
   ]);
 
   return (
