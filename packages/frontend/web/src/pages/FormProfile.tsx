@@ -32,10 +32,14 @@ const PAGES = [
 
 export default function FormProfile() {
   const navigate = useNavigate();
+
   const [page, setPage] = useState<number>(0);
+
   const { isLoggedIn } = useAuth();
+
   //I use the const methods to send all useForm properties to my child elements
   const methods = useForm<ProfileForm>();
+
   const { handleSubmit, formState, getValues } = methods;
 
   console.log('getValues :', getValues());

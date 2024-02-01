@@ -1,8 +1,12 @@
+import { useEffect, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 
-import { type FormItemsValidation, formArrayStringSchema } from '@app/shared';
-
-import useSelectedItems from '@/hooks/use-selected-items';
+import {
+  type CategoryHobby,
+  type FormItemsValidation,
+  type SelectedItemBody,
+  formArrayStringSchema,
+} from '@app/shared';
 
 import FormContainer from './FormContainer';
 
@@ -13,35 +17,86 @@ interface SelectionFormProps extends React.HTMLAttributes<HTMLDivElement> {
   readonly fieldName: 'languages' | 'technologies';
 }
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 export default function LanguageAndTechnology({
   apiUrl,
   formTitle,
   subtitle,
   fieldName,
 }: SelectionFormProps) {
-  const {
-    items,
-    apiUrlItems,
-    selectedItems,
-    fieldNameItems,
-    handleCheckboxChange,
-  } = useSelectedItems({ apiUrlItems: apiUrl, fieldNameItems: fieldName });
-  const { register, formState } = useFormContext<FormItemsValidation>();
+  // State to store items
+  const [items, setItems] = useState<CategoryHobby[]>([]);
+
+  // State to store selected items
+  const [selectedItems, setSelectedItems] = useState<SelectedItemBody[]>([]);
+
+  // State to store the first selected item
+  const [firstSelectedItems, setFirstSelectedItems] = useState<CategoryHobby>();
+
+  const { register, formState, watch } = useFormContext<FormItemsValidation>();
   const { errors } = formState;
 
-  let firstSelectedItems;
+  const test = watch(fieldName);
 
-  if (apiUrlItems === 'languages' && selectedItems.length > 0) {
-    firstSelectedItems = items.find(
-      (language) => language.id === selectedItems[0].id,
-    );
-  }
+  // Function to handle checkbox change
+  const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    // Convert JSON to JS object
+    const targetValue = JSON.parse(event.target.value);
+
+    // Get Id from the value
+    const targetId = targetValue.id;
+
+    let newItems = selectedItems;
+
+    // This function checks if the element is already in the array.
+    // If so, it removes it.
+    if (selectedItems.some((item) => item.id === targetId)) {
+      newItems = selectedItems.filter((item) => item.id !== targetId);
+    } else if (selectedItems.length < 6) {
+      // Otherwise, it adds the item to the end.
+      newItems = [
+        ...selectedItems,
+        { id: targetId, order: selectedItems.length + 1 },
+      ];
+    }
+
+    setSelectedItems(newItems);
+  };
+
+  // Fetch data from the API
+  useEffect(() => {
+    const controller = new AbortController();
+    const signal = controller.signal;
+
+    (async () => {
+      const response = await fetch(`${API_URL}/${apiUrl}`, {
+        signal,
+      });
+
+      const data = await response.json();
+      setItems(data);
+    })();
+
+    return () => {
+      controller.abort();
+    };
+  }, [apiUrl]);
+
+  // Set the first selected item
+  useEffect(() => {
+    if (apiUrl === 'languages' && selectedItems.length > 0) {
+      setFirstSelectedItems(
+        items.find((language) => language.id === selectedItems[0].id),
+      );
+    }
+  }, [apiUrl, items, selectedItems]);
 
   return (
     <FormContainer title={formTitle}>
       <span className='flex justify-start'>{subtitle}</span>
       <div className='mt-3 flex flex-col justify-center text-center'>
-        {apiUrlItems === 'languages' ? (
+        {apiUrl === 'languages' ? (
           <div className='flex flex-col items-center justify-center gap-3'>
             <div className='outline-primary my-2 flex h-12 w-12 items-center justify-center rounded-md py-2 outline outline-offset-2 md:mt-4 md:h-16 md:w-16'>
               <img
@@ -66,9 +121,7 @@ export default function LanguageAndTechnology({
                   htmlFor={item.name}
                 >
                   <div className='relative flex justify-center'>
-                    {selectedItems.some(
-                      (selectedItem) => selectedItem.id === item.id,
-                    ) ? (
+                    {test ? (
                       <div className='bg-primary absolute right-0 top-0 flex h-5 w-5 translate-x-2 translate-y-[-8px] items-center justify-center rounded-full'>
                         <p className='text-white'>
                           {selectedItems.findIndex(
@@ -104,7 +157,7 @@ export default function LanguageAndTechnology({
                   })}
                   id={item.name}
                   type='checkbox'
-                  {...register(fieldNameItems, {
+                  {...register(fieldName, {
                     validate: (value) => {
                       const key =
                         apiUrl === 'languages' ? 'languages' : 'technologies';
