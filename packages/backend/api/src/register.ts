@@ -27,18 +27,18 @@ register.post('/', getUserId, async (req: Request, res) => {
     //use the transaction property allows us to cancel the request if an
     //error has arrived during the submission of the data
     await db.transaction().execute(async (trx) => {
-      await trx
-        .updateTable('user')
-        .set({
-          name,
-          birthdate,
-          gender,
-          city_id: Number(cityId),
-          biography,
-          account_github: accountGithub,
-        })
-        .where('user.id', '=', userId)
-        .executeTakeFirstOrThrow();
+      // await trx
+      //   .updateTable('user')
+      //   .set({
+      //     name,
+      //     birthdate,
+      //     gender,
+      //     city_id: Number(cityId),
+      //     biography,
+      //     account_github: accountGithub,
+      //   })
+      //   .where('user.id', '=', userId)
+      //   .executeTakeFirstOrThrow();
 
       // It maps over the 'languages, technologies and hobbies' array, which contains objects with 'id' and 'order' properties.
       // e.g For each language, it creates a new record with 'language_id' set to the language's 'id',

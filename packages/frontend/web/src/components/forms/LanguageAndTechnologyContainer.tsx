@@ -1,3 +1,4 @@
+import { get } from 'http';
 import { useEffect, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 
@@ -30,14 +31,12 @@ export default function LanguageAndTechnology({
 
   // State to store selected items
   const [selectedItems, setSelectedItems] = useState<SelectedItemBody[]>([]);
-
+  console.log(selectedItems);
   // State to store the first selected item
   const [firstSelectedItems, setFirstSelectedItems] = useState<CategoryHobby>();
 
-  const { register, formState, watch } = useFormContext<FormItemsValidation>();
+  const { register, formState } = useFormContext<FormItemsValidation>();
   const { errors } = formState;
-
-  const test = watch(fieldName);
 
   // Function to handle checkbox change
   const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -121,7 +120,9 @@ export default function LanguageAndTechnology({
                   htmlFor={item.name}
                 >
                   <div className='relative flex justify-center'>
-                    {test ? (
+                    {selectedItems.some(
+                      (selectedItem) => selectedItem.id === item.id,
+                    ) ? (
                       <div className='bg-primary absolute right-0 top-0 flex h-5 w-5 translate-x-2 translate-y-[-8px] items-center justify-center rounded-full'>
                         <p className='text-white'>
                           {selectedItems.findIndex(

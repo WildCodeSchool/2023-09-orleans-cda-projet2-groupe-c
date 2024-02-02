@@ -18,16 +18,16 @@ import FormTechnology from '@/components/forms/FormTechnology';
 import { useAuth } from '@/contexts/AuthContext';
 
 const PAGES = [
-  { currentPage: 4, component: <FormName /> },
-  { currentPage: 1, component: <FormBirthDate /> },
-  { currentPage: 2, component: <FormGender /> },
-  { currentPage: 3, component: <FormCity /> },
+  // { currentPage: 4, component: <FormName /> },
+  // { currentPage: 1, component: <FormBirthDate /> },
+  // { currentPage: 2, component: <FormGender /> },
+  // { currentPage: 3, component: <FormCity /> },
   { currentPage: 0, component: <FormLanguage /> },
-  { currentPage: 5, component: <FormTechnology /> },
-  { currentPage: 6, component: <FormHobby /> },
-  { currentPage: 7, component: <FormBio /> },
-  { currentPage: 8, component: <FormGitHub /> },
-  { currentPage: 9, component: <FormEnd /> },
+  { currentPage: 2, component: <FormTechnology /> },
+  { currentPage: 1, component: <FormHobby /> },
+  // { currentPage: 7, component: <FormBio /> },
+  // { currentPage: 8, component: <FormGitHub /> },
+  // { currentPage: 9, component: <FormEnd /> },
 ];
 
 export default function FormProfile() {
@@ -72,6 +72,7 @@ export default function FormProfile() {
           },
           body: JSON.stringify(transformedData),
         });
+
         navigate('/');
       } catch (error) {
         throw new Error(`${String(error)}`);
@@ -79,9 +80,9 @@ export default function FormProfile() {
     }
   };
 
-  if (!isLoggedIn) {
-    return <Navigate to='/registration' />;
-  }
+  // if (!isLoggedIn) {
+  //   return <Navigate to='/registration' />;
+  // }
 
   return (
     <FormProvider {...methods}>
