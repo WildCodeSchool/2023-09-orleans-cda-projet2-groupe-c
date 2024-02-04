@@ -122,7 +122,9 @@ export default function ConversationsList() {
                           </p>
                           <div className='w-full'>
                             <p className='truncate text-sm'>
-                              {conversation.messages[0].content}
+                              {conversation.messages.length > 0
+                                ? conversation.messages[0].content
+                                : ''}
                             </p>
                           </div>
                         </div>
@@ -130,7 +132,11 @@ export default function ConversationsList() {
                       <div className='flex w-24 items-end justify-end '>
                         <div className='self shrink-0 text-right text-sm'>
                           <DateComponent
-                            date={conversation.messages[0].sent_at}
+                            date={
+                              conversation.messages.length > 0
+                                ? conversation.messages[0].sent_at
+                                : ''
+                            }
                           />
                         </div>
                       </div>
