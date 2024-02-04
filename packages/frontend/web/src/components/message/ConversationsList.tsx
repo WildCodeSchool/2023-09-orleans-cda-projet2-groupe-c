@@ -1,6 +1,7 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect } from 'react';
 
+import { useAuth } from '@/contexts/AuthContext';
 import { useConversation } from '@/contexts/ConversationContext';
 
 import DateComponent from './DateComponent';
@@ -77,6 +78,8 @@ export default function ConversationsList() {
     };
   }, [setIsVisible]);
 
+  const { userId } = useAuth();
+
   return (
     <div>
       <AnimatePresence mode='wait'>
@@ -124,7 +127,7 @@ export default function ConversationsList() {
                             <p className='truncate text-sm'>
                               {conversation.messages.length > 0
                                 ? conversation.messages[0].content
-                                : ''}
+                                : "Aucun message pour l'instant. Lancez-vous et envoyez le premier message !"}
                             </p>
                           </div>
                         </div>

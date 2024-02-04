@@ -30,6 +30,7 @@ interface Conversation {
 
 export default function Conversation() {
   const { userId, conversation, setIsVisible, error } = useConversation();
+  console.log(conversation);
 
   const { register, handleSubmit, reset } = useForm();
 
@@ -37,9 +38,9 @@ export default function Conversation() {
 
   const messageEndReference = useRef<HTMLDivElement | null>(null);
 
-  useEffect(() => {
-    messageEndReference.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [conversation]);
+  // useEffect(() => {
+  //   messageEndReference.current?.scrollIntoView({ behavior: 'smooth' });
+  // }, [conversation]);
 
   const handleCloseConversation = () => {
     if (window.innerWidth < 1024) {
@@ -48,6 +49,9 @@ export default function Conversation() {
       navigate('/');
     }
   };
+
+  console.log(conversation);
+
   const formSubmit = async (data: { content?: Message['content'] }) => {
     try {
       await fetch(
@@ -67,13 +71,15 @@ export default function Conversation() {
     reset();
   };
 
+  console.log(conversation);
+
   return (
     <div className='bg-light-medium ml-auto flex h-[calc(100vh-56px)] w-full lg:w-[75%]'>
       <div className='h-full w-full flex-grow'>
         <div className='flex h-14 w-full items-center justify-between bg-[#3f436a] p-3'>
           <div className='flex items-center gap-3 text-white'>
             <img
-              src={conversation?.receiver.picture_path}
+              src={conversation?.receiver[0].picture_path}
               alt=''
               className='h-9 w-9 rounded-full shadow-md'
             />
@@ -96,13 +102,14 @@ export default function Conversation() {
                   <div
                     key={message.id}
                     ref={messageEndReference}
-                    className={`$ flex w-full items-end gap-3 px-7 ${message.sender_name === conversation.sender.name ? 'flex-row-reverse' : ''}`}
+                    className={`$ flex w-full items-end gap-3 px-7 ${message.sender_name === conversation.sender.sender_name ? 'flex-row-reverse' : ''}`}
                   >
                     <BulletConversation
                       imageUrl={
-                        message.sender_name === conversation.sender.name
+                        message.sender_name ===
+                        conversation.sender.initiator_name
                           ? conversation.sender.picture_path
-                          : conversation.receiver.picture_path
+                          : conversation.receiver[0].picture_path
                       }
                       texte={message.content}
                       date={new Date(message.sent_at)}
