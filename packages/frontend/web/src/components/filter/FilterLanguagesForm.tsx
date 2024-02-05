@@ -71,7 +71,7 @@ export default function FilterLanguagesForm({
                     String(preferences?.language_pref_id) ===
                       String(language.id))
                 }
-                // hidden
+                hidden
               />
               <p className='mt-1 text-center text-xs'>
                 {language.name.charAt(0).toUpperCase() + language.name.slice(1)}
