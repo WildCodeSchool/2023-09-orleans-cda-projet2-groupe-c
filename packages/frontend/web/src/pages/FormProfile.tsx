@@ -24,7 +24,7 @@ const PAGES = [
   // { currentPage: 3, component: <FormCity /> },
   { currentPage: 0, component: <FormLanguage /> },
   { currentPage: 2, component: <FormTechnology /> },
-  { currentPage: 1, component: <FormHobby /> },
+  // { currentPage: 1, component: <FormHobby /> },
   // { currentPage: 7, component: <FormBio /> },
   // { currentPage: 8, component: <FormGitHub /> },
   // { currentPage: 9, component: <FormEnd /> },
@@ -42,42 +42,42 @@ export default function FormProfile() {
 
   const { handleSubmit, formState, getValues } = methods;
 
-  console.log('getValues :', getValues());
-  console.log('errors :', formState.errors);
+  // console.log('getValues :', getValues());
+  // console.log('errors :', formState.errors);
+  const formSubmit = (data: ProfileForm) => {
+    console.log('data :', data);
+    // // If the current page is less than 10, move to the next page
+    // if (page < PAGES.length - 1) {
+    //   setPage(page + 1);
+    //   // Otherwise, attempt to submit the form data
+    // } else {
+    //   try {
+    //     // This function transforms an array of string into an array of objects
+    //     const transformArray = (array: string[]): SelectedItemBody[] =>
+    //       array.map((item: string) => JSON.parse(item) as SelectedItemBody);
 
-  const formSubmit = async (data: ProfileForm) => {
-    // If the current page is less than 10, move to the next page
-    if (page < PAGES.length - 1) {
-      setPage(page + 1);
-      // Otherwise, attempt to submit the form data
-    } else {
-      try {
-        // This function transforms an array of string into an array of objects
-        const transformArray = (array: string[]): SelectedItemBody[] =>
-          array.map((item: string) => JSON.parse(item) as SelectedItemBody);
+    //     // Use the transformArray function to transform the languages, technologies, and hobbies object
+    //     const transformedData = {
+    //       ...data,
+    //       languages: data.languages,
+    //       // technologies: data.technologies,
+    //       // hobbies: transformArray(data.hobbies),
+    //     };
 
-        // Use the transformArray function to transform the languages, technologies, and hobbies object
-        const transformedData = {
-          ...data,
-          languages: transformArray(data.languages),
-          technologies: transformArray(data.technologies),
-          hobbies: transformArray(data.hobbies),
-        };
+    //     await fetch(`${import.meta.env.VITE_API_URL}/register`, {
+    //       method: 'POST',
+    //       credentials: 'include',
+    //       headers: {
+    //         'Content-Type': 'application/json',
+    //       },
+    //       body: JSON.stringify(transformedData),
+    //     });
 
-        await fetch(`${import.meta.env.VITE_API_URL}/register`, {
-          method: 'POST',
-          credentials: 'include',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(transformedData),
-        });
-
-        navigate('/');
-      } catch (error) {
-        throw new Error(`${String(error)}`);
-      }
-    }
+    //     navigate('/');
+    //   } catch (error) {
+    //     throw new Error(`${String(error)}`);
+    //   }
+    // }
   };
 
   // if (!isLoggedIn) {

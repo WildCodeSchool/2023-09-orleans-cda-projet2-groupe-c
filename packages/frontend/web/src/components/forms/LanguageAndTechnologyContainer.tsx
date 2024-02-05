@@ -1,4 +1,3 @@
-import { get } from 'http';
 import { useEffect, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 
@@ -31,36 +30,75 @@ export default function LanguageAndTechnology({
 
   // State to store selected items
   const [selectedItems, setSelectedItems] = useState<SelectedItemBody[]>([]);
-  console.log(selectedItems);
+  // console.log('selected items :', selectedItems);
+
   // State to store the first selected item
   const [firstSelectedItems, setFirstSelectedItems] = useState<CategoryHobby>();
 
-  const { register, formState } = useFormContext<FormItemsValidation>();
-  const { errors } = formState;
+  const { register, formState, setValue, getValues } =
+    useFormContext<FormItemsValidation>();
+
+  const { errors, isSubmitted, isDirty } = formState;
+
+  // console.log('watchField :', watchField);
 
   // Function to handle checkbox change
   const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     // Convert JSON to JS object
-    const targetValue = JSON.parse(event.target.value);
+    const targetValue = Number(event.target.value);
 
     // Get Id from the value
-    const targetId = targetValue.id;
+    // const targetId = targetValue.id;
 
-    let newItems = selectedItems;
+    // console.log('targetId :', targetId);
 
-    // This function checks if the element is already in the array.
-    // If so, it removes it.
-    if (selectedItems.some((item) => item.id === targetId)) {
-      newItems = selectedItems.filter((item) => item.id !== targetId);
+    // Check if the id from the target value is already in the selected items
+    if (selectedItems.some((item) => item.id === targetValue)) {
+      // Update the selected items
+      setSelectedItems((prevItems) => {
+        // Filter the selected items to remove the target id
+        const newItems = prevItems.filter((item) => item.id !== targetValue);
+
+        // Reassigns the order of the remaining items
+        const reorderedItems = newItems.map((item, index) => ({
+          ...item,
+          order: index + 1,
+        }));
+
+        // Update the form value
+        setValue('languages', selectedItems, {
+          shouldDirty: true,
+        });
+
+        console.log(fieldName, getValues(fieldName));
+
+        return reorderedItems;
+      });
+
+      // If the selected items length is less than 6
     } else if (selectedItems.length < 6) {
-      // Otherwise, it adds the item to the end.
-      newItems = [
-        ...selectedItems,
-        { id: targetId, order: selectedItems.length + 1 },
-      ];
+      // Add the selected items to the state
+      setSelectedItems((prevItems) => {
+        const newItems = [
+          ...prevItems,
+          { id: targetValue, order: prevItems.length + 1 },
+        ];
+
+        // Update the form value
+        setValue('languages', selectedItems, {
+          shouldDirty: true,
+        });
+
+        console.log(fieldName, getValues(fieldName));
+
+        return newItems;
+      });
     }
 
-    setSelectedItems(newItems);
+    // Update the form value
+    setValue('languages', selectedItems, {
+      shouldDirty: true,
+    });
   };
 
   // Fetch data from the API
@@ -149,13 +187,11 @@ export default function LanguageAndTechnology({
                   {item.name.charAt(0).toUpperCase() + item.name.slice(1)}
                 </label>
                 <input
-                  value={JSON.stringify({
-                    id: item.id,
-                    order:
-                      selectedItems.findIndex(
-                        (selectedItem) => selectedItem.id === item.id,
-                      ) + 1,
-                  })}
+                  value={item.id}
+                  // value={JSON.stringify({
+                  //   id: item.id,
+                  //   order: index + 1,
+                  // })}
                   id={item.name}
                   type='checkbox'
                   {...register(fieldName, {

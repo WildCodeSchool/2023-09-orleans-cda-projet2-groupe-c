@@ -24,6 +24,8 @@ register.post('/', getUserId, async (req: Request, res) => {
 
     const userId = req.userId as number;
 
+    console.log('languages :', languages);
+
     //use the transaction property allows us to cancel the request if an
     //error has arrived during the submission of the data
     await db.transaction().execute(async (trx) => {
@@ -54,27 +56,27 @@ register.post('/', getUserId, async (req: Request, res) => {
         )
         .execute();
 
-      await trx
-        .insertInto('technology_user')
-        .values(
-          technologies.map((technology: { id: number; order: number }) => ({
-            technology_id: technology.id,
-            user_id: Number(userId),
-            order: technology.order,
-          })),
-        )
-        .execute();
+      // await trx
+      //   .insertInto('technology_user')
+      //   .values(
+      //     technologies.map((technology: { id: number; order: number }) => ({
+      //       technology_id: technology.id,
+      //       user_id: Number(userId),
+      //       order: technology.order,
+      //     })),
+      //   )
+      //   .execute();
 
-      await trx
-        .insertInto('hobby_user')
-        .values(
-          hobbies.map((hobby: { id: number; order: number }) => ({
-            hobby_id: hobby.id,
-            user_id: Number(userId),
-            order: hobby.order,
-          })),
-        )
-        .execute();
+      // await trx
+      //   .insertInto('hobby_user')
+      //   .values(
+      //     hobbies.map((hobby: { id: number; order: number }) => ({
+      //       hobby_id: hobby.id,
+      //       user_id: Number(userId),
+      //       order: hobby.order,
+      //     })),
+      //   )
+      //   .execute();
     });
 
     return res.json({ success: true, message: 'User add with success !' });

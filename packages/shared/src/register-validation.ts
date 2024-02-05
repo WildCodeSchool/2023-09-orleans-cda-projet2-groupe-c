@@ -30,19 +30,15 @@ export const formSchema = authSchema.omit({
 });
 
 export const formArrayStringSchema = z.object({
-  technologies: z
-    .array(z.string(), {
-      invalid_type_error: 'ⓘ Select at least one technology.',
-    })
-    .nonempty({ message: 'ⓘ Select at least one technology.' }),
-  languages: z
-    .array(z.string(), {
-      invalid_type_error: 'ⓘ Select at least one language.',
-    })
-    .nonempty({ message: 'ⓘ Select at least one language.' }),
-  hobbies: z
-    .array(z.string(), { invalid_type_error: 'ⓘ Select at least one hobby.' })
-    .nonempty({ message: 'ⓘ Select at least one hobby.' }),
+  technologies: z.array(z.object({ id: z.number(), order: z.number() })),
+
+  // languages: z.array(z.string(), {
+  //   invalid_type_error: 'ⓘ Select at least one hobby.',
+  // }),
+  languages: z.array(z.object({ id: z.number(), order: z.number() })),
+  // hobbies: z
+  //   .array(z.string(), { invalid_type_error: 'ⓘ Select at least one hobby.' })
+  //   .nonempty({ message: 'ⓘ Select at least one hobby.' }),
 });
 
 export const formItemsSchema = z.object({
