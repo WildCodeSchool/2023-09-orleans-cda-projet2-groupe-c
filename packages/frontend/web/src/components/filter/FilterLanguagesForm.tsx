@@ -1,4 +1,8 @@
-import type { UseFormRegister, UseFormWatch } from 'react-hook-form';
+import type {
+  UseFormRegister,
+  UseFormSetValue,
+  UseFormWatch,
+} from 'react-hook-form';
 
 import type { RequestPreferencesBody } from '@app/shared';
 
@@ -11,6 +15,7 @@ export default function FilterLanguagesForm({
 }: {
   readonly register: UseFormRegister<RequestPreferencesBody>;
   readonly watch: UseFormWatch<RequestPreferencesBody>;
+  readonly setValue: UseFormSetValue<RequestPreferencesBody>;
 }) {
   // Get user languages from languages custom hook
   const { languages, errorLanguages } = useLanguages();
@@ -38,7 +43,7 @@ export default function FilterLanguagesForm({
                 className={`block h-full w-full ${
                   // Check if the language id is equal to the watch value
                   // If is true, add a outline border class
-                  watchLanguagePref === String(language.id) ||
+                  Number(watchLanguagePref) === Number(language.id) ||
                   // Or
                   // Check if no language is selected
                   // Then, check if language_pref_id is equal to the language.id
@@ -59,12 +64,19 @@ export default function FilterLanguagesForm({
               <input
                 {...register('language_pref_id', {
                   required: false,
+                  valueAsNumber: true,
                 })}
+                value={Number(language.id)}
                 type='radio'
                 id={String(language.id)}
                 name='language_pref_id'
-                value={String(language.id)}
-                hidden
+                checked={
+                  Number(watchLanguagePref) === Number(language.id) ||
+                  (!Boolean(watchLanguagePref) &&
+                    String(preferences?.language_pref_id) ===
+                      String(language.id))
+                }
+                // hidden
               />
               <p className='mt-1 text-center text-xs'>
                 {language.name.charAt(0).toUpperCase() + language.name.slice(1)}

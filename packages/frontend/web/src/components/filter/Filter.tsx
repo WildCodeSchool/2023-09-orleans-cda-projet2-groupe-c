@@ -25,7 +25,7 @@ export default function Filter() {
   const { updatePreferences } = usePreference();
 
   // Destructuring the hook useForm
-  const { register, handleSubmit, formState, watch } =
+  const { register, handleSubmit, formState, watch, setValue } =
     useForm<RequestPreferencesBody>({
       resolver: zodResolver(requestPreferencesSchema), // Form validation
     });
@@ -71,7 +71,11 @@ export default function Filter() {
 
           {/* Language Filter */}
           <FilterLine title='Language'>
-            <FilterLanguagesForm register={register} watch={watch} />
+            <FilterLanguagesForm
+              register={register}
+              watch={watch}
+              setValue={setValue}
+            />
           </FilterLine>
         </div>
         <Button type='submit' isOutline={false}>{`Apply`}</Button>

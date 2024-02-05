@@ -3,6 +3,8 @@ import { createPool } from 'mysql2';
 
 import type { Database } from '@app/shared';
 
+import { PointPlugin } from './plugins/point-plugin';
+
 const { DB_HOST, DB_PORT, DB_USER, DB_PASS, DB_NAME } = process.env;
 
 if (DB_HOST === undefined) throw new Error('DB_HOST is not defined');
@@ -24,6 +26,7 @@ const dialect = new MysqlDialect({
 
 export const db = new Kysely<Database>({
   dialect,
+  plugins: [new PointPlugin()],
 });
 
 try {

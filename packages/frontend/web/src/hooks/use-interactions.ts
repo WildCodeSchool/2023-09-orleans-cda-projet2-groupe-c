@@ -101,5 +101,39 @@ export default function useInteractions({ ...props }) {
     }
   };
 
-  return { selectedUser, superLikesCount, handleInteraction, fetchUsers };
+  const handleBackInteraction = async () => {
+    try {
+      // Send a request to the API to go back to the previous user
+      await fetch(`${API_URL}/users/${userId}/interactions/back`, {
+        method: 'DELETE',
+        credentials: 'include',
+      });
+
+      const controller = new AbortController();
+      const signal = controller.signal;
+
+      fetchUsers({ signal }).catch((error) => {
+        throw new Error(`Fail to fetch users: ${String(error)}`);
+      });
+
+      fetchUserSuperLikeCount({ signal }).catch((error) => {
+        throw new Error(`Fail to fetch user's superlike: ${String(error)}`);
+      });
+
+      // Abort fetch requests if the component is unmounted
+      return () => {
+        controller.abort();
+      };
+    } catch {
+      throw new Error('Fail to go back to the previous user.');
+    }
+  };
+
+  return {
+    selectedUser,
+    superLikesCount,
+    handleInteraction,
+    handleBackInteraction,
+    fetchUsers,
+  };
 }

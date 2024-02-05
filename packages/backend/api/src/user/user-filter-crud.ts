@@ -3,13 +3,14 @@ import express from 'express';
 import { db } from '@app/backend-shared';
 import {
   type Request as ExpressRequest,
+  type Gender,
   type RequestPreferencesBody,
   type UserPreferenceId,
   requestPreferencesSchema,
 } from '@app/shared';
 
 import { getUserId } from '@/middlewares/auth-handlers';
-import { getUserPreferenceId } from '@/middlewares/filter-handlers';
+import preferences from '@/services/preferences';
 
 interface Request extends ExpressRequest {
   userPreferenceId?: UserPreferenceId[];
@@ -21,32 +22,13 @@ const filterRouter = express.Router();
 filterRouter.get(
   '/:userId/preferences',
   getUserId,
-  getUserPreferenceId,
   async (req: Request, res) => {
     try {
       const userId = req.userId as number;
 
-      if (!req.userPreferenceId) {
-        throw new Error('User preference ID is not defined');
-      }
+      const userPreferences = await preferences.getUserPreferences(userId);
 
-      const userPreferenceId = req.userPreferenceId[0].preference_id;
-
-      const preferences = await db
-        .selectFrom('preference as pref')
-        .innerJoin('user as u', 'u.preference_id', 'pref.id')
-        .select([
-          'u.name',
-          'pref.id as preference_id',
-          'pref.distance',
-          'pref.language_pref_id',
-          'pref.gender_pref',
-        ])
-        .where('u.id', '=', userId)
-        .where('u.preference_id', '=', userPreferenceId)
-        .execute();
-
-      res.json(preferences);
+      res.json(userPreferences);
     } catch (error) {
       res.status(500).json({
         success: false,
@@ -61,11 +43,10 @@ filterRouter.get(
 filterRouter.put(
   '/:userId/preferences',
   getUserId,
-  getUserPreferenceId,
   async (req: Request, res) => {
     try {
       // Get the user preference id from the request
-      const userPreferenceId = req.userPreferenceId;
+      const userId = req.userId as number;
 
       // Get the body from the request
       // Use parse from zod to validate the request body
@@ -80,28 +61,20 @@ filterRouter.put(
       }
 
       // Update the preference table with the new values
-      if (userPreferenceId) {
-        await db
-          .updateTable('preference')
-          .set({
-            gender_pref:
-              parsed.data.gender_pref === null
-                ? undefined
-                : parsed.data.gender_pref,
-            language_pref_id:
-              parsed.data.language_pref_id === null
-                ? undefined
-                : Number(parsed.data.language_pref_id),
-            distance: Number(parsed.data.distance),
-          })
-          .where('preference.id', '=', userPreferenceId[0].preference_id)
-          .execute();
+      await db
+        .updateTable('preference')
+        .set({
+          distance: parsed.data.distance,
+          language_pref_id: Number(parsed.data.language_pref_id),
+          gender_pref: parsed.data.gender_pref as Gender,
+        })
+        .where('preference.user_id', '=', userId)
+        .execute();
 
-        res.status(200).json({
-          success: true,
-          message: 'Your preferences have been updated.',
-        });
-      }
+      res.status(200).json({
+        success: true,
+        message: 'Your preferences have been updated.',
+      });
 
       res.status(404).json({
         success: false,

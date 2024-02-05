@@ -28,12 +28,6 @@ export type Point = {
   y: number;
 };
 
-export type GeoJson = {
-  x: number;
-  y: number;
-  coordinates: [number, number];
-};
-
 export interface UserTable {
   id: Generated<number>;
   name?: string;
@@ -60,7 +54,7 @@ export interface HobbyTable {
 export interface CityTable {
   id: Generated<number>;
   name: string;
-  coordinates: Point & GeoJson;
+  coordinates: Point;
 }
 
 export interface MessageTable {
@@ -103,7 +97,8 @@ export interface PreferenceTable {
   id: Generated<number>;
   distance: number;
   language_pref_id: number;
-  gender_pref: Gender;
+  gender_pref?: Gender;
+  user_id: number;
 }
 
 export type Technology = Selectable<TechnologyTable>;
