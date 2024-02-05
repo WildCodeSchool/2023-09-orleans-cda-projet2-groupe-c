@@ -9,6 +9,7 @@ import { languageRouter } from './languages/language-crud';
 import { register } from './register';
 import { technologyRouter } from './technologies.ts/technology-crud';
 import userRouter from './user/user-crud';
+import filterRouter from './user/user-filter-crud';
 
 const router = express.Router();
 
@@ -24,5 +25,7 @@ router.use('/hobbies', hobbyRouter);
 router.use('/users', userRouter);
 
 router.use('/users', interactionRouter);
+
+router.use('/users', filterRouter);
 
 export default router;

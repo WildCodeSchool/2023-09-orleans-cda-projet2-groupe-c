@@ -61,14 +61,14 @@ export default function LanguageAndTechnology({
           order: index + 1,
         }));
 
-        setValue(fieldName, selectedItems, {
-          shouldDirty: true,
-        });
+        // setValue(fieldName, selectedItems, {
+        //   shouldDirty: true,
+        // });
 
         return reorderedItems;
       });
 
-      // If the selected items length is less than 6
+      //   // If the selected items length is less than 6
     } else if (selectedItems.length < 6) {
       // Add the selected items to the state
       setSelectedItems((prevItems) => {
@@ -77,18 +77,18 @@ export default function LanguageAndTechnology({
           { id: targetValue, order: prevItems.length + 1 },
         ];
 
-        setValue(fieldName, selectedItems, {
-          shouldDirty: true,
-        });
+        // setValue(fieldName, selectedItems, {
+        //   shouldDirty: true,
+        // });
 
         return newItems;
       });
     }
 
     // Update the form value
-    // setValue(fieldName, selectedItems, {
-    //   shouldDirty: true,
-    // });
+    setValue(fieldName, selectedItems, {
+      shouldDirty: true,
+    });
   };
 
   console.log(fieldName, getValues(fieldName));
