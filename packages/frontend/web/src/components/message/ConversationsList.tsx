@@ -79,6 +79,10 @@ export default function ConversationsList() {
   }, [setIsVisible]);
 
   const { userId } = useAuth();
+  console.log(conversationsList);
+  console.log(userId);
+  
+  
 
   return (
     <div>
@@ -115,7 +119,7 @@ export default function ConversationsList() {
                       <div className='flex w-full items-center gap-2 overflow-hidden'>
                         <div className='h-14 w-14 shrink-0 overflow-hidden rounded-full'>
                           <img
-                            src={conversation.receiver[0].picture_path}
+                            src={userId === conversation.conversation_id ? conversation.receiver[0].picture_path : conversation.sender.picture_path}
                             alt={`Picture of ${conversation.receiver[0].receiver_name}`}
                           />
                         </div>

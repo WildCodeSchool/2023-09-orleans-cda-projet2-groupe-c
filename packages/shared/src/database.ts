@@ -96,6 +96,13 @@ export interface UserActionTable {
   canceled_at?: Date;
 }
 
+export interface Conversation {
+  id: Generated<number>;
+  initiator_id: number;
+  receiver_id: number;
+  created_at: Date
+}
+
 export type Technology = Selectable<TechnologyTable>;
 export type NewTechnology = Insertable<TechnologyTable>;
 export type TechnologyUpdate = Updateable<TechnologyTable>;
@@ -144,6 +151,10 @@ export type UserAction = Selectable<UserActionTable>;
 export type NewUserAction = Insertable<UserActionTable>;
 export type UserActionUpdate = Updateable<UserActionTable>;
 
+export type ConversationAction = Selectable<Conversation>;
+export type NewConversationAction = Insertable<Conversation>;
+export type ConversationActionUpdate = Updateable<Conversation>;
+
 export interface Database {
   hobby_category: HobbyCategoryTable;
   technology: TechnologyTable;
@@ -157,4 +168,5 @@ export interface Database {
   language_user: LanguageUserTable;
   hobby_user: HobbyUserTable;
   user_action: UserActionTable;
+  conversation: Conversation
 }

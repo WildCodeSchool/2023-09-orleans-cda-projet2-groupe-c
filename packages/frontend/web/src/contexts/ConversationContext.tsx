@@ -131,10 +131,10 @@ export default function ConversationContext({
       fetchMessage().catch(() => {
         setError('An occurred while fetching the message.');
       });
-      const intervalId = setInterval(fetchMessage, 1000);
+    /*   const intervalId = setInterval(fetchMessage, 1000); */
 
       return () => {
-        clearInterval(intervalId);
+       /*  clearInterval(intervalId); */
         controller.abort();
       };
     }
