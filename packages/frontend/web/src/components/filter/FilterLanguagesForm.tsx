@@ -1,8 +1,4 @@
-import type {
-  UseFormRegister,
-  UseFormSetValue,
-  UseFormWatch,
-} from 'react-hook-form';
+import type { UseFormRegister, UseFormWatch } from 'react-hook-form';
 
 import type { RequestPreferencesBody } from '@app/shared';
 
