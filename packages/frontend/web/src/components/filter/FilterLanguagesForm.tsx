@@ -15,7 +15,6 @@ export default function FilterLanguagesForm({
 }: {
   readonly register: UseFormRegister<RequestPreferencesBody>;
   readonly watch: UseFormWatch<RequestPreferencesBody>;
-  readonly setValue: UseFormSetValue<RequestPreferencesBody>;
 }) {
   // Get user languages from languages custom hook
   const { languages, errorLanguages } = useLanguages();
