@@ -72,7 +72,7 @@ export default function FilterGenderForm({
           {genders.map((gender) => (
             <div key={gender.id} className='w-full'>
               <label
-                htmlFor={String(gender.id)}
+                htmlFor={`gender.${String(gender.id)}`}
                 className={`border-primary hover:bg-primary hover:text-light block w-full rounded-md border py-3 text-center text-lg ${
                   // Check if gender.value is selected
                   // If is true, add a bg-primary and text-light class
@@ -95,10 +95,15 @@ export default function FilterGenderForm({
                   required: false,
                 })}
                 type='radio'
-                id={String(gender.id)}
+                id={`gender.${String(gender.id)}`}
                 name='gender_pref'
                 value={gender.value}
-                hidden
+                checked={
+                  Boolean(watchGenderPref)
+                    ? watchGenderPref === gender.value
+                    : preferences?.gender_pref === gender.value
+                }
+                // hidden
               />
             </div>
           ))}

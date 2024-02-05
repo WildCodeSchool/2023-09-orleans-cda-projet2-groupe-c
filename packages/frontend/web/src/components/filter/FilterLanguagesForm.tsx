@@ -34,7 +34,7 @@ export default function FilterLanguagesForm({
               className='flex flex-col items-center justify-center gap-1'
             >
               <label
-                htmlFor={String(language.id)}
+                htmlFor={`language.${String(language.id)}`}
                 className={`block h-full w-full ${
                   // Check if the language id is equal to the watch value
                   // If is true, add a outline border class
@@ -63,15 +63,15 @@ export default function FilterLanguagesForm({
                 })}
                 value={Number(language.id)}
                 type='radio'
-                id={String(language.id)}
+                id={`language.${String(language.id)}`}
                 name='language_pref_id'
                 checked={
-                  Number(watchLanguagePref) === Number(language.id) ||
-                  (!Boolean(watchLanguagePref) &&
-                    String(preferences?.language_pref_id) ===
-                      String(language.id))
+                  Boolean(watchLanguagePref)
+                    ? Number(watchLanguagePref) === Number(language.id)
+                    : Number(preferences?.language_pref_id) ===
+                      Number(language.id)
                 }
-                hidden
+                // hidden
               />
               <p className='mt-1 text-center text-xs'>
                 {language.name.charAt(0).toUpperCase() + language.name.slice(1)}
