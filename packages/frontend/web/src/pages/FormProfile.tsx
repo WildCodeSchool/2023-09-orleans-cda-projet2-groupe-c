@@ -31,11 +31,11 @@ const PAGES = [
 ];
 
 export default function FormProfile() {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   const [page, setPage] = useState<number>(0);
 
-  const { isLoggedIn } = useAuth();
+  // const { isLoggedIn } = useAuth();
 
   //I use the const methods to send all useForm properties to my child elements
   const methods = useForm<ProfileForm>();
@@ -43,7 +43,8 @@ export default function FormProfile() {
   const { handleSubmit, formState, getValues } = methods;
 
   // console.log('getValues :', getValues());
-  // console.log('errors :', formState.errors);
+  console.log('errors :', formState.errors);
+  console.log('value :', getValues());
   const formSubmit = (data: ProfileForm) => {
     console.log('data :', data);
     // // If the current page is less than 10, move to the next page

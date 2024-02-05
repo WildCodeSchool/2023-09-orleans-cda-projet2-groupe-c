@@ -35,22 +35,18 @@ export default function LanguageAndTechnology({
   // State to store the first selected item
   const [firstSelectedItems, setFirstSelectedItems] = useState<CategoryHobby>();
 
-  const { register, formState, setValue, getValues } =
+  const { register, formState, setValue, getValues, watch } =
     useFormContext<FormItemsValidation>();
 
-  const { errors, isSubmitted, isDirty } = formState;
+  const { errors } = formState;
 
-  // console.log('watchField :', watchField);
+  const watchField = watch(fieldName);
+  console.log('watchField :', watchField);
 
   // Function to handle checkbox change
   const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     // Convert JSON to JS object
     const targetValue = Number(event.target.value);
-
-    // Get Id from the value
-    // const targetId = targetValue.id;
-
-    // console.log('targetId :', targetId);
 
     // Check if the id from the target value is already in the selected items
     if (selectedItems.some((item) => item.id === targetValue)) {
@@ -65,12 +61,9 @@ export default function LanguageAndTechnology({
           order: index + 1,
         }));
 
-        // Update the form value
-        setValue('languages', selectedItems, {
+        setValue(fieldName, selectedItems, {
           shouldDirty: true,
         });
-
-        console.log(fieldName, getValues(fieldName));
 
         return reorderedItems;
       });
@@ -84,22 +77,22 @@ export default function LanguageAndTechnology({
           { id: targetValue, order: prevItems.length + 1 },
         ];
 
-        // Update the form value
-        setValue('languages', selectedItems, {
+        setValue(fieldName, selectedItems, {
           shouldDirty: true,
         });
-
-        console.log(fieldName, getValues(fieldName));
 
         return newItems;
       });
     }
 
     // Update the form value
-    setValue('languages', selectedItems, {
-      shouldDirty: true,
-    });
+    // setValue(fieldName, selectedItems, {
+    //   shouldDirty: true,
+    // });
   };
+
+  console.log(fieldName, getValues(fieldName));
+  console.log('selectedItems :', selectedItems);
 
   // Fetch data from the API
   useEffect(() => {
@@ -206,13 +199,16 @@ export default function LanguageAndTechnology({
                     },
                   })}
                   onChange={handleCheckboxChange}
+                  checked={selectedItems.some(
+                    (selectedItem) => selectedItem.id === item.id,
+                  )}
                   disabled={
                     selectedItems.length >= 6 &&
                     !selectedItems.some(
                       (selectedItem) => selectedItem.id === item.id,
                     )
                   }
-                  className='absolute opacity-0'
+                  // className='absolute opacity-0'
                 />
               </div>
             ))}
