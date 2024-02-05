@@ -35,7 +35,7 @@ export default function Card({ user }: CardProps) {
         <div className='absolute bottom-0 left-0 h-80 w-full bg-gradient-to-t from-black to-black/0' />
         <div className='absolute bottom-0 left-0 flex w-full flex-col justify-between p-3'>
           <div className='flex'>
-            <div className='w-4/5'>
+            <div className='w-[90%]'>
               <p className='mb-4 text-xl'>{`${user.name} • ${age}`}</p>
               <div className='flex flex-col gap-6'>
                 <div className='text-secondary flex flex-wrap gap-2'>
@@ -61,11 +61,12 @@ export default function Card({ user }: CardProps) {
                 </div>
               </div>
             </div>
-            <div className='flex grow items-end'>
-              <div className='w-full pl-3'>
+            <div className='flex w-[10%] min-w-[70px] items-end'>
+              <div className='pl-3'>
                 <img
                   src={user.languages[0].logo_path}
                   alt={user.languages[0].name}
+                  className='h-full w-full object-cover object-center'
                 />
               </div>
             </div>
@@ -84,7 +85,7 @@ export default function Card({ user }: CardProps) {
         <p className='text-sm'>{user.biography}</p>
         <div className='mt-10 flex items-center gap-1'>
           <GitHubIcon className={'fill-secondary'} />
-          {user.account_github ? (
+          {Boolean(user.account_github) ? (
             <Link to={user.account_github || ''}>
               <p className='text-primary underline-primary cursor-pointer text-sm underline-offset-2'>
                 {user.account_github}
