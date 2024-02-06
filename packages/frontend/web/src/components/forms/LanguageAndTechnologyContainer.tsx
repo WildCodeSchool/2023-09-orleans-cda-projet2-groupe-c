@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useFormContext } from 'react-hook-form';
+import { useController, useFormContext } from 'react-hook-form';
 
 import {
   type CategoryHobby,
@@ -28,71 +28,54 @@ export default function LanguageAndTechnology({
   // State to store items
   const [items, setItems] = useState<CategoryHobby[]>([]);
 
-  // State to store selected items
-  const [selectedItems, setSelectedItems] = useState<SelectedItemBody[]>([]);
-  // console.log('selected items :', selectedItems);
-
   // State to store the first selected item
   const [firstSelectedItems, setFirstSelectedItems] = useState<CategoryHobby>();
 
-  const { register, formState, setValue, getValues, watch } =
-    useFormContext<FormItemsValidation>();
+  const { formState, control } = useFormContext<FormItemsValidation>();
 
   const { errors } = formState;
 
-  const watchField = watch(fieldName);
-  console.log('watchField :', watchField);
+  const { field } = useController({
+    control,
+    name: fieldName,
+    rules: {
+      validate: (value) => {
+        const key = apiUrl === 'languages' ? 'languages' : 'technologies';
+        const result = formArrayStringSchema.shape[key].safeParse(value);
+        return result.success ? true : result.error.errors[0]?.message;
+      },
+    },
+  });
 
-  // Function to handle checkbox change
+  const [value, setValue] = useState(field.value || []);
+
+  // Function to handle checkbox change when the user selects or unselects an item
   const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    // Convert JSON to JS object
     const targetValue = Number(event.target.value);
+    const isChecked = event.target.checked;
 
-    // Check if the id from the target value is already in the selected items
-    if (selectedItems.some((item) => item.id === targetValue)) {
-      // Update the selected items
-      setSelectedItems((prevItems) => {
-        // Filter the selected items to remove the target id
-        const newItems = prevItems.filter((item) => item.id !== targetValue);
+    if (isChecked) {
+      // Add the selected item to the array
+      setValue((prev) => [
+        ...prev,
+        { id: targetValue, order: prev.length + 1 },
+      ]);
+    } else {
+      // Remove the unselected item from the array
+      setValue((prev) => {
+        const updatedArray = prev.filter((item) => item.id !== targetValue);
 
-        // Reassigns the order of the remaining items
-        const reorderedItems = newItems.map((item, index) => ({
+        // Reassign the order of the items
+        return updatedArray.map((item, index) => ({
           ...item,
           order: index + 1,
         }));
-
-        // setValue(fieldName, selectedItems, {
-        //   shouldDirty: true,
-        // });
-
-        return reorderedItems;
-      });
-
-      //   // If the selected items length is less than 6
-    } else if (selectedItems.length < 6) {
-      // Add the selected items to the state
-      setSelectedItems((prevItems) => {
-        const newItems = [
-          ...prevItems,
-          { id: targetValue, order: prevItems.length + 1 },
-        ];
-
-        // setValue(fieldName, selectedItems, {
-        //   shouldDirty: true,
-        // });
-
-        return newItems;
       });
     }
 
-    // Update the form value
-    setValue(fieldName, selectedItems, {
-      shouldDirty: true,
-    });
+    // Update the form field value
+    field.onChange(value);
   };
-
-  console.log(fieldName, getValues(fieldName));
-  console.log('selectedItems :', selectedItems);
 
   // Fetch data from the API
   useEffect(() => {
@@ -115,12 +98,12 @@ export default function LanguageAndTechnology({
 
   // Set the first selected item
   useEffect(() => {
-    if (apiUrl === 'languages' && selectedItems.length > 0) {
+    if (apiUrl === 'languages' && value.length > 0) {
       setFirstSelectedItems(
-        items.find((language) => language.id === selectedItems[0].id),
+        items.find((language) => language.id === value[0].id),
       );
     }
-  }, [apiUrl, items, selectedItems]);
+  }, [apiUrl, items, value]);
 
   return (
     <FormContainer title={formTitle}>
@@ -151,12 +134,12 @@ export default function LanguageAndTechnology({
                   htmlFor={item.name}
                 >
                   <div className='relative flex justify-center'>
-                    {selectedItems.some(
+                    {value.some(
                       (selectedItem) => selectedItem.id === item.id,
                     ) ? (
                       <div className='bg-primary absolute right-0 top-0 flex h-5 w-5 translate-x-2 translate-y-[-8px] items-center justify-center rounded-full'>
                         <p className='text-white'>
-                          {selectedItems.findIndex(
+                          {value.findIndex(
                             (selectedItem) => selectedItem.id === item.id,
                           ) + 1}
                         </p>
@@ -167,7 +150,7 @@ export default function LanguageAndTechnology({
 
                     <img
                       className={`hover:outline-primary h-12 w-12 hover:rounded-md hover:outline hover:outline-offset-2 lg:h-16 lg:w-16 ${
-                        selectedItems.some(
+                        value.some(
                           (selectedItem) => selectedItem.id === item.id,
                         )
                           ? 'outline-primary rounded-md outline outline-offset-2'
@@ -180,35 +163,28 @@ export default function LanguageAndTechnology({
                   {item.name.charAt(0).toUpperCase() + item.name.slice(1)}
                 </label>
                 <input
-                  value={item.id}
-                  // value={JSON.stringify({
-                  //   id: item.id,
-                  //   order: index + 1,
-                  // })}
                   id={item.name}
                   type='checkbox'
-                  {...register(fieldName, {
-                    validate: (value) => {
-                      const key =
-                        apiUrl === 'languages' ? 'languages' : 'technologies';
-                      const result =
-                        formArrayStringSchema.shape[key].safeParse(value);
-                      return result.success
-                        ? true
-                        : result.error.errors[0]?.message;
-                    },
-                  })}
+                  // {...register(fieldName, {
+                  //   validate: (value) => {
+                  //     const key =
+                  //       apiUrl === 'languages' ? 'languages' : 'technologies';
+                  //     const result =
+                  //       formArrayStringSchema.shape[key].safeParse(value);
+                  //     return result.success
+                  //       ? true
+                  //       : result.error.errors[0]?.message;
+                  //   },
+                  // })}
+                  {...field}
                   onChange={handleCheckboxChange}
-                  checked={selectedItems.some(
-                    (selectedItem) => selectedItem.id === item.id,
-                  )}
+                  key={item.id}
+                  checked={value.some((val) => val.id === item.id)}
+                  value={item.id}
                   disabled={
-                    selectedItems.length >= 6 &&
-                    !selectedItems.some(
-                      (selectedItem) => selectedItem.id === item.id,
-                    )
+                    value.length >= 6 &&
+                    !value.some((selectedItem) => selectedItem.id === item.id)
                   }
-                  // className='absolute opacity-0'
                 />
               </div>
             ))}
@@ -216,10 +192,14 @@ export default function LanguageAndTechnology({
         </div>
       </div>
       <div className='text-secondary absolute bottom-4'>
-        {selectedItems.length >= 6 && (
-          <p className='text-base'>{'ⓘ You have already selected 6 !'}</p>
+        {value.length >= 6 && (
+          <p className='text-primary text-base'>
+            {'ⓘ You have already selected 6 !'}
+          </p>
         )}
-        {errors[fieldName] ? <p>{errors[fieldName]?.message}</p> : undefined}
+        {errors[fieldName] ? (
+          <p className='text-primary'>{errors[fieldName]?.message}</p>
+        ) : undefined}
       </div>
     </FormContainer>
   );

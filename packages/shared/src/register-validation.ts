@@ -41,6 +41,8 @@ export const formArrayStringSchema = z.object({
   //   .nonempty({ message: 'ⓘ Select at least one hobby.' }),
 });
 
+export type FormArrayBody = z.infer<typeof formArrayStringSchema>;
+
 export const formItemsSchema = z.object({
   languages: z.array(
     z.object({
