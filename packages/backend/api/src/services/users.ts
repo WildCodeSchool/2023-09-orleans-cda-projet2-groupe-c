@@ -1,25 +1,21 @@
 /* eslint-disable unicorn/no-null */
-import type { Response } from 'express';
-import { jsonArrayFrom } from 'kysely/helpers/mysql';
+import { jsonArrayFrom, jsonObjectFrom } from 'kysely/helpers/mysql';
 
 import { db } from '@app/backend-shared';
-import type { Request as ExpressRequest } from '@app/shared';
+
+import type { PreferenceBody } from '@/services/preferences';
 
 // Unwrap the type of the Promise
-export type Users = Awaited<ReturnType<typeof users>>;
+export type Users = Awaited<ReturnType<typeof usersList>>;
 
-interface Request extends ExpressRequest {
-  usersList?: Users;
-}
-
-const users = async (userId: number) => {
-  // Select all users with whom the initiator has not interacted
+const usersList = async (userId: number, userPreferences: PreferenceBody) => {
+  // Select all users with whom the initiator has not interacted and who match the user's preferences
   //
   // MySQL query:
   //
   // SELECT "u.id", "u.name", "u.birthdate", "u.gender", "u.biography", "u.account_github"
   //  (
-  //    SELECT JSON_AGG(agg), '[]')
+  //    SELECT JSON_OBJECT(agg), '[]')
   //    FROM (
   //        SELECT "c.id", "c.name" AS "city_name", "c.coordinates"
   //        FROM "city" AS "c"
@@ -27,7 +23,7 @@ const users = async (userId: number) => {
   //    ) AS agg
   //  ) AS "city",
   // (
-  //    SELECT JSON_AGG(agg), '[]')
+  //    SELECT JSON_ARRAY(agg), '[]')
   //    FROM (
   //        SELECT "l.id", "l.name", "lu.order", "l.logo_path"
   //        FROM "language_user" AS "lu"
@@ -38,7 +34,7 @@ const users = async (userId: number) => {
   //    ) AS agg
   //  ) AS "languages",
   // (
-  //    SELECT JSON_AGG(agg), '[]')
+  //    SELECT JSON_ARRAY(agg), '[]')
   //    FROM (
   //        SELECT "t.id", "t.name", "tu.order", "t.logo_path"
   //        FROM "technology_user" AS "tu"
@@ -49,7 +45,7 @@ const users = async (userId: number) => {
   //    ) AS agg
   //  ) AS "technologies",
   // (
-  //    SELECT JSON_AGG(agg), '[]')
+  //    SELECT JSON_ARRAY(agg), '[]')
   //    FROM (
   //        SELECT "hc.name" AS "category", "h.id", "h.name", "hu.order"
   //        FROM "hobby_user" AS "hu"
@@ -59,7 +55,7 @@ const users = async (userId: number) => {
   //    ) AS agg
   //  ) AS "hobbies",
   // (
-  //    SELECT JSON_AGG(agg), '[]')
+  //    SELECT JSON_ARRAY(agg), '[]')
   //    FROM (
   //        SELECT "p.id", "p.order", "p.picture_path"
   //        FROM "picture" AS "p"
@@ -75,14 +71,17 @@ const users = async (userId: number) => {
   //    AND "u.gender" IS NOT NULL
   //    AND "u.city_id" IS NOT NULL
   //    AND "u.activate_at" IS NOT NULL
+  //    AND "u.gender" = userPreferences[0].gender_pref
+  //    AND "lu.language_id" = userPreferences[0].language_pref_id
   // )
   // AND "u.id" NOT IN (
   //    SELECT "ua.receiver_id"
   //    FROM "user_action" AS "ua"
   //    WHERE "ua.initiator_id" = ?
   // )
-  const users = await db
+  const result = await db
     .selectFrom('user as u')
+    .innerJoin('language_user as lu', 'u.id', 'lu.user_id')
     .select((eb) => [
       'u.id',
       'u.name',
@@ -90,7 +89,7 @@ const users = async (userId: number) => {
       'u.gender',
       'u.biography',
       'u.account_github',
-      jsonArrayFrom(
+      jsonObjectFrom(
         eb
           .selectFrom('city as c')
           .select(['c.id', 'c.name as city_name', 'c.coordinates'])
@@ -120,7 +119,13 @@ const users = async (userId: number) => {
           .innerJoin('hobby as h', 'hu.hobby_id', 'h.id')
           .innerJoin('hobby_category as hc', 'h.hobby_category_id', 'hc.id')
           .whereRef('hu.user_id', '=', 'u.id')
-          .select(['hc.name as category', 'h.id', 'h.name', 'hu.order']),
+          .select([
+            'hc.name as category',
+            'hc.logo_path',
+            'h.id',
+            'h.name',
+            'hu.order',
+          ]),
       ).as('hobbies'),
       jsonArrayFrom(
         eb
@@ -140,6 +145,12 @@ const users = async (userId: number) => {
         eb('u.activate_at', 'is not', null),
       ]),
     )
+    .where((eb) =>
+      eb.and([
+        eb('u.gender', '=', userPreferences[0].gender_pref),
+        eb('lu.language_id', '=', userPreferences[0].language_pref_id),
+      ]),
+    )
     .where('u.id', 'not in', (eb) =>
       eb
         .selectFrom('user_action as ua')
@@ -149,34 +160,48 @@ const users = async (userId: number) => {
     .execute();
 
   // Remove the user logged in from the list of users
-  const filteredUsers = users.filter((user) => Number(user.id) !== userId);
+  const filteredUsers = result.filter((user) => Number(user.id) !== userId);
 
   return filteredUsers;
 };
 
-export const getUsers = async (
-  req: Request,
-  res: Response,
-  next: () => void,
-) => {
-  try {
-    const userId = req.userId;
+const users = {
+  // Get users filtered by preferences
+  getUsers: async ({
+    userId,
+    userPreferences,
+  }: {
+    userId: number;
+    userPreferences: PreferenceBody;
+  }) => {
+    try {
+      const users = await usersList(userId, userPreferences);
 
-    if (userId === undefined) {
-      return res.status(401).json({
-        success: false,
-        error: 'Unauthorized!',
-      });
+      return users;
+    } catch {
+      throw new Error('An error occurred while fetching users.');
     }
+  },
 
-    const usersList = await users(userId);
-    req.usersList = usersList;
+  getUserProfile: async (userId: number) => {
+    const userProfile = await db
+      .selectFrom('user')
+      .innerJoin('city', 'user.city_id', 'city.id')
+      .select((eb) => [
+        'user.id',
+        'user.name',
+        jsonObjectFrom(
+          eb
+            .selectFrom('city')
+            .select(['city.name', 'city.coordinates'])
+            .whereRef('user.city_id', '=', 'city.id'),
+        ).as('city'),
+      ])
+      .where('user.id', '=', userId)
+      .execute();
 
-    next();
-  } catch {
-    return res.status(500).json({
-      success: false,
-      error: 'Internal server error!',
-    });
-  }
+    return userProfile;
+  },
 };
+
+export default users;

@@ -1,8 +1,9 @@
 import { createContext, useContext, useMemo } from 'react';
 
-import type { UserTable } from '@app/shared';
+import type { UserBody } from '@app/shared';
 
 import { useAuth } from '@/contexts/AuthContext';
+import useDistance from '@/hooks/use-distance';
 import useInteractions from '@/hooks/use-interactions';
 
 type HomeProviderProps = {
@@ -10,9 +11,11 @@ type HomeProviderProps = {
 };
 
 type HomeProviderState = {
-  selectedUser: UserTable | undefined;
+  selectedUser: UserBody | undefined;
   superLikesCount: number;
   handleInteraction: (action: string) => void;
+  handleBackInteraction: () => void;
+  distance: number;
 };
 
 // Create a context
@@ -28,8 +31,19 @@ export default function InteractionContext({
   const { userId } = useAuth();
 
   // Get the selected user, superlike count and the functions to handle the interactions from the custom hook "useInteractions"
-  const { selectedUser, superLikesCount, handleInteraction } = useInteractions({
+  const {
+    selectedUser,
+    superLikesCount,
+    handleInteraction,
+    handleBackInteraction,
+  } = useInteractions({
     userId,
+  });
+
+  // Get the distance between the current user and the selected user
+  const { distance } = useDistance({
+    userId,
+    selectedUser,
   });
 
   // Create an objet with the value to be shared
@@ -39,8 +53,16 @@ export default function InteractionContext({
       selectedUser,
       superLikesCount,
       handleInteraction,
+      handleBackInteraction,
+      distance,
     };
-  }, [selectedUser, superLikesCount, handleInteraction]);
+  }, [
+    selectedUser,
+    superLikesCount,
+    handleInteraction,
+    handleBackInteraction,
+    distance,
+  ]);
 
   return (
     <interactionProviderContext.Provider {...props} value={value}>

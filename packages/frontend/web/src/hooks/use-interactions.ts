@@ -1,13 +1,13 @@
 import { useCallback, useEffect, useState } from 'react';
 
-import type { UserTable } from '@app/shared';
+import type { UserBody } from '@app/shared';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
 export default function useInteractions({ ...props }) {
   const { userId } = props;
 
-  const [selectedUser, setSelectedUser] = useState<UserTable>();
+  const [selectedUser, setSelectedUser] = useState<UserBody>();
   const [superLikesCount, setSuperLikesCount] = useState<number>(0);
 
   // Fetch user's superlike from the API
@@ -101,5 +101,38 @@ export default function useInteractions({ ...props }) {
     }
   };
 
-  return { selectedUser, superLikesCount, handleInteraction };
+  const handleBackInteraction = async () => {
+    try {
+      // Send a request to the API to go back to the previous user
+      await fetch(`${API_URL}/users/${userId}/interactions/back`, {
+        method: 'DELETE',
+        credentials: 'include',
+      });
+
+      const controller = new AbortController();
+      const signal = controller.signal;
+
+      fetchUsers({ signal }).catch((error) => {
+        throw new Error(`Fail to fetch users: ${String(error)}`);
+      });
+
+      fetchUserSuperLikeCount({ signal }).catch((error) => {
+        throw new Error(`Fail to fetch user's superlike: ${String(error)}`);
+      });
+
+      // Abort fetch requests if the component is unmounted
+      return () => {
+        controller.abort();
+      };
+    } catch {
+      throw new Error('Fail to go back to the previous user.');
+    }
+  };
+
+  return {
+    selectedUser,
+    superLikesCount,
+    handleInteraction,
+    handleBackInteraction,
+  };
 }

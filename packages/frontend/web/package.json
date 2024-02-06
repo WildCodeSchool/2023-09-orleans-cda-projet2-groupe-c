@@ -10,9 +10,10 @@
     "ts:check": "bun tsc"
   },
   "dependencies": {
-    "@app/shared": "workspace:*",
     "@app/frontend-shared": "workspace:*",
+    "@app/shared": "workspace:*",
     "framer-motion": "^10.16.10",
+    "geolib": "^3.3.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.48.2",
