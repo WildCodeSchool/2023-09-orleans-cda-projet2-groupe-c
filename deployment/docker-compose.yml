@@ -54,15 +54,7 @@ services:
       - ./mysql/data:/var/lib/mysql
     healthcheck:
       test:
-        [
-          'CMD',
-          'mysqladmin',
-          'ping',
-          '-h',
-          'localhost',
-          '-uuser',
-          '-ppassword'
-        ]
+        ['CMD', 'mysqladmin', 'ping', '-h', 'localhost', '-uuser', '-ppassword']
       interval: 5s # Interval between health checks.
       timeout: 5s # Timeout for each health checking.
       retries: 20 # Hou many times retries.
@@ -85,7 +77,6 @@ services:
 
 volumes:
   web-client-build:
-
 
 networks:
   backend:
