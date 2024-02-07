@@ -1,7 +1,7 @@
 interface FormContainerProps extends React.HTMLAttributes<HTMLDivElement> {}
 export default function FormContainer({ children, title }: FormContainerProps) {
   return (
-    <div className='font-base mt-20 w-full flex-col items-center md:mt-24'>
+    <div className='font-base mt-10 w-full flex-col items-center md:mt-24 lg:mt-20'>
       <h1 className='text-primary font-title mb-4 text-2xl lg:text-3xl'>
         {title}
       </h1>

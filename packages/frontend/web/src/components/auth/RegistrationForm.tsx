@@ -15,6 +15,7 @@ const API_URL = import.meta.env.VITE_API_URL;
 export default function RegistrationForm() {
   const [errorRegistration, setErrorRegistration] = useState<string>();
   const { setIsLoggedIn } = useAuth();
+
   // Get the navigate function from the router
   const navigate = useNavigate();
 
@@ -97,12 +98,15 @@ export default function RegistrationForm() {
               className='border-primary bg-light-light text-secondary focus:outline-secondary w-100 rounded-lg border p-2 text-center transition-all focus:outline'
               {...register('password')}
             />
+
             {errors.password && errors.password.message !== undefined ? (
               <p className='text-primary flex text-xs'>
                 {errors.password.message}
               </p>
             ) : undefined}
+
             {Boolean(errorRegistration) && <p>{errorRegistration}</p>}
+
             <div className='mt-[20rem] flex flex-col'>
               <Button type='submit' isOutline={false}>
                 {'Validate'}

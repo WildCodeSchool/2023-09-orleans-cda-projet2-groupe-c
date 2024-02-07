@@ -2,9 +2,8 @@ import { useEffect, useState } from 'react';
 import { useController, useFormContext } from 'react-hook-form';
 
 import {
-  type CategoryHobby,
+  type FormItemsBodyValidation,
   type FormItemsValidation,
-  type SelectedItemBody,
   formArrayStringSchema,
 } from '@app/shared';
 
@@ -26,10 +25,11 @@ export default function LanguageAndTechnology({
   fieldName,
 }: SelectionFormProps) {
   // State to store items
-  const [items, setItems] = useState<CategoryHobby[]>([]);
+  const [items, setItems] = useState<FormItemsBodyValidation[]>([]);
 
   // State to store the first selected item
-  const [firstSelectedItems, setFirstSelectedItems] = useState<CategoryHobby>();
+  const [firstSelectedItems, setFirstSelectedItems] =
+    useState<FormItemsBodyValidation>();
 
   // Desctructure the useFormContext hook to get the formState and control
   const { formState, control } = useFormContext<FormItemsValidation>();
@@ -132,15 +132,21 @@ export default function LanguageAndTechnology({
 
           {/* Items and Inputs */}
           <div className='flex justify-center'>
-            <div className='my-5 grid max-h-48 max-w-[26rem] grid-cols-4 gap-x-4 gap-y-2 overflow-y-auto px-5 py-3 md:max-h-56 md:px-10'>
+            <div
+              className={`my-5 grid max-h-48 max-w-[26rem] grid-cols-4 gap-x-4 gap-y-4 overflow-y-auto px-5 py-3 md:px-10 ${apiUrl === 'languages' ? 'md:max-h-52' : 'md:max-h-[20.5rem]'}`}
+            >
               {items.map((item) => (
                 <div
                   className='flex flex-col items-center text-center duration-200 hover:scale-105'
                   key={item.id}
                 >
                   <label
-                    className='cursor-pointer text-[12px]'
                     htmlFor={item.name}
+                    className={`hover:outline-primary cursor-pointer text-[12px] hover:rounded-md hover:outline hover:outline-offset-2 lg:h-16 lg:w-16 ${
+                      value.some((selectedItem) => selectedItem.id === item.id)
+                        ? 'outline-primary rounded-sm outline outline-offset-2'
+                        : ''
+                    }`}
                   >
                     <div className='relative flex justify-center'>
                       {value.some(
@@ -156,21 +162,18 @@ export default function LanguageAndTechnology({
                       ) : (
                         ''
                       )}
-
-                      <img
-                        className={`hover:outline-primary h-12 w-12 hover:rounded-md hover:outline hover:outline-offset-2 lg:h-16 lg:w-16 ${
-                          value.some(
-                            (selectedItem) => selectedItem.id === item.id,
-                          )
-                            ? 'outline-primary rounded-md outline outline-offset-2'
-                            : ''
-                        }`}
-                        src={item.logo_path}
-                      />
+                      <div className='h-full max-h-12 w-full max-w-12'>
+                        <img
+                          className='h-full w-full object-cover object-center'
+                          src={item.logo_path}
+                        />
+                      </div>
                     </div>
-
-                    {item.name.charAt(0).toUpperCase() + item.name.slice(1)}
                   </label>
+
+                  <p className='mt-1'>
+                    {item.name.charAt(0).toUpperCase() + item.name.slice(1)}
+                  </p>
                   <input
                     id={item.name}
                     type='checkbox'

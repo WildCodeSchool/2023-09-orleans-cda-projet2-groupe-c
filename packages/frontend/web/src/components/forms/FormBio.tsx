@@ -21,13 +21,13 @@ export default function FormBio() {
           {...register('biography', {
             validate: (value) => {
               const result = formBioSchema.shape.biography.safeParse(value);
-              return result.success ? true : result.error.errors[0]?.message;
+              return result.success || result.error.errors[0]?.message;
             },
           })}
           className='border-primary bg-light mt-2 h-40 w-full resize-none rounded-md border px-3 py-2 text-lg focus:outline-none sm:h-60 lg:text-xl'
         />
         {errors.biography ? (
-          <p className='error-message'>{errors.biography.message}</p>
+          <p className='text-primary mt-2'>{errors.biography.message}</p>
         ) : (
           ''
         )}

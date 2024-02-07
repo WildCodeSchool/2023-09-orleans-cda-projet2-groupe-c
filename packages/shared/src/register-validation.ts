@@ -2,24 +2,30 @@ import { z } from 'zod';
 
 import { authSchema } from '.';
 
-export interface CategoryHobby extends FormItemsBodyValidation {
+// export interface CategoryHobby extends FormItemsBodyValidation {
+//   category_name: string;
+//   logo_path: string;
+//   hobbies: {
+//     hobby_id: number;
+//     hobby_name: string;
+//   }[];
+// }
+
+export interface HobbyBody {
   category_name: string;
   logo_path: string;
-  hobbies: {
-    hobby_id: number;
-    hobby_name: string;
-  }[];
+  hobbies: [
+    {
+      hobby_id: number;
+      hobby_name: string;
+    },
+  ];
 }
 
 export interface CityBody {
   id: number;
   name: string;
 }
-
-export type SelectedItemBody = {
-  id: number;
-  order: number;
-};
 
 export const formSchema = authSchema.omit({
   password: true,

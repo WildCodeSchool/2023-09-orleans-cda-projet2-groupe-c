@@ -40,7 +40,6 @@ authRouter.post('/registration', hashPassword, async (req, res) => {
     // Getting email and password from request body, followed by password hashing
     const { email, password } = req.body as RegisterBody;
 
-    console.log(FRONTEND_URL);
     // Creating user object with the data from request body
     const data: RegisterWithActivationCode = {
       email,
@@ -64,8 +63,6 @@ authRouter.post('/registration', hashPassword, async (req, res) => {
       .setAudience(String(FRONTEND_URL))
       .setExpirationTime('2h')
       .sign(secret);
-
-    console.log('jwt :', jwt);
 
     // A cookie containing the JWT token
     res.cookie('token', jwt, {

@@ -46,21 +46,28 @@ export const authSchema = z
         .max(1000, {
           message: 'ⓘ Biography must be less than 1000 characters.',
         })
-        .regex(
-          new RegExp(/^[A-Za-z]+['s-]?[ A-Za-z]+$/),
-          'ⓘ Name should contain only alphabets',
-        )
-        .or(z.literal('')),
+        .optional(),
     ),
     accountGithub: z.optional(
       z
         .string()
-        .trim()
-        .max(255, {
-          message: 'ⓘ Your account Github must be less than 255 characters.',
-        })
-        .url({ message: 'ⓘ Please enter a valid url.' })
-        .or(z.literal('')),
+        .refine(
+          (value) => {
+            if (value.trim() === '') {
+              return true;
+            }
+            try {
+              new URL(value);
+              return true;
+            } catch {
+              return false;
+            }
+          },
+          {
+            message: 'ⓘ Please enter a valid url.',
+          },
+        )
+        .nullable(),
     ),
     role: z.enum(['user', 'admin']),
     email: z

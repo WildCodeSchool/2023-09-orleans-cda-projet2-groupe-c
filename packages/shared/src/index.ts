@@ -4,4 +4,3 @@ export * from './register-validation';
 export * from './interaction';
 export * from './preference';
 export * from './user';
-export * from './registration';

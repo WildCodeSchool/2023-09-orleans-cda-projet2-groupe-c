@@ -1,8 +1,8 @@
 import { Fragment, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
-import type { ProfileForm, SelectedItemBody } from '@app/shared';
+import type { ProfileForm } from '@app/shared';
 
 import Button from '@/components/Button';
 import ProgressBar from '@/components/ProgressBar';
@@ -16,7 +16,6 @@ import FormHobby from '@/components/forms/FormHobby';
 import FormLanguage from '@/components/forms/FormLanguage';
 import FormName from '@/components/forms/FormName';
 import FormTechnology from '@/components/forms/FormTechnology';
-import { useAuth } from '@/contexts/AuthContext';
 
 const PAGES = [
   { currentPage: 0, component: <FormName /> },
@@ -38,21 +37,15 @@ export default function FormProfile() {
 
   const [percentage, setPercentage] = useState<number>(0);
 
-  // const { isLoggedIn } = useAuth();
-
   //I use the const methods to send all useForm properties to my child elements
   const methods = useForm<ProfileForm>({
     shouldFocusError: false,
   });
 
-  const { handleSubmit, formState, getValues } = methods;
+  const { handleSubmit } = methods;
 
-  // console.log('getValues :', getValues());
-  console.log('errors :', formState.errors);
-  console.log('value :', getValues());
   const formSubmit = async (data: ProfileForm) => {
-    console.log('data :', data);
-    // // If the current page is less than 10, move to the next page
+    // If the current page is less than 10, move to the next page
     if (page < PAGES.length - 1) {
       setPage(page + 1);
       setPercentage(((page + 1) / PAGES.length) * 100);
@@ -74,20 +67,15 @@ export default function FormProfile() {
       }
     }
   };
-
-  // if (!isLoggedIn) {
-  //   return <Navigate to='/registration' />;
-  // }
-
   return (
     <FormProvider {...methods}>
-      <div className='mx-auto w-full max-w-[500px] duration-200'>
-        <ProgressBar percentage={percentage} />
-      </div>
-      <div className='w-full px-5'>
+      <div className='h-full w-full px-5 pt-2'>
+        <div className='mx-auto w-full max-w-[500px]'>
+          <ProgressBar percentage={percentage} />
+        </div>
         <form
           onSubmit={handleSubmit(formSubmit)}
-          className='flex h-screen flex-col items-center justify-between'
+          className='flex h-full flex-col items-center justify-between'
         >
           <div className='flex h-full w-full max-w-[500px] flex-col justify-between'>
             {/*   i use react.Fragment because only <></> not work with key */}
@@ -107,6 +95,7 @@ export default function FormProfile() {
                   type='button'
                   onClick={() => {
                     setPage(page - 1);
+                    setPercentage(((page - 1) / PAGES.length) * 100);
                   }}
                 >
                   {'Back'}

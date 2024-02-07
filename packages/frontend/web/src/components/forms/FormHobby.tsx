@@ -2,12 +2,9 @@ import { useEffect, useState } from 'react';
 import { useController, useFormContext } from 'react-hook-form';
 
 import {
-  CategoryHobby,
   type FormCategoryValidation,
   type HobbyBody,
-  type SelectedItemBody,
   formArrayStringSchema,
-  hobbySchema,
 } from '@app/shared';
 
 import FormContainer from './FormContainer';
@@ -18,8 +15,7 @@ export default function FormHobby() {
   // State to store hobbies
   const [hobbies, setHobbies] = useState<HobbyBody[]>([]);
 
-  const { formState, watch, control } =
-    useFormContext<FormCategoryValidation>();
+  const { formState, control } = useFormContext<FormCategoryValidation>();
 
   // Destructure the errors from the formState
   const { errors } = formState;
@@ -37,11 +33,6 @@ export default function FormHobby() {
 
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition, @typescript-eslint/strict-boolean-expressions
   const [value, setValue] = useState(field.value || []);
-
-  // Watch the hobbies
-  const watchHobby = watch('hobbies');
-
-  console.log('watchHobby :', watchHobby);
 
   // Function to handle checkbox change when the user selects or unselects an item
   const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -98,7 +89,7 @@ export default function FormHobby() {
         </span>
 
         {/* Hobbies */}
-        <div className='flex max-h-[23rem] w-full flex-col gap-6 overflow-y-auto py-3'>
+        <div className='flex max-h-[21rem] w-full flex-col gap-6 overflow-y-auto py-3'>
           {hobbies.map((category) => (
             <div key={category.category_name} className='flex flex-col gap-4'>
               <div className='border-divider flex justify-start border-b'>
@@ -124,6 +115,7 @@ export default function FormHobby() {
                     {hobby.hobby_name}
                     <input
                       {...field}
+                      hidden
                       disabled={
                         value.length >= 6 &&
                         !value.some(
@@ -149,9 +141,6 @@ export default function FormHobby() {
             <p className='text-primary text-base'>
               {'ⓘ You have already selected 6 !'}
             </p>
-          )}
-          {Boolean(watchHobby) && watchHobby.length >= 6 && (
-            <p className='text-base'>{'ⓘ You have already selected 6!'}</p>
           )}
           {errors.hobbies ? (
             <p className='text-primary text-base'>{errors.hobbies.message}</p>
