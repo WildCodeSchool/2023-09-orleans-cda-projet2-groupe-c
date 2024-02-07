@@ -5,6 +5,7 @@ import { Navigate, useNavigate } from 'react-router-dom';
 import type { ProfileForm, SelectedItemBody } from '@app/shared';
 
 import Button from '@/components/Button';
+import ProgressBar from '@/components/ProgressBar';
 import FormBio from '@/components/forms/FormBio';
 import FormBirthDate from '@/components/forms/FormBirthDate';
 import FormCity from '@/components/forms/FormCity';
@@ -18,16 +19,16 @@ import FormTechnology from '@/components/forms/FormTechnology';
 import { useAuth } from '@/contexts/AuthContext';
 
 const PAGES = [
-  { currentPage: 1, component: <FormName /> },
-  // { currentPage: 1, component: <FormBirthDate /> },
-  // { currentPage: 2, component: <FormGender /> },
-  // { currentPage: 3, component: <FormCity /> },
-  { currentPage: 0, component: <FormLanguage /> },
-  // { currentPage: 2, component: <FormTechnology /> },
-  // { currentPage: 1, component: <FormHobby /> },
-  // { currentPage: 7, component: <FormBio /> },
-  // { currentPage: 8, component: <FormGitHub /> },
-  // { currentPage: 9, component: <FormEnd /> },
+  { currentPage: 6, component: <FormName /> },
+  { currentPage: 1, component: <FormBirthDate /> },
+  { currentPage: 2, component: <FormGender /> },
+  { currentPage: 3, component: <FormCity /> },
+  { currentPage: 4, component: <FormLanguage /> },
+  { currentPage: 5, component: <FormTechnology /> },
+  { currentPage: 0, component: <FormHobby /> },
+  { currentPage: 7, component: <FormBio /> },
+  { currentPage: 8, component: <FormGitHub /> },
+  { currentPage: 9, component: <FormEnd /> },
 ];
 
 export default function FormProfile() {
@@ -38,7 +39,9 @@ export default function FormProfile() {
   // const { isLoggedIn } = useAuth();
 
   //I use the const methods to send all useForm properties to my child elements
-  const methods = useForm<ProfileForm>({});
+  const methods = useForm<ProfileForm>({
+    shouldFocusError: false,
+  });
 
   const { handleSubmit, formState, getValues } = methods;
 
@@ -88,6 +91,9 @@ export default function FormProfile() {
 
   return (
     <FormProvider {...methods}>
+      <div className='mx-auto w-full max-w-[500px]'>
+        <ProgressBar percentage={60} />
+      </div>
       <div className='w-full px-5'>
         <form
           onSubmit={handleSubmit(formSubmit)}
@@ -101,7 +107,7 @@ export default function FormProfile() {
                   <Fragment key={currentPage}>{component}</Fragment>
                 ),
             )}
-            <div className='flex w-full flex-col gap-6 pb-5 md:pb-40'>
+            <div className='mb-5 flex w-full flex-col gap-6 md:mb-32'>
               <Button isOutline={false} type='submit'>
                 {page >= 9 ? 'Start matching' : 'Next'}
               </Button>

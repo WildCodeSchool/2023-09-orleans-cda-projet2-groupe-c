@@ -4,7 +4,7 @@ type FieldName = 'technologies';
 
 const props = {
   apiUrl: 'technologies',
-  formTitle: 'MY TECHNOLOGY',
+  formTitle: 'MY TECHNOLOGIES',
   subtitle: 'You can choose some technologies.',
   fieldName: 'technologies' as FieldName,
 };

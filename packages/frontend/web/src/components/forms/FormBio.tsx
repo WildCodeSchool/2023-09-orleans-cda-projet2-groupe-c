@@ -9,9 +9,12 @@ export default function FormBio() {
   const { errors } = formState;
 
   return (
-    <>
-      <FormContainer title='ABOUT ME'>
-        <label htmlFor='biography'>{'Biography'}</label>
+    <FormContainer title='ABOUT ME...'>
+      <div className='pb-12'>
+        <label htmlFor='biography'>
+          {'Biography'}
+          <span className='text-placeholder text-sm'>{` (optionnal)`}</span>
+        </label>
         <textarea
           id='biography'
           placeholder='Describe who you are, what you like, what’s on your mind...'
@@ -21,17 +24,14 @@ export default function FormBio() {
               return result.success ? true : result.error.errors[0]?.message;
             },
           })}
-          className='border-primary bg-light mt-2 h-40 w-full resize-none rounded-md border px-2 py-4 text-lg focus:outline-none sm:h-60 lg:text-xl'
+          className='border-primary bg-light mt-2 h-40 w-full resize-none rounded-md border px-3 py-2 text-lg focus:outline-none sm:h-60 lg:text-xl'
         />
         {errors.biography ? (
           <p className='error-message'>{errors.biography.message}</p>
         ) : (
           ''
         )}
-      </FormContainer>
-      <div className='text-secondary mb-48 flex justify-end text-lg md:mb-8'>
-        <button type='submit'>{'Skip >'}</button>
       </div>
-    </>
+    </FormContainer>
   );
 }

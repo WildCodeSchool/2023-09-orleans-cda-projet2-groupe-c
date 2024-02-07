@@ -22,7 +22,7 @@ export default function FormName() {
       <input
         type='text'
         id='name'
-        placeholder='name'
+        placeholder='Write your name...'
         {...register('name', {
           validate: (value) => {
             const result = formNameSchema.shape.name.safeParse(value);
@@ -32,9 +32,7 @@ export default function FormName() {
         className='border-primary bg-light mt-2 h-5 w-full rounded-md border px-2 py-6 text-lg focus:outline-none lg:text-xl'
       />
       {errors.name ? (
-        <p className='text-secondary absolute bottom-3'>
-          {errors.name.message}
-        </p>
+        <p className='text-primary mt-2'>{errors.name.message}</p>
       ) : (
         ''
       )}

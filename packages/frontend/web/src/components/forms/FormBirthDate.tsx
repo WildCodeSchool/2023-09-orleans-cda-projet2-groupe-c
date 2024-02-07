@@ -10,15 +10,13 @@ export default function FormBirthDate() {
   const { errors } = formState;
   return (
     <FormContainer title='MY BIRTHDAY'>
-      <span className='flex justify-start'>
-        {'Your age will be visible to everyone.'}
-      </span>
       <span className='flex justify-start pb-8'>
         {'You must be of legal age to register.'}
       </span>
       <input
         type='date'
         id='birthdate'
+        placeholder='YYYY-MM-DD'
         {...register('birthdate', {
           validate: (value) => {
             const date = new Date(value);
@@ -29,12 +27,11 @@ export default function FormBirthDate() {
             return result.success ? true : result.error.errors[0]?.message;
           },
         })}
-        className='border-primary bg-light mt-2 h-5 w-full rounded-md border px-2 py-6 text-xl focus:outline-none'
+        className='border-primary bg-light mt-5 h-5 w-full rounded-md border px-2 py-6 text-xl focus:outline-none'
       />
+
       {errors.birthdate ? (
-        <p className='text-secondary absolute bottom-3'>
-          {errors.birthdate.message}
-        </p>
+        <p className='text-primary mt-2'>{errors.birthdate.message}</p>
       ) : (
         ''
       )}

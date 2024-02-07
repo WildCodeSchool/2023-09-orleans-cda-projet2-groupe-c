@@ -34,7 +34,7 @@ export default function FormCity() {
   };
 
   const handleChange = () => {
-    if (Boolean(searchBar) && searchBar.length >= 3) {
+    if (Boolean(searchBar) && searchBar.length >= 2) {
       const controller = new AbortController();
 
       (async () => {
@@ -74,7 +74,7 @@ export default function FormCity() {
       <span className='flex justify-start pb-8'>
         {'Choose your city or geolocate yourself.'}
       </span>
-      <div className='text-secondary relative'>
+      <div className='text-secondary relative mt-2'>
         <input
           type='search'
           id='searchBar'
@@ -83,7 +83,7 @@ export default function FormCity() {
             void onChange(event);
           }}
           {...rest}
-          placeholder='Write and choose your city'
+          placeholder='Write and choose your city...'
           className='border-primary bg-light mt-2 h-5 w-full rounded-md border px-2 py-6 text-lg focus:outline-none lg:text-xl'
         />
         <div className='bg-light absolute max-h-80 w-full overflow-y-auto rounded-lg shadow-lg'>
@@ -110,9 +110,7 @@ export default function FormCity() {
       </div>
 
       {errors.cityId ? (
-        <p className='text-secondary absolute bottom-3'>
-          {errors.cityId.message}
-        </p>
+        <p className='text-primary mt-2'>{errors.cityId.message}</p>
       ) : undefined}
     </FormContainer>
   );

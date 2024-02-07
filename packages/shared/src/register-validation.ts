@@ -31,14 +31,24 @@ export const formSchema = authSchema.omit({
 
 export const formArrayStringSchema = z.object({
   technologies: z.array(z.object({ id: z.number(), order: z.number() })),
-
-  // languages: z.array(z.string(), {
-  //   invalid_type_error: 'ⓘ Select at least one hobby.',
-  // }),
-  languages: z.array(z.object({ id: z.number(), order: z.number() })),
-  // hobbies: z
-  //   .array(z.string(), { invalid_type_error: 'ⓘ Select at least one hobby.' })
-  //   .nonempty({ message: 'ⓘ Select at least one hobby.' }),
+  languages: z.array(
+    z.object({
+      id: z.number({
+        required_error: 'ⓘ Select at least one language.',
+        invalid_type_error: 'ⓘ Select at least one language.',
+      }),
+      order: z.number(),
+    }),
+  ),
+  hobbies: z.array(
+    z.object({
+      id: z.number({
+        required_error: 'ⓘ Select at least one language.',
+        invalid_type_error: 'ⓘ Select at least one language.',
+      }),
+      order: z.number(),
+    }),
+  ),
 });
 
 export type FormArrayBody = z.infer<typeof formArrayStringSchema>;

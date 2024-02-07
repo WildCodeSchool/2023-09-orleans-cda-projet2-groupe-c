@@ -31,22 +31,28 @@ export default function LanguageAndTechnology({
   // State to store the first selected item
   const [firstSelectedItems, setFirstSelectedItems] = useState<CategoryHobby>();
 
+  // Desctructure the useFormContext hook to get the formState and control
   const { formState, control } = useFormContext<FormItemsValidation>();
 
+  // Get errors from the formState object
   const { errors } = formState;
 
+  // Get the field from the useController hook
+  // Use useController to control the form field
   const { field } = useController({
     control,
     name: fieldName,
+    // Add rules to validate the form field with zod
     rules: {
       validate: (value) => {
         const key = apiUrl === 'languages' ? 'languages' : 'technologies';
         const result = formArrayStringSchema.shape[key].safeParse(value);
-        return result.success ? true : result.error.errors[0]?.message;
+        return result.success || result.error.errors[0]?.message;
       },
     },
   });
 
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition, @typescript-eslint/strict-boolean-expressions
   const [value, setValue] = useState(field.value || []);
 
   // Function to handle checkbox change when the user selects or unselects an item
@@ -107,99 +113,95 @@ export default function LanguageAndTechnology({
 
   return (
     <FormContainer title={formTitle}>
-      <span className='flex justify-start'>{subtitle}</span>
-      <div className='mt-3 flex flex-col justify-center text-center'>
-        {apiUrl === 'languages' ? (
-          <div className='flex flex-col items-center justify-center gap-3'>
-            <div className='outline-primary my-2 flex h-12 w-12 items-center justify-center rounded-md py-2 outline outline-offset-2 md:mt-4 md:h-16 md:w-16'>
-              <img
-                src={firstSelectedItems?.logo_path}
-                alt={firstSelectedItems?.name}
-              />
-            </div>
-            <span>{'This language will be displayed on your profile'}</span>
-          </div>
-        ) : (
-          ''
-        )}
-        <div className='flex justify-center'>
-          <div className='my-5 grid max-h-48 max-w-[26rem] grid-cols-4 gap-x-4 gap-y-2 overflow-y-auto px-5 py-3 md:max-h-56 md:px-10'>
-            {items.map((item) => (
-              <div
-                className='flex flex-col items-center text-center duration-200 hover:scale-105'
-                key={item.id}
-              >
-                <label
-                  className='cursor-pointer text-[12px]'
-                  htmlFor={item.name}
-                >
-                  <div className='relative flex justify-center'>
-                    {value.some(
-                      (selectedItem) => selectedItem.id === item.id,
-                    ) ? (
-                      <div className='bg-primary absolute right-0 top-0 flex h-5 w-5 translate-x-2 translate-y-[-8px] items-center justify-center rounded-full'>
-                        <p className='text-white'>
-                          {value.findIndex(
-                            (selectedItem) => selectedItem.id === item.id,
-                          ) + 1}
-                        </p>
-                      </div>
-                    ) : (
-                      ''
-                    )}
-
-                    <img
-                      className={`hover:outline-primary h-12 w-12 hover:rounded-md hover:outline hover:outline-offset-2 lg:h-16 lg:w-16 ${
-                        value.some(
-                          (selectedItem) => selectedItem.id === item.id,
-                        )
-                          ? 'outline-primary rounded-md outline outline-offset-2'
-                          : ''
-                      }`}
-                      src={item.logo_path}
-                    />
-                  </div>
-
-                  {item.name.charAt(0).toUpperCase() + item.name.slice(1)}
-                </label>
-                <input
-                  id={item.name}
-                  type='checkbox'
-                  // {...register(fieldName, {
-                  //   validate: (value) => {
-                  //     const key =
-                  //       apiUrl === 'languages' ? 'languages' : 'technologies';
-                  //     const result =
-                  //       formArrayStringSchema.shape[key].safeParse(value);
-                  //     return result.success
-                  //       ? true
-                  //       : result.error.errors[0]?.message;
-                  //   },
-                  // })}
-                  {...field}
-                  onChange={handleCheckboxChange}
-                  key={item.id}
-                  checked={value.some((val) => val.id === item.id)}
-                  value={item.id}
-                  disabled={
-                    value.length >= 6 &&
-                    !value.some((selectedItem) => selectedItem.id === item.id)
-                  }
+      <div className='pb-10'>
+        <span className='flex justify-start'>{subtitle}</span>
+        <div className='mt-3 flex flex-col justify-center text-center'>
+          {apiUrl === 'languages' ? (
+            <div className='flex flex-col items-center justify-center gap-3'>
+              <div className='outline-primary my-2 flex h-12 w-12 items-center justify-center rounded-md py-2 outline outline-offset-2 md:mt-4 md:h-16 md:w-16'>
+                <img
+                  src={firstSelectedItems?.logo_path}
+                  alt={firstSelectedItems?.name}
                 />
               </div>
-            ))}
+              <span>{'This language will be displayed on your profile'}</span>
+            </div>
+          ) : (
+            ''
+          )}
+
+          {/* Items and Inputs */}
+          <div className='flex justify-center'>
+            <div className='my-5 grid max-h-48 max-w-[26rem] grid-cols-4 gap-x-4 gap-y-2 overflow-y-auto px-5 py-3 md:max-h-56 md:px-10'>
+              {items.map((item) => (
+                <div
+                  className='flex flex-col items-center text-center duration-200 hover:scale-105'
+                  key={item.id}
+                >
+                  <label
+                    className='cursor-pointer text-[12px]'
+                    htmlFor={item.name}
+                  >
+                    <div className='relative flex justify-center'>
+                      {value.some(
+                        (selectedItem) => selectedItem.id === item.id,
+                      ) ? (
+                        <div className='bg-primary absolute right-0 top-0 flex h-5 w-5 translate-x-2 translate-y-[-8px] items-center justify-center rounded-full'>
+                          <p className='text-white'>
+                            {value.findIndex(
+                              (selectedItem) => selectedItem.id === item.id,
+                            ) + 1}
+                          </p>
+                        </div>
+                      ) : (
+                        ''
+                      )}
+
+                      <img
+                        className={`hover:outline-primary h-12 w-12 hover:rounded-md hover:outline hover:outline-offset-2 lg:h-16 lg:w-16 ${
+                          value.some(
+                            (selectedItem) => selectedItem.id === item.id,
+                          )
+                            ? 'outline-primary rounded-md outline outline-offset-2'
+                            : ''
+                        }`}
+                        src={item.logo_path}
+                      />
+                    </div>
+
+                    {item.name.charAt(0).toUpperCase() + item.name.slice(1)}
+                  </label>
+                  <input
+                    id={item.name}
+                    type='checkbox'
+                    hidden
+                    {...field}
+                    onChange={handleCheckboxChange}
+                    key={item.id}
+                    checked={value.some((val) => val.id === item.id)}
+                    value={item.id}
+                    disabled={
+                      value.length >= 6 &&
+                      !value.some((selectedItem) => selectedItem.id === item.id)
+                    }
+                  />
+                </div>
+              ))}
+            </div>
           </div>
         </div>
-      </div>
-      <div className='text-secondary absolute bottom-4'>
-        {value.length >= 6 && (
-          <p className='text-primary text-base'>
-            {'ⓘ You have already selected 6 !'}
-          </p>
-        )}
-        {errors[fieldName] ? (
-          <p className='text-primary'>{errors[fieldName]?.message}</p>
-        ) : undefined}
+
+        {/* Errors messages */}
+        <div className='text-secondary absolute bottom-4'>
+          {value.length >= 6 && (
+            <p className='text-primary text-base'>
+              {'ⓘ You have already selected 6 !'}
+            </p>
+          )}
+          {errors[fieldName] ? (
+            <p className='text-primary'>{errors[fieldName]?.message}</p>
+          ) : undefined}
+        </div>
       </div>
     </FormContainer>
   );
