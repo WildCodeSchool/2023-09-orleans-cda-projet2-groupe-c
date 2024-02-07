@@ -22,7 +22,11 @@ export default function useLanguages() {
     };
 
     fetchLanguages().catch(() => {
-      setErrorLanguages('ⓘ Error fetching languages.');
+      setErrorLanguages('Fail to fetch languages');
+
+      return () => {
+        controller.abort();
+      };
     });
   }, []);
 

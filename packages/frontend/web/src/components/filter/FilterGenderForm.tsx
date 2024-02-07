@@ -103,7 +103,7 @@ export default function FilterGenderForm({
                     ? watchGenderPref === gender.value
                     : preferences?.gender_pref === gender.value
                 }
-                // hidden
+                hidden
               />
             </div>
           ))}

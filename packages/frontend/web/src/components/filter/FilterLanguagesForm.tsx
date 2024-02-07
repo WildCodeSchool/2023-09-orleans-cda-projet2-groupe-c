@@ -23,7 +23,7 @@ export default function FilterLanguagesForm({
   const watchLanguagePref = watch('language_pref_id');
 
   return (
-    <div className=''>
+    <div>
       {Boolean(errorLanguages) ? (
         <p className='text-primary'>{errorLanguages}</p>
       ) : (
@@ -71,7 +71,7 @@ export default function FilterLanguagesForm({
                     : Number(preferences?.language_pref_id) ===
                       Number(language.id)
                 }
-                // hidden
+                hidden
               />
               <p className='mt-1 text-center text-xs'>
                 {language.name.charAt(0).toUpperCase() + language.name.slice(1)}
