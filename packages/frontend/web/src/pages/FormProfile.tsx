@@ -19,22 +19,24 @@ import FormTechnology from '@/components/forms/FormTechnology';
 import { useAuth } from '@/contexts/AuthContext';
 
 const PAGES = [
-  { currentPage: 6, component: <FormName /> },
+  { currentPage: 0, component: <FormName /> },
   { currentPage: 1, component: <FormBirthDate /> },
   { currentPage: 2, component: <FormGender /> },
   { currentPage: 3, component: <FormCity /> },
   { currentPage: 4, component: <FormLanguage /> },
   { currentPage: 5, component: <FormTechnology /> },
-  { currentPage: 0, component: <FormHobby /> },
+  { currentPage: 6, component: <FormHobby /> },
   { currentPage: 7, component: <FormBio /> },
   { currentPage: 8, component: <FormGitHub /> },
   { currentPage: 9, component: <FormEnd /> },
 ];
 
 export default function FormProfile() {
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
 
   const [page, setPage] = useState<number>(0);
+
+  const [percentage, setPercentage] = useState<number>(0);
 
   // const { isLoggedIn } = useAuth();
 
@@ -48,41 +50,29 @@ export default function FormProfile() {
   // console.log('getValues :', getValues());
   console.log('errors :', formState.errors);
   console.log('value :', getValues());
-  const formSubmit = (data: ProfileForm) => {
+  const formSubmit = async (data: ProfileForm) => {
     console.log('data :', data);
     // // If the current page is less than 10, move to the next page
     if (page < PAGES.length - 1) {
       setPage(page + 1);
+      setPercentage(((page + 1) / PAGES.length) * 100);
+      // Otherwise, attempt to submit the form data
+    } else {
+      try {
+        await fetch(`${import.meta.env.VITE_API_URL}/register`, {
+          method: 'POST',
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data),
+        });
+
+        navigate('/');
+      } catch (error) {
+        throw new Error(`${String(error)}`);
+      }
     }
-    //   // Otherwise, attempt to submit the form data
-    // } else {
-    //   try {
-    //     // This function transforms an array of string into an array of objects
-    //     const transformArray = (array: string[]): SelectedItemBody[] =>
-    //       array.map((item: string) => JSON.parse(item) as SelectedItemBody);
-
-    //     // Use the transformArray function to transform the languages, technologies, and hobbies object
-    //     const transformedData = {
-    //       ...data,
-    //       languages: data.languages,
-    //       // technologies: data.technologies,
-    //       // hobbies: transformArray(data.hobbies),
-    //     };
-
-    //     await fetch(`${import.meta.env.VITE_API_URL}/register`, {
-    //       method: 'POST',
-    //       credentials: 'include',
-    //       headers: {
-    //         'Content-Type': 'application/json',
-    //       },
-    //       body: JSON.stringify(transformedData),
-    //     });
-
-    //     navigate('/');
-    //   } catch (error) {
-    //     throw new Error(`${String(error)}`);
-    //   }
-    // }
   };
 
   // if (!isLoggedIn) {
@@ -91,8 +81,8 @@ export default function FormProfile() {
 
   return (
     <FormProvider {...methods}>
-      <div className='mx-auto w-full max-w-[500px]'>
-        <ProgressBar percentage={60} />
+      <div className='mx-auto w-full max-w-[500px] duration-200'>
+        <ProgressBar percentage={percentage} />
       </div>
       <div className='w-full px-5'>
         <form
@@ -121,9 +111,7 @@ export default function FormProfile() {
                 >
                   {'Back'}
                 </Button>
-              ) : (
-                ''
-              )}
+              ) : undefined}
             </div>
           </div>
         </form>
