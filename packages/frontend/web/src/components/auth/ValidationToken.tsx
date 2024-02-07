@@ -8,8 +8,6 @@ import { type ActivationCode, activationCodeSchema } from '@app/shared';
 import Button from '@/components/Button';
 import { useAuth } from '@/contexts/AuthContext';
 
-const API_URL = import.meta.env.VITE_API_URL;
-
 export default function ValidationToken() {
   // State to store the user's code
   const [code, setCode] = useState<string>();
@@ -39,9 +37,9 @@ export default function ValidationToken() {
     try {
       if (isValid) {
         // Send a POST request to the API to activate the user's account
-        const res = await fetch(`${API_URL}/auth/registration/validation`, {
+        const res = await fetch(`/api/auth/registration/validation`, {
           method: 'POST',
-          credentials: 'include',
+          // credentials: 'include',
           headers: { 'content-type': 'application/json' },
           body: JSON.stringify(data),
         });
@@ -69,14 +67,11 @@ export default function ValidationToken() {
     const signal = controller.signal;
 
     const fetchCode = async () => {
-      const res = await fetch(
-        `${API_URL}/auth/registration/users/${userId}/code`,
-        {
-          signal,
-          credentials: 'include',
-          headers: { 'content-type': 'application/json' },
-        },
-      );
+      const res = await fetch(`/api/auth/registration/users/${userId}/code`, {
+        signal,
+        // credentials: 'include',
+        headers: { 'content-type': 'application/json' },
+      });
 
       const data = await res.json();
 

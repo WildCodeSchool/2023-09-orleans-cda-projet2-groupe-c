@@ -40,7 +40,7 @@ export default function InteractionContext({
     userId,
   });
 
-  // Get the distance between the current user and the selected user
+  // Get the disdockertance between the current user and the selected user
   const { distance } = useDistance({
     userId,
     selectedUser,

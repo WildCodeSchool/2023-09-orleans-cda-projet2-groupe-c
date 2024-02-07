@@ -14,8 +14,6 @@ import PasswordIcon from '../icons/PasswordIcon';
 import UserIcon from '../icons/UserIcon';
 import VisiblePassword from './VisiblePassword';
 
-const API_URL = import.meta.env.VITE_API_URL;
-
 // Variant animation for the container
 const containerVariants = {
   hidden: {
@@ -61,9 +59,9 @@ export default function Login() {
       // Validation of user entered data using a validation schema
       if (isValid) {
         // Send the login request to the server
-        const res = await fetch(`${API_URL}/auth/login`, {
+        const res = await fetch(`/api/auth/login`, {
           method: 'POST',
-          credentials: 'include', // Send cookies
+          // credentials: 'include', // Send cookies
           headers: {
             'content-type': 'application/json',
           },
