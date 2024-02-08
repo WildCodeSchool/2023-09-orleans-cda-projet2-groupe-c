@@ -43,7 +43,7 @@ export default function Home() {
         gap: '1rem',
       }}
     >
-      <span>{'Coucou Greg'}</span>
+      <span>{'Coucou Greg ça va ou quoi mec ?'}</span>
 
       <span>{`${someData.someProperty}`}</span>
 
