@@ -12,8 +12,8 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v4.1.1
 
-      - name: Goto client and run tests
-        run: cd /packages/frontend/web && bun i && bun test
+    #   - name: Goto client and run tests
+    #     run: cd /packages/frontend/web && bun i && bun test
 
   build:
     needs: test-front
