@@ -6,20 +6,13 @@ on:
       - develop
 
 jobs:
-  test-front:
+  build:
     runs-on: ubuntu-latest
+
     steps:
       - name: Check out code
         uses: actions/checkout@v4.1.1
 
-    #   - name: Goto client and run tests
-    #     run: cd /packages/frontend/web && bun i && bun test
-
-  build:
-    needs: test-front
-    runs-on: ubuntu-latest
-
-    steps:
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3.0.0
 
@@ -30,7 +23,7 @@ jobs:
         uses: docker/login-action@v3.0.0
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build and push Docker images
         run: |
