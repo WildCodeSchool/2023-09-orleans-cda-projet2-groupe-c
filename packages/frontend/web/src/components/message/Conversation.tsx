@@ -1,6 +1,5 @@
-import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import { useConversation } from '@/contexts/ConversationContext';
 
@@ -30,17 +29,9 @@ interface Conversation {
 
 export default function Conversation() {
   const { userId, conversation, setIsVisible, error } = useConversation();
-  console.log(conversation);
-
   const { register, handleSubmit, reset } = useForm();
 
   const navigate = useNavigate();
-
-  const messageEndReference = useRef<HTMLDivElement | null>(null);
-
-  // useEffect(() => {
-  //   messageEndReference.current?.scrollIntoView({ behavior: 'smooth' });
-  // }, [conversation]);
 
   const handleCloseConversation = () => {
     if (window.innerWidth < 1024) {
@@ -49,8 +40,6 @@ export default function Conversation() {
       navigate('/');
     }
   };
-
-  console.log(conversation);
 
   const formSubmit = async (data: { content?: Message['content'] }) => {
     try {
@@ -71,7 +60,14 @@ export default function Conversation() {
     reset();
   };
 
-  console.log(conversation);
+  const currentUser =
+    conversation?.user_1.id === userId
+      ? conversation?.user_1
+      : conversation?.user_2;
+  console.log('conversation : ', conversation);
+  // console.log('currentUser : ', currentUser.name);
+  console.log(userId);
+  console.log('user 2 : ', conversation?.user_1);
 
   return (
     <div className='bg-light-medium ml-auto flex h-[calc(100vh-56px)] w-full lg:w-[75%]'>
@@ -79,11 +75,19 @@ export default function Conversation() {
         <div className='flex h-14 w-full items-center justify-between bg-[#3f436a] p-3'>
           <div className='flex items-center gap-3 text-white'>
             <img
-              src={conversation?.receiver[0].picture_path}
+              src={
+                userId === conversation?.user_1.id
+                  ? conversation?.user_2.picture_path
+                  : conversation?.user_1.picture_path
+              }
               alt=''
               className='h-9 w-9 rounded-full shadow-md'
             />
-            <p>{conversation?.receiver.name}</p>
+            <p>
+              {userId === conversation?.user_1.id
+                ? conversation?.user_2.name
+                : conversation?.user_1.name}
+            </p>
           </div>
           <div>
             <CrossIcon
@@ -93,23 +97,21 @@ export default function Conversation() {
           </div>
         </div>
         <div className='flex h-[calc(100%-3.5rem)] w-full flex-col gap-5'>
-          <div className='h-full w-full overflow-y-auto'>
-            <div className='flex h-full flex-col justify-end gap-6 overflow-y-auto pb-2'>
+          <div className='h-full w-full overflow-auto'>
+            <div className='flex h-full flex-col justify-end gap-6 pb-2'>
               {Boolean(error) ? (
                 <p>{error}</p>
               ) : (
                 conversation?.messages.map((message) => (
                   <div
                     key={message.id}
-                    ref={messageEndReference}
-                    className={`$ flex w-full items-end gap-3 px-7 ${message.sender_name === conversation.sender.sender_name ? 'flex-row-reverse' : ''}`}
+                    className={`$ flex w-full items-end gap-3 px-7 ${message.sender_name === currentUser.name ? 'flex-row-reverse' : ''}`}
                   >
                     <BulletConversation
                       imageUrl={
-                        message.sender_name ===
-                        conversation.sender.initiator_name
-                          ? conversation.sender.picture_path
-                          : conversation.receiver[0].picture_path
+                        message.sender_name === conversation.user_1.name
+                          ? conversation.user_1.picture_path
+                          : conversation.user_2.picture_path
                       }
                       texte={message.content}
                       date={new Date(message.sent_at)}

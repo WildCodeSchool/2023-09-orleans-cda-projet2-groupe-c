@@ -60,6 +60,8 @@ export default function ConversationsList() {
     selectedConversation,
   } = useConversation();
 
+  const { userId } = useAuth();
+
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth >= 1024) {
@@ -77,12 +79,6 @@ export default function ConversationsList() {
       window.removeEventListener('resize', handleResize);
     };
   }, [setIsVisible]);
-
-  const { userId } = useAuth();
-  console.log(conversationsList);
-  console.log(userId);
-  
-  
 
   return (
     <div>
@@ -119,18 +115,24 @@ export default function ConversationsList() {
                       <div className='flex w-full items-center gap-2 overflow-hidden'>
                         <div className='h-14 w-14 shrink-0 overflow-hidden rounded-full'>
                           <img
-                            src={userId === conversation.conversation_id ? conversation.receiver[0].picture_path : conversation.sender.picture_path}
-                            alt={`Picture of ${conversation.receiver[0].receiver_name}`}
+                            src={
+                              userId === conversation.user_1.id
+                                ? conversation.user_2.picture_path
+                                : conversation.user_1.picture_path
+                            }
+                            // alt={`Picture of ${conversation.receiver[0].receiver_name}`}
                           />
                         </div>
                         <div className='flex grow flex-col gap-2 overflow-hidden'>
                           <p className='text-primary truncate text-lg'>
-                            {conversation.receiver[0].receiver_name}
+                            {userId === conversation.user_1.id
+                              ? conversation.user_2.name
+                              : conversation.user_1.name}
                           </p>
                           <div className='w-full'>
                             <p className='truncate text-sm'>
-                              {conversation.messages.length > 0
-                                ? conversation.messages[0].content
+                              {Boolean(conversation.messages)
+                                ? conversation.messages.content
                                 : "Aucun message pour l'instant. Lancez-vous et envoyez le premier message !"}
                             </p>
                           </div>
@@ -140,8 +142,8 @@ export default function ConversationsList() {
                         <div className='self shrink-0 text-right text-sm'>
                           <DateComponent
                             date={
-                              conversation.messages.length > 0
-                                ? conversation.messages[0].sent_at
+                              conversation.messages
+                                ? conversation.messages.sent_at
                                 : ''
                             }
                           />

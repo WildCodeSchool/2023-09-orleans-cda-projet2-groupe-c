@@ -27,19 +27,19 @@ messageRouter.get(
             eb
               .selectFrom('user as u')
               .innerJoin('picture as p', 'p.user_id', 'u.id')
-              .select(['u.id', 'u.name as sender_name', 'p.picture_path'])
+              .select(['u.id', 'u.name', 'p.picture_path'])
               .whereRef('u.id', '=', 'c.initiator_id')
               .limit(1),
-          ).as('sender'),
-          jsonArrayFrom(
+          ).as('user_1'),
+          jsonObjectFrom(
             eb
               .selectFrom('user as u')
               .innerJoin('picture as p', 'p.user_id', 'u.id')
-              .select(['u.id', 'u.name as receiver_name', 'p.picture_path'])
+              .select(['u.id', 'u.name', 'p.picture_path'])
               .whereRef('u.id', '=', 'c.receiver_id')
               .limit(1),
-          ).as('receiver'),
-          jsonArrayFrom(
+          ).as('user_2'),
+          jsonObjectFrom(
             eb
               .selectFrom('message as m')
               .innerJoin('user as u', 'm.sender_id', 'u.id')
@@ -54,61 +54,10 @@ messageRouter.get(
               .limit(1),
           ).as('messages'),
         ])
-        /*  .where((eb) =>
+        .where((eb) =>
           eb('initiator_id', '=', userId).or('receiver_id', '=', userId),
-        )  */
-        .where('receiver_id', '=', userId)
+        )
         .execute();
-
-      // const conversation = await db
-      //   .selectFrom('message as m')
-      //   .innerJoin('user as u', 'm.sender_id', 'u.id')
-      //   .innerJoin('user_action as ua', 'm.conversation_id', 'ua.id')
-      //   .whereRef('m.sender_id', '=', 'u.id')
-      //   .select((eb) => [
-      //     'm.conversation_id',
-      //     jsonArrayFrom(
-      //       eb
-      //         .selectFrom('user as u')
-      //         .innerJoin('picture as p', 'p.user_id', 'u.id')
-      //         .select(['u.id', 'u.name as sender_name', 'p.picture_path'])
-      //         .whereRef('u.id', '=', 'm.sender_id')
-      //         .orderBy('p.id', 'asc')
-      //         .limit(1),
-      //     ).as('sender'),
-      //     jsonArrayFrom(
-      //       eb
-      //         .selectFrom('user_action as ua')
-      //         .innerJoin('user as u', 'ua.receiver_id', 'u.id')
-      //         .innerJoin('picture as p', 'p.user_id', 'u.id')
-      //         .select([
-      //           'u.id',
-      //           'u.name as receiver_name',
-      //           'p.picture_path',
-      //           'u.birthdate as receiver_birthdate',
-      //         ])
-      //         .whereRef('m.conversation_id', '=', 'ua.id')
-      //         .orderBy('p.id', 'asc')
-      //         .limit(1),
-      //     ).as('receiver'),
-      //     jsonArrayFrom(
-      //       eb
-      //         .selectFrom('message as m')
-      //         .innerJoin('user as u', 'm.sender_id', 'u.id')
-      //         .whereRef('m.conversation_id', '=', 'ua.id')
-      //         .select([
-      //           'm.id',
-      //           'u.name as sender_name',
-      //           'm.content',
-      //           'm.sent_at',
-      //         ])
-      //         .orderBy('m.sent_at', 'desc')
-      //         .limit(1),
-      //     ).as('messages'),
-      //   ])
-      //   .where('sender_id', '=', userId)
-      //   .groupBy('m.conversation_id')
-      //   .execute();
 
       return res.json(conversation);
     } catch (error) {
@@ -135,31 +84,26 @@ messageRouter.get(
       const messages = await db
 
         .selectFrom('conversation as c')
-        .innerJoin('user as receiver', 'receiver.id', 'c.receiver_id')
         .innerJoin('user as initiator', 'initiator.id', 'c.initiator_id')
+        .innerJoin('user as receiver', 'receiver.id', 'c.receiver_id')
         .select((eb) => [
           'c.id as conversation_id',
           jsonObjectFrom(
             eb
               .selectFrom('user as u')
               .innerJoin('picture as p', 'p.user_id', 'u.id')
-              .select(['u.id', 'u.name as sender_name', 'p.picture_path'])
+              .select(['u.id', 'u.name', 'p.picture_path'])
               .whereRef('u.id', '=', 'c.initiator_id')
               .limit(1),
-          ).as('sender'),
-          jsonArrayFrom(
+          ).as('user_1'),
+          jsonObjectFrom(
             eb
               .selectFrom('user as u')
               .innerJoin('picture as p', 'p.user_id', 'u.id')
-              .select([
-                'u.id',
-                'u.name as receiver_name',
-                'p.picture_path',
-                'u.birthdate',
-              ])
+              .select(['u.id', 'u.name', 'p.picture_path'])
               .whereRef('u.id', '=', 'c.receiver_id')
               .limit(1),
-          ).as('receiver'),
+          ).as('user_2'),
           jsonArrayFrom(
             eb
               .selectFrom('message as m')
@@ -184,49 +128,6 @@ messageRouter.get(
         .where('c.id', '=', Number(conversationId))
 
         .execute();
-
-      // .selectFrom('message as m')
-      // .innerJoin('user as u', 'm.sender_id', 'u.id')
-      // .innerJoin('user_action as ua', 'm.conversation_id', 'ua.id')
-      // .select((eb) => [
-      //   'm.conversation_id',
-      //   jsonObjectFrom(
-      //     eb
-      //       .selectFrom('user as u')
-      //       .innerJoin('picture as p', 'p.user_id', 'u.id')
-      //       .select(['u.id', 'u.name', 'p.picture_path'])
-      //       .whereRef('u.id', '=', 'm.sender_id')
-      //       .orderBy('p.id asc')
-      //       .limit(1),
-      //   ).as('sender'),
-      //   jsonObjectFrom(
-      //     eb
-      //       .selectFrom('user_action as ua')
-      //       .innerJoin('user as u', 'ua.receiver_id', 'u.id')
-      //       .innerJoin('picture as p', 'p.user_id', 'u.id')
-      //       .select(['u.id', 'u.name', 'p.picture_path'])
-      //       .whereRef('m.conversation_id', '=', 'ua.id')
-      //       .orderBy('p.id asc')
-      //       .limit(1),
-      //   ).as('receiver'),
-      //   jsonArrayFrom(
-      //     eb
-      //       .selectFrom('message as m')
-      //       .innerJoin('user as u', 'm.sender_id', 'u.id')
-      //       .whereRef('m.conversation_id', '=', 'ua.id')
-      //       .select([
-      //         'm.id',
-      //         'u.name as sender_name',
-      //         'm.content',
-      //         'm.sent_at',
-      //       ])
-      //       .orderBy('m.sent_at', 'desc'),
-      //   ).as('messages'),
-      // ])
-      // .where('sender_id', '=', Number(userId))
-      // .where('m.conversation_id', '=', Number(conversationId))
-      // .groupBy('m.conversation_id')
-      // .execute();
 
       return res.json(messages);
     } catch (error) {

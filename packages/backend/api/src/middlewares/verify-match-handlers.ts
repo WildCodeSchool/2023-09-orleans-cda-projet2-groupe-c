@@ -15,12 +15,12 @@ export const verifyConversation = async (
     const userId1 = req.userId as number;
 
     const userId2 = await db
-      .selectFrom('message as m')
-      .innerJoin('user_action as ua', 'm.conversation_id', 'ua.id')
-      .innerJoin('user as receiver', 'ua.receiver_id', 'receiver.id')
-      .select('receiver.id')
+      .selectFrom('conversation as c')
+      .innerJoin('user as receiver', 'c.receiver_id', 'receiver.id')
+      .innerJoin('user as initiator', 'c.initiator_id', 'initiator.id')
+      .innerJoin('message as m', 'm.conversation_id', 'c.id')
+      .select(['receiver.id', 'initiator_id'])
       .where('m.conversation_id', '=', Number(conversationId))
-      .limit(1)
       .execute();
 
     if (userId2.length === 0) {
@@ -43,6 +43,8 @@ export const verifyConversation = async (
       .where('ua.receiver_id', '=', userId2[0].id)
       .where('ua.canceled_at', 'is not', null)
       .execute();
+
+    console.log('ini :', initiatorAction);
 
     const receiverAction = await db
       .selectFrom('user_action as ua')
