@@ -45,7 +45,7 @@ export default function Home() {
     >
       <span>
         {
-          'Coucou Greg ça va ou quoi mec ? oui et toi ? Yes mec ! ça fait quoi ?'
+          'Coucou Greg ça va ou quoi mec ? oui et toi ? Yes mec ! ça fait quoi ? hein ?'
         }
       </span>
 
