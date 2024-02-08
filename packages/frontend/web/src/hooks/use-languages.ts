@@ -13,21 +13,21 @@ export default function useLanguages() {
     const controller = new AbortController();
     const signal = controller.signal;
 
-    const fetchLanguages = async () => {
-      const res = await fetch(`${API_URL}/languages`, { signal });
+    try {
+      (async () => {
+        const res = await fetch(`${API_URL}/languages`, { signal });
 
-      const data = await res.json();
+        const data = await res.json();
 
-      setLanguages(data);
+        setLanguages(data);
+      })();
+    } catch {
+      setErrorLanguages('Error fetching languages');
+    }
+
+    return () => {
+      controller.abort();
     };
-
-    fetchLanguages().catch(() => {
-      setErrorLanguages('Fail to fetch languages');
-
-      return () => {
-        controller.abort();
-      };
-    });
   }, []);
 
   return { languages, errorLanguages };

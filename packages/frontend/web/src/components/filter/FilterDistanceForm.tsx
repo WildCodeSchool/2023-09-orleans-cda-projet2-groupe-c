@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { UseFormRegister } from 'react-hook-form';
 
 import type { RequestPreferencesBody } from '@app/shared';
@@ -15,6 +15,13 @@ export default function FilterDistanceForm({
 
   // State to store the distance value
   const [data, setData] = useState<number>(preferences?.distance ?? 10);
+
+  // Update the distance value when the preferences change
+  useEffect(() => {
+    if (preferences && preferences.distance !== undefined) {
+      setData(preferences.distance);
+    }
+  }, [preferences]);
 
   return (
     <div className='mb-3 flex flex-col gap-2'>
