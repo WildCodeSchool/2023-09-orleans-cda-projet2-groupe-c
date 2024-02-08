@@ -1,4 +1,4 @@
-name: Docker build images
+name: docker-build-image
 
 on:
   push:
@@ -6,13 +6,20 @@ on:
       - develop
 
 jobs:
+  test-front:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkour@v4.1.1
+
+      - name: Goto client and run tests
+        run: cd /packages/frontend/web && bun i && bun test
+
   build:
+    needs: test-front
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check out the code
-        uses: actions/checkout@v4.1.1
-
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3.0.0
 
