@@ -6,9 +6,11 @@ import type { Request as ExpressRequest } from '@app/shared';
 
 import { getUserId } from '@/middlewares/auth-handlers';
 import { getSuperLikeCount } from '@/middlewares/interaction-handlers';
+import { verifyInteractions } from '@/middlewares/verify-match-handlers';
 
 interface Request extends ExpressRequest {
   superLikesCount?: number;
+  isMatching?: boolean;
 }
 
 const interactionRouter = express.Router();
@@ -163,5 +165,24 @@ interactionRouter.post(
     }
   },
 );
+
+/* interactionRouter.get(
+  '/:userId/interactions/verify',
+  verifyInteractions,
+  async (req: Request, res) => {
+    const isMatching = req.isMatching;
+
+    if (isMatching === true) {
+      await db 
+      .insertInto('conversation')
+      .values({
+        initiator_id,
+        receiver_id,
+        created_at
+      })
+      .execute()
+    }
+  },
+); */
 
 export default interactionRouter;

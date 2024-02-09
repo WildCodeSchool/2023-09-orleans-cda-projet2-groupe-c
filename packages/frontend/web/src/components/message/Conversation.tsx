@@ -6,6 +6,7 @@ import { useConversation } from '@/contexts/ConversationContext';
 import CrossIcon from '../icons/CrossIcon';
 import SendIcon from '../icons/SendIcon';
 import BulletConversation from './BulletConversation';
+import { useEffect, useRef } from 'react';
 
 interface User {
   id: number;
@@ -30,6 +31,14 @@ interface Conversation {
 export default function Conversation() {
   const { userId, conversation, setIsVisible, error } = useConversation();
   const { register, handleSubmit, reset } = useForm();
+  const messagesEndReference = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const scrollToBottom = () => {
+      messagesEndReference.current?.scrollIntoView({behavior: "smooth" })
+    }
+    scrollToBottom()
+  },[conversation?.messages])
 
   const navigate = useNavigate();
 
@@ -64,10 +73,6 @@ export default function Conversation() {
     conversation?.user_1.id === userId
       ? conversation?.user_1
       : conversation?.user_2;
-  console.log('conversation : ', conversation);
-  // console.log('currentUser : ', currentUser.name);
-  console.log(userId);
-  console.log('user 2 : ', conversation?.user_1);
 
   return (
     <div className='bg-light-medium ml-auto flex h-[calc(100vh-56px)] w-full lg:w-[75%]'>
@@ -98,13 +103,14 @@ export default function Conversation() {
         </div>
         <div className='flex h-[calc(100%-3.5rem)] w-full flex-col gap-5'>
           <div className='h-full w-full overflow-auto'>
-            <div className='flex h-full flex-col justify-end gap-6 pb-2'>
+            <div className='flex flex-col justify-end gap-6 pb-2'>
               {Boolean(error) ? (
                 <p>{error}</p>
               ) : (
                 conversation?.messages.map((message) => (
                   <div
                     key={message.id}
+                    ref={messagesEndReference}
                     className={`$ flex w-full items-end gap-3 px-7 ${message.sender_name === currentUser.name ? 'flex-row-reverse' : ''}`}
                   >
                     <BulletConversation

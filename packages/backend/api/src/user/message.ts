@@ -5,8 +5,6 @@ import { db } from '@app/backend-shared';
 import type { Request } from '@app/shared';
 
 import { getUserId } from '@/middlewares/auth-handlers';
-import { verifyConversation } from '@/middlewares/verify-match-handlers';
-
 const messageRouter = express.Router();
 
 messageRouter.get(
@@ -139,7 +137,6 @@ messageRouter.get(
 messageRouter.post(
   '/:userId/conversations/:conversationId/message',
   getUserId,
-  verifyConversation,
   async (req: Request, res) => {
     try {
       const { content } = req.body;
