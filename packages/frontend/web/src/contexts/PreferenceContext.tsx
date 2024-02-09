@@ -98,6 +98,10 @@ export default function PreferenceContext({
         'ⓘ An error occurred while fetching user preferences.',
       );
     });
+
+    return () => {
+      controller.abort();
+    };
   }, [fetchPreferences]);
 
   // Function to update the preferences
