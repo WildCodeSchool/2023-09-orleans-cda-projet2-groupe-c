@@ -1,12 +1,10 @@
 version: '3'
 
-name: '2023-09-orleans-cda-projet2-dev'
+name: '2023-09-orleans-cda-projet2-staging'
 
 services:
   api:
-    build:
-      dockerfile: ./deployment/DockerfileBackendApi
-      context: ../
+    image: mikazian/tindev-backendapi-staging
     restart: always
     depends_on:
       database:
@@ -19,9 +17,7 @@ services:
       - backend
 
   web:
-    build:
-      dockerfile: ./deployment/DockerfileFrontendWeb
-      context: ../
+    image: mikazian/tindev-frontendweb-staging
     volumes:
       - web-client-build:/app
     env_file:
@@ -37,9 +33,9 @@ services:
       - api
     restart: always
     ports:
-      - 80:8080
+      - ${GATEWAY_PORT}:8080
     volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx.prod.conf:/etc/nginx/nginx.conf
       - web-client-build:/web-client-build
     networks:
       - backend
@@ -63,9 +59,7 @@ services:
       - db
 
   migrations:
-    build:
-      dockerfile: ./deployment/DockerfileBackendMigrations
-      context: ../
+    image: mikazian/tindev-backendmigrations-staging
     depends_on:
       database:
         condition: service_healthy
