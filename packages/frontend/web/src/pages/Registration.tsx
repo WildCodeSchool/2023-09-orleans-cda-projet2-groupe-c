@@ -11,7 +11,7 @@ export default function Registration() {
   }
 
   return (
-    <main className='text-light h-screen w-screen overflow-hidden p-5'>
+    <main className='text-light bg-light-medium h-screen w-screen p-5'>
       <Outlet />
     </main>
   );

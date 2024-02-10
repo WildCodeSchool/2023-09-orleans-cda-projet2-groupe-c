@@ -9,6 +9,7 @@ import { registrationSchema } from '@app/shared';
 import { useAuth } from '@/contexts/AuthContext';
 
 import Button from '../Button';
+import FormLayout from '../FormLayout';
 import FormContainer from '../forms/FormContainer';
 
 const API_URL = import.meta.env.VITE_API_URL;
@@ -44,8 +45,9 @@ export default function RegistrationForm() {
           }),
         });
 
-        // Navigate to the success page if the form is valid with useNavigate
         setIsLoggedIn(true);
+
+        // Navigate to the success page if the form is valid with useNavigate
         navigate('/registration/success');
       }
     } catch {
@@ -56,32 +58,37 @@ export default function RegistrationForm() {
   };
 
   return (
-    <div className='mx-auto flex h-full w-full max-w-[500px] flex-col justify-between'>
-      <FormContainer title='Create a new account'>
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className='flex h-full flex-col items-center justify-between'
-        >
+    <FormLayout>
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className='flex h-full flex-col items-center justify-between py-[15%]'
+      >
+        <FormContainer title='Create a new account'>
+          <p className='pb-8'>
+            {'Your email and password are required to create an account.'}
+          </p>
+
           <div className='flex h-full w-full flex-col justify-between gap-6'>
+            {/* Email input */}
             <div className='flex flex-col gap-1'>
               <label htmlFor='email' className='text-secondary text-sm'>
                 {'Email'}
                 <span className='text-primary'>{'*'}</span>
               </label>
               <input
-                type='email'
+                type='text'
                 id='email'
-                className='border-primary bg-light-light text-secondary focus:outline-secondary rounded-lg border p-2 text-center transition-all focus:outline'
+                placeholder='your-email@example.fr'
+                className='border-primary bg-light h-5 w-full rounded-md border px-2 py-6 text-lg focus:outline-none lg:text-xl'
                 {...register('email')}
               />
 
               {errors.email && errors.email.message !== undefined ? (
-                <p className='text-primary flex text-xs'>
-                  {errors.email.message}
-                </p>
+                <p className='text-primary text-xs'>{errors.email.message}</p>
               ) : undefined}
             </div>
 
+            {/* Password input */}
             <div className='flex flex-col gap-1'>
               <label htmlFor='password' className='text-secondary mt-2 text-sm'>
                 {'Password'}
@@ -90,27 +97,27 @@ export default function RegistrationForm() {
               <input
                 type='password'
                 id='password'
-                className='border-primary bg-light-light text-secondary focus:outline-secondary w-100 rounded-lg border p-2 text-center transition-all focus:outline'
+                placeholder='Write your password...'
+                className='border-primary bg-light h-5 w-full rounded-md border px-2 py-6 text-lg focus:outline-none lg:text-xl'
                 {...register('password')}
               />
+              <p className='text-placeholder text-sm'>{`minimum 8 characters`}</p>
             </div>
           </div>
 
           {errors.password && errors.password.message !== undefined ? (
-            <p className='text-primary flex text-xs'>
-              {errors.password.message}
-            </p>
+            <p className='text-primary text-xs'>{errors.password.message}</p>
           ) : undefined}
 
-          {Boolean(errorRegistration) && <p>{errorRegistration}</p>}
+          {Boolean(errorRegistration) && (
+            <p className='text-primary text-xs'>{errorRegistration}</p>
+          )}
+        </FormContainer>
 
-          <div className='mt-20 flex w-full flex-col pb-12'>
-            <Button type='submit' isOutline={false}>
-              {'Validate'}
-            </Button>
-          </div>
-        </form>
-      </FormContainer>
-    </div>
+        <Button type='submit' isOutline={false}>
+          {'Validate'}
+        </Button>
+      </form>
+    </FormLayout>
   );
 }

@@ -111,11 +111,16 @@ export const authSchema = z
   .strict()
   .strip();
 
+// Schema for the registration form
 export const registrationSchema = authSchema.pick({
   email: true,
   password: true,
 });
 
+// Type for the registration form
+export type RegisterBody = z.infer<typeof registrationSchema>;
+
+// Schema for the registration form with activation code
 export const registerWithActivationCodeSchema = authSchema.pick({
   email: true,
   password: true,
@@ -124,21 +129,41 @@ export const registerWithActivationCodeSchema = authSchema.pick({
   email_verified_at: true,
 });
 
+// Type for the registration form with activation code
+export type RegisterWithActivationCode = z.infer<
+  typeof registerWithActivationCodeSchema
+>;
+
+// Schema for the activation code backend api
 export const activationCodeSchema = authSchema.pick({ activation_code: true });
 
+// Schema for the activation token backend api
 export const activationTokenSchema = authSchema.pick({
   activation_code: true,
   activate_at: true,
 });
 
-export type RegisterBody = z.infer<typeof registrationSchema>;
+// Type for the activation token backend api
+export type ActivationToken = z.infer<typeof activationTokenSchema>;
 
-export type RegisterWithActivationCode = z.infer<
-  typeof registerWithActivationCodeSchema
->;
-
+// Type for the activation code backend api
 export type ActivationCode = z.infer<typeof activationCodeSchema>;
 
-export type ActivationToken = z.infer<typeof activationTokenSchema>;
+// Schema for the activation code form frontend
+export const activationCodeFormSchema = z.object({
+  code_1: z.string().trim().length(1),
+  code_2: z.string().trim().length(1),
+  code_3: z.string().trim().length(1),
+  code_4: z.string().trim().length(1),
+  code_5: z.string().trim().length(1),
+  code_6: z.string().trim().length(1),
+});
+
+// Type for the activation code form frontend
+export type ActivationTokenFormBody = z.infer<typeof activationCodeFormSchema>;
+
+// Schema for the login form
 export const loginSchema = authSchema.pick({ email: true, password: true });
+
+// Type for the login form
 export type AuthBody = z.infer<typeof loginSchema>;
