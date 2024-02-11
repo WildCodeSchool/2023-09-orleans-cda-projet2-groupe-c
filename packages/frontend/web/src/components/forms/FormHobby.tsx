@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react';
 import { useController, useFormContext } from 'react-hook-form';
 
 import {
-  type FormCategoryValidation,
+  type FormItemsValidation,
   type HobbyBody,
-  formArrayStringSchema,
+  formItemsSchema,
 } from '@app/shared';
 
 import FormContainer from './FormContainer';
@@ -15,7 +15,7 @@ export default function FormHobby() {
   // State to store hobbies
   const [hobbies, setHobbies] = useState<HobbyBody[]>([]);
 
-  const { formState, control } = useFormContext<FormCategoryValidation>();
+  const { formState, control } = useFormContext<FormItemsValidation>();
 
   // Destructure the errors from the formState
   const { errors } = formState;
@@ -24,8 +24,9 @@ export default function FormHobby() {
     control,
     name: 'hobbies',
     rules: {
+      // Use zod schema to validate the form field
       validate: (value) => {
-        const result = formArrayStringSchema.shape['hobbies'].safeParse(value);
+        const result = formItemsSchema.shape['hobbies'].safeParse(value);
         return result.success ? true : result.error.errors[0]?.message;
       },
     },
@@ -99,10 +100,9 @@ export default function FormHobby() {
                     category.category_name.slice(1)}
                 </h1>
               </div>
-              <div className='flex flex-wrap gap-3'>
+              <div className='flex w-full flex-wrap gap-2'>
                 {category.hobbies.map((hobby) => (
-                  <label
-                    htmlFor={hobby.hobby_name}
+                  <div
                     key={hobby.hobby_id}
                     className={`border-primary hover:bg-primary cursor-pointer rounded-lg border px-2 py-1 ${
                       value.some(
@@ -112,7 +112,7 @@ export default function FormHobby() {
                         : 'text-secondary'
                     }`}
                   >
-                    {hobby.hobby_name}
+                    <label htmlFor={hobby.hobby_name}>{hobby.hobby_name}</label>
                     <input
                       {...field}
                       hidden
@@ -128,7 +128,7 @@ export default function FormHobby() {
                       type='checkbox'
                       checked={value.some((val) => val.id === hobby.hobby_id)}
                     />
-                  </label>
+                  </div>
                 ))}
               </div>
             </div>

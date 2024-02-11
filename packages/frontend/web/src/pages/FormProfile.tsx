@@ -2,9 +2,10 @@ import { Fragment, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 
-import type { ProfileForm } from '@app/shared';
+import type { FormProfileBody } from '@app/shared';
 
 import Button from '@/components/Button';
+import FormLayout from '@/components/FormLayout';
 import ProgressBar from '@/components/ProgressBar';
 import FormBio from '@/components/forms/FormBio';
 import FormBirthDate from '@/components/forms/FormBirthDate';
@@ -33,32 +34,42 @@ const PAGES = [
 export default function FormProfile() {
   const navigate = useNavigate();
 
+  // State to control the current page
   const [page, setPage] = useState<number>(0);
 
+  // State to control the percentage of the progress bar
   const [percentage, setPercentage] = useState<number>(0);
 
-  //I use the const methods to send all useForm properties to my child elements
-  const methods = useForm<ProfileForm>({
+  // Use the const methods to send all useForm properties to my child elements
+  const methods = useForm<FormProfileBody>({
     shouldFocusError: false,
   });
 
   const { handleSubmit } = methods;
 
-  const formSubmit = async (data: ProfileForm) => {
+  // Function to submit the form data
+  const formSubmit = async (data: FormProfileBody) => {
     // If the current page is less than 10, move to the next page
     if (page < PAGES.length - 1) {
       setPage(page + 1);
-      setPercentage(((page + 1) / PAGES.length) * 100);
-      // Otherwise, attempt to submit the form data
+
+      setPercentage(((page + 2) / PAGES.length) * 100);
     } else {
       try {
+        // Get data year, month and day to create the birthdate
+        const { year, month, day, ...rest } = data;
+        const birthdate = `${year}-${month}-${day}`;
+
+        // Create a new object with the birthdate and the rest of the data
+        const newData = { ...rest, birthdate };
+
         await fetch(`${import.meta.env.VITE_API_URL}/register`, {
           method: 'POST',
           credentials: 'include',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(data),
+          body: JSON.stringify(newData),
         });
 
         navigate('/');
@@ -68,14 +79,17 @@ export default function FormProfile() {
     }
   };
   return (
-    <FormProvider {...methods}>
-      <div className='h-full w-full px-5 pt-2'>
-        <div className='mx-auto w-full max-w-[500px]'>
+    <FormLayout>
+      <FormProvider {...methods}>
+        {/* Progress bar */}
+        <div className='pt-5'>
           <ProgressBar percentage={percentage} />
         </div>
+
+        {/* Forms */}
         <form
           onSubmit={handleSubmit(formSubmit)}
-          className='flex h-full flex-col items-center justify-between'
+          className='flex h-full flex-col items-center justify-between py-[10%]'
         >
           <div className='flex h-full w-full max-w-[500px] flex-col justify-between'>
             {/*   i use react.Fragment because only <></> not work with key */}
@@ -85,7 +99,9 @@ export default function FormProfile() {
                   <Fragment key={currentPage}>{component}</Fragment>
                 ),
             )}
-            <div className='mb-5 flex w-full flex-col gap-6 md:mb-32'>
+
+            {/* Buttons Next and Back */}
+            <div className='flex w-full flex-col gap-6'>
               <Button isOutline={false} type='submit'>
                 {page >= 9 ? 'Start matching' : 'Next'}
               </Button>
@@ -95,7 +111,7 @@ export default function FormProfile() {
                   type='button'
                   onClick={() => {
                     setPage(page - 1);
-                    setPercentage(((page - 1) / PAGES.length) * 100);
+                    setPercentage(((page - 2) / PAGES.length) * 100);
                   }}
                 >
                   {'Back'}
@@ -104,7 +120,7 @@ export default function FormProfile() {
             </div>
           </div>
         </form>
-      </div>
-    </FormProvider>
+      </FormProvider>
+    </FormLayout>
   );
 }

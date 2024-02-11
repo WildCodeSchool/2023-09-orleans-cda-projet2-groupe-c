@@ -1,7 +1,7 @@
 import express from 'express';
 
 import { db } from '@app/backend-shared';
-import type { FormBackValidation } from '@app/shared';
+import type { FormProfileBodyBackend } from '@app/shared';
 import type { Request } from '@app/shared';
 
 import { getUserId } from './middlewares/auth-handlers';
@@ -20,7 +20,7 @@ register.post('/', getUserId, async (req: Request, res) => {
       languages,
       technologies,
       hobbies,
-    } = req.body as FormBackValidation;
+    } = req.body as FormProfileBodyBackend;
 
     const userId = req.userId as number;
 
@@ -35,7 +35,7 @@ register.post('/', getUserId, async (req: Request, res) => {
           gender,
           city_id: Number(cityId),
           biography,
-          account_github: accountGithub,
+          account_github: String(accountGithub),
         })
         .where('user.id', '=', userId)
         .executeTakeFirstOrThrow();

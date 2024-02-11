@@ -2,9 +2,14 @@ import { useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 
 import { formCityShema } from '@app/shared';
-import type { CityBody, FormCityValidation, Point } from '@app/shared';
+import type { FormCityValidation, Point } from '@app/shared';
 
 import FormContainer from './FormContainer';
+
+export interface CityBody {
+  id: number;
+  name: string;
+}
 
 interface Coordinates {
   coordinates: Point;
@@ -13,9 +18,13 @@ interface Coordinates {
 export default function FormCity() {
   const { register, setValue, getValues, formState } =
     useFormContext<FormCityValidation>();
+
   const { onChange, ...rest } = register('cityName'); //use cityName to keep the name in the input
+
   const [cities, setCities] = useState<CityBody[]>([]);
+
   const { errors } = formState;
+
   register('cityId', {
     validate: () => {
       const result = formCityShema.safeParse({
@@ -25,6 +34,7 @@ export default function FormCity() {
       return result.success ? true : result.error.errors[0]?.message;
     },
   });
+
   const searchBar = getValues('cityName');
 
   const handleCityChange = (cityName: string, cityId: number) => {
@@ -84,7 +94,7 @@ export default function FormCity() {
           }}
           {...rest}
           placeholder='Write and choose your city...'
-          className='border-primary bg-light mt-2 h-5 w-full rounded-md border px-2 py-6 text-lg focus:outline-none lg:text-xl'
+          className='border-primary bg-light mt-2 w-full rounded-md border px-2 py-3 text-lg focus:outline-none lg:text-xl'
         />
         <div className='bg-light absolute max-h-80 w-full overflow-y-auto rounded-lg shadow-lg'>
           {cities.map((city) => (

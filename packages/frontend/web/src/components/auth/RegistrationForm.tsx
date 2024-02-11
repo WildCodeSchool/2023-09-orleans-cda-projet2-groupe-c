@@ -61,7 +61,7 @@ export default function RegistrationForm() {
     <FormLayout>
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className='flex h-full flex-col items-center justify-between py-[15%]'
+        className='flex h-full flex-col items-center justify-between py-[10%]'
       >
         <FormContainer title='Create a new account'>
           <p className='pb-8'>

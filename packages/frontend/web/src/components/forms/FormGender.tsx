@@ -24,46 +24,42 @@ export default function FormGender() {
 
   return (
     <FormContainer title='I AM...'>
-      <div className='pb-16'>
-        <span className='flex justify-start pb-5'>{'Choose your gender.'}</span>
-        <div className='flex flex-col gap-3'>
-          {genderOptions.map((option) => (
-            <div key={option.id} className='flex items-center justify-center'>
-              <label
-                className={`border-primary hover:bg-primary hover:text-light-hard flex w-full cursor-pointer items-center justify-center rounded-lg border  py-3 text-xl ${
-                  selectedOption === option.id ? 'bg-primary text-light' : ''
-                }`}
-                htmlFor={option.id}
-                onClick={handleClick}
-              >
-                {option.label}
-              </label>
-              <input
-                hidden
-                type='radio'
-                id={option.id}
-                {...register('gender', {
-                  validate: (value) => {
-                    const result = formIamSchema.shape.gender.safeParse(value);
-                    return result.success
-                      ? true
-                      : result.error.errors[0]?.message;
-                  },
-                })}
-                value={option.value}
-              />
-            </div>
-          ))}
-        </div>
-
-        {errors.gender ? (
-          <p className='text-primary absolute bottom-8'>
-            {errors.gender.message}
-          </p>
-        ) : (
-          ''
-        )}
+      <span className='flex justify-start pb-5'>{'Choose your gender.'}</span>
+      <div className='mx-auto flex w-full max-w-[350px] flex-col gap-3'>
+        {genderOptions.map((option) => (
+          <div key={option.id} className='flex items-center justify-center'>
+            <label
+              className={`border-primary hover:bg-primary hover:text-light-hard flex w-full cursor-pointer items-center justify-center rounded-lg border py-3 text-xl ${
+                selectedOption === option.id ? 'bg-primary text-light' : ''
+              }`}
+              htmlFor={option.id}
+              onClick={handleClick}
+            >
+              {option.label}
+            </label>
+            <input
+              hidden
+              type='radio'
+              id={option.id}
+              {...register('gender', {
+                validate: (value) => {
+                  const result = formIamSchema.shape.gender.safeParse(value);
+                  return result.success
+                    ? true
+                    : result.error.errors[0]?.message;
+                },
+              })}
+              value={option.value}
+            />
+          </div>
+        ))}
       </div>
+
+      {errors.gender ? (
+        <p className='text-primary mt-2'>{errors.gender.message}</p>
+      ) : (
+        ''
+      )}
     </FormContainer>
   );
 }
