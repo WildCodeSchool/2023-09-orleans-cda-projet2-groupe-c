@@ -4,10 +4,10 @@ import Loading from '../Loading';
 import Card from './Card';
 import Interactions from './Interactions';
 
-export default function HomeCard() {
+export default function HomeCards() {
   const { selectedUser } = useInteraction();
 
-  if (selectedUser === undefined) {
+  if (!selectedUser) {
     return <Loading />;
   }
 
