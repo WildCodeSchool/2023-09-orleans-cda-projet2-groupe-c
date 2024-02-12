@@ -123,10 +123,10 @@ authRouter.post(
           .where('id', '=', userId)
           .execute();
 
-        res.json({ ok: true, isLoggedIn: true });
+        res.json({ ok: true, isLoggedIn: true, isActived: true });
       }
 
-      res.json({ ok: false, isLoggedIn: false });
+      res.json({ ok: false, isLoggedIn: false, isActived: false });
     } catch {
       return res.json({
         ok: false,
@@ -195,7 +195,8 @@ authRouter.get('/verify', async (req, res) => {
     if (!user?.activate_at) {
       return res.json({
         ok: false,
-        isLoggedIn: false,
+        isLoggedIn: true,
+        isActived: false,
         error: 'Account not activated!',
       });
     }
@@ -203,6 +204,7 @@ authRouter.get('/verify', async (req, res) => {
     return res.json({
       ok: true,
       isLoggedIn: true,
+      isActived: true,
       userId: payload.userId,
     });
   } catch (error) {

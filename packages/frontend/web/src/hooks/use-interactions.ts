@@ -10,7 +10,7 @@ export default function useInteractions({ ...props }) {
   const [selectedUser, setSelectedUser] = useState<UserBody>();
   const [superLikesCount, setSuperLikesCount] = useState<number>(0);
 
-  // Fetch user's superlike from the API
+  // Fetch users from the API
   const fetchUsers = useCallback(
     async ({ signal }: { signal: AbortSignal }) => {
       const res = await fetch(`${API_URL}/users/${userId}`, {
@@ -22,7 +22,7 @@ export default function useInteractions({ ...props }) {
       // Set a list of user interactions in the state "superLike"
       setSelectedUser(data[0]);
     },
-    [userId, setSelectedUser],
+    [userId],
   );
 
   // Fetch user's superlike from the API
@@ -40,7 +40,7 @@ export default function useInteractions({ ...props }) {
       // Set a list of user interactions in the state "superLike"
       setSuperLikesCount(data);
     },
-    [userId, setSuperLikesCount],
+    [userId],
   );
 
   // Fetch users and superlikes count from the user logged in
@@ -134,5 +134,6 @@ export default function useInteractions({ ...props }) {
     superLikesCount,
     handleInteraction,
     handleBackInteraction,
+    fetchUsers,
   };
 }

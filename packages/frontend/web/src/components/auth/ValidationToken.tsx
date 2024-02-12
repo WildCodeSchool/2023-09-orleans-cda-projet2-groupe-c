@@ -34,7 +34,7 @@ export default function ValidationToken() {
   const navigate = useNavigate();
 
   // Get the login states from the AuthContext
-  const { userId } = useAuth();
+  const { userId, setIsActived } = useAuth();
 
   // Desctructure the useForm hook
   const { register, handleSubmit, formState } =
@@ -58,11 +58,15 @@ export default function ValidationToken() {
             activation_code: `${data.code_1}${data.code_2}${data.code_3}${data.code_4}${data.code_5}${data.code_6}`,
           }),
         });
+
         const resData = (await res.json()) as {
           isLoggedIn: boolean;
+          isActived: boolean;
         };
+
         // If the user is logged in, redirect to the home page
         if (resData.isLoggedIn) {
+          setIsActived(resData.isActived);
           navigate('/registration/profile');
         }
       }

@@ -11,9 +11,10 @@ type HomeProviderProps = {
 };
 
 type HomeProviderState = {
-  selectedUser: UserBody | undefined;
+  selectedUser?: UserBody;
   superLikesCount: number;
   handleInteraction: (action: string) => void;
+  fetchUsers: ({ signal }: { signal: AbortSignal }) => Promise<void>;
   handleBackInteraction: () => void;
   distance: number;
 };
@@ -36,6 +37,7 @@ export default function InteractionContext({
     superLikesCount,
     handleInteraction,
     handleBackInteraction,
+    fetchUsers,
   } = useInteractions({
     userId,
   });
@@ -55,6 +57,7 @@ export default function InteractionContext({
       handleInteraction,
       handleBackInteraction,
       distance,
+      fetchUsers,
     };
   }, [
     selectedUser,
@@ -62,6 +65,7 @@ export default function InteractionContext({
     handleInteraction,
     handleBackInteraction,
     distance,
+    fetchUsers,
   ]);
 
   return (

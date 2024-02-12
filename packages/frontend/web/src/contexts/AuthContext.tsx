@@ -11,6 +11,8 @@ type AuthProviderState = {
   setIsLoggedIn: (value: boolean) => void;
   isLoading: boolean;
   userId: number | undefined;
+  isActived: boolean;
+  setIsActived: (value: boolean) => void;
 };
 
 // Create an authentification context
@@ -20,10 +22,9 @@ const authProviderContext = createContext<AuthProviderState | undefined>(
 
 export default function AuthContext({ children, ...props }: AuthProviderProps) {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const [isActived, setIsActived] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [userId, setUserId] = useState<number | undefined>();
-
-  console.log(isLoggedIn);
 
   // Verify if the user is logged in
   useEffect(() => {
@@ -40,10 +41,12 @@ export default function AuthContext({ children, ...props }: AuthProviderProps) {
         // Convert the response to json
         const data = (await res.json()) as {
           isLoggedIn: boolean;
+          isActived: boolean;
           userId: number;
         };
 
         setIsLoggedIn(data.isLoggedIn);
+        setIsActived(data.isActived);
         setUserId(data.userId);
       } catch (error) {
         throw new Error(`Failed to verify auth: ${String(error)}`);
@@ -62,17 +65,19 @@ export default function AuthContext({ children, ...props }: AuthProviderProps) {
     return () => {
       controller.abort();
     };
-  }, [isLoggedIn]);
+  }, [isLoggedIn, isActived]);
 
   // Memoize the values
   const value = useMemo(() => {
     return {
       isLoggedIn,
       setIsLoggedIn,
+      isActived,
+      setIsActived,
       isLoading,
       userId,
     };
-  }, [isLoggedIn, isLoading, userId]);
+  }, [isLoggedIn, setIsLoggedIn, isLoading, userId, isActived, setIsActived]);
 
   return (
     <authProviderContext.Provider {...props} value={value}>

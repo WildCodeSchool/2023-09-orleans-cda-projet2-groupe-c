@@ -1,24 +1,39 @@
 import { Outlet } from 'react-router-dom';
 
 import NavBar from '@/components/NavBar';
+import SidebarLayout from '@/components/SidebarLayout';
+import Filter from '@/components/filter/Filter';
 import RandomSentence from '@/components/home/RandomSentence';
 import { useAuth } from '@/contexts/AuthContext';
+import { usePreference } from '@/contexts/PreferenceContext';
 
 import Loading from '../components/Loading';
 import Logo from '../components/icons/LogoHomeIcon';
 
 export default function Home() {
-  const { isLoggedIn, isLoading } = useAuth();
+  const { isLoggedIn, isActived, isLoading } = useAuth();
+  const { isVisibleFilter } = usePreference();
 
   if (isLoading) {
     return <Loading />;
   }
 
-  if (isLoggedIn) {
+  if (isLoggedIn && isActived) {
     return (
-      <main>
+      <main className='h-screen overflow-hidden'>
         <NavBar />
-        <Outlet />
+
+        <div className='font-base relative flex h-[calc(100vh-56px)] w-full justify-between'>
+          <SidebarLayout isVisible={isVisibleFilter} isBorderLeft>
+            {`Messages`}
+          </SidebarLayout>
+
+          <Outlet />
+
+          <SidebarLayout isVisible={isVisibleFilter} isBorderRight>
+            <Filter />
+          </SidebarLayout>
+        </div>
       </main>
     );
   }

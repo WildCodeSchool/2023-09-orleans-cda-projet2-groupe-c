@@ -1,3 +1,5 @@
+import { usePreference } from '@/contexts/PreferenceContext';
+
 import BulletBase from './BulletBase';
 import ThemeSwitcher from './ThemeSwitcher';
 import FilterIcon from './icons/FilterIcon';
@@ -24,6 +26,7 @@ const dataIcon = [
     id: 'filter',
     icon: <FilterIcon className='fill-secondary h-4 w-4' />,
     lgHidden: true,
+    onClick: true,
   },
   {
     id: 'theme',
@@ -32,6 +35,8 @@ const dataIcon = [
 ];
 
 function NavBar() {
+  const { handleClick } = usePreference();
+
   return (
     <nav className='bg-light-hard relative flex w-full items-center p-3 shadow-md'>
       <div className='absolute flex items-center gap-2 pl-2'>
@@ -42,8 +47,13 @@ function NavBar() {
         </div>
       </div>
       <div className='flex grow justify-end gap-2 sm:gap-4 lg:justify-center lg:gap-52'>
-        {dataIcon.map(({ id, icon, lgHidden }) => (
-          <BulletBase size='8' key={id} lgHidden={lgHidden}>
+        {dataIcon.map(({ id, icon, lgHidden, onClick }) => (
+          <BulletBase
+            size='8'
+            key={id}
+            lgHidden={lgHidden}
+            onClick={onClick === true ? handleClick : undefined}
+          >
             {icon}
           </BulletBase>
         ))}
