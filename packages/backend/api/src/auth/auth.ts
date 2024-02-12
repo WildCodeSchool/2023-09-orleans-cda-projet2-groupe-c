@@ -171,6 +171,7 @@ authRouter.get('/verify', async (req, res) => {
     return res.json({
       ok: false,
       isLoggedIn: false,
+      isActived: false,
     });
   }
 
@@ -194,7 +195,7 @@ authRouter.get('/verify', async (req, res) => {
     // If the account is not activated, return an error
     if (!user?.activate_at) {
       return res.json({
-        ok: false,
+        ok: true,
         isLoggedIn: true,
         isActived: false,
         error: 'Account not activated!',
@@ -243,6 +244,7 @@ authRouter.post('/login', async (req, res) => {
         ok: false,
         email: 'User does not exist',
         isLoggedIn: false,
+        isActived: false,
       });
     }
 
@@ -258,14 +260,7 @@ authRouter.post('/login', async (req, res) => {
       return res.json({
         ok: false,
         isLoggedIn: false,
-      });
-    }
-
-    if (!user.activate_at) {
-      return res.json({
-        ok: false,
-        isLoggedIn: false,
-        error: 'Account not activated!',
+        isActived: false,
       });
     }
 

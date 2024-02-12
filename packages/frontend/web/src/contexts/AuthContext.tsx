@@ -40,19 +40,20 @@ export default function AuthContext({ children, ...props }: AuthProviderProps) {
 
         // Convert the response to json
         const data = (await res.json()) as {
+          ok: boolean;
           isLoggedIn: boolean;
-          isActived: boolean;
           userId: number;
+          isActived: boolean;
         };
 
-        setIsLoggedIn(data.isLoggedIn);
-        setIsActived(data.isActived);
-        setUserId(data.userId);
+        if (data.ok) {
+          setIsLoading(false);
+          setIsLoggedIn(data.isLoggedIn);
+          setUserId(data.userId);
+          setIsActived(data.isActived);
+        }
       } catch (error) {
         throw new Error(`Failed to verify auth: ${String(error)}`);
-      } finally {
-        // Stop the loading if the request is loaded
-        setIsLoading(false);
       }
     };
 
@@ -65,7 +66,7 @@ export default function AuthContext({ children, ...props }: AuthProviderProps) {
     return () => {
       controller.abort();
     };
-  }, [isLoggedIn, isActived]);
+  }, [isLoggedIn]);
 
   // Memoize the values
   const value = useMemo(() => {

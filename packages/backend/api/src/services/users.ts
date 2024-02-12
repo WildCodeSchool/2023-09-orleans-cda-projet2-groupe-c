@@ -185,19 +185,62 @@ const users = {
 
   getUserProfile: async (userId: number) => {
     const userProfile = await db
-      .selectFrom('user')
-      .innerJoin('city', 'user.city_id', 'city.id')
+      .selectFrom('user as u')
       .select((eb) => [
-        'user.id',
-        'user.name',
+        'u.id',
+        'u.name',
+        'u.birthdate',
+        'u.gender',
+        'u.biography',
+        'u.account_github',
         jsonObjectFrom(
           eb
-            .selectFrom('city')
-            .select(['city.name', 'city.coordinates'])
-            .whereRef('user.city_id', '=', 'city.id'),
+            .selectFrom('city as c')
+            .select(['c.id', 'c.name as city_name', 'c.coordinates'])
+            .whereRef('c.id', '=', 'u.city_id'),
         ).as('city'),
+        jsonArrayFrom(
+          eb
+            .selectFrom('language_user as lu')
+            .innerJoin('language as l', 'lu.language_id', 'l.id')
+            .whereRef('lu.user_id', '=', 'u.id')
+            .select(['l.id', 'l.name', 'lu.order', 'l.logo_path'])
+            .orderBy('lu.order', 'asc')
+            .limit(6),
+        ).as('languages'),
+        jsonArrayFrom(
+          eb
+            .selectFrom('technology_user as tu')
+            .innerJoin('technology as t', 'tu.technology_id', 't.id')
+            .whereRef('tu.user_id', '=', 'u.id')
+            .select(['t.id', 't.name', 'tu.order', 't.logo_path'])
+            .orderBy('tu.order', 'asc')
+            .limit(6),
+        ).as('technologies'),
+        jsonArrayFrom(
+          eb
+            .selectFrom('hobby_user as hu')
+            .innerJoin('hobby as h', 'hu.hobby_id', 'h.id')
+            .innerJoin('hobby_category as hc', 'h.hobby_category_id', 'hc.id')
+            .whereRef('hu.user_id', '=', 'u.id')
+            .select([
+              'hc.name as category',
+              'hc.logo_path',
+              'h.id',
+              'h.name',
+              'hu.order',
+            ]),
+        ).as('hobbies'),
+        jsonArrayFrom(
+          eb
+            .selectFrom('picture as p')
+            .whereRef('p.user_id', '=', 'u.id')
+            .select(['p.id', 'p.order', 'p.picture_path'])
+            .orderBy('p.order', 'asc')
+            .limit(6),
+        ).as('pictures'),
       ])
-      .where('user.id', '=', userId)
+      .where('u.id', '=', userId)
       .execute();
 
     return userProfile;

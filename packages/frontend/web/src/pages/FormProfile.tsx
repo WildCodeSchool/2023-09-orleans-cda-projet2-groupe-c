@@ -1,6 +1,6 @@
 import { Fragment, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 
 import type { FormProfileBody } from '@app/shared';
 
@@ -41,7 +41,7 @@ export default function FormProfile() {
 
   const navigate = useNavigate();
 
-  const { setIsLoggedIn } = useAuth();
+  const { setIsLoggedIn, isLoggedIn } = useAuth();
 
   // Use the const methods to send all useForm properties to my child elements
   const methods = useForm<FormProfileBody>({
@@ -83,6 +83,12 @@ export default function FormProfile() {
       }
     }
   };
+
+  // If the user is not logged in, redirect to the login page
+  if (!isLoggedIn) {
+    return <Navigate to='/login' />;
+  }
+
   return (
     <FormLayout>
       <FormProvider {...methods}>

@@ -1,4 +1,6 @@
-import { useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
+
+import { useAuth } from '@/contexts/AuthContext';
 
 import Button from '../Button';
 import FormLayout from '../FormLayout';
@@ -6,11 +8,18 @@ import FormContainer from '../forms/FormContainer';
 import CheckIcon from '../icons/CheckIcon';
 
 export default function Success() {
+  const { isLoggedIn } = useAuth();
+
   const navigate = useNavigate();
 
   const handleClick = () => {
     navigate('/registration/validation');
   };
+
+  // If the user is not logged in, redirect to the login page
+  if (!isLoggedIn) {
+    return <Navigate to='/login' />;
+  }
 
   return (
     <FormLayout>

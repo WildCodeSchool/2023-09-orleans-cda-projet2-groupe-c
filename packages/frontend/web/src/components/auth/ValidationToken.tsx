@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect, useState } from 'react';
 import { type SubmitHandler, useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 
 import {
   type ActivationTokenFormBody,
@@ -34,7 +34,7 @@ export default function ValidationToken() {
   const navigate = useNavigate();
 
   // Get the login states from the AuthContext
-  const { userId, setIsActived } = useAuth();
+  const { userId, setIsActived, isLoggedIn } = useAuth();
 
   // Desctructure the useForm hook
   const { register, handleSubmit, formState } =
@@ -107,29 +107,9 @@ export default function ValidationToken() {
     };
   }, [userId]);
 
-  // If the account is already activated
-  if (code === '') {
-    return (
-      <FormLayout>
-        <div className='flex h-full flex-col items-center justify-between py-[15%]'>
-          <FormContainer title='Activate your account'>
-            <p className='text-secondary align-top text-sm'>
-              {'Your account is already activated. Please login to continue.'}
-            </p>
-          </FormContainer>
-
-          {/* Redirect to home */}
-          <Button
-            isOutline={false}
-            onClick={() => {
-              navigate('/');
-            }}
-          >
-            {`Login`}
-          </Button>
-        </div>
-      </FormLayout>
-    );
+  // If the user is not logged in, redirect to the login page
+  if (!isLoggedIn) {
+    return <Navigate to='/login' />;
   }
 
   // If the account is not activated
