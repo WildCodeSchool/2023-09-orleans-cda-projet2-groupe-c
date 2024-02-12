@@ -1,32 +1,25 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 
-import BulletBase from '@/components/BulletBase';
-import ThemeSwitcher from '@/components/ThemeSwitcher';
-import FilterIcon from '@/components/icons/FilterIcon';
-import LikeIcon from '@/components/icons/LikeIcon';
-import LogoIcon from '@/components/icons/LogoIcon';
-import MessageIcon from '@/components/icons/MessageIcon';
-import UserIcon from '@/components/icons/UserIcon';
 import { useAuth } from '@/contexts/AuthContext';
+import { usePreference } from '@/contexts/PreferenceContext';
 
-interface NavigationBody {
-  id: string;
-  icon: JSX.Element;
-  lgHidden?: boolean;
-  onClick?: () => void;
-}
+import BulletBase from './BulletBase';
+import ThemeSwitcher from './ThemeSwitcher';
+import FilterIcon from './icons/FilterIcon';
+import LikeIcon from './icons/LikeIcon';
+import LogoIcon from './icons/LogoIcon';
+import MessageIcon from './icons/MessageIcon';
+import UserIcon from './icons/UserIcon';
 
 export default function NavBar() {
   const { userId } = useAuth();
+  const { handleClick } = usePreference();
 
-  // Check if the user is on the home page
-  // Using to add a class to the navbar
+  const navigate = useNavigate();
   const location = useLocation();
   const isHomePage = location.pathname === '/';
 
-  const navigate = useNavigate();
-
-  const dataIcon: NavigationBody[] = [
+  const dataIcon = [
     {
       id: 'user',
       icon: <UserIcon className='fill-secondary h-5 w-5' />,
@@ -47,6 +40,7 @@ export default function NavBar() {
       id: 'filter',
       icon: <FilterIcon className='fill-secondary h-4 w-4' />,
       lgHidden: true,
+      onClick: handleClick,
     },
     {
       id: 'theme',
@@ -69,7 +63,12 @@ export default function NavBar() {
       </Link>
       <div className='flex grow justify-end gap-2 sm:gap-4 lg:justify-center lg:gap-52'>
         {dataIcon.map(({ id, icon, lgHidden, onClick }) => (
-          <BulletBase size='8' key={id} lgHidden={lgHidden} onClick={onClick}>
+          <BulletBase
+            size='8'
+            key={id}
+            lgHidden={lgHidden}
+            onClick={onClick ?? undefined}
+          >
             {icon}
           </BulletBase>
         ))}

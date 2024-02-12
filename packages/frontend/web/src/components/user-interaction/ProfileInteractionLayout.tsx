@@ -46,7 +46,7 @@ export default function ProfileInteractionLayout() {
   }, [userId, profileId, navigate]);
 
   return (
-    <section>
+    <section className='h-full w-full'>
       <ProfileHeader handleClick={handleClick} isVisible={isVisible} />
 
       <div className='mx-auto my-10 px-5 lg:max-w-[1000px] lg:px-0'>

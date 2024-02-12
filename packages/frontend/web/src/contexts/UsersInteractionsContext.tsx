@@ -10,6 +10,7 @@ import {
 import type { InteractionBody } from '@app/shared';
 
 import { useAuth } from './AuthContext';
+import { useInteraction } from './InteractionContext';
 
 type UsersInteractionsProviderProps = {
   readonly children: React.ReactNode;
@@ -42,7 +43,7 @@ const fetchInteractions = async ({
   signal,
   setter,
 }: FetchInteractions) => {
-  const profileLiked = await fetch(
+  const response = await fetch(
     `${API_URL}/users/${userId}/interactions/${interactionType}`,
     {
       signal,
@@ -50,7 +51,7 @@ const fetchInteractions = async ({
     },
   );
 
-  const data = await profileLiked.json();
+  const data = await response.json();
 
   setter(data);
 };
@@ -74,6 +75,8 @@ export default function UsersInteractionsContext({
 
   // Get the user id JWT from the context
   const { userId } = useAuth();
+
+  const { handleInteraction, handleBackInteraction } = useInteraction();
 
   // Function to toggle the visibility of the profile header
   const handleClick = useCallback(
@@ -117,7 +120,7 @@ export default function UsersInteractionsContext({
     return () => {
       controller.abort();
     };
-  }, [userId]);
+  }, [userId, handleInteraction, handleBackInteraction]);
 
   const value = useMemo(() => {
     return {

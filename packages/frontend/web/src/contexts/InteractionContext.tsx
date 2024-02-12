@@ -14,6 +14,8 @@ type HomeProviderState = {
   selectedUser?: UserBody;
   superLikesCount: number;
   handleInteraction: (action: string) => void;
+  fetchUsers: ({ signal }: { signal: AbortSignal }) => Promise<void>;
+  handleBackInteraction: () => void;
   distance: number;
 };
 
@@ -30,7 +32,13 @@ export default function InteractionContext({
   const { userId } = useAuth();
 
   // Get the selected user, superlike count and the functions to handle the interactions from the custom hook "useInteractions"
-  const { selectedUser, superLikesCount, handleInteraction } = useInteractions({
+  const {
+    selectedUser,
+    superLikesCount,
+    handleInteraction,
+    handleBackInteraction,
+    fetchUsers,
+  } = useInteractions({
     userId,
   });
 
@@ -47,9 +55,18 @@ export default function InteractionContext({
       selectedUser,
       superLikesCount,
       handleInteraction,
+      handleBackInteraction,
       distance,
+      fetchUsers,
     };
-  }, [selectedUser, superLikesCount, handleInteraction, distance]);
+  }, [
+    selectedUser,
+    superLikesCount,
+    handleInteraction,
+    handleBackInteraction,
+    distance,
+    fetchUsers,
+  ]);
 
   return (
     <interactionProviderContext.Provider {...props} value={value}>
