@@ -23,6 +23,8 @@ export default function AuthContext({ children, ...props }: AuthProviderProps) {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [userId, setUserId] = useState<number | undefined>();
 
+  console.log(isLoggedIn);
+
   // Verify if the user is logged in
   useEffect(() => {
     const controller = new AbortController();

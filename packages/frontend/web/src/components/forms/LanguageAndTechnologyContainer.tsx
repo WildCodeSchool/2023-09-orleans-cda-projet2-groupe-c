@@ -145,7 +145,7 @@ export default function LanguageAndTechnology({
                   className={`hover:outline-primary cursor-pointer text-[12px] hover:rounded-md hover:outline hover:outline-offset-2 lg:h-16 lg:w-16 ${
                     value.some((selectedItem) => selectedItem.id === item.id)
                       ? 'outline-primary rounded-sm outline outline-offset-2'
-                      : ''
+                      : undefined
                   }`}
                 >
                   <div className='relative flex justify-center'>
@@ -159,10 +159,8 @@ export default function LanguageAndTechnology({
                           ) + 1}
                         </p>
                       </div>
-                    ) : (
-                      ''
-                    )}
-                    <div className='h-full max-h-12 w-full max-w-12'>
+                    ) : undefined}
+                    <div className='h-full w-full'>
                       <img
                         className='h-full w-full object-cover object-center'
                         src={item.logo_path}

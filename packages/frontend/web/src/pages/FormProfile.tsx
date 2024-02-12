@@ -17,6 +17,7 @@ import FormHobby from '@/components/forms/FormHobby';
 import FormLanguage from '@/components/forms/FormLanguage';
 import FormName from '@/components/forms/FormName';
 import FormTechnology from '@/components/forms/FormTechnology';
+import { useAuth } from '@/contexts/AuthContext';
 
 const PAGES = [
   { currentPage: 0, component: <FormName /> },
@@ -32,13 +33,15 @@ const PAGES = [
 ];
 
 export default function FormProfile() {
-  const navigate = useNavigate();
-
   // State to control the current page
   const [page, setPage] = useState<number>(0);
 
   // State to control the percentage of the progress bar
   const [percentage, setPercentage] = useState<number>(0);
+
+  const navigate = useNavigate();
+
+  const { setIsLoggedIn } = useAuth();
 
   // Use the const methods to send all useForm properties to my child elements
   const methods = useForm<FormProfileBody>({
@@ -54,6 +57,7 @@ export default function FormProfile() {
       setPage(page + 1);
 
       setPercentage(((page + 2) / PAGES.length) * 100);
+      // Otherwise, attempt to submit the form data
     } else {
       try {
         // Get data year, month and day to create the birthdate
@@ -72,6 +76,7 @@ export default function FormProfile() {
           body: JSON.stringify(newData),
         });
 
+        setIsLoggedIn(true);
         navigate('/');
       } catch (error) {
         throw new Error(`${String(error)}`);

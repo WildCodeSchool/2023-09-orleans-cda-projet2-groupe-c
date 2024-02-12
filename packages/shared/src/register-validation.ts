@@ -88,7 +88,25 @@ export const yearSchema = z
     invalid_type_error: 'ⓘ Year must be a number.',
   })
   .int()
-  .positive();
+  .positive()
+  .refine(
+    (data) => {
+      const age = new Date().getFullYear() - data;
+
+      return age >= 18;
+    },
+    { message: 'ⓘ You must be 18 years old to register.' },
+  )
+  .refine(
+    (data) => {
+      const age = new Date().getFullYear() - data;
+
+      return age <= 100;
+    },
+    {
+      message: 'ⓘ You must be less than 100 years old to register.',
+    },
+  );
 
 export const monthSchema = z
   .number({

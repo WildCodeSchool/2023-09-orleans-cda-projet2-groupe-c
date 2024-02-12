@@ -84,70 +84,68 @@ export default function FormHobby() {
 
   return (
     <FormContainer title='MY HOBBIES'>
-      <div className='pb-16'>
-        <span className='flex justify-start pb-5 '>
-          {'You can choose a maximum of 6 hobbies.'}
-        </span>
+      <span className='flex justify-start pb-5 '>
+        {'You can choose a maximum of 6 hobbies.'}
+      </span>
 
-        {/* Hobbies */}
-        <div className='flex max-h-[21rem] w-full flex-col gap-6 overflow-y-auto py-3'>
-          {hobbies.map((category) => (
-            <div key={category.category_name} className='flex flex-col gap-4'>
-              <div className='border-divider flex justify-start border-b'>
-                <h1 className='flex gap-2'>
-                  <img src={category.logo_path} alt={category.logo_path} />
-                  {category.category_name.charAt(0).toUpperCase() +
-                    category.category_name.slice(1)}
-                </h1>
-              </div>
-              <div className='flex w-full flex-wrap gap-2'>
-                {category.hobbies.map((hobby) => (
-                  <div
-                    key={hobby.hobby_id}
-                    className={`border-primary hover:bg-primary cursor-pointer rounded-lg border px-2 py-1 ${
-                      value.some(
-                        (item) => Number(item.id) === Number(hobby.hobby_id),
-                      )
-                        ? 'bg-primary text-light'
-                        : 'text-secondary'
-                    }`}
-                  >
-                    <label htmlFor={hobby.hobby_name}>{hobby.hobby_name}</label>
-                    <input
-                      {...field}
-                      hidden
-                      disabled={
-                        value.length >= 6 &&
-                        !value.some(
-                          (selectedItem) => selectedItem.id === hobby.hobby_id,
-                        )
-                      }
-                      value={hobby.hobby_id}
-                      id={hobby.hobby_name}
-                      onChange={handleCheckboxChange}
-                      type='checkbox'
-                      checked={value.some((val) => val.id === hobby.hobby_id)}
-                    />
-                  </div>
-                ))}
-              </div>
+      {/* Hobbies */}
+      <div className='flex max-h-[30vh] w-full flex-col gap-6 overflow-y-auto py-3 md:max-h-[40vh]'>
+        {hobbies.map((category) => (
+          <div key={category.category_name} className='flex flex-col gap-4'>
+            <div className='border-divider flex justify-start border-b'>
+              <h1 className='flex gap-2'>
+                <img src={category.logo_path} alt={category.logo_path} />
+                {category.category_name.charAt(0).toUpperCase() +
+                  category.category_name.slice(1)}
+              </h1>
             </div>
-          ))}
-        </div>
+            <div className='flex w-full flex-wrap gap-2'>
+              {category.hobbies.map((hobby) => (
+                <div
+                  key={hobby.hobby_id}
+                  className={`border-primary hover:bg-primary cursor-pointer rounded-lg border px-2 py-1 ${
+                    value.some(
+                      (item) => Number(item.id) === Number(hobby.hobby_id),
+                    )
+                      ? 'bg-primary text-light'
+                      : 'text-secondary'
+                  }`}
+                >
+                  <label htmlFor={hobby.hobby_name}>{hobby.hobby_name}</label>
+                  <input
+                    {...field}
+                    hidden
+                    disabled={
+                      value.length >= 6 &&
+                      !value.some(
+                        (selectedItem) => selectedItem.id === hobby.hobby_id,
+                      )
+                    }
+                    value={hobby.hobby_id}
+                    id={hobby.hobby_name}
+                    onChange={handleCheckboxChange}
+                    type='checkbox'
+                    checked={value.some((val) => val.id === hobby.hobby_id)}
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
 
-        {/* Error message */}
-        <div className='text-primary absolute bottom-4'>
-          {value.length >= 6 && (
-            <p className='text-primary text-base'>
-              {'ⓘ You have already selected 6 !'}
-            </p>
-          )}
-          {errors.hobbies ? (
-            <p className='text-primary text-base'>{errors.hobbies.message}</p>
-          ) : (
-            ''
-          )}
-        </div>
+      {/* Error message */}
+      <div className='text-primary absolute bottom-4'>
+        {value.length >= 6 && (
+          <p className='text-primary text-base'>
+            {'ⓘ You have already selected 6 !'}
+          </p>
+        )}
+        {errors.hobbies ? (
+          <p className='text-primary text-base'>{errors.hobbies.message}</p>
+        ) : (
+          ''
+        )}
       </div>
     </FormContainer>
   );
