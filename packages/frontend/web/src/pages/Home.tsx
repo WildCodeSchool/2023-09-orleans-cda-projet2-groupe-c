@@ -60,7 +60,6 @@ export default function Home() {
       !Boolean(userProfile.birthdate) ||
       !Boolean(userProfile.gender) ||
       !Boolean(userProfile.city) ||
-      userProfile.pictures.length === 0 ||
       userProfile.languages.length === 0 ||
       userProfile.technologies.length === 0 ||
       userProfile.hobbies.length === 0)
@@ -78,7 +77,6 @@ export default function Home() {
       Boolean(userProfile.birthdate) ||
       Boolean(userProfile.gender) ||
       Boolean(userProfile.city) ||
-      userProfile.pictures.length > 0 ||
       userProfile.languages.length > 0 ||
       userProfile.technologies.length > 0 ||
       userProfile.hobbies.length > 0)
