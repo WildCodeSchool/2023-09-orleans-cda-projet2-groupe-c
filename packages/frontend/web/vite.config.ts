@@ -14,7 +14,7 @@ export default defineConfig(({ mode }) => {
       },
     },
     server: {
-      host: FRONTEND_HOST,
+      host: '0.0.0.0',
       port: +FRONTEND_PORT,
     },
     build: {
