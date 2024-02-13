@@ -24,7 +24,6 @@ type UsersInteractionsState = {
 };
 
 interface FetchInteractions {
-  userId: number;
   interactionType: string;
   signal: AbortSignal;
   setter: React.Dispatch<React.SetStateAction<InteractionBody[]>>;
@@ -38,13 +37,12 @@ const usersInteractionsProviderContext = createContext<
 
 // Function to fetch all interactions sent or received
 const fetchInteractions = async ({
-  userId,
   interactionType,
   signal,
   setter,
 }: FetchInteractions) => {
   const response = await fetch(
-    `${API_URL}/users/${userId}/interactions/${interactionType}`,
+    `${API_URL}/users/interactions/${interactionType}`,
     {
       signal,
       credentials: 'include',
@@ -100,7 +98,6 @@ export default function UsersInteractionsContext({
     const signal = controller.signal;
 
     fetchInteractions({
-      userId: Number(userId),
       interactionType: 'sent',
       signal,
       setter: setInteractionsSent,
@@ -109,7 +106,6 @@ export default function UsersInteractionsContext({
     });
 
     fetchInteractions({
-      userId: Number(userId),
       interactionType: 'received',
       signal,
       setter: setInteractionsReceived,

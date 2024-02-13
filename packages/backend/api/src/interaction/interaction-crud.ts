@@ -106,7 +106,7 @@ const getInteractions = async (initiator: string, userId: number) => {
 
 // Get all interactions from the user
 interactionRouter.get(
-  '/:userId/interactions/sent',
+  '/interactions/sent',
   getUserId,
   async (req: Request, res) => {
     try {
@@ -128,7 +128,7 @@ interactionRouter.get(
 
 // Get all interactions received by the user
 interactionRouter.get(
-  '/:userId/interactions/received',
+  '/interactions/received',
   getUserId,
   async (req: Request, res) => {
     try {
