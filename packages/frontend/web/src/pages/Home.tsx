@@ -22,11 +22,15 @@ export default function Home() {
 
   if (isLoggedIn) {
     return (
-      <main className='h-screen overflow-hidden'>
+      <main className='h-auto min-h-screen'>
         <NavBar />
 
         {/* Display messages only in the home page when the width is superior to 1024px */}
-        <div className='font-base relative flex h-[calc(100vh-56px)] w-full justify-between'>
+        <div
+          className={`font-base relative flex w-full justify-between ${
+            location.pathname === '/' ? ' h-[calc(100vh-56px)]' : 'h-full'
+          }`}
+        >
           {location.pathname === '/' ? (
             <SidebarLayout isVisible={isVisibleFilter} isBorderLeft>
               {`Messages`}

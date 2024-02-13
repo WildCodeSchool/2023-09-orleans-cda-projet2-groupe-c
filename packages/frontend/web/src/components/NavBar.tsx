@@ -1,6 +1,5 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 
-import { useAuth } from '@/contexts/AuthContext';
 import { usePreference } from '@/contexts/PreferenceContext';
 
 import BulletBase from './BulletBase';
@@ -12,7 +11,6 @@ import MessageIcon from './icons/MessageIcon';
 import UserIcon from './icons/UserIcon';
 
 export default function NavBar() {
-  const { userId } = useAuth();
   const { handleClick } = usePreference();
 
   const navigate = useNavigate();
@@ -28,7 +26,7 @@ export default function NavBar() {
       id: 'like',
       icon: <LikeIcon className='fill-primary h-5 w-5' />,
       onClick: () => {
-        navigate(`/profile/${userId}/interactions`);
+        navigate(`/profile/interactions`);
       },
     },
     {
