@@ -71,9 +71,6 @@ export default function UsersInteractionsContext({
   // State to toggle the visibility of the profile header
   const [isVisible, setIsVisible] = useState<boolean>(true);
 
-  // Get the user id JWT from the context
-  const { userId } = useAuth();
-
   const { handleInteraction, handleBackInteraction } = useInteraction();
 
   // Function to toggle the visibility of the profile header
@@ -116,7 +113,7 @@ export default function UsersInteractionsContext({
     return () => {
       controller.abort();
     };
-  }, [userId, handleInteraction, handleBackInteraction]);
+  }, [handleInteraction, handleBackInteraction]);
 
   const value = useMemo(() => {
     return {
