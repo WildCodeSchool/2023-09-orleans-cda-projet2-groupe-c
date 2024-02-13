@@ -9,7 +9,6 @@ import {
 
 import type { InteractionBody } from '@app/shared';
 
-import { useAuth } from './AuthContext';
 import { useInteraction } from './InteractionContext';
 
 type UsersInteractionsProviderProps = {
