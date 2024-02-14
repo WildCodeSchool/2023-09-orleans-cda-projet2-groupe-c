@@ -8,7 +8,22 @@ services:
       - 80:8080
     volumes:
       - ./nginx.dev.conf:/etc/nginx/nginx.conf
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
 
   database:
     image: mysql:8.2.0
     restart: always
+    ports:
+      - ${MYSQL_PORT}:3306
+    env_file:
+      - ./.env
+    volumes:
+      - ./mysql/data:/var/lib/mysql
+    healthcheck:
+      test:
+        ['CMD', 'mysqladmin', 'ping', '-h', 'localhost', '-uuser', '-ppassword']
+      interval: 5s # Interval between health checks.
+      timeout: 5s # Timeout for each health checking.
+      retries: 20 # Hou many times retries.
+      start_period: 10s
