@@ -39,10 +39,8 @@ export default function Home() {
 
           {/* Display messages in all page when the width is under to 1024px */}
           {window.innerWidth < 1024 ? (
-            <SidebarLayout isVisible={isVisibleFilter} isBorderRight>
-              <SidebarLayout isVisible={isVisibleFilter} isBorderLeft>
-                {`Messages`}
-              </SidebarLayout>
+            <SidebarLayout isVisible={isVisibleFilter} isBorderLeft>
+              {`Messages`}
             </SidebarLayout>
           ) : undefined}
 
