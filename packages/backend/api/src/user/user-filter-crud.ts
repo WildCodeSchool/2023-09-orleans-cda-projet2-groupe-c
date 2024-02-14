@@ -3,12 +3,14 @@ import express from 'express';
 import { db } from '@app/backend-shared';
 import {
   type Request as ExpressRequest,
+  type Gender,
   type RequestPreferencesBody,
   type UserPreferenceId,
   requestPreferencesSchema,
 } from '@app/shared';
 
 import { getUserId } from '@/middlewares/auth-handlers';
+import preferences from '@/services/preferences';
 
 interface Request extends ExpressRequest {
   userPreferenceId?: UserPreferenceId[];
@@ -16,6 +18,26 @@ interface Request extends ExpressRequest {
 }
 
 const filterRouter = express.Router();
+
+filterRouter.get(
+  '/:userId/preferences',
+  getUserId,
+  async (req: Request, res) => {
+    try {
+      const userId = req.userId as number;
+
+      const userPreferences = await preferences.getUserPreferences(userId);
+
+      res.json(userPreferences);
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: 'Fail to update your preference!',
+        error,
+      });
+    }
+  },
+);
 
 // Update the user preferences
 filterRouter.put(
@@ -43,8 +65,8 @@ filterRouter.put(
         .updateTable('preference')
         .set({
           distance: parsed.data.distance,
-          gender_pref: parsed.data.gender_pref,
-          language_pref_id: parsed.data.language_pref_id,
+          language_pref_id: Number(parsed.data.language_pref_id),
+          gender_pref: parsed.data.gender_pref as Gender,
         })
         .where('preference.user_id', '=', userId)
         .execute();
