@@ -1,4 +1,4 @@
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 
 import NavBar from '@/components/NavBar';
 import SidebarLayout from '@/components/SidebarLayout';
@@ -14,25 +14,51 @@ export default function Home() {
   const { isLoggedIn, isLoading } = useAuth();
   const { isVisibleFilter } = usePreference();
 
+  const location = useLocation();
+
   if (isLoading) {
     return <Loading />;
   }
 
   if (isLoggedIn) {
     return (
-      <main className='h-screen overflow-hidden'>
+      <main className='h-auto min-h-screen'>
         <NavBar />
 
-        <div className='font-base relative flex h-[calc(100vh-56px)] w-full justify-between'>
-          <SidebarLayout isVisible={isVisibleFilter} isBorderLeft>
-            {`Messages`}
-          </SidebarLayout>
+        {/* Display messages only in the home page when the width is superior to 1024px */}
+        <div
+          className={`font-base relative flex w-full justify-between ${
+            location.pathname === '/' ? ' h-[calc(100vh-56px)]' : 'h-full'
+          }`}
+        >
+          {location.pathname === '/' ? (
+            <SidebarLayout isVisible={isVisibleFilter} isBorderLeft>
+              {`Messages`}
+            </SidebarLayout>
+          ) : undefined}
+
+          {/* Display messages in all page when the width is under to 1024px */}
+          {window.innerWidth < 1024 ? (
+            <SidebarLayout isVisible={isVisibleFilter} isBorderLeft>
+              {`Messages`}
+            </SidebarLayout>
+          ) : undefined}
 
           <Outlet />
 
-          <SidebarLayout isVisible={isVisibleFilter} isBorderRight>
-            <Filter />
-          </SidebarLayout>
+          {/* Display filter only in the home page when the width is superior to 1024px */}
+          {location.pathname === '/' ? (
+            <SidebarLayout isVisible={isVisibleFilter} isBorderRight>
+              <Filter />
+            </SidebarLayout>
+          ) : undefined}
+
+          {/* Display filter in all page when the width is under to 1024px */}
+          {window.innerWidth < 1024 ? (
+            <SidebarLayout isVisible={isVisibleFilter} isBorderRight>
+              <Filter />
+            </SidebarLayout>
+          ) : undefined}
         </div>
       </main>
     );
