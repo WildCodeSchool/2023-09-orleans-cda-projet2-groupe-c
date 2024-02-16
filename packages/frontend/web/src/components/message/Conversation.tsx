@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 
@@ -6,13 +7,6 @@ import { useConversation } from '@/contexts/ConversationContext';
 import CrossIcon from '../icons/CrossIcon';
 import SendIcon from '../icons/SendIcon';
 import BulletConversation from './BulletConversation';
-import { useEffect, useRef } from 'react';
-
-interface User {
-  id: number;
-  name: string;
-  picture_path: string;
-}
 
 interface Message {
   id: number;
@@ -21,24 +15,18 @@ interface Message {
   sender_name: string;
 }
 
-interface Conversation {
-  conversation_id: number;
-  sender: User;
-  receiver: User;
-  messages: Message[];
-}
-
 export default function Conversation() {
   const { userId, conversation, setIsVisible, error } = useConversation();
   const { register, handleSubmit, reset } = useForm();
   const messagesEndReference = useRef<HTMLDivElement | null>(null);
 
+  const scrollToBottom = () => {
+    messagesEndReference.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
   useEffect(() => {
-    const scrollToBottom = () => {
-      messagesEndReference.current?.scrollIntoView({behavior: "smooth" })
-    }
-    scrollToBottom()
-  },[conversation?.messages])
+    setTimeout(scrollToBottom, 1000);
+  }, []);
 
   const navigate = useNavigate();
 
@@ -63,6 +51,8 @@ export default function Conversation() {
           body: JSON.stringify(data),
         },
       );
+
+      setTimeout(scrollToBottom, 1000);
     } catch (error) {
       throw new Error(`${String(error)}`);
     }
@@ -111,7 +101,7 @@ export default function Conversation() {
                   <div
                     key={message.id}
                     ref={messagesEndReference}
-                    className={`$ flex w-full items-end gap-3 px-7 ${message.sender_name === currentUser.name ? 'flex-row-reverse' : ''}`}
+                    className={`$ flex w-full items-end gap-3 px-7 ${message.sender_name === currentUser?.name ? 'flex-row-reverse' : ''}`}
                   >
                     <BulletConversation
                       imageUrl={

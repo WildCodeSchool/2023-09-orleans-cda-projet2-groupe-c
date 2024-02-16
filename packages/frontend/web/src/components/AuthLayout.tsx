@@ -8,7 +8,6 @@ export default function AuthLayout() {
 
   // If the user is logged in, display the cards
   if (isLoggedIn) {
-    
     return <Outlet />;
   }
 

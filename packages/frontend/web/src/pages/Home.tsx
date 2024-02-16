@@ -3,9 +3,9 @@ import { Outlet } from 'react-router-dom';
 import NavBar from '@/components/NavBar';
 import RandomSentence from '@/components/home/RandomSentence';
 import ConversationsList from '@/components/message/ConversationsList';
-import FakeComponent from '@/components/message/FakeComponent';
 import { useAuth } from '@/contexts/AuthContext';
 import ConversationContext from '@/contexts/ConversationContext';
+import MatchingContext from '@/contexts/MatchingContext';
 
 import Loading from '../components/Loading';
 import Logo from '../components/icons/LogoHomeIcon';
@@ -20,14 +20,15 @@ export default function Home() {
   if (isLoggedIn) {
     return (
       <ConversationContext>
-        <main className='h-screen overflow-hidden'>
-          <NavBar />
-          <div className='font-base relative flex h-[calc(100vh-56px)] w-full justify-between'>
-            <ConversationsList />
-            <Outlet />
-            {/*  <FakeComponent /> */}
-          </div>
-        </main>
+        <MatchingContext>
+          <main className='h-screen overflow-hidden'>
+            <NavBar />
+            <div className='font-base relative flex h-[calc(100vh-56px)] w-full justify-between'>
+              <ConversationsList />
+              <Outlet />
+            </div>
+          </main>
+        </MatchingContext>
       </ConversationContext>
     );
   }

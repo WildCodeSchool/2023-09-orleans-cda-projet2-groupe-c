@@ -6,25 +6,6 @@ import { useConversation } from '@/contexts/ConversationContext';
 
 import DateComponent from './DateComponent';
 
-interface Conversation {
-  conversation_id: number;
-  messages: {
-    id: number;
-    content: string;
-    sent_at: string;
-  }[];
-  receiver: {
-    id: number;
-    picture_path: string;
-    receiver_name: string;
-  }[];
-  sender: {
-    id: number;
-    picture_path: string;
-    sender_name: string;
-  }[];
-}
-
 const modalVariant = {
   hidden: {
     opacity: 0,

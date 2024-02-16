@@ -6,6 +6,8 @@ import type { Request as ExpressRequest } from '@app/shared';
 
 interface Request extends ExpressRequest {
   isMatching?: boolean;
+  user2?: number;
+  receiversIds?: number[];
 }
 
 export const verifyInteractions = async (
@@ -14,8 +16,8 @@ export const verifyInteractions = async (
   next: () => void,
 ) => {
   try {
-
     const userId1 = req.userId as number;
+    const receiversIds = [];
 
     const hoteActions = await db
       .selectFrom('user_action as ua')
@@ -33,7 +35,6 @@ export const verifyInteractions = async (
 
     for (const hoteAction of hoteActions) {
       const receiverId = hoteAction.receiver_id;
-      console.log('receiver id', receiverId);
 
       const userAction = await db
         .selectFrom('user_action as ua')
@@ -63,17 +64,16 @@ export const verifyInteractions = async (
           userAction[0].receiver_id === hoteAction.initiator_id &&
           hoteAction.receiver_id === userAction[0].initiator_id
         ) {
-          console.log('ok');
           req.isMatching = true;
-          res.status(200).json({ success: true, isMatching: true });
-          next();
+          receiversIds.push(receiverId);
         } else {
-          console.log('nop');
           req.isMatching = false;
           return res.status(403).json({ success: false, isMatching: false });
         }
       }
     }
+    req.receiversIds = receiversIds;
+    next();
   } catch {
     return res.status(500).json({
       success: false,

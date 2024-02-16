@@ -11,6 +11,8 @@ import { verifyInteractions } from '@/middlewares/verify-match-handlers';
 interface Request extends ExpressRequest {
   superLikesCount?: number;
   isMatching?: boolean;
+  user2?: number[];
+  receiversIds?: number[];
 }
 
 const interactionRouter = express.Router();
@@ -166,23 +168,61 @@ interactionRouter.post(
   },
 );
 
-/* interactionRouter.get(
-  '/:userId/interactions/verify',
+interactionRouter.get(
+  '/interactions/verify',
+  getUserId,
   verifyInteractions,
   async (req: Request, res) => {
-    const isMatching = req.isMatching;
+    try {
+      const isMatching = req.isMatching;
+      const userId = req.userId as number;
+      const user2 = req.receiversIds as number[];
 
-    if (isMatching === true) {
-      await db 
-      .insertInto('conversation')
-      .values({
-        initiator_id,
-        receiver_id,
-        created_at
-      })
-      .execute()
+      const conversations = await db
+        .selectFrom('conversation')
+        .selectAll()
+        .where((eb) => eb('user_1', '=', userId).or('user_1', '=', user2))
+        .where((eb) => eb('user_2', 'in', user2).or('user_2', 'in', userId))
+        .execute();
+
+      if (Boolean(isMatching)) {
+        const existingConversations = new Set(
+          conversations.map(
+            (conversations) => conversations.user_2 || conversations.user_1,
+          ),
+        );
+        console.log(existingConversations);
+
+        await db
+          .insertInto('conversation')
+          .values(
+            user2
+              .filter((user) => !existingConversations.has(user))
+              .map((user: number) => {
+                return {
+                  user_1: userId,
+                  user_2: user,
+                  created_at: new Date(),
+                };
+              }),
+          )
+          .execute();
+
+        console.log('ok');
+        res.status(200).json({ success: true });
+      } else {
+        console.log('nop');
+        res
+          .status(403)
+          .json({ success: false, error: 'Conversation is already exist !' });
+      }
+    } catch {
+      return res.status(500).json({
+        success: false,
+        error: 'Internal Server Error !',
+      });
     }
   },
-); */
+);
 
 export default interactionRouter;

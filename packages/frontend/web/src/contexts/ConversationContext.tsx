@@ -8,6 +8,7 @@ import {
 } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import ConversationsList from '@/components/message/ConversationsList';
 import useAllConversations from '@/hooks/use-all-conversations';
 
 import { useAuth } from './AuthContext';
@@ -66,6 +67,7 @@ type ConversationState = {
   conversationId?: number;
   conversation?: Conversation;
   error?: string;
+  fetchConversations: ({ signal }: { signal: AbortSignal }) => void;
 };
 
 // Create context
@@ -87,7 +89,10 @@ export default function ConversationContext({
 
   const [isVisible, setIsVisible] = useState<boolean>(false);
 
-  const { conversationsList, messagesCount } = useAllConversations();
+  const { conversationsList, messagesCount, fetchConversations } =
+    useAllConversations();
+
+  console.log(conversationsList);
 
   const navigate = useNavigate();
 
@@ -114,11 +119,12 @@ export default function ConversationContext({
     if (Boolean(conversationId) && conversationsList !== undefined) {
       const controller = new AbortController();
 
+      const signal = controller.signal;
       const fetchMessage = async () => {
         const response = await fetch(
           `${import.meta.env.VITE_API_URL}/users/${userId}/conversations/${conversationId}`,
           {
-            signal: controller.signal,
+            signal,
             credentials: 'include',
           },
         );
@@ -131,10 +137,10 @@ export default function ConversationContext({
       fetchMessage().catch(() => {
         setError('An occurred while fetching the message.');
       });
-    /*   const intervalId = setInterval(fetchMessage, 1000); */
+      /*   const intervalId = setInterval(fetchMessage, 1000); */
 
       return () => {
-       /*  clearInterval(intervalId); */
+        /*  clearInterval(intervalId); */
         controller.abort();
       };
     }
@@ -152,6 +158,7 @@ export default function ConversationContext({
       conversationId,
       conversation,
       error,
+      fetchConversations,
     };
   }, [
     userId,
@@ -162,6 +169,7 @@ export default function ConversationContext({
     conversationId,
     conversation,
     error,
+    fetchConversations,
   ]);
 
   return (

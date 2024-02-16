@@ -5,6 +5,7 @@ import { db } from '@app/backend-shared';
 import type { Request } from '@app/shared';
 
 import { getUserId } from '@/middlewares/auth-handlers';
+
 const messageRouter = express.Router();
 
 messageRouter.get(
@@ -17,8 +18,8 @@ messageRouter.get(
       const conversation = await db
 
         .selectFrom('conversation as c')
-        .innerJoin('user as initiator', 'initiator.id', 'c.initiator_id')
-        .innerJoin('user as receiver', 'receiver.id', 'c.receiver_id')
+        .innerJoin('user as initiator', 'initiator.id', 'c.user_1')
+        .innerJoin('user as receiver', 'receiver.id', 'c.user_2')
         .select((eb) => [
           'c.id as conversation_id',
           jsonObjectFrom(
@@ -26,7 +27,7 @@ messageRouter.get(
               .selectFrom('user as u')
               .innerJoin('picture as p', 'p.user_id', 'u.id')
               .select(['u.id', 'u.name', 'p.picture_path'])
-              .whereRef('u.id', '=', 'c.initiator_id')
+              .whereRef('u.id', '=', 'c.user_1')
               .limit(1),
           ).as('user_1'),
           jsonObjectFrom(
@@ -34,7 +35,7 @@ messageRouter.get(
               .selectFrom('user as u')
               .innerJoin('picture as p', 'p.user_id', 'u.id')
               .select(['u.id', 'u.name', 'p.picture_path'])
-              .whereRef('u.id', '=', 'c.receiver_id')
+              .whereRef('u.id', '=', 'c.user_2')
               .limit(1),
           ).as('user_2'),
           jsonObjectFrom(
@@ -52,12 +53,10 @@ messageRouter.get(
               .limit(1),
           ).as('messages'),
         ])
-        .where((eb) =>
-          eb('initiator_id', '=', userId).or('receiver_id', '=', userId),
-        )
+        .where((eb) => eb('user_1', '=', userId).or('user_2', '=', userId))
         .execute();
 
-      return res.json(conversation);
+      return res.json({ ok: true, conversation });
     } catch (error) {
       throw new Error(`Fail to get messages : ${String(error)}`);
     }
@@ -82,8 +81,8 @@ messageRouter.get(
       const messages = await db
 
         .selectFrom('conversation as c')
-        .innerJoin('user as initiator', 'initiator.id', 'c.initiator_id')
-        .innerJoin('user as receiver', 'receiver.id', 'c.receiver_id')
+        .innerJoin('user as initiator', 'initiator.id', 'c.user_1')
+        .innerJoin('user as receiver', 'receiver.id', 'c.user_2')
         .select((eb) => [
           'c.id as conversation_id',
           jsonObjectFrom(
@@ -91,7 +90,7 @@ messageRouter.get(
               .selectFrom('user as u')
               .innerJoin('picture as p', 'p.user_id', 'u.id')
               .select(['u.id', 'u.name', 'p.picture_path'])
-              .whereRef('u.id', '=', 'c.initiator_id')
+              .whereRef('u.id', '=', 'c.user_1')
               .limit(1),
           ).as('user_1'),
           jsonObjectFrom(
@@ -99,7 +98,7 @@ messageRouter.get(
               .selectFrom('user as u')
               .innerJoin('picture as p', 'p.user_id', 'u.id')
               .select(['u.id', 'u.name', 'p.picture_path'])
-              .whereRef('u.id', '=', 'c.receiver_id')
+              .whereRef('u.id', '=', 'c.user_2')
               .limit(1),
           ).as('user_2'),
           jsonArrayFrom(
@@ -117,11 +116,7 @@ messageRouter.get(
           ).as('messages'),
         ])
         .where((eb) =>
-          eb('receiver_id', '=', Number(userId)).or(
-            'initiator_id',
-            '=',
-            Number(userId),
-          ),
+          eb('user_2', '=', Number(userId)).or('user_1', '=', Number(userId)),
         )
         .where('c.id', '=', Number(conversationId))
 

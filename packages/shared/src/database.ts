@@ -98,9 +98,9 @@ export interface UserActionTable {
 
 export interface Conversation {
   id: Generated<number>;
-  initiator_id: number;
-  receiver_id: number;
-  created_at: Date
+  user_1: number;
+  user_2: number;
+  created_at: Date;
 }
 
 export type Technology = Selectable<TechnologyTable>;
@@ -168,5 +168,5 @@ export interface Database {
   language_user: LanguageUserTable;
   hobby_user: HobbyUserTable;
   user_action: UserActionTable;
-  conversation: Conversation
+  conversation: Conversation;
 }
