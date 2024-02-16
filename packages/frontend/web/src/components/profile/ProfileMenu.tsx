@@ -95,8 +95,6 @@ export default function ProfileMenu() {
     },
   ];
 
-  console.log(user);
-
   return (
     <div className='flex h-full w-full flex-col items-center justify-between gap-10'>
       {/* Modal card */}
