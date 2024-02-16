@@ -1,7 +1,5 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 
-const API_URL = import.meta.env.VITE_API_URL;
-
 type AuthProviderProps = {
   readonly children: React.ReactNode;
 };
@@ -29,10 +27,10 @@ export default function AuthContext({ children, ...props }: AuthProviderProps) {
 
     const fetchData = async () => {
       try {
-        const res = await fetch(`${API_URL}/auth/verify`, {
+        const res = await fetch(`/api/auth/verify`, {
           method: 'GET',
           signal: controller.signal, // pass the signal in the request for aborting the request
-          credentials: 'include', // include cookies in the request
+          // credentials: 'include', // include cookies in the request
         });
 
         // Convert the response to json

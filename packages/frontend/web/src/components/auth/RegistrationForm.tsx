@@ -8,8 +8,6 @@ import { registrationSchema } from '@app/shared';
 
 import Button from '../Button';
 
-const API_URL = import.meta.env.VITE_API_URL;
-
 export default function RegistrationForm() {
   const [errorRegistration, setErrorRegistration] = useState<string>();
   // Get the navigate function from the router
@@ -29,10 +27,10 @@ export default function RegistrationForm() {
     try {
       if (isValid) {
         // Send a POST request to the API to register the user
-        await fetch(`${API_URL}/auth/registration`, {
+        await fetch(`/api/auth/registration`, {
           method: 'POST',
           headers: { 'content-type': 'application/json' },
-          credentials: 'include',
+          // credentials: 'include',
           body: JSON.stringify({
             email: data.email,
             password: data.password,
