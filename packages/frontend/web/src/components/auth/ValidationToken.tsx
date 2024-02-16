@@ -6,7 +6,6 @@ import { Navigate, useNavigate } from 'react-router-dom';
 import {
   type ActivationTokenFormBody,
   activationCodeFormSchema,
-  activationCodeSchema,
 } from '@app/shared';
 
 import Button from '@/components/Button';
@@ -59,7 +58,6 @@ export default function ValidationToken() {
           setErrorCode('ⓘ Wrong activation code. Try Again!');
         }
 
-        console.log('code', code);
         // Send a POST request to the API to activate the user's account
         const res = await fetch(`${API_URL}/auth/registration/validation`, {
           method: 'POST',

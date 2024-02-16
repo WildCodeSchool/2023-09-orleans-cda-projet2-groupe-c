@@ -52,7 +52,6 @@ export default function FormProfile() {
 
   // Function to submit the form data
   const formSubmit = async (data: FormProfileBody) => {
-    console.log(data);
     // If the current page is less than 10, move to the next page
     if (page < PAGES.length - 1) {
       setPage(page + 1);
