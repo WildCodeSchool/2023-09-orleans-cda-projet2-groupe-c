@@ -7,8 +7,6 @@ import { filteredUsersByDistance } from '@/services/filter-by-distance';
 import preferences from '@/services/preferences';
 import users from '@/services/users';
 
-// import users from '@/services/users';
-
 const userRouter = express.Router();
 
 userRouter.get('/profile', getUserId, async (req: Request, res) => {

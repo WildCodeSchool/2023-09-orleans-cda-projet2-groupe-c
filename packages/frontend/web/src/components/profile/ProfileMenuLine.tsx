@@ -15,7 +15,7 @@ export default function ProfileMenuLine({
   readonly isEmpty?: boolean;
 }) {
   return (
-    <div className='bg-light flex h-12 items-center justify-between pr-4 shadow-md'>
+    <div className='bg-light flex h-[3.5rem] items-center justify-between pr-4 shadow-md'>
       <div className='flex h-full items-center gap-4 overflow-hidden'>
         <div
           className={`${

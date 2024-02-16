@@ -29,7 +29,11 @@ export default function ProfileMenu() {
 
   // If fetch data about logged in user is undefined, return nothing
   if (!user) {
-    return;
+    return (
+      <div className='w-full'>
+        <p className='text-secondary'>{`User profile not found !`}</p>
+      </div>
+    );
   }
 
   // Create an array with all data about logged in user
@@ -90,6 +94,8 @@ export default function ProfileMenu() {
       isEmpty: !user.account_github,
     },
   ];
+
+  console.log(user);
 
   return (
     <div className='flex h-full w-full flex-col items-center justify-between gap-10'>

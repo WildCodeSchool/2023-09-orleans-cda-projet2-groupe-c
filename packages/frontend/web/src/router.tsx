@@ -7,6 +7,7 @@ import Success from './components/auth/Success';
 import ValidationToken from './components/auth/ValidationToken';
 import ErrorLayout from './components/error/ErrorLayout';
 import HomeCards from './components/home/HomeCards';
+import ProfileForm from './components/profile/ProfileForm';
 import ProfileLayout from './components/profile/ProfileLayout';
 import ProfileMenu from './components/profile/ProfileMenu';
 import ProfileInteractionLayout from './components/user-interaction/ProfileInteractionLayout';
@@ -33,6 +34,10 @@ const router = createBrowserRouter([
               {
                 path: '',
                 element: <ProfileMenu />,
+              },
+              {
+                path: 'update',
+                element: <ProfileForm />,
               },
             ],
           },
@@ -64,10 +69,6 @@ const router = createBrowserRouter([
         path: 'validation',
         element: <ValidationToken />,
       },
-      // {
-      //   path: '/registration/profile',
-      //   element: <FormProfile />,
-      // },
     ],
   },
   {
