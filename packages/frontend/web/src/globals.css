@@ -34,10 +34,19 @@
   input::placeholder {
     @apply text-placeholder;
   }
+
+  .example-track.example-track1 {
+    @apply bg-primary;
+  }
 }
 
 @layer utilities {
   .w-clamp {
     width: clamp(24px, 4vw, 40px);
   }
+
+}
+
+.example-track {
+  background: red;
 }

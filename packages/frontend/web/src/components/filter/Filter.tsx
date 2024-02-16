@@ -12,6 +12,7 @@ import { usePreference } from '@/contexts/PreferenceContext';
 import BulletBase from '../BulletBase';
 import Button from '../Button';
 import FilterIcon from '../icons/FilterIcon';
+import { FilterAgeForm } from './FilterAgeForm';
 import FilterDistanceForm from './FilterDistanceForm';
 import FilterGenderForm from './FilterGenderForm';
 import FilterLanguagesForm from './FilterLanguagesForm';
@@ -62,6 +63,11 @@ export default function Filter() {
           {/* Gender Filter */}
           <FilterLine title='Show me'>
             <FilterGenderForm register={register} watch={watch} />
+          </FilterLine>
+
+          {/* Distance Filter */}
+          <FilterLine title='Age'>
+            <FilterAgeForm register={register} />
           </FilterLine>
 
           {/* Distance Filter */}
