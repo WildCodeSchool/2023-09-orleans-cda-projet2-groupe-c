@@ -1,6 +1,5 @@
 import { createContext, useContext, useMemo } from 'react';
 import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
 
 import type { UserBody } from '@app/shared';
 
@@ -37,9 +36,6 @@ export default function ProfileContext({
   // Get user id from the auth context
   const { userId } = useAuth();
 
-  // Get profile id from the url
-  const { profileId } = useParams();
-
   // State to store the user information
   const [user, setUser] = useState<UserBody>();
 
@@ -49,9 +45,6 @@ export default function ProfileContext({
   // State to toogle the modal
   const [isToogleModal, setIsToogleModal] = useState<boolean>(false);
 
-  // Navigate to another page using the hook "useNavigate"
-  const navigate = useNavigate();
-
   // Fetch information about the user logged in
   useEffect(() => {
     if (Boolean(userId)) {
@@ -59,7 +52,7 @@ export default function ProfileContext({
       const signal = controller.signal;
 
       const fetchUser = async () => {
-        const res = await fetch(`${API_URL}/users/${userId}/profile`, {
+        const res = await fetch(`${API_URL}/users/profile`, {
           signal,
           credentials: 'include',
         });
@@ -79,13 +72,6 @@ export default function ProfileContext({
       };
     }
   }, [userId]);
-
-  // Check if the user is define and if is allowed to access this page
-  useEffect(() => {
-    if (Boolean(userId) && userId !== Number(profileId)) {
-      navigate('/error');
-    }
-  }, [userId, profileId, navigate]);
 
   // Format the birthdate using the custom hook "useDateFormatted"
   const birthdateFormatted = useDateFormatted({ dateString: user?.birthdate });

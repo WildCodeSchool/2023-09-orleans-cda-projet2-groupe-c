@@ -92,7 +92,7 @@ export default function ProfileMenu() {
   ];
 
   return (
-    <>
+    <div className='flex h-full w-full flex-col items-center justify-between gap-10'>
       {/* Modal card */}
       {isToogleModal ? (
         <div
@@ -122,7 +122,7 @@ export default function ProfileMenu() {
       ) : undefined}
 
       {/* Icon to display the modal card */}
-      <div className='bg-light-medium relative mx-auto flex h-full w-full max-w-[500px] flex-col items-center'>
+      <div className='bg-light-medium relative mx-auto flex w-full max-w-[500px] flex-col items-center'>
         <div className='absolute right-0 top-0'>
           <ShowCard
             onClick={() => {
@@ -159,6 +159,6 @@ export default function ProfileMenu() {
       <Button type='button' isOutline={false}>
         {`Logout`}
       </Button>
-    </>
+    </div>
   );
 }

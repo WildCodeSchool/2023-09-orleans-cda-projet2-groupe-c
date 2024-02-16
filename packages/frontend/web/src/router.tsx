@@ -5,9 +5,11 @@ import Login from './components/auth/Login';
 import RegistrationForm from './components/auth/RegistrationForm';
 import Success from './components/auth/Success';
 import ValidationToken from './components/auth/ValidationToken';
-import ProfileForm from './components/profile/ProfileForm';
+import ErrorLayout from './components/error/ErrorLayout';
+import HomeCards from './components/home/HomeCards';
 import ProfileLayout from './components/profile/ProfileLayout';
 import ProfileMenu from './components/profile/ProfileMenu';
+import ProfileInteractionLayout from './components/user-interaction/ProfileInteractionLayout';
 import Home from './pages/Home';
 import Registration from './pages/Registration';
 
@@ -19,24 +21,30 @@ const router = createBrowserRouter([
       {
         path: '/',
         element: <AuthLayout />,
+        children: [
+          {
+            path: '',
+            element: <HomeCards />,
+          },
+          {
+            path: '/profile',
+            element: <ProfileLayout />,
+            children: [
+              {
+                path: '',
+                element: <ProfileMenu />,
+              },
+            ],
+          },
+          {
+            path: '/profile/interactions',
+            element: <ProfileInteractionLayout />,
+          },
+        ],
       },
       {
         path: 'login',
         element: <Login />,
-      },
-      {
-        path: 'users/:profileId/profile',
-        element: <ProfileLayout />,
-        children: [
-          {
-            path: '',
-            element: <ProfileMenu />,
-          },
-          {
-            path: 'update',
-            element: <ProfileForm />,
-          },
-        ],
       },
     ],
   },
@@ -56,7 +64,15 @@ const router = createBrowserRouter([
         path: 'validation',
         element: <ValidationToken />,
       },
+      // {
+      //   path: '/registration/profile',
+      //   element: <FormProfile />,
+      // },
     ],
+  },
+  {
+    path: '*',
+    element: <ErrorLayout />,
   },
 ]);
 

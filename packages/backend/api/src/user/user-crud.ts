@@ -1,58 +1,55 @@
 import express from 'express';
 
-import type { Request as ExpressRequest } from '@app/shared';
+import type { Request } from '@app/shared';
 
 import { getUserId } from '@/middlewares/auth-handlers';
-import {
-  type UserProfile,
-  type Users,
-  checkUserId,
-  getUserProfile,
-  getUsers,
-} from '@/middlewares/user-handlers';
+import { filteredUsersByDistance } from '@/services/filter-by-distance';
+import preferences from '@/services/preferences';
+import users from '@/services/users';
 
-interface Request extends ExpressRequest {
-  userId?: number;
-  usersList?: Users;
-  userProfile?: UserProfile;
-}
+// import users from '@/services/users';
 
 const userRouter = express.Router();
 
+userRouter.get('/profile', getUserId, async (req: Request, res) => {
+  try {
+    // Get the user id from JWT
+    const userId = req.userId as number;
+
+    // Get the user profile with the users service
+    const user = await users.getUserProfile(userId);
+
+    res.status(200).json(user);
+  } catch {
+    res
+      .status(500)
+      .json({ error: 'An error occurred while fetching user profile' });
+  }
+});
+
 // Fetch a list of users without the user logged in
-userRouter.get(
-  '/:userId',
-  getUserId, // Get user id from the JWT
-  checkUserId, // Check if the user id is valid
-  getUsers, // Fetch a list of users without the user logged in
-  (req: Request, res) => {
-    try {
-      const users = req.usersList;
+userRouter.get('/:userId', getUserId, async (req: Request, res) => {
+  try {
+    // Get the user id from JWT
+    const userId = req.userId as number;
 
-      res.status(200).json(users);
-    } catch {
-      res.status(500).json({ error: 'An error occurred while fetching users' });
-    }
-  },
-);
+    // Get the user preferences with the preferences service
+    const userPreferences = await preferences.getUserPreferences(userId);
 
-// Get the information of the logged in user
-userRouter.get(
-  '/:userId/profile',
-  getUserId, // Get user id from the JWT
-  checkUserId, // Check if the user id is valid
-  getUserProfile, // Get the data about the logged in user
-  (req: Request, res) => {
-    try {
-      const user = req.userProfile;
+    // Get the users list with the users service
+    const usersList = await users.getUsers({ userId, userPreferences });
 
-      res.status(200).json(user);
-    } catch {
-      res
-        .status(500)
-        .json({ error: 'An error occurred while fetching user profile.' });
-    }
-  },
-);
+    // Use "filterByDistance" service to filter the users by distance
+    const filteredUsers = await filteredUsersByDistance({
+      userId,
+      users: usersList,
+      range: userPreferences[0].distance,
+    });
+
+    res.status(200).json(filteredUsers);
+  } catch {
+    res.status(500).json({ error: 'An error occurred while fetching users' });
+  }
+});
 
 export default userRouter;
