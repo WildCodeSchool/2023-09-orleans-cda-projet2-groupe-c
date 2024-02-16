@@ -52,6 +52,7 @@ export default function FormProfile() {
 
   // Function to submit the form data
   const formSubmit = async (data: FormProfileBody) => {
+    console.log(data);
     // If the current page is less than 10, move to the next page
     if (page < PAGES.length - 1) {
       setPage(page + 1);
@@ -114,9 +115,9 @@ export default function FormProfile() {
             {/* Buttons Next and Back */}
             <div className='flex w-full flex-col gap-6'>
               <Button isOutline={false} type='submit'>
-                {page >= 9 ? 'Start matching' : 'Next'}
+                {page >= PAGES.length ? 'Start matching' : 'Next'}
               </Button>
-              {page > 0 && page < 9 ? (
+              {page > 0 && page < PAGES.length ? (
                 <Button
                   isOutline
                   type='button'

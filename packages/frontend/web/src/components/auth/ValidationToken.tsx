@@ -6,6 +6,7 @@ import { Navigate, useNavigate } from 'react-router-dom';
 import {
   type ActivationTokenFormBody,
   activationCodeFormSchema,
+  activationCodeSchema,
 } from '@app/shared';
 
 import Button from '@/components/Button';
@@ -30,6 +31,9 @@ export default function ValidationToken() {
   // State to store the error message
   const [errorRegistration, setErrorRegistration] = useState<string>();
 
+  // State to store the error code
+  const [errorCode, setErrorCode] = useState<string>();
+
   // Get the navigate function from the router
   const navigate = useNavigate();
 
@@ -49,13 +53,20 @@ export default function ValidationToken() {
   const onSubmit: SubmitHandler<ActivationTokenFormBody> = async (data) => {
     try {
       if (isValid) {
+        const activationCode = `${data.code_1}${data.code_2}${data.code_3}${data.code_4}${data.code_5}${data.code_6}`;
+
+        if (activationCode !== code) {
+          setErrorCode('ⓘ Wrong activation code. Try Again!');
+        }
+
+        console.log('code', code);
         // Send a POST request to the API to activate the user's account
         const res = await fetch(`${API_URL}/auth/registration/validation`, {
           method: 'POST',
           credentials: 'include',
           headers: { 'content-type': 'application/json' },
           body: JSON.stringify({
-            activation_code: `${data.code_1}${data.code_2}${data.code_3}${data.code_4}${data.code_5}${data.code_6}`,
+            activation_code: activationCode,
           }),
         });
 
@@ -149,7 +160,9 @@ export default function ValidationToken() {
                   ) {
                     // Get the next input
                     const nextInput = document.querySelector(
-                      `input[name="${inputsActivationCode[index + 1].register}"]`,
+                      `input[name="${
+                        inputsActivationCode[index + 1].register
+                      }"]`,
                     ) as HTMLInputElement;
 
                     // Focus on the next input
@@ -164,6 +177,8 @@ export default function ValidationToken() {
           {Boolean(errorRegistration) && (
             <p className='text-primary mt-2'>{errorRegistration}</p>
           )}
+
+          <p className='text-primary mt-2'>{errorCode}</p>
         </FormContainer>
 
         <Button isOutline={false} type='submit'>

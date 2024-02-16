@@ -6,6 +6,7 @@ import AuthContext from './contexts/AuthContext.tsx';
 import InteractionContext from './contexts/InteractionContext.tsx';
 import PreferenceContext from './contexts/PreferenceContext.tsx';
 import { ThemeContext } from './contexts/ThemeContext.tsx';
+import UsersInteractionsContext from './contexts/UsersInteractionsContext.tsx';
 import './globals.css';
 import router from './router.tsx';
 
@@ -18,7 +19,9 @@ if (rootElement) {
         <ThemeContext>
           <InteractionContext>
             <PreferenceContext>
-              <RouterProvider router={router} />
+              <UsersInteractionsContext>
+                <RouterProvider router={router} />
+              </UsersInteractionsContext>
             </PreferenceContext>
           </InteractionContext>
         </ThemeContext>

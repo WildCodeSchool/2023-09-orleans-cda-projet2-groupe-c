@@ -15,7 +15,7 @@ export default function SidebarLayout({
     isVisible && (
       <aside
         className={`${
-          isAbsolute ? 'absolute' : 'block'
+          isAbsolute ? 'absolute z-40' : 'block'
         } border-divider bg-light-medium h-full w-full lg:max-w-[25vw] ${
           isBorderRight ?? 'lg:border-r'
         } ${isBorderLeft ?? 'lg:border-l'}`}

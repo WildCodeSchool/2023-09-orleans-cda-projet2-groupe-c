@@ -4,6 +4,8 @@ import { useTheme } from '@/contexts/ThemeContext';
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   readonly isOutline: boolean;
+  readonly type: 'button' | 'submit' | 'reset';
+  readonly onClick?: () => void;
 }
 
 export default function Button({
@@ -18,6 +20,7 @@ export default function Button({
     // Use Link for navigation
     <motion.button
       type={type}
+      onClick={onClick}
       // Initial state of the animation
       initial={{ y: 0, boxShadow: '0px 5px #bd0069' }}
       // State of the animation when the button is clicked
@@ -33,7 +36,6 @@ export default function Button({
         stiffness: 200,
         duration: 0.1,
       }}
-      onClick={onClick}
       className={`${
         isOutline
           ? `bg-transparent ${theme === 'dark' ? 'text-white' : 'text-primary'}`
