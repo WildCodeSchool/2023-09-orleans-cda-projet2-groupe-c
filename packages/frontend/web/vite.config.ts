@@ -4,7 +4,7 @@ import { defineConfig, loadEnv } from 'vite';
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
-  const { FRONTEND_HOST, FRONTEND_PORT } = loadEnv(mode, process.cwd(), '');
+  const { FRONTEND_PORT } = loadEnv(mode, process.cwd(), '');
 
   return {
     plugins: [react()],

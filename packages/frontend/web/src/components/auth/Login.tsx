@@ -61,7 +61,6 @@ export default function Login() {
         // Send the login request to the server
         const res = await fetch(`/api/auth/login`, {
           method: 'POST',
-          // credentials: 'include', // Send cookies
           headers: {
             'content-type': 'application/json',
           },
