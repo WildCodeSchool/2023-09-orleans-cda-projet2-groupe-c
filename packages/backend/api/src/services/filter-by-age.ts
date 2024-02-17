@@ -13,8 +13,8 @@ export const filteredByAge = ({
     // Get the current year
     const currentYear = new Date().getFullYear();
 
-    // Check if the user has a birthdate
     return users.filter((user) => {
+      // Check if the user has a birthdate
       if (!user.birthdate) {
         return false;
       }
