@@ -67,6 +67,8 @@ filterRouter.put(
           distance: parsed.data.distance,
           language_pref_id: Number(parsed.data.language_pref_id),
           gender_pref: parsed.data.gender_pref as Gender,
+          min_age: parsed.data.min_age,
+          max_age: parsed.data.max_age,
         })
         .where('preference.user_id', '=', userId)
         .execute();

@@ -3,6 +3,7 @@ import express from 'express';
 import type { Request } from '@app/shared';
 
 import { getUserId } from '@/middlewares/auth-handlers';
+import { filteredByAge } from '@/services/filter-by-age';
 import { filteredUsersByDistance } from '@/services/filter-by-distance';
 import preferences from '@/services/preferences';
 import users from '@/services/users';
@@ -35,10 +36,17 @@ userRouter.get('/:userId', getUserId, async (req: Request, res) => {
     // Get the users list with the users service
     const usersList = await users.getUsers({ userId, userPreferences });
 
+    // Use "filteredByAge" service to filter the users by ages
+    const filteredUserByAge = filteredByAge({
+      users: usersList,
+      minAge: userPreferences[0].min_age,
+      maxAge: userPreferences[0].max_age,
+    });
+
     // Use "filterByDistance" service to filter the users by distance
     const filteredUsers = await filteredUsersByDistance({
       userId,
-      users: usersList,
+      users: filteredUserByAge,
       range: userPreferences[0].distance,
     });
 

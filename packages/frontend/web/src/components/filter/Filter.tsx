@@ -26,7 +26,7 @@ export default function Filter() {
   const { updatePreferences } = usePreference();
 
   // Destructuring the hook useForm
-  const { register, handleSubmit, formState, watch } =
+  const { register, handleSubmit, formState, watch, setValue } =
     useForm<RequestPreferencesBody>({
       resolver: zodResolver(requestPreferencesSchema), // Form validation
     });
@@ -67,7 +67,7 @@ export default function Filter() {
 
           {/* Distance Filter */}
           <FilterLine title='Age'>
-            <FilterAgeForm register={register} />
+            <FilterAgeForm setValue={setValue} />
           </FilterLine>
 
           {/* Distance Filter */}
