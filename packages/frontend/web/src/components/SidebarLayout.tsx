@@ -1,3 +1,5 @@
+import { useLocation } from 'react-router-dom';
+
 export default function SidebarLayout({
   children,
   isVisible,
@@ -9,16 +11,17 @@ export default function SidebarLayout({
   readonly isBorderRight?: boolean;
   readonly isBorderLeft?: boolean;
 }) {
-  const isAbsolute = window.innerWidth < 1024;
+  const location = useLocation();
+  const isHome = location.pathname === '/';
 
   return (
     isVisible && (
       <aside
-        className={`${
-          isAbsolute ? 'absolute z-40' : 'block'
-        } border-divider bg-light-medium h-full w-full lg:max-w-[25vw] ${
+        className={`border-divider bg-light-medium absolute z-40 h-full w-full lg:relative lg:max-w-[25vw] ${
           isBorderRight ?? 'lg:border-r'
-        } ${isBorderLeft ?? 'lg:border-l'}`}
+        } ${isBorderLeft ?? 'lg:border-l'} 
+        ${isHome ? 'visible h-[calc(100vh-56px)]' : 'lg:hidden'} 
+        `}
       >
         {children}
       </aside>
