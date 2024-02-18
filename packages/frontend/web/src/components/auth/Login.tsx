@@ -59,7 +59,7 @@ export default function Login() {
       // Validation of user entered data using a validation schema
       if (isValid) {
         // Send the login request to the server
-        const res = await fetch(`/api/auth/login`, {
+        const res = await fetch(`api/auth/login`, {
           method: 'POST',
           headers: {
             'content-type': 'application/json',

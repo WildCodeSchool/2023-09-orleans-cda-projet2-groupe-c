@@ -37,7 +37,7 @@ export default function ValidationToken() {
     try {
       if (isValid) {
         // Send a POST request to the API to activate the user's account
-        const res = await fetch(`/api/auth/registration/validation`, {
+        const res = await fetch(`api/auth/registration/validation`, {
           method: 'POST',
           // credentials: 'include',
           headers: { 'content-type': 'application/json' },
@@ -67,7 +67,7 @@ export default function ValidationToken() {
     const signal = controller.signal;
 
     const fetchCode = async () => {
-      const res = await fetch(`/api/auth/registration/users/${userId}/code`, {
+      const res = await fetch(`api/auth/registration/users/${userId}/code`, {
         signal,
         // credentials: 'include',
         headers: { 'content-type': 'application/json' },
