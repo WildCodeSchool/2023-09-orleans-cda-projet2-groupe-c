@@ -9,8 +9,6 @@ import {
 
 import FormContainer from './FormContainer';
 
-const API_URL = import.meta.env.VITE_API_URL;
-
 export default function FormHobby() {
   // State to store hobbies
   const [hobbies, setHobbies] = useState<HobbyBody[]>([]);
@@ -69,7 +67,7 @@ export default function FormHobby() {
     const signal = controller.signal;
 
     (async () => {
-      const response = await fetch(`${API_URL}/hobbies`, {
+      const response = await fetch(`api/hobbies`, {
         signal,
       });
 

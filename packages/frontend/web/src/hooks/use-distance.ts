@@ -4,8 +4,6 @@ import { useEffect, useState } from 'react';
 import type { UserBody } from '@app/shared';
 import type { Point } from '@app/shared';
 
-const API_URL = import.meta.env.VITE_API_URL;
-
 interface DistanceProps {
   userId: number | undefined;
   selectedUser: UserBody | undefined;
@@ -29,9 +27,9 @@ export default function useDistance({ userId, selectedUser }: DistanceProps) {
     const signal = controller.signal;
 
     const fetchDistance = async () => {
-      const res = await fetch(`${API_URL}/users/${userId}/profile`, {
+      const res = await fetch(`/api/users/${userId}/profile`, {
         signal,
-        credentials: 'include',
+        // credentials: 'include',
       });
 
       const data = await res.json();

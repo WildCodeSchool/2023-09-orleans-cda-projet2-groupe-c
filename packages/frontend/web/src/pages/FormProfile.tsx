@@ -67,7 +67,7 @@ export default function FormProfile() {
         // Create a new object with the birthdate and the rest of the data
         const newData = { ...rest, birthdate };
 
-        await fetch(`${import.meta.env.VITE_API_URL}/register`, {
+        await fetch(`api/register`, {
           method: 'POST',
           credentials: 'include',
           headers: {

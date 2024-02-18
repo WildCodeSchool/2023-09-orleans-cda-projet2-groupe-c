@@ -12,8 +12,6 @@ import { usePreference } from '@/contexts/PreferenceContext';
 
 import Logo from '../components/icons/LogoHomeIcon';
 
-const API_URL = import.meta.env.VITE_API_URL;
-
 export default function Home() {
   // State to store user profile
   const [userProfile, setUserProfile] = useState<UserBody>();
@@ -28,7 +26,7 @@ export default function Home() {
     const signal = controller.signal;
 
     const fetchUserProfile = async () => {
-      const res = await fetch(`${API_URL}/users/${userId}/profile`, {
+      const res = await fetch(`api/users/${userId}/profile`, {
         credentials: 'include', // Send cookies
         signal,
       });

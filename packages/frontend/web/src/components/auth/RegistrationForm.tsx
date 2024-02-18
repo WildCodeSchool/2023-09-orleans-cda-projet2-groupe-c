@@ -12,8 +12,6 @@ import Button from '../Button';
 import FormLayout from '../FormLayout';
 import FormContainer from '../forms/FormContainer';
 
-const API_URL = import.meta.env.VITE_API_URL;
-
 export default function RegistrationForm() {
   const [errorRegistration, setErrorRegistration] = useState<string>();
   const { setIsLoggedIn } = useAuth();
@@ -35,10 +33,10 @@ export default function RegistrationForm() {
     try {
       if (isValid) {
         // Send a POST request to the API to register the user
-        await fetch(`${API_URL}/auth/registration`, {
+        await fetch(`/api/auth/registration`, {
           method: 'POST',
           headers: { 'content-type': 'application/json' },
-          credentials: 'include',
+          // credentials: 'include',
           body: JSON.stringify({
             email: data.email,
             password: data.password,

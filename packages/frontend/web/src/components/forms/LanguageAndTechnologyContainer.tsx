@@ -12,8 +12,6 @@ interface SelectionFormProps extends React.HTMLAttributes<HTMLDivElement> {
   readonly fieldName: 'languages' | 'technologies';
 }
 
-const API_URL = import.meta.env.VITE_API_URL;
-
 interface ItemsBody {
   id: number;
   name: string;
@@ -90,7 +88,7 @@ export default function LanguageAndTechnology({
     const signal = controller.signal;
 
     (async () => {
-      const response = await fetch(`${API_URL}/${apiUrl}`, {
+      const response = await fetch(`api/${apiUrl}`, {
         signal,
       });
 
@@ -133,7 +131,11 @@ export default function LanguageAndTechnology({
         {/* Items and Inputs */}
         <div className='flex justify-center'>
           <div
-            className={`mt-5 grid max-w-[26rem] grid-cols-4 gap-x-4 gap-y-4 overflow-y-auto px-5 py-3 md:px-10 ${apiUrl === 'languages' ? 'max-h-[20vh] md:max-h-[30vh]' : 'max-h-[35vh] md:max-h-[42vh]'}`}
+            className={`mt-5 grid max-w-[26rem] grid-cols-4 gap-x-4 gap-y-4 overflow-y-auto px-5 py-3 md:px-10 ${
+              apiUrl === 'languages'
+                ? 'max-h-[20vh] md:max-h-[30vh]'
+                : 'max-h-[35vh] md:max-h-[42vh]'
+            }`}
           >
             {items.map((item) => (
               <div

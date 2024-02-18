@@ -13,8 +13,6 @@ import FormLayout from '@/components/FormLayout';
 import FormContainer from '@/components/forms/FormContainer';
 import { useAuth } from '@/contexts/AuthContext';
 
-const API_URL = import.meta.env.VITE_API_URL;
-
 type CodeKey = 'code_1' | 'code_2' | 'code_3' | 'code_4' | 'code_5' | 'code_6';
 
 // Create an array of 6 elements with an unique register key
@@ -59,9 +57,9 @@ export default function ValidationToken() {
         }
 
         // Send a POST request to the API to activate the user's account
-        const res = await fetch(`${API_URL}/auth/registration/validation`, {
+        const res = await fetch(`/api/auth/registration/validation`, {
           method: 'POST',
-          credentials: 'include',
+          // credentials: 'include',
           headers: { 'content-type': 'application/json' },
           body: JSON.stringify({
             activation_code: activationCode,
@@ -92,14 +90,11 @@ export default function ValidationToken() {
     const signal = controller.signal;
 
     const fetchCode = async () => {
-      const res = await fetch(
-        `${API_URL}/auth/registration/users/${userId}/code`,
-        {
-          signal,
-          credentials: 'include',
-          headers: { 'content-type': 'application/json' },
-        },
-      );
+      const res = await fetch(`/api/auth/registration/users/${userId}/code`, {
+        signal,
+        // credentials: 'include',
+        headers: { 'content-type': 'application/json' },
+      });
 
       const data = await res.json();
 

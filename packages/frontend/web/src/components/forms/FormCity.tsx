@@ -50,9 +50,7 @@ export default function FormCity() {
       (async () => {
         try {
           const response = await fetch(
-            `${
-              import.meta.env.VITE_API_URL
-            }/cities?name=${searchBar}&order=asc`,
+            `api/cities?name=${searchBar}&order=asc`,
             {
               signal: controller.signal,
             },
