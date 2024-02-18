@@ -56,7 +56,7 @@ export default function PreferenceContext({
   // Function to fetch all user preferences
   const fetchPreferences = useCallback(
     async ({ signal }: { signal: AbortSignal }) => {
-      const res = await fetch(`api/users/${userId}/preferences`, {
+      const res = await fetch(`/api/users/${userId}/preferences`, {
         credentials: 'include', // Send cookies
         signal,
       });
@@ -107,7 +107,7 @@ export default function PreferenceContext({
   const updatePreferences = useCallback(
     async (newPreferences: RequestPreferencesBody) => {
       // Update the preferences in the database
-      await fetch(`api/users/${userId}/preferences`, {
+      await fetch(`/api/users/${userId}/preferences`, {
         method: 'PUT',
         credentials: 'include', // Send cookies
         headers: {

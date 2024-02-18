@@ -13,7 +13,7 @@ export default function useLanguages() {
 
     try {
       (async () => {
-        const res = await fetch(`api/languages`, { signal });
+        const res = await fetch(`/api/languages`, { signal });
 
         const data = await res.json();
 

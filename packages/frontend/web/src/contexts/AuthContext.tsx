@@ -27,7 +27,7 @@ export default function AuthContext({ children, ...props }: AuthProviderProps) {
 
     const fetchData = async () => {
       try {
-        const res = await fetch(`api/auth/verify`, {
+        const res = await fetch(`/api/auth/verify`, {
           method: 'GET',
           signal: controller.signal, // pass the signal in the request for aborting the request
           // credentials: 'include', // include cookies in the request

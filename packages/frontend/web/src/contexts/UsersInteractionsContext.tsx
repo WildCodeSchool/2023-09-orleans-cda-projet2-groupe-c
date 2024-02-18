@@ -38,7 +38,7 @@ const fetchInteractions = async ({
   signal,
   setter,
 }: FetchInteractions) => {
-  const response = await fetch(`api/users/interactions/${interactionType}`, {
+  const response = await fetch(`/api/users/interactions/${interactionType}`, {
     signal,
     credentials: 'include',
   });

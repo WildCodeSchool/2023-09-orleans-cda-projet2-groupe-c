@@ -11,7 +11,7 @@ export default function useInteractions({ ...props }) {
   // Fetch users from the API
   const fetchUsers = useCallback(
     async ({ signal }: { signal: AbortSignal }) => {
-      const res = await fetch(`api/users/${userId}`, {
+      const res = await fetch(`/api/users/${userId}`, {
         signal,
         // credentials: 'include',
       });
@@ -27,7 +27,7 @@ export default function useInteractions({ ...props }) {
   const fetchUserSuperLikeCount = useCallback(
     async ({ signal }: { signal: AbortSignal }) => {
       const res = await fetch(
-        `api/users/${userId}/interactions/superlike/count`,
+        `/api/users/${userId}/interactions/superlike/count`,
         {
           signal,
           // credentials: 'include',
@@ -64,7 +64,7 @@ export default function useInteractions({ ...props }) {
   const handleInteraction = async (interactionType: string) => {
     try {
       // Send a request to the API to like, superlike or next a user
-      await fetch(`api/users/${userId}/interactions/${interactionType}`, {
+      await fetch(`/api/users/${userId}/interactions/${interactionType}`, {
         method: 'POST',
         headers: {
           'content-type': 'application/json',
@@ -99,7 +99,7 @@ export default function useInteractions({ ...props }) {
   const handleBackInteraction = async () => {
     try {
       // Send a request to the API to go back to the previous user
-      await fetch(`api/users/${userId}/interactions/back`, {
+      await fetch(`/api/users/${userId}/interactions/back`, {
         method: 'DELETE',
         // credentials: 'include',
       });
