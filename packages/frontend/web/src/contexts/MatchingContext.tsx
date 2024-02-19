@@ -28,7 +28,7 @@ export default function MatchingContext({
 
     (async () => {
       await fetch(
-        `${import.meta.env.VITE_API_URL}/users/:userId/interactions/verify`,
+        `${import.meta.env.VITE_API_URL}/users/interactions/verify`,
         {
           signal,
           credentials: 'include',

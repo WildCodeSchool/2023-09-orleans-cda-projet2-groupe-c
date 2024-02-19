@@ -177,12 +177,18 @@ interactionRouter.get(
       const isMatching = req.isMatching;
       const userId = req.userId as number;
       const user2 = req.receiversIds as number[];
+      console.log('user2',user2);
+      console.log('userid',userId);
+
 
       const conversations = await db
         .selectFrom('conversation')
         .selectAll()
-        .where((eb) => eb('user_1', '=', userId).or('user_1', '=', user2))
-        .where((eb) => eb('user_2', 'in', user2).or('user_2', 'in', userId))
+        /* .where((eb) =>
+          eb('user_1', '=', userId).or('user_1', 'in', user2),
+        )  */
+        .where((eb) => eb('user_1', '=', userId).or('user_2', '=', userId))
+        .where((eb) => eb('user_2', 'in', user2).or('user_1', 'in', user2))
         .execute();
 
       if (Boolean(isMatching)) {
@@ -191,7 +197,7 @@ interactionRouter.get(
             (conversations) => conversations.user_2 || conversations.user_1,
           ),
         );
-        console.log(existingConversations);
+        console.log('new conversation', existingConversations);
 
         await db
           .insertInto('conversation')

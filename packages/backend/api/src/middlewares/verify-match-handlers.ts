@@ -29,7 +29,7 @@ export const verifyInteractions = async (
         'ua.canceled_at',
         'ua.receiver_id',
       ])
-      .where('ua.initiator_id', '=', userId1)
+      .where((eb) => eb('ua.initiator_id', '=', userId1))
       .where('ua.canceled_at', 'is not', null)
       .execute();
 
@@ -54,7 +54,7 @@ export const verifyInteractions = async (
             or([
               eb('ua.liked_at', 'is not', null),
               eb('ua.superlike_at', 'is not', null),
-            ]),
+            ])
           ]),
         )
         .execute();
