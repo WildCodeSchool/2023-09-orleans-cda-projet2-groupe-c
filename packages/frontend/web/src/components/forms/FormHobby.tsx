@@ -27,7 +27,10 @@ export default function FormHobby() {
       // Use zod schema to validate the form field
       validate: (value) => {
         const result = formItemsSchema.shape['hobbies'].safeParse(value);
-        return result.success ? true : result.error.errors[0]?.message;
+        if (!result.success) {
+          return result.error.errors[0].message;
+        }
+        return true;
       },
     },
   });

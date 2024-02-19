@@ -44,9 +44,10 @@ export default function FormGender() {
               {...register('gender', {
                 validate: (value) => {
                   const result = formIamSchema.shape.gender.safeParse(value);
-                  return result.success
-                    ? true
-                    : result.error.errors[0]?.message;
+                  if (!result.success) {
+                    return result.error.errors[0].message;
+                  }
+                  return true;
                 },
               })}
               value={option.value}

@@ -49,7 +49,10 @@ export default function LanguageAndTechnology({
         const key = apiUrl === 'languages' ? 'languages' : 'technologies';
         const result = formItemsSchema.shape[key].safeParse(value);
 
-        return result.success ? true : result.error.errors[0]?.message;
+        if (!result.success) {
+          return result.error.errors[0].message;
+        }
+        return true;
       },
     },
   });

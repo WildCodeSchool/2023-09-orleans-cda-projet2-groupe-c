@@ -20,10 +20,9 @@ export default function FormBio() {
         {...register('biography', {
           validate: (value) => {
             const result = formBioSchema.shape.biography.safeParse(value);
-            if (!Boolean(result.success)) {
-              return result.error.errors[0]?.message;
+            if (!result.success) {
+              return result.error.errors[0].message;
             }
-
             return true;
           },
         })}

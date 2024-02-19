@@ -31,7 +31,10 @@ export default function FormCity() {
         cityId: getValues('cityId'),
         cityName: getValues('cityName'),
       });
-      return result.success ? true : result.error.errors[0]?.message;
+      if (!result.success) {
+        return result.error.errors[0].message;
+      }
+      return true;
     },
   });
 

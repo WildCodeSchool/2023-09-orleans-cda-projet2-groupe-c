@@ -26,7 +26,10 @@ export default function FormName() {
         {...register('name', {
           validate: (value) => {
             const result = formNameSchema.shape.name.safeParse(value);
-            return result.success ? true : result.error.errors[0]?.message;
+            if (!result.success) {
+              return result.error.errors[0].message;
+            }
+            return true;
           },
         })}
         className='border-primary bg-light mt-2 w-full rounded-md border px-2 py-3 text-lg focus:outline-none lg:text-xl'

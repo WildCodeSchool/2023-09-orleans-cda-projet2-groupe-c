@@ -62,9 +62,10 @@ export default function FormBirthDate() {
                 valueAsNumber: true,
                 validate: (value) => {
                   const result = input.schema.safeParse(value);
-                  return result.success
-                    ? true
-                    : result.error.errors[0]?.message;
+                  if (!result.success) {
+                    return result.error.errors[0].message;
+                  }
+                  return true;
                 },
               })}
               className='border-primary bg-light mt-1 w-full rounded-lg border py-3 text-center text-lg uppercase focus:outline-none lg:text-xl'
