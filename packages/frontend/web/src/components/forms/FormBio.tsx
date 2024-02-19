@@ -20,7 +20,11 @@ export default function FormBio() {
         {...register('biography', {
           validate: (value) => {
             const result = formBioSchema.shape.biography.safeParse(value);
-            return result.success || result.error.errors[0]?.message;
+            if (!Boolean(result.success)) {
+              return result.error.errors[0]?.message;
+            }
+
+            return true;
           },
         })}
         className='border-primary bg-light mt-2 h-[30vh] w-full resize-none rounded-md border px-3 py-2 text-lg focus:outline-none lg:text-xl'

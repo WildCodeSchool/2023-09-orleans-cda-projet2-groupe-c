@@ -67,7 +67,7 @@ export default function FormProfile() {
         // Create a new object with the birthdate and the rest of the data
         const newData = { ...rest, birthdate };
 
-        await fetch(`api/register`, {
+        await fetch(`/api/register`, {
           method: 'POST',
           credentials: 'include',
           headers: {
@@ -103,7 +103,7 @@ export default function FormProfile() {
           className='flex h-full flex-col items-center justify-between py-[10%]'
         >
           <div className='flex h-full w-full max-w-[500px] flex-col justify-between'>
-            {/*   i use react.Fragment because only <></> not work with key */}
+            {/* Use react.Fragment because only <></> not work with key */}
             {PAGES.map(
               ({ currentPage, component }) =>
                 currentPage === page && (
@@ -116,18 +116,6 @@ export default function FormProfile() {
               <Button isOutline={false} type='submit'>
                 {page >= PAGES.length ? 'Start matching' : 'Next'}
               </Button>
-              {page > 0 && page < PAGES.length ? (
-                <Button
-                  isOutline
-                  type='button'
-                  onClick={() => {
-                    setPage(page - 1);
-                    setPercentage(((page - 2) / PAGES.length) * 100);
-                  }}
-                >
-                  {'Back'}
-                </Button>
-              ) : undefined}
             </div>
           </div>
         </form>

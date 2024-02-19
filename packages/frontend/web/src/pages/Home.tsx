@@ -26,7 +26,7 @@ export default function Home() {
     const signal = controller.signal;
 
     const fetchUserProfile = async () => {
-      const res = await fetch(`api/users/${userId}/profile`, {
+      const res = await fetch(`/api/users/${userId}/profile`, {
         credentials: 'include', // Send cookies
         signal,
       });

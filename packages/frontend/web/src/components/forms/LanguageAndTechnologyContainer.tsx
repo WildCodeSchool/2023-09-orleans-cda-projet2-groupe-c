@@ -5,6 +5,8 @@ import { type FormItemsValidation, formItemsSchema } from '@app/shared';
 
 import FormContainer from './FormContainer';
 
+type ValueType = { id: number; order: number };
+
 interface SelectionFormProps extends React.HTMLAttributes<HTMLDivElement> {
   readonly apiUrl: string;
   readonly formTitle: string;
@@ -46,13 +48,14 @@ export default function LanguageAndTechnology({
       validate: (value) => {
         const key = apiUrl === 'languages' ? 'languages' : 'technologies';
         const result = formItemsSchema.shape[key].safeParse(value);
-        return result.success || result.error.errors[0]?.message;
+
+        return result.success ? true : result.error.errors[0]?.message;
       },
     },
   });
 
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition, @typescript-eslint/strict-boolean-expressions
-  const [value, setValue] = useState(field.value || []);
+  const [value, setValue] = useState<ValueType[]>(field.value || []);
 
   // Function to handle checkbox change when the user selects or unselects an item
   const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -61,25 +64,26 @@ export default function LanguageAndTechnology({
 
     if (isChecked) {
       // Add the selected item to the array
-      setValue((prev) => [
-        ...prev,
-        { id: targetValue, order: prev.length + 1 },
-      ]);
+      setValue((prev) => {
+        const newValue = [...prev, { id: targetValue, order: prev.length + 1 }];
+        field.onChange(newValue);
+
+        return newValue;
+      });
     } else {
       // Remove the unselected item from the array
       setValue((prev) => {
-        const updatedArray = prev.filter((item) => item.id !== targetValue);
+        const newValue = prev
+          .filter((item) => item.id !== targetValue)
+          .map((item, index) => ({
+            ...item,
+            order: index + 1,
+          }));
+        field.onChange(newValue);
 
-        // Reassign the order of the items
-        return updatedArray.map((item, index) => ({
-          ...item,
-          order: index + 1,
-        }));
+        return newValue;
       });
     }
-
-    // Update the form field value
-    field.onChange(value);
   };
 
   // Fetch data from the API
@@ -88,7 +92,7 @@ export default function LanguageAndTechnology({
     const signal = controller.signal;
 
     (async () => {
-      const response = await fetch(`api/${apiUrl}`, {
+      const response = await fetch(`/api/${apiUrl}`, {
         signal,
       });
 
@@ -116,10 +120,11 @@ export default function LanguageAndTechnology({
       <div className='mt-3 flex flex-col justify-center text-center'>
         {apiUrl === 'languages' ? (
           <div className='mt-2 flex flex-col items-center justify-center gap-3'>
-            <div className='outline-primary my-2 flex h-14 w-14 items-center justify-center rounded-md outline outline-offset-2'>
+            <div className='outline-primary my-2 flex h-16 w-16 items-center justify-center rounded-md outline outline-offset-2'>
               <img
                 src={firstSelectedItems?.logo_path}
                 alt={firstSelectedItems?.name}
+                className='rounded-md object-cover object-center'
               />
             </div>
             <span>{'This language will be displayed on your profile'}</span>
@@ -146,7 +151,7 @@ export default function LanguageAndTechnology({
                   htmlFor={item.name}
                   className={`hover:outline-primary cursor-pointer text-[12px] hover:rounded-md hover:outline hover:outline-offset-2 lg:h-16 lg:w-16 ${
                     value.some((selectedItem) => selectedItem.id === item.id)
-                      ? 'outline-primary rounded-sm outline outline-offset-2'
+                      ? 'outline-primary rounded-md outline outline-offset-2'
                       : undefined
                   }`}
                 >

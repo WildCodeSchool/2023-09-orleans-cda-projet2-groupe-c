@@ -50,7 +50,7 @@ export default function FormCity() {
       (async () => {
         try {
           const response = await fetch(
-            `api/cities?name=${searchBar}&order=asc`,
+            `/api/cities?name=${searchBar}&order=asc`,
             {
               signal: controller.signal,
             },

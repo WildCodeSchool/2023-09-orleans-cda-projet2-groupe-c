@@ -9,6 +9,8 @@ import {
 
 import FormContainer from './FormContainer';
 
+type ValueType = { id: number; order: number };
+
 export default function FormHobby() {
   // State to store hobbies
   const [hobbies, setHobbies] = useState<HobbyBody[]>([]);
@@ -31,7 +33,7 @@ export default function FormHobby() {
   });
 
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition, @typescript-eslint/strict-boolean-expressions
-  const [value, setValue] = useState(field.value || []);
+  const [value, setValue] = useState<ValueType[]>(field.value || []);
 
   // Function to handle checkbox change when the user selects or unselects an item
   const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -40,25 +42,26 @@ export default function FormHobby() {
 
     if (isChecked) {
       // Add the selected item to the array
-      setValue((prev) => [
-        ...prev,
-        { id: targetValue, order: prev.length + 1 },
-      ]);
+      setValue((prev) => {
+        const newValue = [...prev, { id: targetValue, order: prev.length + 1 }];
+        field.onChange(newValue);
+
+        return newValue;
+      });
     } else {
       // Remove the unselected item from the array
       setValue((prev) => {
-        const updatedArray = prev.filter((item) => item.id !== targetValue);
+        const newValue = prev
+          .filter((item) => item.id !== targetValue)
+          .map((item, index) => ({
+            ...item,
+            order: index + 1,
+          }));
+        field.onChange(newValue);
 
-        // Reassign the order of the items
-        return updatedArray.map((item, index) => ({
-          ...item,
-          order: index + 1,
-        }));
+        return newValue;
       });
     }
-
-    // Update the form field value
-    field.onChange(value);
   };
 
   // Fetch data from the API
@@ -67,7 +70,7 @@ export default function FormHobby() {
     const signal = controller.signal;
 
     (async () => {
-      const response = await fetch(`api/hobbies`, {
+      const response = await fetch(`/api/hobbies`, {
         signal,
       });
 

@@ -33,10 +33,9 @@ export default function RegistrationForm() {
     try {
       if (isValid) {
         // Send a POST request to the API to register the user
-        await fetch(`/api/auth/registration`, {
+        await fetch('/api/auth/registration', {
           method: 'POST',
           headers: { 'content-type': 'application/json' },
-          // credentials: 'include',
           body: JSON.stringify({
             email: data.email,
             password: data.password,

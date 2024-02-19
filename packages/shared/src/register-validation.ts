@@ -24,6 +24,11 @@ export interface HobbyBody {
   ];
 }
 
+export interface ValueType {
+  id: number;
+  order: number;
+}
+
 // City
 export const formCityShema = z.object({
   cityId: z.number({ required_error: 'ⓘ City is required.' }),
