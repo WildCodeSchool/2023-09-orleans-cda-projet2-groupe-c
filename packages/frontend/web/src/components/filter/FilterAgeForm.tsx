@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 
 /* eslint-disable unicorn/no-nested-ternary */
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { UseFormSetValue } from 'react-hook-form';
 import ReactSlider from 'react-slider';
 
@@ -17,11 +17,19 @@ export function FilterAgeForm({
   // Get user preferences from preference context
   const { preferences } = usePreference();
 
-  // Store to store the min age
-  const [minAge, setMinAge] = useState(preferences?.min_age ?? 18);
+  // Store to store the min age, default value is 18
+  const [minAge, setMinAge] = useState(18);
 
-  // Store to store the max age
-  const [maxAge, setMaxAge] = useState(preferences?.max_age ?? 100);
+  // Store to store the max age, default value is 100
+  const [maxAge, setMaxAge] = useState(100);
+
+  // Set the min and max age from the preferences
+  useEffect(() => {
+    if (preferences) {
+      setMinAge(Number(preferences.min_age));
+      setMaxAge(Number(preferences.max_age));
+    }
+  }, [preferences]);
 
   return (
     <div className='flex w-full flex-col justify-between gap-2'>
