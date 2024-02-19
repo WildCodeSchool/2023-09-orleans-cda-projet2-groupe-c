@@ -1,3 +1,4 @@
+/* eslint-disable unicorn/no-nested-ternary */
 import type { InteractionBody } from '@app/shared';
 
 import useAge from '@/hooks/use-age';
@@ -14,6 +15,9 @@ export default function ProfileCard({
 }) {
   // Calculate the age of the user with the custom hook useAge
   const age = useAge({ userBirthdate: interaction.receiver.birthdate });
+  const age2 = useAge({ userBirthdate: interaction.initiator.birthdate });
+
+  const isSuperLiked = Boolean(interaction.superlike_at);
 
   return (
     <div className='relative h-[70vw] max-h-[400px] flex-1 rounded-xl shadow-md'>
@@ -33,6 +37,8 @@ export default function ProfileCard({
       <div className='absolute bottom-0 left-0 z-40 w-full px-4 py-3'>
         {isVisible && Boolean(interaction) ? (
           <p className='mb-2 truncate text-lg'>{`${interaction.receiver.name} • ${age}`}</p>
+        ) : isSuperLiked ? (
+          <p className='mb-2 truncate text-lg'>{`${interaction.initiator.name} • ${age2}`}</p>
         ) : undefined}
 
         {isVisible && Boolean(interaction) ? (
@@ -40,11 +46,18 @@ export default function ProfileCard({
             <LocationIcon />
             <p className='truncate text-sm'>{interaction.receiver.city.name}</p>
           </div>
+        ) : isSuperLiked ? (
+          <div className='flex gap-1'>
+            <LocationIcon />
+            <p className='truncate text-sm'>
+              {interaction.initiator.city.name}
+            </p>
+          </div>
         ) : undefined}
       </div>
 
       {/* Add a backdrop blur filter to users liked me */}
-      {isVisible ? undefined : (
+      {isVisible ? undefined : isSuperLiked ? undefined : (
         <div className='absolute top-0 z-30 h-full w-full rounded-lg backdrop-blur-lg' />
       )}
 
@@ -58,7 +71,9 @@ export default function ProfileCard({
           alt={`Picture of ${
             isVisible && Boolean(interaction)
               ? interaction.receiver.name
-              : '???'
+              : isSuperLiked
+                ? interaction.initiator.name
+                : undefined
           }`}
           className='h-full w-full scale-105 object-cover'
         />
