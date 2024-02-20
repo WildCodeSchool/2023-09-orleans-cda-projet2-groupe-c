@@ -26,3 +26,44 @@ export const actionSchema = interactionBaseSchema.extend({
 });
 
 export type ActionBody = z.infer<typeof actionSchema>;
+
+export interface InteractionBody {
+  id: number;
+  canceled_at: string;
+  liked_at?: string;
+  superlike_at?: string;
+  next_at?: string;
+  initiator: {
+    id: number;
+    name: string;
+    pictures: {
+      path: string;
+    };
+    city: {
+      coordinates: {
+        x: number;
+        y: number;
+      };
+    };
+  };
+  receiver: {
+    id: number;
+    name: string;
+    birthdate: string;
+    pictures: {
+      path: string;
+    };
+    city: {
+      id: number;
+      name: string;
+      coordinates: {
+        x: number;
+        y: number;
+      };
+    };
+    languages: {
+      id: number;
+      name: string;
+    };
+  };
+}
