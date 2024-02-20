@@ -40,7 +40,6 @@ const fetchInteractions = async ({
 }: FetchInteractions) => {
   const response = await fetch(`/api/users/interactions/${interactionType}`, {
     signal,
-    credentials: 'include',
   });
 
   const data = await response.json();
