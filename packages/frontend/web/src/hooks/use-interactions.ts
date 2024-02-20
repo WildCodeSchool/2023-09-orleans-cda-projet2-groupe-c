@@ -8,6 +8,8 @@ export default function useInteractions({ ...props }) {
   const [selectedUser, setSelectedUser] = useState<UserBody>();
   const [superLikesCount, setSuperLikesCount] = useState<number>(0);
 
+  const [interactionStatus, setInteractionStatus] = useState<string>();
+
   // Fetch users from the API
   const fetchUsers = useCallback(
     async ({ signal }: { signal: AbortSignal }) => {
@@ -69,7 +71,6 @@ export default function useInteractions({ ...props }) {
         headers: {
           'content-type': 'application/json',
         },
-        // credentials: 'include',
         body: JSON.stringify({
           receiver_id: selectedUser?.id, // Send in the body the id of the selected user
         }),
@@ -87,9 +88,16 @@ export default function useInteractions({ ...props }) {
         throw new Error(`Fail to fetch user's superlike: ${String(error)}`);
       });
 
+      setInteractionStatus(interactionType);
+
+      const timeoutId = setTimeout(() => {
+        setInteractionStatus('');
+      }, 100);
+
       // Abort all fetch requests if the component is unmounted
       return () => {
         controller.abort();
+        clearTimeout(timeoutId);
       };
     } catch (error) {
       throw new Error(`Fail to ${interactionType} a user: ${String(error)}`);
@@ -101,7 +109,6 @@ export default function useInteractions({ ...props }) {
       // Send a request to the API to go back to the previous user
       await fetch(`/api/users/${userId}/interactions/back`, {
         method: 'DELETE',
-        // credentials: 'include',
       });
 
       const controller = new AbortController();
@@ -130,5 +137,7 @@ export default function useInteractions({ ...props }) {
     handleInteraction,
     handleBackInteraction,
     fetchUsers,
+    interactionStatus,
+    setInteractionStatus,
   };
 }
