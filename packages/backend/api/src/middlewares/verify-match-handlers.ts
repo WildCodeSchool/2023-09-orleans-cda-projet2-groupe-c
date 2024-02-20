@@ -19,6 +19,7 @@ export const verifyInteractions = async (
     const userId1 = req.userId as number;
     const receiversIds = [];
 
+    // Retrieves the actions of the connected person (userId)
     const hoteActions = await db
       .selectFrom('user_action as ua')
       .select([
@@ -29,10 +30,11 @@ export const verifyInteractions = async (
         'ua.canceled_at',
         'ua.receiver_id',
       ])
-      .where((eb) => eb('ua.initiator_id', '=', userId1))
+      .where('ua.initiator_id', '=', userId1)
       .where('ua.canceled_at', 'is not', null)
       .execute();
 
+    // I loop over the host's actions and retrieve the receiver's id
     for (const hoteAction of hoteActions) {
       const receiverId = hoteAction.receiver_id;
 
@@ -54,22 +56,16 @@ export const verifyInteractions = async (
             or([
               eb('ua.liked_at', 'is not', null),
               eb('ua.superlike_at', 'is not', null),
-            ])
+            ]),
           ]),
         )
         .execute();
-
-      if (Boolean(hoteAction) && Boolean(userAction)) {
-        if (
-          userAction[0].receiver_id === hoteAction.initiator_id &&
-          hoteAction.receiver_id === userAction[0].initiator_id
-        ) {
-          req.isMatching = true;
-          receiversIds.push(receiverId);
-        } else {
-          req.isMatching = false;
-          return res.status(403).json({ success: false, isMatching: false });
-        }
+      // We retrieve the receiver's actions based on our actions
+      // If the array is empty then no interactions with us
+      // And if filled then he made an action towards us
+      if (userAction.length > 0) {
+        req.isMatching = true;
+        receiversIds.push(receiverId);
       }
     }
     req.receiversIds = receiversIds;

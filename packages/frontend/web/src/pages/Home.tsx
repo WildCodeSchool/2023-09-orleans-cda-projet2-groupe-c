@@ -5,7 +5,7 @@ import RandomSentence from '@/components/home/RandomSentence';
 import ConversationsList from '@/components/message/ConversationsList';
 import { useAuth } from '@/contexts/AuthContext';
 import ConversationContext from '@/contexts/ConversationContext';
-import MatchingContext from '@/contexts/MatchingContext';
+import InteractionContext from '@/contexts/InteractionContext';
 
 import Loading from '../components/Loading';
 import Logo from '../components/icons/LogoHomeIcon';
@@ -20,7 +20,7 @@ export default function Home() {
   if (isLoggedIn) {
     return (
       <ConversationContext>
-        <MatchingContext>
+        <InteractionContext>
           <main className='h-screen overflow-hidden'>
             <NavBar />
             <div className='font-base relative flex h-[calc(100vh-56px)] w-full justify-between'>
@@ -28,7 +28,7 @@ export default function Home() {
               <Outlet />
             </div>
           </main>
-        </MatchingContext>
+        </InteractionContext>
       </ConversationContext>
     );
   }

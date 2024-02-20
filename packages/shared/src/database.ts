@@ -62,7 +62,7 @@ export interface CityTable {
 
 export interface MessageTable {
   id: Generated<number>;
-  content?: string;
+  content: string;
   sent_at: Date;
   conversation_id: number;
   sender_id: number;

@@ -2,9 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 
 import type { UserBody } from '@app/shared';
 
-import { useMatching } from '@/contexts/MatchingContext';
-
-import useAllConversations from './use-all-conversations';
+import { useConversation } from '@/contexts/ConversationContext';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -13,8 +11,7 @@ export default function useInteractions({ ...props }) {
 
   const [selectedUser, setSelectedUser] = useState<UserBody>();
   const [superLikesCount, setSuperLikesCount] = useState<number>(0);
-  const { fetchConversations } = useAllConversations();
-  /*  const { fetchConversations} = useMatching()  */
+  const { fetchConversations } = useConversation();
 
   // Fetch user's superlike from the API
   const fetchUsers = useCallback(
@@ -90,18 +87,30 @@ export default function useInteractions({ ...props }) {
       const controller = new AbortController();
       const signal = controller.signal;
 
-      fetchUsers({ signal }).catch((error) => {
+      await fetchUsers({ signal }).catch((error) => {
         throw new Error(`Fail to fetch users: ${String(error)}`);
       });
 
-      fetchUserSuperLikeCount({ signal }).catch((error) => {
+      await fetchUserSuperLikeCount({ signal }).catch((error) => {
         throw new Error(`Fail to fetch user's superlike: ${String(error)}`);
       });
 
-      fetchConversations({ signal }).catch(() => {
-        throw new Error(`Fail to fetch conversations}`);
+      const fetchInteractionsVerify = async () => {
+        await fetch(
+          `${import.meta.env.VITE_API_URL}/users/interactions/verify`,
+          {
+            signal,
+            credentials: 'include',
+          },
+        );
+      };
+
+      await fetchInteractionsVerify().catch((error) => {
+        throw new Error(`Fail to fetch interactions verify: ${String(error)}`);
       });
 
+      // Fetch conversationList when the user interacts with someone
+      fetchConversations({ signal });
       // Abort all fetch requests if the component is unmounted
       return () => {
         controller.abort();

@@ -3,11 +3,13 @@ import express from 'express';
 import { db } from '@app/backend-shared';
 import { type ActionBody, actionSchema, receiverSchema } from '@app/shared';
 import type { Request as ExpressRequest } from '@app/shared';
+import type { Conversation } from '@app/shared';
 
 import { getUserId } from '@/middlewares/auth-handlers';
 import { getSuperLikeCount } from '@/middlewares/interaction-handlers';
 import { verifyInteractions } from '@/middlewares/verify-match-handlers';
 
+type NewConversation = Omit<Conversation, 'id'>;
 interface Request extends ExpressRequest {
   superLikesCount?: number;
   isMatching?: boolean;
@@ -168,6 +170,7 @@ interactionRouter.post(
   },
 );
 
+//Create a new conversation
 interactionRouter.get(
   '/interactions/verify',
   getUserId,
@@ -176,52 +179,53 @@ interactionRouter.get(
     try {
       const isMatching = req.isMatching;
       const userId = req.userId as number;
-      const user2 = req.receiversIds as number[];
-      console.log('user2',user2);
-      console.log('userid',userId);
+      const receiversIds = req.receiversIds as number[];
 
-
-      const conversations = await db
-        .selectFrom('conversation')
-        .selectAll()
-        /* .where((eb) =>
-          eb('user_1', '=', userId).or('user_1', 'in', user2),
-        )  */
-        .where((eb) => eb('user_1', '=', userId).or('user_2', '=', userId))
-        .where((eb) => eb('user_2', 'in', user2).or('user_1', 'in', user2))
-        .execute();
-
+      //if isMatching = true
       if (Boolean(isMatching)) {
-        const existingConversations = new Set(
-          conversations.map(
-            (conversations) => conversations.user_2 || conversations.user_1,
-          ),
-        );
-        console.log('new conversation', existingConversations);
+        const conversations: NewConversation[] = [];
 
-        await db
-          .insertInto('conversation')
-          .values(
-            user2
-              .filter((user) => !existingConversations.has(user))
-              .map((user: number) => {
-                return {
-                  user_1: userId,
-                  user_2: user,
-                  created_at: new Date(),
-                };
-              }),
-          )
-          .execute();
+        // I loop over the ids of my receivers and place the smallest id
+        // in user 1 and the largest in user 2 to avoid putting the id anywhere
+        for (const receiverId of receiversIds) {
+          const conversationData = {
+            user_1: Math.min(userId, receiverId),
+            user_2: Math.max(userId, receiverId),
+            created_at: new Date(),
+          };
 
-        console.log('ok');
-        res.status(200).json({ success: true });
-      } else {
-        console.log('nop');
-        res
-          .status(403)
-          .json({ success: false, error: 'Conversation is already exist !' });
+          //recupèrer les convs de chaque receivers
+          const conversation = await db
+            .selectFrom('conversation')
+            .selectAll()
+            .where((eb) =>
+              eb.or([
+                eb.and({
+                  user_1: conversationData.user_1,
+                  user_2: conversationData.user_2,
+                }),
+                eb.and({
+                  user_1: conversationData.user_2,
+                  user_2: conversationData.user_1,
+                }),
+              ]),
+            )
+            .execute();
+
+          if (conversation.length === 0) {
+            conversations.push(conversationData);
+          } else {
+            res.status(403).json({
+              success: false,
+              message: 'Conversation is already exist !',
+            });
+          }
+        }
+        await db.insertInto('conversation').values(conversations).execute();
+        res.status(200).json({ success: true, isMatching });
       }
+
+      res.status(403).json({ success: false });
     } catch {
       return res.status(500).json({
         success: false,

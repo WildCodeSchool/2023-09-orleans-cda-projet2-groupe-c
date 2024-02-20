@@ -2,31 +2,27 @@ import { useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 
+import type { MessageValidation } from '@app/shared';
+
 import { useConversation } from '@/contexts/ConversationContext';
 
 import CrossIcon from '../icons/CrossIcon';
 import SendIcon from '../icons/SendIcon';
 import BulletConversation from './BulletConversation';
 
-interface Message {
-  id: number;
-  content: string;
-  sent_at: Date;
-  sender_name: string;
-}
-
 export default function Conversation() {
-  const { userId, conversation, setIsVisible, error } = useConversation();
+  const { userId, conversation, setIsVisible, error, selectedConversation } =
+    useConversation();
   const { register, handleSubmit, reset } = useForm();
   const messagesEndReference = useRef<HTMLDivElement | null>(null);
 
   const scrollToBottom = () => {
-    messagesEndReference.current?.scrollIntoView({ behavior: 'smooth' });
+    messagesEndReference.current?.scrollIntoView({ behavior: 'instant' });
   };
 
   useEffect(() => {
-    setTimeout(scrollToBottom, 1000);
-  }, []);
+    setTimeout(scrollToBottom, 50);
+  }, [selectedConversation]);
 
   const navigate = useNavigate();
 
@@ -38,7 +34,7 @@ export default function Conversation() {
     }
   };
 
-  const formSubmit = async (data: { content?: Message['content'] }) => {
+  const formSubmit = async (data: { content?: MessageValidation }) => {
     try {
       await fetch(
         `${import.meta.env.VITE_API_URL}/users/${userId}/conversations/${conversation?.conversation_id}/message`,
@@ -93,28 +89,34 @@ export default function Conversation() {
         </div>
         <div className='flex h-[calc(100%-3.5rem)] w-full flex-col gap-5'>
           <div className='h-full w-full overflow-auto'>
-            <div className='flex flex-col justify-end gap-6 pb-2'>
-              {Boolean(error) ? (
-                <p>{error}</p>
-              ) : (
-                conversation?.messages.map((message) => (
-                  <div
-                    key={message.id}
-                    ref={messagesEndReference}
-                    className={`$ flex w-full items-end gap-3 px-7 ${message.sender_name === currentUser?.name ? 'flex-row-reverse' : ''}`}
-                  >
-                    <BulletConversation
-                      imageUrl={
-                        message.sender_name === conversation.user_1.name
-                          ? conversation.user_1.picture_path
-                          : conversation.user_2.picture_path
+            <div className='flex h-full flex-col justify-end'>
+              <div className='flex flex-col gap-6 overflow-auto pb-2'>
+                {Boolean(error) ? (
+                  <p>{error}</p>
+                ) : (
+                  conversation?.messages.map((message, index, array) => (
+                    <div
+                      key={message.id}
+                      ref={
+                        index === array.length - 1
+                          ? messagesEndReference
+                          : undefined
                       }
-                      texte={message.content}
-                      date={new Date(message.sent_at)}
-                    />
-                  </div>
-                ))
-              )}
+                      className={`$ flex w-full items-end gap-3 px-7 ${message.sender_name === currentUser?.name ? 'flex-row-reverse' : ''}`}
+                    >
+                      <BulletConversation
+                        imageUrl={
+                          message.sender_name === conversation.user_1.name
+                            ? conversation.user_1.picture_path
+                            : conversation.user_2.picture_path
+                        }
+                        text={message.content}
+                        date={new Date(message.sent_at)}
+                      />
+                    </div>
+                  ))
+                )}
+              </div>
             </div>
           </div>
 
@@ -123,10 +125,10 @@ export default function Conversation() {
             className='relative mb-5 flex h-10 w-full items-center px-7'
           >
             <input
+              type='text'
               className='text-secondary bg-light flex h-full w-full resize-none items-center rounded-l-full pl-4 pt-2 shadow-md outline-none'
               placeholder='Aa'
               {...register('content')}
-              required
             />
             <div className='bg-light flex h-full w-12 items-center justify-center rounded-r-full shadow-md'>
               <button type='submit'>

@@ -8,7 +8,8 @@ import {
 } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import ConversationsList from '@/components/message/ConversationsList';
+import type { Message } from '@app/shared';
+
 import useAllConversations from '@/hooks/use-all-conversations';
 
 import { useAuth } from './AuthContext';
@@ -19,17 +20,17 @@ interface AllConversation {
     id: number;
     content: string;
     sent_at: string;
-  }[];
-  receiver: {
+  };
+  user_1: {
     id: number;
     picture_path: string;
-    receiver_name: string;
-  }[];
-  sender: {
+    name: string;
+  };
+  user_2: {
     id: number;
     picture_path: string;
-    sender_name: string;
-  }[];
+    name: string;
+  };
 }
 
 interface User {
@@ -38,18 +39,15 @@ interface User {
   picture_path: string;
 }
 
-interface Message {
-  id: number;
-  content: string;
-  sent_at: Date;
+type Messages = Omit<Message, 'sender_id'> & {
   sender_name: string;
-}
+};
 
 interface Conversation {
   conversation_id: number;
-  sender: User;
-  receiver: User;
-  messages: Message[];
+  user_1: User;
+  user_2: User;
+  messages: Messages[];
 }
 
 type ConversationProviderProps = {
@@ -92,10 +90,9 @@ export default function ConversationContext({
   const { conversationsList, messagesCount, fetchConversations } =
     useAllConversations();
 
-  console.log(conversationsList);
-
   const navigate = useNavigate();
 
+  //Allows to select the conversation id
   const selectedConversation = useCallback(
     (index: number) => {
       if (conversationsList) {
@@ -115,6 +112,7 @@ export default function ConversationContext({
     setIsVisible((prev) => !prev);
   };
 
+  //Fetches the conversation
   useEffect(() => {
     if (Boolean(conversationId) && conversationsList !== undefined) {
       const controller = new AbortController();
@@ -137,10 +135,12 @@ export default function ConversationContext({
       fetchMessage().catch(() => {
         setError('An occurred while fetching the message.');
       });
-      /*   const intervalId = setInterval(fetchMessage, 1000); */
+
+      //Fetches the messages to update the conversation with new messages
+      const intervalId = setInterval(fetchMessage, 1100);
 
       return () => {
-        /*  clearInterval(intervalId); */
+        clearInterval(intervalId);
         controller.abort();
       };
     }

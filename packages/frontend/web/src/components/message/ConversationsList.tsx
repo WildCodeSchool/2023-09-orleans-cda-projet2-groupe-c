@@ -123,7 +123,7 @@ export default function ConversationsList() {
                         <div className='self shrink-0 text-right text-sm'>
                           <DateComponent
                             date={
-                              conversation.messages
+                              Boolean(conversation.messages)
                                 ? conversation.messages.sent_at
                                 : ''
                             }

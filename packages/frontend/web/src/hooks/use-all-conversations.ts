@@ -8,17 +8,17 @@ interface Conversation {
     id: number;
     content: string;
     sent_at: string;
-  }[];
-  receiver: {
+  };
+  user_1: {
     id: number;
     picture_path: string;
-    receiver_name: string;
-  }[];
-  sender: {
+    name: string;
+  };
+  user_2: {
     id: number;
     picture_path: string;
-    sender_name: string;
-  }[];
+    name: string;
+  };
 }
 
 const API_URL = import.meta.env.VITE_API_URL;
@@ -54,7 +54,7 @@ export default function useAllConversations() {
     return () => {
       controller.abort();
     };
-  }, [fetchConversations, userId]);
+  }, [fetchConversations]);
 
   // Set the number of messages
   useEffect(() => {

@@ -2,7 +2,7 @@ import express from 'express';
 import { jsonArrayFrom, jsonObjectFrom } from 'kysely/helpers/mysql';
 
 import { db } from '@app/backend-shared';
-import type { Request } from '@app/shared';
+import type { MessageValidation, Request } from '@app/shared';
 
 import { getUserId } from '@/middlewares/auth-handlers';
 
@@ -15,6 +15,7 @@ messageRouter.get(
     try {
       const userId = req.userId as number;
 
+      //Retrieves all conversations of a user
       const conversation = await db
 
         .selectFrom('conversation as c')
@@ -22,6 +23,7 @@ messageRouter.get(
         .innerJoin('user as receiver', 'receiver.id', 'c.user_2')
         .select((eb) => [
           'c.id as conversation_id',
+          // Retrieves the user's id, name and picture for user_1
           jsonObjectFrom(
             eb
               .selectFrom('user as u')
@@ -31,6 +33,7 @@ messageRouter.get(
               .limit(1),
           ).as('user_1'),
           jsonObjectFrom(
+            //Retrieves the user's id, name and picture for user_2
             eb
               .selectFrom('user as u')
               .innerJoin('picture as p', 'p.user_id', 'u.id')
@@ -38,6 +41,7 @@ messageRouter.get(
               .whereRef('u.id', '=', 'c.user_2')
               .limit(1),
           ).as('user_2'),
+          //Retrieves the messages related to the conversation along with the sender's information
           jsonObjectFrom(
             eb
               .selectFrom('message as m')
@@ -53,6 +57,7 @@ messageRouter.get(
               .limit(1),
           ).as('messages'),
         ])
+        //Uses 'where' to filter the information where either the 'user_1' field equals userId or 'user_2' equals userId
         .where((eb) => eb('user_1', '=', userId).or('user_2', '=', userId))
         .execute();
 
@@ -63,11 +68,11 @@ messageRouter.get(
   },
 );
 
+//Route to retrieve the conversation with my interlocutor
 messageRouter.get(
   '/:userId/conversations/:conversationId',
   getUserId,
   async (req: Request, res) => {
-    //this block will change with the middleware, from an other pr
     try {
       const conversationId = Number.parseInt(req.params.conversationId);
 
@@ -129,12 +134,13 @@ messageRouter.get(
   },
 );
 
+//  route for recording messages of a conversation
 messageRouter.post(
   '/:userId/conversations/:conversationId/message',
   getUserId,
   async (req: Request, res) => {
     try {
-      const { content } = req.body;
+      const { content } = req.body as MessageValidation;
       const { conversationId } = req.params;
       const senderId = req.userId as number;
 
