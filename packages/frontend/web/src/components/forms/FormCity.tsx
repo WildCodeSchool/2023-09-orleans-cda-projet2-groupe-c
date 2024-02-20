@@ -2,17 +2,13 @@ import { useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 
 import { formCityShema } from '@app/shared';
-import type { FormCityValidation, Point } from '@app/shared';
+import type { City, FormCityValidation } from '@app/shared';
 
 import FormContainer from './FormContainer';
 
 export interface CityBody {
   id: number;
   name: string;
-}
-
-interface Coordinates {
-  coordinates: Point;
 }
 
 export default function FormCity() {
@@ -58,14 +54,13 @@ export default function FormCity() {
               signal: controller.signal,
             },
           );
-          const data = await response.json();
+          const data: City[] = await response.json();
+
           const citiesWithoutCoordinates = data.map(
-            ({
-              // eslint-disable-next-line @typescript-eslint/no-unused-vars
-              coordinates,
-              ...rest
-            }: Coordinates) => rest,
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            ({ coordinates, ...rest }) => rest,
           );
+
           setCities(citiesWithoutCoordinates);
         } catch (error) {
           throw new Error(`${String(error)}`);

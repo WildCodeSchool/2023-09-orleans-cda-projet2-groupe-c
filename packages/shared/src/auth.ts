@@ -150,13 +150,14 @@ export type ActivationToken = z.infer<typeof activationTokenSchema>;
 export type ActivationCode = z.infer<typeof activationCodeSchema>;
 
 // Schema for the activation code form frontend
+const codeSchema = () => z.string().trim().length(1);
 export const activationCodeFormSchema = z.object({
-  code_1: z.string().trim().length(1),
-  code_2: z.string().trim().length(1),
-  code_3: z.string().trim().length(1),
-  code_4: z.string().trim().length(1),
-  code_5: z.string().trim().length(1),
-  code_6: z.string().trim().length(1),
+  code_1: codeSchema(),
+  code_2: codeSchema(),
+  code_3: codeSchema(),
+  code_4: codeSchema(),
+  code_5: codeSchema(),
+  code_6: codeSchema(),
 });
 
 // Type for the activation code form frontend

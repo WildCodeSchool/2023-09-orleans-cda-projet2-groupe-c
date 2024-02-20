@@ -9,8 +9,8 @@ type AuthProviderState = {
   setIsLoggedIn: (value: boolean) => void;
   isLoading: boolean;
   userId: number | undefined;
-  isActived: boolean;
-  setIsActived: (value: boolean) => void;
+  isActivated: boolean;
+  setIsActivated: (value: boolean) => void;
 };
 
 // Create an authentification context
@@ -20,7 +20,7 @@ const authProviderContext = createContext<AuthProviderState | undefined>(
 
 export default function AuthContext({ children, ...props }: AuthProviderProps) {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
-  const [isActived, setIsActived] = useState<boolean>(false);
+  const [isActivated, setIsActivated] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [userId, setUserId] = useState<number | undefined>();
 
@@ -33,7 +33,6 @@ export default function AuthContext({ children, ...props }: AuthProviderProps) {
         const res = await fetch(`/api/auth/verify`, {
           method: 'GET',
           signal: controller.signal, // pass the signal in the request for aborting the request
-          // credentials: 'include', // include cookies in the request
         });
 
         // Convert the response to json
@@ -41,14 +40,14 @@ export default function AuthContext({ children, ...props }: AuthProviderProps) {
           ok: boolean;
           isLoggedIn: boolean;
           userId: number;
-          isActived: boolean;
+          isActivated: boolean;
         };
 
         if (data.ok) {
           setIsLoading(false);
           setIsLoggedIn(data.isLoggedIn);
           setUserId(data.userId);
-          setIsActived(data.isActived);
+          setIsActivated(data.isActivated);
         }
       } catch (error) {
         throw new Error(`Failed to verify auth: ${String(error)}`);
@@ -71,12 +70,19 @@ export default function AuthContext({ children, ...props }: AuthProviderProps) {
     return {
       isLoggedIn,
       setIsLoggedIn,
-      isActived,
-      setIsActived,
+      isActivated,
+      setIsActivated,
       isLoading,
       userId,
     };
-  }, [isLoggedIn, setIsLoggedIn, isLoading, userId, isActived, setIsActived]);
+  }, [
+    isLoggedIn,
+    setIsLoggedIn,
+    isLoading,
+    userId,
+    isActivated,
+    setIsActivated,
+  ]);
 
   return (
     <authProviderContext.Provider {...props} value={value}>

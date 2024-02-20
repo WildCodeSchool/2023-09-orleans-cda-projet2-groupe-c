@@ -1,8 +1,7 @@
 import express from 'express';
 
 import { db } from '@app/backend-shared';
-import type { FormProfileBodyBackend } from '@app/shared';
-import type { Request } from '@app/shared';
+import type { FormProfileBodyBackend, Request } from '@app/shared';
 
 import { getUserId } from './middlewares/auth-handlers';
 

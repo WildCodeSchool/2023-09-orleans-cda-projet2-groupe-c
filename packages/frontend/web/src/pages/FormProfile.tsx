@@ -20,16 +20,16 @@ import FormTechnology from '@/components/forms/FormTechnology';
 import { useAuth } from '@/contexts/AuthContext';
 
 const PAGES = [
-  { currentPage: 0, component: <FormName /> },
-  { currentPage: 1, component: <FormBirthDate /> },
-  { currentPage: 2, component: <FormGender /> },
-  { currentPage: 3, component: <FormCity /> },
-  { currentPage: 4, component: <FormLanguage /> },
-  { currentPage: 5, component: <FormTechnology /> },
-  { currentPage: 6, component: <FormHobby /> },
-  { currentPage: 7, component: <FormBio /> },
-  { currentPage: 8, component: <FormGitHub /> },
-  { currentPage: 9, component: <FormEnd /> },
+  { index: 0, component: <FormName /> },
+  { index: 1, component: <FormBirthDate /> },
+  { index: 2, component: <FormGender /> },
+  { index: 3, component: <FormCity /> },
+  { index: 4, component: <FormLanguage /> },
+  { index: 5, component: <FormTechnology /> },
+  { index: 6, component: <FormHobby /> },
+  { index: 7, component: <FormBio /> },
+  { index: 8, component: <FormGitHub /> },
+  { index: 9, component: <FormEnd /> },
 ];
 
 export default function FormProfile() {
@@ -69,7 +69,6 @@ export default function FormProfile() {
 
         await fetch(`/api/register`, {
           method: 'POST',
-          credentials: 'include',
           headers: {
             'Content-Type': 'application/json',
           },
@@ -105,10 +104,8 @@ export default function FormProfile() {
           <div className='flex h-full w-full max-w-[500px] flex-col justify-between'>
             {/* Use react.Fragment because only <></> not work with key */}
             {PAGES.map(
-              ({ currentPage, component }) =>
-                currentPage === page && (
-                  <Fragment key={currentPage}>{component}</Fragment>
-                ),
+              ({ index, component }) =>
+                index === page && <Fragment key={index}>{component}</Fragment>,
             )}
 
             {/* Buttons Next and Back */}

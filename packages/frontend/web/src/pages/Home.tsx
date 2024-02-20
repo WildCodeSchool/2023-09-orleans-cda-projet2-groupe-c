@@ -16,9 +16,35 @@ export default function Home() {
   // State to store user profile
   const [userProfile, setUserProfile] = useState<UserBody>();
 
-  const { isLoggedIn, isActived, isLoading, userId } = useAuth();
+  const { isLoggedIn, isActivated, isLoading, userId } = useAuth();
 
   const { isVisibleFilter } = usePreference();
+
+  const hasCompleteRegistration =
+    !isLoading &&
+    isLoggedIn &&
+    isActivated &&
+    userProfile &&
+    (!Boolean(userProfile.name) ||
+      !Boolean(userProfile.birthdate) ||
+      !Boolean(userProfile.gender) ||
+      !Boolean(userProfile.city) ||
+      userProfile.languages.length === 0 ||
+      userProfile.technologies.length === 0 ||
+      userProfile.hobbies.length === 0);
+
+  const hasCompleteProfile =
+    !isLoading &&
+    isLoggedIn &&
+    isActivated &&
+    userProfile &&
+    (Boolean(userProfile.name) ||
+      Boolean(userProfile.birthdate) ||
+      Boolean(userProfile.gender) ||
+      Boolean(userProfile.city) ||
+      userProfile.languages.length > 0 ||
+      userProfile.technologies.length > 0 ||
+      userProfile.hobbies.length > 0);
 
   // Fetch user profile
   useEffect(() => {
@@ -27,7 +53,6 @@ export default function Home() {
 
     const fetchUserProfile = async () => {
       const res = await fetch(`/api/users/${userId}/profile`, {
-        credentials: 'include', // Send cookies
         signal,
       });
 
@@ -44,41 +69,17 @@ export default function Home() {
   }, [userId]);
 
   // If the user is logged in and the account is not actived, redirect to the validation page
-  if (!isLoading && isLoggedIn && !isActived) {
+  if (!isLoading && isLoggedIn && !isActivated) {
     return <Navigate to='/registration/validation' />;
   }
 
   // If the user is logged in and the account is actived but the user profile is not filled, redirect to the profile page
-  if (
-    !isLoading &&
-    isLoggedIn &&
-    isActived &&
-    userProfile &&
-    (!Boolean(userProfile.name) ||
-      !Boolean(userProfile.birthdate) ||
-      !Boolean(userProfile.gender) ||
-      !Boolean(userProfile.city) ||
-      userProfile.languages.length === 0 ||
-      userProfile.technologies.length === 0 ||
-      userProfile.hobbies.length === 0)
-  ) {
+  if (Boolean(hasCompleteRegistration)) {
     return <Navigate to='/registration/profile' />;
   }
 
   // If the user is logged in and the account is activated with all fields filled, return the main layout
-  if (
-    !isLoading &&
-    isLoggedIn &&
-    isActived &&
-    userProfile &&
-    (Boolean(userProfile.name) ||
-      Boolean(userProfile.birthdate) ||
-      Boolean(userProfile.gender) ||
-      Boolean(userProfile.city) ||
-      userProfile.languages.length > 0 ||
-      userProfile.technologies.length > 0 ||
-      userProfile.hobbies.length > 0)
-  ) {
+  if (Boolean(hasCompleteProfile)) {
     return (
       <main className='h-auto min-h-screen'>
         <NavBar />

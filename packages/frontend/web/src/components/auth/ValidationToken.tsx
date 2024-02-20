@@ -35,7 +35,7 @@ export default function ValidationToken() {
   const navigate = useNavigate();
 
   // Get the login states from the AuthContext
-  const { userId, setIsActived, isLoggedIn } = useAuth();
+  const { userId, setIsActivated, isLoggedIn } = useAuth();
 
   // Desctructure the useForm hook
   const { register, handleSubmit, formState } =
@@ -59,7 +59,6 @@ export default function ValidationToken() {
         // Send a POST request to the API to activate the user's account
         const res = await fetch(`/api/auth/registration/validation`, {
           method: 'POST',
-          // credentials: 'include',
           headers: { 'content-type': 'application/json' },
           body: JSON.stringify({
             activation_code: activationCode,
@@ -68,12 +67,12 @@ export default function ValidationToken() {
 
         const resData = (await res.json()) as {
           isLoggedIn: boolean;
-          isActived: boolean;
+          isActivated: boolean;
         };
 
         // If the user is logged in, redirect to the home page
         if (resData.isLoggedIn) {
-          setIsActived(resData.isActived);
+          setIsActivated(resData.isActivated);
           navigate('/registration/profile');
         }
       }
@@ -92,7 +91,6 @@ export default function ValidationToken() {
     const fetchCode = async () => {
       const res = await fetch(`/api/auth/registration/users/${userId}/code`, {
         signal,
-        // credentials: 'include',
         headers: { 'content-type': 'application/json' },
       });
 

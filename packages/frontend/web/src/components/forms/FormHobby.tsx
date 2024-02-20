@@ -35,8 +35,9 @@ export default function FormHobby() {
     },
   });
 
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition, @typescript-eslint/strict-boolean-expressions
-  const [value, setValue] = useState<ValueType[]>(field.value || []);
+  const [value, setValue] = useState<ValueType[]>(
+    Boolean(field.value) ? field.value : [],
+  );
 
   // Function to handle checkbox change when the user selects or unselects an item
   const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {

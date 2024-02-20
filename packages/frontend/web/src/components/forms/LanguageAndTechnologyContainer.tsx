@@ -57,8 +57,9 @@ export default function LanguageAndTechnology({
     },
   });
 
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition, @typescript-eslint/strict-boolean-expressions
-  const [value, setValue] = useState<ValueType[]>(field.value || []);
+  const [value, setValue] = useState<ValueType[]>(
+    Boolean(field.value) ? field.value : [],
+  );
 
   // Function to handle checkbox change when the user selects or unselects an item
   const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -111,9 +112,8 @@ export default function LanguageAndTechnology({
   // Set the first selected item
   useEffect(() => {
     if (apiUrl === 'languages' && value.length > 0) {
-      setFirstSelectedItems(
-        items.find((language) => language.id === value[0].id),
-      );
+      const firstItem = items.find((item) => item.id === value[0].id);
+      setFirstSelectedItems(firstItem);
     }
   }, [apiUrl, items, value]);
 

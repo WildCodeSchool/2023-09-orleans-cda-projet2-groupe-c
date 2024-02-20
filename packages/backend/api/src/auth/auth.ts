@@ -123,10 +123,10 @@ authRouter.post(
           .where('id', '=', userId)
           .execute();
 
-        res.json({ ok: true, isLoggedIn: true, isActived: true });
+        res.json({ ok: true, isLoggedIn: true, isActivated: true });
       }
 
-      res.json({ ok: false, isLoggedIn: false, isActived: false });
+      res.json({ ok: false, isLoggedIn: false, isActivated: false });
     } catch {
       return res.json({
         ok: false,
@@ -171,7 +171,7 @@ authRouter.get('/verify', async (req, res) => {
     return res.json({
       ok: false,
       isLoggedIn: false,
-      isActived: false,
+      isActivated: false,
     });
   }
 
@@ -197,7 +197,7 @@ authRouter.get('/verify', async (req, res) => {
       return res.json({
         ok: true,
         isLoggedIn: true,
-        isActived: false,
+        isActivated: false,
         error: 'Account not activated!',
       });
     }
@@ -205,7 +205,7 @@ authRouter.get('/verify', async (req, res) => {
     return res.json({
       ok: true,
       isLoggedIn: true,
-      isActived: true,
+      isActivated: true,
       userId: payload.userId,
     });
   } catch (error) {
@@ -244,7 +244,7 @@ authRouter.post('/login', async (req, res) => {
         ok: false,
         email: 'User does not exist',
         isLoggedIn: false,
-        isActived: false,
+        isActivated: false,
       });
     }
 
@@ -260,7 +260,7 @@ authRouter.post('/login', async (req, res) => {
       return res.json({
         ok: false,
         isLoggedIn: false,
-        isActived: false,
+        isActivated: false,
       });
     }
 
