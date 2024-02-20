@@ -28,8 +28,6 @@ interface FetchInteractions {
   setter: React.Dispatch<React.SetStateAction<InteractionBody[]>>;
 }
 
-const API_URL = import.meta.env.VITE_API_URL;
-
 const usersInteractionsProviderContext = createContext<
   UsersInteractionsState | undefined
 >(undefined);
@@ -40,13 +38,9 @@ const fetchInteractions = async ({
   signal,
   setter,
 }: FetchInteractions) => {
-  const response = await fetch(
-    `${API_URL}/users/interactions/${interactionType}`,
-    {
-      signal,
-      credentials: 'include',
-    },
-  );
+  const response = await fetch(`/api/users/interactions/${interactionType}`, {
+    signal,
+  });
 
   const data = await response.json();
 

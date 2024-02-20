@@ -7,22 +7,26 @@ interface CircularProgressBarProps {
   readonly children: React.ReactNode;
 }
 
+const radius = 85;
+const dashArray = radius * Math.PI * 1.5; // Adjust for 3/4 circle
+
 export default function CircularProgressBar({
   percentage,
   circleWidth,
   children,
 }: CircularProgressBarProps) {
-  const radius = 85;
-  const dashArray = radius * Math.PI * 1.5; // Adjust for 3/4 circle
   const dashOffset = dashArray - (dashArray * percentage) / 100;
 
   return (
     <div className='relative h-[11rem] overflow-hidden'>
       <div className='absolute right-7 top-7 z-30'>
         <BulletBase size='10'>
-          <PenIcon className='fill-secondary h-5 w-5' />
+          <button type='button'>
+            <PenIcon className='fill-secondary h-5 w-5' />
+          </button>
         </BulletBase>
       </div>
+
       <svg
         width={circleWidth}
         height={circleWidth}

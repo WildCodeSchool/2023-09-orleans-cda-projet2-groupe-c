@@ -1,5 +1,4 @@
-import { createContext, useContext, useMemo } from 'react';
-import { useEffect, useState } from 'react';
+import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 
 import type { UserBody } from '@app/shared';
 
@@ -8,8 +7,6 @@ import useDateFormatted from '@/hooks/use-date-formatted';
 import useProgressBar from '@/hooks/use-progress-bar';
 
 import { useAuth } from './AuthContext';
-
-const API_URL = import.meta.env.VITE_API_URL;
 
 type ProfileProviderProps = {
   readonly children: React.ReactNode;
@@ -52,9 +49,8 @@ export default function ProfileContext({
       const signal = controller.signal;
 
       const fetchUser = async () => {
-        const res = await fetch(`${API_URL}/users/profile`, {
+        const res = await fetch(`/api/users/profile`, {
           signal,
-          credentials: 'include',
         });
 
         if (res.ok) {

@@ -1,10 +1,5 @@
 import PenIcon from '../icons/PenIcon';
 
-const handleClick = () => {
-  // eslint-disable-next-line no-console
-  console.log('clicked');
-};
-
 export default function ProfileMenuLine({
   icon,
   children,
@@ -29,10 +24,9 @@ export default function ProfileMenuLine({
           </p>
         </div>
       </div>
-      <PenIcon
-        className='fill-secondary h-5 w-5 cursor-pointer'
-        onClick={handleClick}
-      />
+      <button type='button'>
+        <PenIcon className='fill-secondary h-5 w-5 cursor-pointer' />
+      </button>
     </div>
   );
 }
