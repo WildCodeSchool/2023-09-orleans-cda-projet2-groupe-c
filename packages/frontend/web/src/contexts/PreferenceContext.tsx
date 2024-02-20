@@ -23,9 +23,8 @@ type PreferenceProviderState = {
   preferences?: RequestPreferencesBody;
   errorPreferences?: string;
   updatePreferences: (newPreferences: RequestPreferencesBody) => void;
+  setIsVisibleFilter: React.Dispatch<React.SetStateAction<boolean>>;
 };
-
-const API_URL = import.meta.env.VITE_API_URL;
 
 const preferenceProviderContext = createContext<
   PreferenceProviderState | undefined
@@ -57,7 +56,7 @@ export default function PreferenceContext({
   // Function to fetch all user preferences
   const fetchPreferences = useCallback(
     async ({ signal }: { signal: AbortSignal }) => {
-      const res = await fetch(`${API_URL}/users/${userId}/preferences`, {
+      const res = await fetch(`/api/users/${userId}/preferences`, {
         credentials: 'include', // Send cookies
         signal,
       });
@@ -108,7 +107,7 @@ export default function PreferenceContext({
   const updatePreferences = useCallback(
     async (newPreferences: RequestPreferencesBody) => {
       // Update the preferences in the database
-      await fetch(`${API_URL}/users/${userId}/preferences`, {
+      await fetch(`/api/users/${userId}/preferences`, {
         method: 'PUT',
         credentials: 'include', // Send cookies
         headers: {
@@ -146,8 +145,15 @@ export default function PreferenceContext({
       preferences,
       errorPreferences,
       updatePreferences,
+      setIsVisibleFilter,
     };
-  }, [isVisibleFilter, preferences, errorPreferences, updatePreferences]);
+  }, [
+    isVisibleFilter,
+    preferences,
+    errorPreferences,
+    updatePreferences,
+    setIsVisibleFilter,
+  ]);
 
   return (
     <preferenceProviderContext.Provider {...props} value={value}>
