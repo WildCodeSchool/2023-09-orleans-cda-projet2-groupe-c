@@ -29,10 +29,23 @@
 
   body {
     @apply bg-light-medium;
+    overflow-y: hidden;
   }
 
   input::placeholder {
     @apply text-placeholder;
+  }
+
+  ::-webkit-scrollbar {
+    width: 5px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+    border-radius: 5px;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-primary;
+    border-radius: 5px;
   }
 }
 

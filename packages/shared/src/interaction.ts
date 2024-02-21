@@ -40,10 +40,12 @@ export interface InteractionBody {
   initiator: {
     id: number;
     name: string;
+    birthdate: string;
     pictures: {
       path: string;
     };
     city: {
+      name: string;
       coordinates: {
         x: number;
         y: number;

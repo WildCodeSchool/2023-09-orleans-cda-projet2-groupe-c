@@ -11,6 +11,7 @@ import Conversation from './components/message/Conversation';
 import ProfileLayout from './components/profile/ProfileLayout';
 import ProfileMenu from './components/profile/ProfileMenu';
 import ProfileInteractionLayout from './components/user-interaction/ProfileInteractionLayout';
+import FormProfile from './pages/FormProfile';
 import Home from './pages/Home';
 import Registration from './pages/Registration';
 
@@ -68,6 +69,10 @@ const router = createBrowserRouter([
       {
         path: 'validation',
         element: <ValidationToken />,
+      },
+      {
+        path: '/registration/profile',
+        element: <FormProfile />,
       },
     ],
   },

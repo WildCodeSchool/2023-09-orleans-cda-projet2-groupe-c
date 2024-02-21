@@ -2,11 +2,11 @@ import express from 'express';
 import * as jose from 'jose';
 
 import { db } from '@app/backend-shared';
-import type { Request as ExpressRequest } from '@app/shared';
 import type {
   ActivationCode,
   ActivationToken,
   AuthBody,
+  Request as ExpressRequest,
   RegisterBody,
   RegisterWithActivationCode,
 } from '@app/shared';
@@ -123,10 +123,10 @@ authRouter.post(
           .where('id', '=', userId)
           .execute();
 
-        res.json({ ok: true, isLoggedIn: true });
+        res.json({ ok: true, isLoggedIn: true, isActivated: true });
       }
 
-      res.json({ ok: false, isLoggedIn: false });
+      res.json({ ok: false, isLoggedIn: false, isActivated: false });
     } catch {
       return res.json({
         ok: false,
@@ -171,6 +171,7 @@ authRouter.get('/verify', async (req, res) => {
     return res.json({
       ok: false,
       isLoggedIn: false,
+      isActivated: false,
     });
   }
 
@@ -194,8 +195,9 @@ authRouter.get('/verify', async (req, res) => {
     // If the account is not activated, return an error
     if (!user?.activate_at) {
       return res.json({
-        ok: false,
-        isLoggedIn: false,
+        ok: true,
+        isLoggedIn: true,
+        isActivated: false,
         error: 'Account not activated!',
       });
     }
@@ -203,6 +205,7 @@ authRouter.get('/verify', async (req, res) => {
     return res.json({
       ok: true,
       isLoggedIn: true,
+      isActivated: true,
       userId: payload.userId,
     });
   } catch (error) {
@@ -231,7 +234,7 @@ authRouter.post('/login', async (req, res) => {
     // Get the user from the database
     const user = await db
       .selectFrom('user')
-      .select(['user.id', 'user.password', 'activate_at'])
+      .select(['user.id', 'user.password', 'user.activate_at'])
       .where('user.email', '=', email)
       .executeTakeFirst();
 
@@ -241,6 +244,7 @@ authRouter.post('/login', async (req, res) => {
         ok: false,
         email: 'User does not exist',
         isLoggedIn: false,
+        isActivated: false,
       });
     }
 
@@ -256,14 +260,7 @@ authRouter.post('/login', async (req, res) => {
       return res.json({
         ok: false,
         isLoggedIn: false,
-      });
-    }
-
-    if (!user.activate_at) {
-      return res.json({
-        ok: false,
-        isLoggedIn: false,
-        error: 'Account not activated!',
+        isActivated: false,
       });
     }
 

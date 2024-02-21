@@ -1,4 +1,7 @@
-import { Outlet, useLocation } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Navigate, Outlet, useLocation } from 'react-router-dom';
+
+import type { UserBody } from '@app/shared';
 
 import NavBar from '@/components/NavBar';
 import SidebarLayout from '@/components/SidebarLayout';
@@ -9,11 +12,14 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useConversation } from '@/contexts/ConversationContext';
 import { usePreference } from '@/contexts/PreferenceContext';
 
-import Loading from '../components/Loading';
 import Logo from '../components/icons/LogoHomeIcon';
 
 export default function Home() {
-  const { isLoggedIn, isLoading, userId } = useAuth();
+  // State to store user profile
+  const [userProfile, setUserProfile] = useState<UserBody>();
+
+  const { isLoggedIn, isActivated, isLoading, userId } = useAuth();
+
   const { isVisibleFilter } = usePreference();
   const { isVisible, conversationId } = useConversation();
 
@@ -21,12 +27,72 @@ export default function Home() {
   const isHome = location.pathname === '/';
   const isConversation =
     location.pathname === `/users/${userId}/conversations/${conversationId}`;
+  // Check if the user profile is complete
+  const hasCompleteProfile = userProfile; /*  &&
+    (Boolean(userProfile.name) ||
+      Boolean(userProfile.birthdate) ||
+      Boolean(userProfile.gender) ||
+      Boolean(userProfile.city) ||
+      userProfile.languages.length > 0 ||
+      userProfile.technologies.length > 0 ||
+      userProfile.hobbies.length > 0) */
 
-  if (isLoading) {
-    return <Loading />;
+  const hasChampProfile =
+    hasCompleteProfile &&
+    (Boolean(userProfile.name) ||
+      Boolean(userProfile.birthdate) ||
+      Boolean(userProfile.gender) ||
+      Boolean(userProfile.city) ||
+      userProfile.languages.length > 0 ||
+      userProfile.technologies.length > 0 ||
+      userProfile.hobbies.length > 0);
+
+  // Fetch user profile
+  useEffect(() => {
+    const controller = new AbortController();
+    const signal = controller.signal;
+
+    const fetchUserProfile = async () => {
+      const res = await fetch(`/api/users/profile`, {
+        signal,
+      });
+
+      const data = await res.json();
+
+      setUserProfile(data[0]);
+    };
+
+    void fetchUserProfile();
+
+    return () => {
+      controller.abort();
+    };
+  }, [userId]);
+
+  // If the user is logged in and the account is not actived, redirect to the validation page
+  if (!isLoading && isLoggedIn && !Boolean(isActivated)) {
+    return <Navigate to='/registration/validation' />;
   }
 
-  if (isLoggedIn) {
+  // If the user is logged in and the account is actived but the user profile is not filled, redirect to the profile page
+  if (
+    isLoggedIn &&
+    Boolean(isActivated) &&
+    Boolean(hasCompleteProfile) &&
+    !Boolean(hasChampProfile)
+  ) {
+    return <Navigate to='/registration/profile' />;
+  }
+
+  // If the user is logged in and the account is activated with all fields filled, return the main layout
+  if (
+    Boolean(
+      isLoggedIn &&
+        Boolean(isActivated) &&
+        hasCompleteProfile &&
+        hasChampProfile,
+    )
+  ) {
     return (
       <main className='h-auto min-h-screen'>
         <NavBar />
@@ -54,6 +120,7 @@ export default function Home() {
     );
   }
 
+  // If the user is not logged in, return the authentication page
   return (
     <main className='bg-background text-light h-screen w-screen overflow-hidden bg-cover bg-center bg-no-repeat p-5 text-center'>
       <section className='flex h-full flex-col items-center justify-between'>

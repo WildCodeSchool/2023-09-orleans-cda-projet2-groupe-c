@@ -40,6 +40,7 @@ const getInteractions = async (initiator: string, userId: number) => {
           .select([
             'initiator.id',
             'initiator.name',
+            'initiator.birthdate',
             jsonObjectFrom(
               eb
                 .selectFrom('picture as p')
@@ -51,7 +52,7 @@ const getInteractions = async (initiator: string, userId: number) => {
             jsonObjectFrom(
               eb
                 .selectFrom('city as c')
-                .select('coordinates')
+                .select(['c.name', 'coordinates'])
                 .whereRef('c.id', '=', 'initiator.city_id'),
             ).as('city'),
           ])

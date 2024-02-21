@@ -6,10 +6,16 @@ import { useNavigate } from 'react-router-dom';
 import type { RegisterBody } from '@app/shared';
 import { registrationSchema } from '@app/shared';
 
+import { useAuth } from '@/contexts/AuthContext';
+
 import Button from '../Button';
+import FormLayout from '../FormLayout';
+import FormContainer from '../forms/FormContainer';
 
 export default function RegistrationForm() {
   const [errorRegistration, setErrorRegistration] = useState<string>();
+  const { setIsLoggedIn } = useAuth();
+
   // Get the navigate function from the router
   const navigate = useNavigate();
 
@@ -27,7 +33,7 @@ export default function RegistrationForm() {
     try {
       if (isValid) {
         // Send a POST request to the API to register the user
-        await fetch(`/api/auth/registration`, {
+        await fetch('/api/auth/registration', {
           method: 'POST',
           headers: { 'content-type': 'application/json' },
           body: JSON.stringify({
@@ -35,6 +41,8 @@ export default function RegistrationForm() {
             password: data.password,
           }),
         });
+
+        setIsLoggedIn(true);
 
         // Navigate to the success page if the form is valid with useNavigate
         navigate('/registration/success');
@@ -47,63 +55,66 @@ export default function RegistrationForm() {
   };
 
   return (
-    <div className='p-8'>
-      <h1 className='font-title text-primary mb-5 mt-24 text-xl'>
-        {'Create a new account'}
-      </h1>
-      <div className='bg-light-light flex h-[18rem] flex-col items-center gap-2 rounded-lg px-2 shadow-md'>
-        <div className='text-start'>
-          <p className='text-secondary my-2 mb-4 align-top text-xs'>
-            {'Please enter your credentials to continue.'}
+    <FormLayout>
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className='flex h-full flex-col items-center justify-between py-[10%]'
+      >
+        <FormContainer title='Create a new account'>
+          <p className='pb-8'>
+            {'Your email and password are required to create an account.'}
           </p>
-        </div>
-        <div className='flex flex-col items-center'>
-          <form
-            onSubmit={handleSubmit(onSubmit)}
-            className='flex flex-col justify-center gap-3'
-          >
-            <label htmlFor='email' className='text-secondary -mb-2 text-sm'>
-              {'Email'}
-              <span className='text-primary'>{'*'}</span>
-            </label>
-            <input
-              type='email'
-              id='email'
-              className='border-primary bg-light-light text-secondary focus:outline-secondary w-100 rounded-lg border p-2 text-center transition-all focus:outline'
-              {...register('email')}
-            />
-            {errors.email && errors.email.message !== undefined ? (
-              <p className='text-primary flex text-xs'>
-                {errors.email.message}
-              </p>
-            ) : undefined}
-            <label
-              htmlFor='password'
-              className='text-secondary -mb-2 mt-2 text-sm'
-            >
-              {'Password'}
-              <span className='text-primary'>{'*'}</span>
-            </label>
-            <input
-              type='password'
-              id='password'
-              className='border-primary bg-light-light text-secondary focus:outline-secondary w-100 rounded-lg border p-2 text-center transition-all focus:outline'
-              {...register('password')}
-            />
-            {errors.password && errors.password.message !== undefined ? (
-              <p className='text-primary flex text-xs'>
-                {errors.password.message}
-              </p>
-            ) : undefined}
-            {Boolean(errorRegistration) && <p>{errorRegistration}</p>}
-            <div className='mt-[20rem] flex flex-col'>
-              <Button type='submit' isOutline={false}>
-                {'Validate'}
-              </Button>
+
+          <div className='flex h-full w-full flex-col justify-between gap-6'>
+            {/* Email input */}
+            <div className='flex flex-col gap-1'>
+              <label htmlFor='email' className='text-secondary text-sm'>
+                {'Email'}
+                <span className='text-primary'>{'*'}</span>
+              </label>
+              <input
+                type='text'
+                id='email'
+                placeholder='your-email@example.fr'
+                className='border-primary bg-light h-5 w-full rounded-md border px-2 py-6 text-lg focus:outline-none lg:text-xl'
+                {...register('email')}
+              />
+
+              {errors.email && errors.email.message !== undefined ? (
+                <p className='text-primary text-xs'>{errors.email.message}</p>
+              ) : undefined}
             </div>
-          </form>
-        </div>
-      </div>
-    </div>
+
+            {/* Password input */}
+            <div className='flex flex-col gap-1'>
+              <label htmlFor='password' className='text-secondary mt-2 text-sm'>
+                {'Password'}
+                <span className='text-primary'>{'*'}</span>
+              </label>
+              <input
+                type='password'
+                id='password'
+                placeholder='Write your password...'
+                className='border-primary bg-light h-5 w-full rounded-md border px-2 py-6 text-lg focus:outline-none lg:text-xl'
+                {...register('password')}
+              />
+              <p className='text-placeholder text-sm'>{`minimum 8 characters`}</p>
+            </div>
+          </div>
+
+          {errors.password && errors.password.message !== undefined ? (
+            <p className='text-primary text-xs'>{errors.password.message}</p>
+          ) : undefined}
+
+          {Boolean(errorRegistration) && (
+            <p className='text-primary text-xs'>{errorRegistration}</p>
+          )}
+        </FormContainer>
+
+        <Button type='submit' isOutline={false}>
+          {'Validate'}
+        </Button>
+      </form>
+    </FormLayout>
   );
 }

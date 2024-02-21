@@ -17,7 +17,7 @@ type UsersInteractionsProviderProps = {
 
 type UsersInteractionsState = {
   interactionsSent: InteractionBody[];
-  interactionsReceived: InteractionBody[];
+  sortedInteractionsReceived: InteractionBody[];
   isVisible: boolean;
   handleClick: (button: 'profileLiked' | 'usersLikedMe') => void;
 };
@@ -108,14 +108,33 @@ export default function UsersInteractionsContext({
     };
   }, [handleInteraction, handleBackInteraction]);
 
+  // Function to sort the interactions received by superlike_at only if isVisible is false
+  const sortInteractions = (interactions: InteractionBody[]) => {
+    if (!isVisible) {
+      // Create a new array of interactions and sort them by superlike_at
+      return [...interactions].sort((a, b) => {
+        if (Boolean(b.superlike_at) && !Boolean(a.superlike_at)) {
+          return 1;
+        }
+        if (!Boolean(b.superlike_at) && Boolean(a.superlike_at)) {
+          return -1;
+        }
+        return 0;
+      });
+    }
+    return interactions;
+  };
+
+  const sortedInteractionsReceived = sortInteractions(interactionsReceived);
+
   const value = useMemo(() => {
     return {
       interactionsSent,
-      interactionsReceived,
+      sortedInteractionsReceived,
       isVisible,
       handleClick,
     };
-  }, [interactionsSent, interactionsReceived, isVisible, handleClick]);
+  }, [interactionsSent, sortedInteractionsReceived, isVisible, handleClick]);
 
   return (
     <usersInteractionsProviderContext.Provider {...props} value={value}>
