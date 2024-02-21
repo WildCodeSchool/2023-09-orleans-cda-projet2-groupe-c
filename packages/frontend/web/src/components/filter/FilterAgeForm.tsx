@@ -1,5 +1,3 @@
-/* eslint-disable react/prop-types */
-
 /* eslint-disable unicorn/no-nested-ternary */
 import { useEffect, useState } from 'react';
 import type { UseFormSetValue } from 'react-hook-form';
@@ -85,12 +83,12 @@ export function FilterAgeForm({
           />
         )}
         // Custom mark
-        renderMark={(props) => {
+        renderMark={(props: React.HTMLProps<HTMLSpanElement>) => {
           const isBetween =
             Number(props.key) >= minAge && Number(props.key) <= maxAge;
 
           return (
-            <div {...props}>
+            <span {...props}>
               <div
                 className={`h-1 w-1 translate-x-[150%] translate-y-[2px] rounded-full bg-white ${
                   isBetween
@@ -99,17 +97,17 @@ export function FilterAgeForm({
                 }`}
               />
               <div
-                className={`text-light mt-[.6rem] flex translate-x-[-10%] items-center justify-center rounded-md px-1 ${
-                  isBetween ? 'bg-primary' : 'bg-transparent'
+                className={`mt-[.6rem] flex translate-x-[-10%] items-center justify-center rounded-md px-1 ${
+                  isBetween
+                    ? 'bg-primary text-white'
+                    : 'text-secondary bg-transparent'
                 }`}
               >
-                <p
-                  className={`translate-y-[1px] text-center text-[9px] text-white`}
-                >
+                <p className='translate-y-[1px] text-center text-[9px]'>
                   {String(props.key)}
                 </p>
               </div>
-            </div>
+            </span>
           );
         }}
       />

@@ -17,6 +17,7 @@ type HomeProviderState = {
   fetchUsers: ({ signal }: { signal: AbortSignal }) => Promise<void>;
   handleBackInteraction: () => void;
   distance: number;
+  interactionStatus?: string;
 };
 
 // Create a context
@@ -38,6 +39,7 @@ export default function InteractionContext({
     handleInteraction,
     handleBackInteraction,
     fetchUsers,
+    interactionStatus,
   } = useInteractions({
     userId,
   });
@@ -58,6 +60,7 @@ export default function InteractionContext({
       handleBackInteraction,
       distance,
       fetchUsers,
+      interactionStatus,
     };
   }, [
     selectedUser,
@@ -66,6 +69,7 @@ export default function InteractionContext({
     handleBackInteraction,
     distance,
     fetchUsers,
+    interactionStatus,
   ]);
 
   return (

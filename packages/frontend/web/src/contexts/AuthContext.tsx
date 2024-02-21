@@ -9,6 +9,8 @@ type AuthProviderState = {
   setIsLoggedIn: (value: boolean) => void;
   isLoading: boolean;
   userId: number | undefined;
+  isActivated: boolean;
+  setIsActivated: (value: boolean) => void;
 };
 
 // Create an authentification context
@@ -18,6 +20,7 @@ const authProviderContext = createContext<AuthProviderState | undefined>(
 
 export default function AuthContext({ children, ...props }: AuthProviderProps) {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const [isActivated, setIsActivated] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [userId, setUserId] = useState<number | undefined>();
 
@@ -34,17 +37,20 @@ export default function AuthContext({ children, ...props }: AuthProviderProps) {
 
         // Convert the response to json
         const data = (await res.json()) as {
+          ok: boolean;
           isLoggedIn: boolean;
           userId: number;
+          isActivated: boolean;
         };
 
-        setIsLoggedIn(data.isLoggedIn);
-        setUserId(data.userId);
+        if (data.ok) {
+          setIsLoading(false);
+          setIsLoggedIn(data.isLoggedIn);
+          setUserId(data.userId);
+          setIsActivated(data.isActivated);
+        }
       } catch (error) {
         throw new Error(`Failed to verify auth: ${String(error)}`);
-      } finally {
-        // Stop the loading if the request is loaded
-        setIsLoading(false);
       }
     };
 
@@ -64,10 +70,19 @@ export default function AuthContext({ children, ...props }: AuthProviderProps) {
     return {
       isLoggedIn,
       setIsLoggedIn,
+      isActivated,
+      setIsActivated,
       isLoading,
       userId,
     };
-  }, [isLoggedIn, isLoading, userId]);
+  }, [
+    isLoggedIn,
+    setIsLoggedIn,
+    isLoading,
+    userId,
+    isActivated,
+    setIsActivated,
+  ]);
 
   return (
     <authProviderContext.Provider {...props} value={value}>
