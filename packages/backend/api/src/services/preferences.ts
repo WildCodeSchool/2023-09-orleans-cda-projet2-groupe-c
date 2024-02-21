@@ -13,7 +13,6 @@ const userPreferences = async (userId: number) => {
       'p.language_pref_id',
       'p.min_age',
       'p.max_age',
-      'p.user_id',
     ])
     .where('p.user_id', '=', userId)
     .execute();

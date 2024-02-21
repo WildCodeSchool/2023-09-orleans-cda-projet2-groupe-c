@@ -32,7 +32,7 @@ filterRouter.get(
     } catch (error) {
       res.status(500).json({
         success: false,
-        message: 'Fail to update your preference!',
+        message: 'Fail to get the user preferences !',
         error,
       });
     }

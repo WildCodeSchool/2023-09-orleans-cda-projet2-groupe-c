@@ -21,6 +21,9 @@ export default function NavBar() {
     {
       id: 'user',
       icon: <UserIcon className='fill-secondary h-5 w-5' />,
+      onClick: () => {
+        navigate(`/profile`);
+      },
     },
     {
       id: 'like',

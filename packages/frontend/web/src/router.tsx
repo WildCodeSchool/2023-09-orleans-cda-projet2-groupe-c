@@ -6,7 +6,9 @@ import RegistrationForm from './components/auth/RegistrationForm';
 import Success from './components/auth/Success';
 import ValidationToken from './components/auth/ValidationToken';
 import ErrorLayout from './components/error/ErrorLayout';
-import HomeCard from './components/home/HomeCards';
+import HomeCards from './components/home/HomeCards';
+import ProfileLayout from './components/profile/ProfileLayout';
+import ProfileMenu from './components/profile/ProfileMenu';
 import ProfileInteractionLayout from './components/user-interaction/ProfileInteractionLayout';
 import Home from './pages/Home';
 import Registration from './pages/Registration';
@@ -22,7 +24,17 @@ const router = createBrowserRouter([
         children: [
           {
             path: '',
-            element: <HomeCard />,
+            element: <HomeCards />,
+          },
+          {
+            path: '/profile',
+            element: <ProfileLayout />,
+            children: [
+              {
+                path: '',
+                element: <ProfileMenu />,
+              },
+            ],
           },
           {
             path: '/profile/interactions',
