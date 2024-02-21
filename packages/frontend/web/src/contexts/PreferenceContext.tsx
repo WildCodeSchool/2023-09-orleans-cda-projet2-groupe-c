@@ -23,6 +23,7 @@ type PreferenceProviderState = {
   preferences?: RequestPreferencesBody;
   errorPreferences?: string;
   updatePreferences: (newPreferences: RequestPreferencesBody) => void;
+  setIsVisibleFilter: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const preferenceProviderContext = createContext<
@@ -144,8 +145,15 @@ export default function PreferenceContext({
       preferences,
       errorPreferences,
       updatePreferences,
+      setIsVisibleFilter,
     };
-  }, [isVisibleFilter, preferences, errorPreferences, updatePreferences]);
+  }, [
+    isVisibleFilter,
+    preferences,
+    errorPreferences,
+    updatePreferences,
+    setIsVisibleFilter,
+  ]);
 
   return (
     <preferenceProviderContext.Provider {...props} value={value}>
