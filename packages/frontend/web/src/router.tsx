@@ -5,8 +5,10 @@ import Login from './components/auth/Login';
 import RegistrationForm from './components/auth/RegistrationForm';
 import Success from './components/auth/Success';
 import ValidationToken from './components/auth/ValidationToken';
+import ErrorLayout from './components/error/ErrorLayout';
 import HomeCards from './components/home/HomeCards';
 import Conversation from './components/message/Conversation';
+import ProfileInteractionLayout from './components/user-interaction/ProfileInteractionLayout';
 import Home from './pages/Home';
 import Registration from './pages/Registration';
 
@@ -26,6 +28,10 @@ const router = createBrowserRouter([
           {
             path: '/users/:userId/conversations/:conversationId',
             element: <Conversation />,
+          },
+          {
+            path: '/profile/interactions',
+            element: <ProfileInteractionLayout />,
           },
         ],
       },
@@ -52,6 +58,10 @@ const router = createBrowserRouter([
         element: <ValidationToken />,
       },
     ],
+  },
+  {
+    path: '*',
+    element: <ErrorLayout />,
   },
 ]);
 

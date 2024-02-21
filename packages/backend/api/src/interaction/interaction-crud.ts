@@ -1,4 +1,6 @@
+/* eslint-disable unicorn/no-null */
 import express from 'express';
+import { jsonObjectFrom } from 'kysely/helpers/mysql';
 
 import { db } from '@app/backend-shared';
 import { type ActionBody, actionSchema, receiverSchema } from '@app/shared';
@@ -11,6 +13,7 @@ import { verifyInteractions } from '@/middlewares/verify-match-handlers';
 
 type NewConversation = Omit<Conversation, 'id'>;
 interface Request extends ExpressRequest {
+  userId?: number;
   superLikesCount?: number;
   isMatching?: boolean;
   user2?: number[];
@@ -19,9 +22,97 @@ interface Request extends ExpressRequest {
 
 const interactionRouter = express.Router();
 
+// Function to get interactions from the user or received by the user
+const getInteractions = async (initiator: string, userId: number) => {
+  let query = db
+    .selectFrom('user_action as ua')
+    .innerJoin('user as initiator', 'initiator.id', 'ua.initiator_id')
+    .innerJoin('user as receiver', 'receiver.id', 'ua.receiver_id')
+    .select((eb) => [
+      'ua.id',
+      'next_at',
+      'liked_at',
+      'superlike_at',
+      'canceled_at',
+      jsonObjectFrom(
+        eb
+          .selectFrom('user as initiator')
+          .select([
+            'initiator.id',
+            'initiator.name',
+            jsonObjectFrom(
+              eb
+                .selectFrom('picture as p')
+                .select('p.picture_path as path')
+                .whereRef('p.user_id', '=', 'initiator.id')
+                .orderBy('order', 'asc')
+                .limit(1),
+            ).as('pictures'),
+            jsonObjectFrom(
+              eb
+                .selectFrom('city as c')
+                .select('coordinates')
+                .whereRef('c.id', '=', 'initiator.city_id'),
+            ).as('city'),
+          ])
+          .whereRef('initiator.id', '=', 'ua.initiator_id'),
+      ).as('initiator'),
+      jsonObjectFrom(
+        eb
+          .selectFrom('user as receiver')
+          .select([
+            'receiver.id',
+            'receiver.name',
+            'receiver.birthdate',
+            jsonObjectFrom(
+              eb
+                .selectFrom('picture as p')
+                .select('p.picture_path as path')
+                .whereRef('p.user_id', '=', 'receiver.id')
+                .orderBy('order', 'asc')
+                .limit(1),
+            ).as('pictures'),
+            jsonObjectFrom(
+              eb
+                .selectFrom('city as c')
+                .select(['c.id', 'c.name', 'c.coordinates'])
+                .whereRef('c.id', '=', 'receiver.city_id'),
+            ).as('city'),
+            jsonObjectFrom(
+              eb
+                .selectFrom('language as l')
+                .innerJoin('language_user as lu', 'lu.user_id', 'receiver.id')
+                .select(['l.id', 'name'])
+                .whereRef('l.id', '=', 'lu.language_id')
+                .orderBy('lu.order', 'asc')
+                .limit(1),
+            ).as('languages'),
+          ])
+          .whereRef('receiver.id', '=', 'ua.receiver_id'),
+      ).as('receiver'),
+    ])
+    .where((eb) =>
+      eb.or([
+        eb('ua.liked_at', 'is not', null),
+        eb('ua.superlike_at', 'is not', null),
+      ]),
+    )
+    .where('canceled_at', 'is not', null);
+
+  if (initiator === 'initiator') {
+    query = query.where('initiator_id', '=', userId);
+  }
+
+  if (initiator === 'receiver') {
+    query = query.where('receiver_id', '=', userId);
+  }
+
+  return query.execute();
+};
+
 // Get all interactions from the user
 interactionRouter.get(
-  '/:userId/interactions',
+  '/interactions/sent',
   getUserId,
   async (req: Request, res) => {
     try {
@@ -29,28 +120,33 @@ interactionRouter.get(
       const userId = req.userId as number;
 
       // Select all interactions from the user
-      const userActions = await db
-        .selectFrom('user_action as ua')
-        .innerJoin('user as receiver', 'receiver.id', 'ua.receiver_id')
-        .innerJoin('user as initiator', 'initiator.id', 'ua.initiator_id')
-        .select([
-          'initiator.id as initiator_id',
-          'initiator.name as initiator_name',
-          'receiver.id as receiver_id',
-          'receiver.name as receiver_name',
-          'next_at',
-          'liked_at',
-          'superlike_at',
-          'canceled_at',
-        ])
-        .where('initiator_id', '=', userId)
-        .execute();
+      const userActions = await getInteractions('initiator', userId);
 
       res.status(200).json(userActions);
     } catch {
       res.status(500).json({
         success: false,
-        error: 'An error occurred while fetching interactions.',
+        error: 'An error occurred while fetching user interactions.',
+      });
+    }
+  },
+);
+
+// Get all interactions received by the user
+interactionRouter.get(
+  '/interactions/received',
+  getUserId,
+  async (req: Request, res) => {
+    try {
+      const userId = req.userId as number;
+
+      const userLikedMe = await getInteractions('receiver', userId);
+
+      res.status(200).json(userLikedMe);
+    } catch {
+      res.status(500).json({
+        success: false,
+        error: 'An error occurred while retrieving received interactions.',
       });
     }
   },
@@ -67,9 +163,10 @@ interactionRouter.get(
 
       res.status(200).json(remainingSuperLikes);
     } catch {
-      res
-        .status(500)
-        .json({ error: 'An error occurred while fetching superlike count.' });
+      res.status(500).json({
+        success: false,
+        error: 'An error occurred while fetching superlike count.',
+      });
     }
   },
 );
@@ -149,16 +246,17 @@ interactionRouter.post(
 
       // Use safeParse from zod to validate the request body
       // Return an object with success or error and data properties
-      const result = actionSchema.safeParse(actionBody);
+      const parsed = actionSchema.safeParse(actionBody);
 
       // If one of the property values is incorrect, returns an error
-      if (!result.success) {
-        res.status(400).json({ success: false, error: result.error.message });
-        return;
+      if (!parsed.success) {
+        return res
+          .status(400)
+          .json({ success: false, error: parsed.error.message });
       }
 
       // Insert like interaction in database with zod parsed data
-      await db.insertInto('user_action').values(result.data).execute();
+      await db.insertInto('user_action').values(parsed.data).execute();
 
       res.json({ success: true });
     } catch {
@@ -168,6 +266,55 @@ interactionRouter.post(
       });
     }
   },
+
+  interactionRouter.delete(
+    '/:userId/interactions/back',
+    getUserId,
+    async (req: Request, res) => {
+      try {
+        // Get the userId from the request
+        const userId = req.userId as number;
+
+        // Get all interactions from the user logged in
+        const result = await db
+          .selectFrom('user_action as ua')
+          .innerJoin('user as initiator', 'initiator.id', 'ua.initiator_id')
+          .innerJoin('user as receiver', 'receiver.id', 'ua.receiver_id')
+          .where('ua.canceled_at', 'is not', null)
+          .where('ua.initiator_id', '=', userId)
+          .select([
+            'ua.id',
+            'receiver.name',
+            'ua.liked_at',
+            'ua.next_at',
+            'ua.superlike_at',
+            'ua.canceled_at',
+          ])
+          .execute();
+
+        // If there is no interaction to delete, returns an error
+        if (result.length === 0) {
+          return res
+            .status(400)
+            .json({ success: false, error: 'No interaction to delete !' });
+        }
+
+        // Get the last action from the user logged in
+        const index = 1;
+        const lastAction = result[result.length - index];
+
+        // Delete the last action from the user logged in
+        await db
+          .deleteFrom('user_action as ua')
+          .where('id', '=', lastAction.id)
+          .execute();
+
+        res.json({ success: true });
+      } catch {
+        throw new Error('An error occurred during user interaction.');
+      }
+    },
+  ),
 );
 
 //Create a new conversation

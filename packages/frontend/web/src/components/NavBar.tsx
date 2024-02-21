@@ -1,6 +1,7 @@
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 import { useConversation } from '@/contexts/ConversationContext';
+import { usePreference } from '@/contexts/PreferenceContext';
 
 import BulletBase from './BulletBase';
 import ThemeSwitcher from './ThemeSwitcher';
@@ -10,37 +11,51 @@ import LogoIcon from './icons/LogoIcon';
 import MessageIcon from './icons/MessageIcon';
 import UserIcon from './icons/UserIcon';
 
-const dataIcon = [
-  {
-    id: 'user',
-    icon: <UserIcon className='fill-secondary h-5 w-5' />,
-  },
-  {
-    id: 'like',
-    icon: <LikeIcon className='fill-primary h-5 w-5' />,
-  },
-  {
-    id: 'message',
-    icon: <MessageIcon className='fill-secondary h-5 w-5' />,
-    lgHidden: true,
-    onClick: true,
-  },
-  {
-    id: 'filter',
-    icon: <FilterIcon className='fill-secondary h-4 w-4' />,
-    lgHidden: true,
-  },
-  {
-    id: 'theme',
-    icon: <ThemeSwitcher />,
-  },
-];
+export default function NavBar() {
+  const { handleClick } = usePreference();
+  const { handleConversationClick } = useConversation();
 
-function NavBar() {
-  const { handleClick } = useConversation();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const isHomePage = location.pathname === '/';
+
+  const dataIcon = [
+    {
+      id: 'user',
+      icon: <UserIcon className='fill-secondary h-5 w-5' />,
+    },
+    {
+      id: 'like',
+      icon: <LikeIcon className='fill-primary h-5 w-5' />,
+      onClick: () => {
+        navigate(`/profile/interactions`);
+      },
+    },
+    {
+      id: 'message',
+      icon: <MessageIcon className='fill-secondary h-5 w-5' />,
+      lgHidden: true,
+      onClick: handleConversationClick,
+    },
+    {
+      id: 'filter',
+      icon: <FilterIcon className='fill-secondary h-4 w-4' />,
+      lgHidden: true,
+      onClick: handleClick,
+    },
+    {
+      id: 'theme',
+      icon: <ThemeSwitcher />,
+    },
+  ];
+
   return (
-    <nav className='bg-light-hard relative flex w-full items-center p-3 shadow-md'>
-      <Link to={'/'} className='absolute flex items-center gap-2 pl-2'>
+    <nav
+      className={`bg-light-hard sticky top-0 z-50 flex w-full items-center p-3 ${
+        isHomePage && 'shadow-md'
+      }`}
+    >
+      <Link to='/' className='absolute flex items-center gap-2 pl-2'>
         <LogoIcon className='text-secondary w-clamp fill-primary' />
         <div className='mt-1 text-xl md:text-3xl'>
           <span className='text-secondary font-title'>{'TIN'}</span>
@@ -53,7 +68,7 @@ function NavBar() {
             size='8'
             key={id}
             lgHidden={lgHidden}
-            onClick={Boolean(onClick) ? handleClick : undefined}
+            onClick={Boolean(onClick) ? handleConversationClick : undefined}
           >
             {icon}
           </BulletBase>
@@ -62,5 +77,3 @@ function NavBar() {
     </nav>
   );
 }
-
-export default NavBar;

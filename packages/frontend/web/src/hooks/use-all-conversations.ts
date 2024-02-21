@@ -21,8 +21,6 @@ interface Conversation {
   };
 }
 
-const API_URL = import.meta.env.VITE_API_URL;
-
 export default function useAllConversations() {
   const [conversationsList, setConversationsList] = useState<Conversation[]>();
   const [messagesCount, setMessagesCount] = useState<number>(0);
@@ -30,9 +28,8 @@ export default function useAllConversations() {
 
   const fetchConversations = useCallback(
     async ({ signal }: { signal: AbortSignal }) => {
-      const res = await fetch(`${API_URL}/users/${userId}/conversations`, {
+      const res = await fetch(`/api/users/${userId}/conversations`, {
         signal,
-        credentials: 'include',
       });
 
       const data = await res.json();

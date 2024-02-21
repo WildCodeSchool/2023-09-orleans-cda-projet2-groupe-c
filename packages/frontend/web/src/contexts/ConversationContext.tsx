@@ -58,7 +58,7 @@ type ConversationState = {
   userId?: number;
   isVisible: boolean;
   setIsVisible: React.Dispatch<React.SetStateAction<boolean>>;
-  handleClick: () => void;
+  handleConversationClick: () => void;
   messagesCount: number;
   conversationsList?: AllConversation[];
   selectedConversation: (index: number) => void;
@@ -90,7 +90,7 @@ export default function ConversationContext({
   const { conversationsList, messagesCount, fetchConversations } =
     useAllConversations();
 
-  const navigate = useNavigate();
+  /*   const navigate = useNavigate(); */
 
   //Allows to select the conversation id
   const selectedConversation = useCallback(
@@ -98,19 +98,20 @@ export default function ConversationContext({
       if (conversationsList) {
         setConversationId(index);
 
-        navigate(`/users/${userId}/conversations/${conversationId}`);
+        /*  navigate(`/users/${userId}/conversations/${conversationId}`); */
       }
 
       if (window.innerWidth < 1024) {
         setIsVisible(false);
       }
     },
-    [conversationsList, navigate, userId, conversationId],
+    [conversationsList, userId, conversationId],
   );
 
-  const handleClick = () => {
+  const handleConversationClick = useCallback(() => {
     setIsVisible((prev) => !prev);
-  };
+    console.log('coucou');
+  }, []);
 
   //Fetches the conversation
   useEffect(() => {
@@ -120,7 +121,7 @@ export default function ConversationContext({
       const signal = controller.signal;
       const fetchMessage = async () => {
         const response = await fetch(
-          `${import.meta.env.VITE_API_URL}/users/${userId}/conversations/${conversationId}`,
+          `/api/users/${userId}/conversations/${conversationId}`,
           {
             signal,
             credentials: 'include',
@@ -151,7 +152,7 @@ export default function ConversationContext({
       userId,
       isVisible,
       setIsVisible,
-      handleClick,
+      handleConversationClick,
       messagesCount,
       conversationsList,
       selectedConversation,
@@ -163,6 +164,8 @@ export default function ConversationContext({
   }, [
     userId,
     isVisible,
+    setIsVisible,
+    handleConversationClick,
     messagesCount,
     conversationsList,
     selectedConversation,

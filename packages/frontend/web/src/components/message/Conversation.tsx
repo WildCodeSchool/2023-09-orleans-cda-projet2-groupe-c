@@ -37,13 +37,12 @@ export default function Conversation() {
   const formSubmit = async (data: { content?: MessageValidation }) => {
     try {
       await fetch(
-        `${import.meta.env.VITE_API_URL}/users/${userId}/conversations/${conversation?.conversation_id}/message`,
+        `/api/users/${userId}/conversations/${conversation?.conversation_id}/message`,
         {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
-          credentials: 'include',
           body: JSON.stringify(data),
         },
       );
