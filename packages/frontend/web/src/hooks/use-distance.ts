@@ -27,9 +27,8 @@ export default function useDistance({ userId, selectedUser }: DistanceProps) {
     const signal = controller.signal;
 
     const fetchDistance = async () => {
-      const res = await fetch(`/api/users/${userId}/profile`, {
+      const res = await fetch(`/api/users/profile`, {
         signal,
-        // credentials: 'include',
       });
 
       const data = await res.json();

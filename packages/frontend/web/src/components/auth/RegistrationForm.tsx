@@ -30,7 +30,6 @@ export default function RegistrationForm() {
         await fetch(`/api/auth/registration`, {
           method: 'POST',
           headers: { 'content-type': 'application/json' },
-          // credentials: 'include',
           body: JSON.stringify({
             email: data.email,
             password: data.password,

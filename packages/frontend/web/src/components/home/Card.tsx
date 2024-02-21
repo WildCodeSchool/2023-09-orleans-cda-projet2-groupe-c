@@ -30,7 +30,7 @@ export default function Card({ user }: CardProps) {
   }, [user.birthdate]);
 
   return (
-    <div className='flex-1 overflow-y-auto rounded-lg shadow-lg'>
+    <div className='bg-light flex-1 overflow-y-auto rounded-lg shadow-lg'>
       <div className='relative h-full'>
         <div className='absolute bottom-0 left-0 h-80 w-full bg-gradient-to-t from-black to-black/0' />
         <div className='absolute bottom-0 left-0 flex w-full flex-col justify-between p-3'>
@@ -54,7 +54,7 @@ export default function Card({ user }: CardProps) {
                   ))}
                 </div>
                 <div className='align-center flex gap-2'>
-                  <LocationIcon />
+                  <LocationIcon className='fill-primary w-4' />
                   <p className='translate-y-[1px] truncate text-sm'>
                     {user.city.city_name} <span>{`• ${distance} km`}</span>
                   </p>

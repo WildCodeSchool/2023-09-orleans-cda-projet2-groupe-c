@@ -57,7 +57,6 @@ export default function PreferenceContext({
   const fetchPreferences = useCallback(
     async ({ signal }: { signal: AbortSignal }) => {
       const res = await fetch(`/api/users/${userId}/preferences`, {
-        credentials: 'include', // Send cookies
         signal,
       });
 
@@ -109,7 +108,6 @@ export default function PreferenceContext({
       // Update the preferences in the database
       await fetch(`/api/users/${userId}/preferences`, {
         method: 'PUT',
-        credentials: 'include', // Send cookies
         headers: {
           'content-type': 'application/json',
         },
