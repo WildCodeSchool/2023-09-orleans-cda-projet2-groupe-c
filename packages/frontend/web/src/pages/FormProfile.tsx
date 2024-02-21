@@ -20,16 +20,16 @@ import FormTechnology from '@/components/forms/FormTechnology';
 import { useAuth } from '@/contexts/AuthContext';
 
 const PAGES = [
-  { index: 0, component: <FormName /> },
-  { index: 1, component: <FormBirthDate /> },
-  { index: 2, component: <FormGender /> },
-  { index: 3, component: <FormCity /> },
-  { index: 4, component: <FormLanguage /> },
-  { index: 5, component: <FormTechnology /> },
-  { index: 6, component: <FormHobby /> },
-  { index: 7, component: <FormBio /> },
-  { index: 8, component: <FormGitHub /> },
-  { index: 9, component: <FormEnd /> },
+  { component: <FormName /> },
+  { component: <FormBirthDate /> },
+  { component: <FormGender /> },
+  { component: <FormCity /> },
+  { component: <FormLanguage /> },
+  { component: <FormTechnology /> },
+  { component: <FormHobby /> },
+  { component: <FormBio /> },
+  { component: <FormGitHub /> },
+  { component: <FormEnd /> },
 ];
 
 export default function FormProfile() {
@@ -104,8 +104,10 @@ export default function FormProfile() {
           <div className='flex h-full w-full max-w-[500px] flex-col justify-between'>
             {/* Use react.Fragment because only <></> not work with key */}
             {PAGES.map(
-              ({ index, component }) =>
-                index === page && <Fragment key={index}>{component}</Fragment>,
+              ({ component }, index) =>
+                index === page && (
+                  <Fragment key={Number(index)}>{component}</Fragment>
+                ),
             )}
 
             {/* Buttons Next and Back */}

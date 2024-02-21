@@ -29,9 +29,6 @@ export default function LanguageAndTechnology({
   // State to store items
   const [items, setItems] = useState<ItemsBody[]>([]);
 
-  // State to store the first selected item
-  const [firstSelectedItems, setFirstSelectedItems] = useState<ItemsBody>();
-
   // Desctructure the useFormContext hook to get the formState and control
   const { formState, control } = useFormContext<FormItemsValidation>();
 
@@ -60,6 +57,12 @@ export default function LanguageAndTechnology({
   const [value, setValue] = useState<ValueType[]>(
     Boolean(field.value) ? field.value : [],
   );
+
+  // Select the first item
+  const firstItem =
+    apiUrl === 'languages' && value.length > 0
+      ? items.find((language) => language.id === value[0].id)
+      : undefined;
 
   // Function to handle checkbox change when the user selects or unselects an item
   const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -109,14 +112,6 @@ export default function LanguageAndTechnology({
     };
   }, [apiUrl]);
 
-  // Set the first selected item
-  useEffect(() => {
-    if (apiUrl === 'languages' && value.length > 0) {
-      const firstItem = items.find((item) => item.id === value[0].id);
-      setFirstSelectedItems(firstItem);
-    }
-  }, [apiUrl, items, value]);
-
   return (
     <FormContainer title={formTitle}>
       <span className='flex justify-start'>{subtitle}</span>
@@ -125,8 +120,8 @@ export default function LanguageAndTechnology({
           <div className='mt-2 flex flex-col items-center justify-center gap-3'>
             <div className='outline-primary my-2 flex h-16 w-16 items-center justify-center rounded-md outline outline-offset-2'>
               <img
-                src={firstSelectedItems?.logo_path}
-                alt={firstSelectedItems?.name}
+                src={firstItem?.logo_path}
+                alt={firstItem?.name}
                 className='rounded-md object-cover object-center'
               />
             </div>

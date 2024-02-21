@@ -9,7 +9,7 @@ import users from '@/services/users';
 
 const userRouter = express.Router();
 
-userRouter.get('/:userId/profile', getUserId, async (req: Request, res) => {
+userRouter.get('/profile', getUserId, async (req: Request, res) => {
   try {
     // Get the user id from JWT
     const userId = req.userId as number;
@@ -19,7 +19,9 @@ userRouter.get('/:userId/profile', getUserId, async (req: Request, res) => {
 
     res.status(200).json(user);
   } catch {
-    res.status(500).json({ error: 'An error occurred while fetching users' });
+    res
+      .status(500)
+      .json({ error: 'An error occurred while fetching user profile' });
   }
 });
 

@@ -241,6 +241,7 @@ const users = {
         ).as('pictures'),
       ])
       .where('u.id', '=', userId)
+      .limit(1)
       .execute();
 
     return userProfile;

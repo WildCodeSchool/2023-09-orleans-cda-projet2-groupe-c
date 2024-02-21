@@ -20,23 +20,8 @@ export default function Home() {
 
   const { isVisibleFilter } = usePreference();
 
-  const hasCompleteRegistration =
-    !isLoading &&
-    isLoggedIn &&
-    isActivated &&
-    userProfile &&
-    (!Boolean(userProfile.name) ||
-      !Boolean(userProfile.birthdate) ||
-      !Boolean(userProfile.gender) ||
-      !Boolean(userProfile.city) ||
-      userProfile.languages.length === 0 ||
-      userProfile.technologies.length === 0 ||
-      userProfile.hobbies.length === 0);
-
+  // Check if the user profile is complete
   const hasCompleteProfile =
-    !isLoading &&
-    isLoggedIn &&
-    isActivated &&
     userProfile &&
     (Boolean(userProfile.name) ||
       Boolean(userProfile.birthdate) ||
@@ -52,7 +37,7 @@ export default function Home() {
     const signal = controller.signal;
 
     const fetchUserProfile = async () => {
-      const res = await fetch(`/api/users/${userId}/profile`, {
+      const res = await fetch(`/api/users/profile`, {
         signal,
       });
 
@@ -74,12 +59,12 @@ export default function Home() {
   }
 
   // If the user is logged in and the account is actived but the user profile is not filled, redirect to the profile page
-  if (Boolean(hasCompleteRegistration)) {
+  if (isLoggedIn && isActivated && !Boolean(hasCompleteProfile)) {
     return <Navigate to='/registration/profile' />;
   }
 
   // If the user is logged in and the account is activated with all fields filled, return the main layout
-  if (Boolean(hasCompleteProfile)) {
+  if (Boolean(isLoggedIn && isActivated && hasCompleteProfile)) {
     return (
       <main className='h-auto min-h-screen'>
         <NavBar />

@@ -53,4 +53,9 @@
   .w-clamp {
     width: clamp(24px, 4vw, 40px);
   }
+
+  .circle-progress {
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
 }
