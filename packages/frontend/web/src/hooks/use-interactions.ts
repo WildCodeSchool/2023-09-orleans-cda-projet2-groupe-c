@@ -16,7 +16,6 @@ export default function useInteractions({ ...props }) {
     async ({ signal }: { signal: AbortSignal }) => {
       const res = await fetch(`/api/users/${userId}`, {
         signal,
-        // credentials: 'include',
       });
       const data = await res.json();
 
@@ -33,7 +32,6 @@ export default function useInteractions({ ...props }) {
         `/api/users/${userId}/interactions/superlike/count`,
         {
           signal,
-          // credentials: 'include',
         },
       );
       const data = await res.json();
@@ -72,7 +70,6 @@ export default function useInteractions({ ...props }) {
         headers: {
           'content-type': 'application/json',
         },
-        // credentials: 'include',
         body: JSON.stringify({
           receiver_id: selectedUser?.id, // Send in the body the id of the selected user
         }),
@@ -116,7 +113,6 @@ export default function useInteractions({ ...props }) {
       // Send a request to the API to go back to the previous user
       await fetch(`/api/users/${userId}/interactions/back`, {
         method: 'DELETE',
-        // credentials: 'include',
       });
 
       const controller = new AbortController();

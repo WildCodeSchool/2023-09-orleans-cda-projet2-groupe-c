@@ -23,6 +23,9 @@ export default function NavBar() {
     {
       id: 'user',
       icon: <UserIcon className='fill-secondary h-5 w-5' />,
+      onClick: () => {
+        navigate(`/profile`);
+      },
     },
     {
       id: 'like',
@@ -68,7 +71,7 @@ export default function NavBar() {
             size='8'
             key={id}
             lgHidden={lgHidden}
-            onClick={Boolean(onClick) ? handleConversationClick : undefined}
+            onClick={onClick ?? undefined}
           >
             {icon}
           </BulletBase>

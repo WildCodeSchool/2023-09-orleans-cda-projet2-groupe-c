@@ -8,6 +8,8 @@ import ValidationToken from './components/auth/ValidationToken';
 import ErrorLayout from './components/error/ErrorLayout';
 import HomeCards from './components/home/HomeCards';
 import Conversation from './components/message/Conversation';
+import ProfileLayout from './components/profile/ProfileLayout';
+import ProfileMenu from './components/profile/ProfileMenu';
 import ProfileInteractionLayout from './components/user-interaction/ProfileInteractionLayout';
 import Home from './pages/Home';
 import Registration from './pages/Registration';
@@ -28,6 +30,16 @@ const router = createBrowserRouter([
           {
             path: '/users/:userId/conversations/:conversationId',
             element: <Conversation />,
+          },
+          {
+            path: '/profile',
+            element: <ProfileLayout />,
+            children: [
+              {
+                path: '',
+                element: <ProfileMenu />,
+              },
+            ],
           },
           {
             path: '/profile/interactions',

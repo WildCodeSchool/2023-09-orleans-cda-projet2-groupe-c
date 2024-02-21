@@ -3,22 +3,22 @@ export default function SidebarLayout({
   isVisible,
   isBorderRight,
   isBorderLeft,
+  className,
 }: {
   readonly children: React.ReactNode;
   readonly isVisible: boolean;
   readonly isBorderRight?: boolean;
   readonly isBorderLeft?: boolean;
+  readonly className?: string;
 }) {
-  const isAbsolute = window.innerWidth < 1024;
-
   return (
     isVisible && (
       <aside
-        className={`${
-          isAbsolute ? 'absolute z-40' : 'block'
-        } border-divider bg-light-medium h-full w-full lg:max-w-[25vw] ${
+        className={`border-divider bg-light-medium absolute z-40 h-full w-full lg:relative lg:max-w-[25vw] ${
           isBorderRight ?? 'lg:border-r'
-        } ${isBorderLeft ?? 'lg:border-l'}`}
+        } ${isBorderLeft ?? 'lg:border-l'} 
+       ${className}
+        `}
       >
         {children}
       </aside>

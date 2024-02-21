@@ -37,7 +37,7 @@ export default function ProfileCard({
 
         {isVisible && Boolean(interaction) ? (
           <div className='flex gap-1'>
-            <LocationIcon />
+            <LocationIcon className='fill-primary w-4' />
             <p className='truncate text-sm'>{interaction.receiver.city.name}</p>
           </div>
         ) : undefined}

@@ -80,10 +80,9 @@ export default function Conversation() {
             </p>
           </div>
           <div>
-            <CrossIcon
-              onClick={handleCloseConversation}
-              className='h-5 cursor-pointer fill-white'
-            />
+            <button type='button' onClick={handleCloseConversation}>
+              <CrossIcon className='h-5 cursor-pointer fill-white' />
+            </button>
           </div>
         </div>
         <div className='flex h-[calc(100%-3.5rem)] w-full flex-col gap-5'>

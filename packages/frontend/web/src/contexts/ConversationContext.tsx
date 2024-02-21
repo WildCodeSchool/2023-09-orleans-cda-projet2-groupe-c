@@ -6,7 +6,6 @@ import {
   useMemo,
   useState,
 } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 import type { Message } from '@app/shared';
 
@@ -90,28 +89,43 @@ export default function ConversationContext({
   const { conversationsList, messagesCount, fetchConversations } =
     useAllConversations();
 
-  /*   const navigate = useNavigate(); */
+  /* const navigate = useNavigate();  */
 
   //Allows to select the conversation id
   const selectedConversation = useCallback(
     (index: number) => {
       if (conversationsList) {
         setConversationId(index);
-
-        /*  navigate(`/users/${userId}/conversations/${conversationId}`); */
       }
 
       if (window.innerWidth < 1024) {
         setIsVisible(false);
       }
     },
-    [conversationsList, userId, conversationId],
+    [conversationsList],
   );
 
-  const handleConversationClick = useCallback(() => {
+  const handleConversationClick = () => {
     setIsVisible((prev) => !prev);
-    console.log('coucou');
-  }, []);
+  };
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 1024) {
+        setIsVisible(true);
+      } else {
+        setIsVisible(false);
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    handleResize();
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [setIsVisible]);
 
   //Fetches the conversation
   useEffect(() => {
@@ -165,7 +179,6 @@ export default function ConversationContext({
     userId,
     isVisible,
     setIsVisible,
-    handleConversationClick,
     messagesCount,
     conversationsList,
     selectedConversation,

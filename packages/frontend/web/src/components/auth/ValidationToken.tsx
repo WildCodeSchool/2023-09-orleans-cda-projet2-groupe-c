@@ -39,7 +39,6 @@ export default function ValidationToken() {
         // Send a POST request to the API to activate the user's account
         const res = await fetch(`/api/auth/registration/validation`, {
           method: 'POST',
-          // credentials: 'include',
           headers: { 'content-type': 'application/json' },
           body: JSON.stringify(data),
         });
@@ -69,7 +68,6 @@ export default function ValidationToken() {
     const fetchCode = async () => {
       const res = await fetch(`/api/auth/registration/users/${userId}/code`, {
         signal,
-        // credentials: 'include',
         headers: { 'content-type': 'application/json' },
       });
 

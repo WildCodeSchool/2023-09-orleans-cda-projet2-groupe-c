@@ -6,19 +6,21 @@ import Filter from '@/components/filter/Filter';
 import RandomSentence from '@/components/home/RandomSentence';
 import ConversationsList from '@/components/message/ConversationsList';
 import { useAuth } from '@/contexts/AuthContext';
-import ConversationContext from '@/contexts/ConversationContext';
-import InteractionContext from '@/contexts/InteractionContext';
-import PreferenceContext, { usePreference } from '@/contexts/PreferenceContext';
-import UsersInteractionsContext from '@/contexts/UsersInteractionsContext';
+import { useConversation } from '@/contexts/ConversationContext';
+import { usePreference } from '@/contexts/PreferenceContext';
 
 import Loading from '../components/Loading';
 import Logo from '../components/icons/LogoHomeIcon';
 
 export default function Home() {
-  const { isLoggedIn, isLoading } = useAuth();
+  const { isLoggedIn, isLoading, userId } = useAuth();
   const { isVisibleFilter } = usePreference();
+  const { isVisible, conversationId } = useConversation();
 
   const location = useLocation();
+  const isHome = location.pathname === '/';
+  const isConversation =
+    location.pathname === `/users/${userId}/conversations/${conversationId}`;
 
   if (isLoading) {
     return <Loading />;
@@ -26,55 +28,29 @@ export default function Home() {
 
   if (isLoggedIn) {
     return (
-      <ConversationContext>
-        <InteractionContext>
-          <PreferenceContext>
-            <UsersInteractionsContext>
-              <main className='h-auto min-h-screen'>
-                <NavBar />
+      <main className='h-auto min-h-screen'>
+        <NavBar />
 
-                {/* Display messages only in the home page when the width is superior to 1024px */}
-                <div
-                  className={`font-base relative flex w-full justify-between ${
-                    location.pathname === '/'
-                      ? ' h-[calc(100vh-56px)]'
-                      : 'h-full'
-                  }`}
-                >
-                  {location.pathname === '/' ? (
-                    <SidebarLayout isVisible={isVisibleFilter} isBorderLeft>
-                      <ConversationsList />
-                    </SidebarLayout>
-                  ) : undefined}
+        {/* Display messages only in the home page when the width is superior to 1024px */}
+        <div
+          className={`font-base relative flex w-full justify-between ${
+            location.pathname === '/' ? 'h-[calc(100vh-56px)]' : 'h-full'
+          }`}
+        >
+          {isHome || isConversation ? (
+            <SidebarLayout isVisible={isVisible} isBorderLeft>
+              <ConversationsList />
+            </SidebarLayout>
+          ) : undefined}
 
-                  {/* Display messages in all page when the width is under to 1024px */}
-                  {window.innerWidth < 1024 ? (
-                    <SidebarLayout isVisible={isVisibleFilter} isBorderLeft>
-                      <ConversationsList />
-                    </SidebarLayout>
-                  ) : undefined}
-
-                  <Outlet />
-
-                  {/* Display filter only in the home page when the width is superior to 1024px */}
-                  {location.pathname === '/' ? (
-                    <SidebarLayout isVisible={isVisibleFilter} isBorderRight>
-                      <Filter />
-                    </SidebarLayout>
-                  ) : undefined}
-
-                  {/* Display filter in all page when the width is under to 1024px */}
-                  {window.innerWidth < 1024 ? (
-                    <SidebarLayout isVisible={isVisibleFilter} isBorderRight>
-                      <Filter />
-                    </SidebarLayout>
-                  ) : undefined}
-                </div>
-              </main>
-            </UsersInteractionsContext>
-          </PreferenceContext>
-        </InteractionContext>
-      </ConversationContext>
+          <Outlet />
+          {isHome ? (
+            <SidebarLayout isVisible={isVisibleFilter} isBorderRight>
+              <Filter />
+            </SidebarLayout>
+          ) : undefined}
+        </div>
+      </main>
     );
   }
 
