@@ -115,7 +115,7 @@ export default function Card({ user }: CardProps) {
                     ))}
                   </div>
                   <div className='align-center flex gap-2'>
-                    <LocationIcon />
+                    <LocationIcon className='fill-primary w-4' />
                     <p className='translate-y-[1px] truncate text-sm'>
                       {user.city.city_name} <span>{`• ${distance} km`}</span>
                     </p>
