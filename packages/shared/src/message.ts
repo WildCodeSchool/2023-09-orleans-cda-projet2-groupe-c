@@ -21,7 +21,7 @@ export type AllConversation = {
   };
 };
 
-export type User = {
+export type UserConversation = {
   id: number;
   name: string;
   picture_path: string;
@@ -33,8 +33,8 @@ export type Messages = Omit<Message, 'sender_id'> & {
 
 export type Conversations = {
   conversation_id: number;
-  user_1: User;
-  user_2: User;
+  user_1: UserConversation;
+  user_2: UserConversation;
   messages: Messages[];
 };
 
