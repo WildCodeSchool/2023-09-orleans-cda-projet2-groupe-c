@@ -73,10 +73,6 @@ const router = createBrowserRouter([
     ],
   },
   {
-    path: '/test',
-    element: <FormPicture />,
-  },
-  {
     path: '*',
     element: <ErrorLayout />,
   },

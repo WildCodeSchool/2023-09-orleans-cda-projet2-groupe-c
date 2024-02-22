@@ -21,7 +21,6 @@ import FormTechnology from '@/components/forms/FormTechnology';
 import { useAuth } from '@/contexts/AuthContext';
 
 const PAGES = [
-  { component: <FormPicture /> },
   { component: <FormName /> },
   { component: <FormBirthDate /> },
   { component: <FormGender /> },
@@ -31,6 +30,7 @@ const PAGES = [
   { component: <FormHobby /> },
   { component: <FormBio /> },
   { component: <FormGitHub /> },
+  { component: <FormPicture /> },
   { component: <FormEnd /> },
 ];
 
