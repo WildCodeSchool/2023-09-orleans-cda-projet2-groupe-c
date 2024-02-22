@@ -6,14 +6,15 @@ export interface UserPreferenceId {
 
 // Schema to validate the request body for updating preferences
 export const requestPreferencesSchema = z.object({
-  distance: z.number().int().nonnegative().optional(),
-  gender_pref: z.enum(['man', 'woman', 'non-binary']).optional(),
+  distance: z.number().int().nonnegative(),
+  gender_pref: z.enum(['man', 'woman', 'non-binary']),
   language_pref_id: z
     .string()
     .trim()
     .regex(/^\d+$/)
-    .optional()
-    .or(z.number().int().nonnegative().optional()),
+
+    .or(z.number().int().nonnegative()),
+  user_id: z.number(),
 });
 
 export type RequestPreferencesBody = z.infer<typeof requestPreferencesSchema>;

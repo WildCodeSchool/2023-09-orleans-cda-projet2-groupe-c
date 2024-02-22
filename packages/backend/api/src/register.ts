@@ -19,6 +19,9 @@ register.post('/', getUserId, async (req: Request, res) => {
       languages,
       technologies,
       hobbies,
+      distance,
+      language_pref_id,
+      gender_pref,
     } = req.body as FormProfileBodyBackend;
 
     const userId = req.userId as number;
@@ -74,6 +77,16 @@ register.post('/', getUserId, async (req: Request, res) => {
           })),
         )
         .execute();
+
+      /*   await trx
+        .insertInto('preference')
+        .values({
+          distance,
+          language_pref_id,
+          gender_pref,
+          user_id: Number(userId),
+        })
+        .execute(); */
     });
 
     return res.json({ success: true, message: 'User add with success !' });

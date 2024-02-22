@@ -1,5 +1,6 @@
 import { z } from 'zod';
 
+import { requestPreferencesSchema } from '.';
 import { authSchema } from './auth';
 
 // Base schema
@@ -158,8 +159,9 @@ export type FormProfileBody = z.infer<typeof formProfileWithDateAndItemsSchema>;
 // BACKEND VALIDATION
 
 // Schema without year, month and day with items
-export const formProfileWithItemsSchemaBackend =
-  formSchema.merge(formItemsSchema);
+export const formProfileWithItemsSchemaBackend = formSchema
+  .merge(formItemsSchema)
+  .merge(requestPreferencesSchema);
 export type FormProfileBodyBackend = z.infer<
   typeof formProfileWithItemsSchemaBackend
 >;

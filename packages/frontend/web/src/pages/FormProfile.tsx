@@ -16,10 +16,16 @@ import FormGitHub from '@/components/forms/FormGitHub';
 import FormHobby from '@/components/forms/FormHobby';
 import FormLanguage from '@/components/forms/FormLanguage';
 import FormName from '@/components/forms/FormName';
+import FormPrefDistance from '@/components/forms/FormPrefDistance';
+import FormPrefGender from '@/components/forms/FormPrefGender';
+import FormPrefLanguage from '@/components/forms/FormPrefLanguage';
 import FormTechnology from '@/components/forms/FormTechnology';
 import { useAuth } from '@/contexts/AuthContext';
 
 const PAGES = [
+  { component: <FormPrefLanguage /> },
+  { component: <FormPrefGender /> },
+  { component: <FormPrefDistance /> },
   { component: <FormName /> },
   { component: <FormBirthDate /> },
   { component: <FormGender /> },
