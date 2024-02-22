@@ -11,7 +11,8 @@ const userPreferences = async (userId: number) => {
       'p.distance',
       'p.gender_pref',
       'p.language_pref_id',
-      'p.user_id',
+      'p.min_age',
+      'p.max_age',
     ])
     .where('p.user_id', '=', userId)
     .execute();
