@@ -1,6 +1,5 @@
 import { z } from 'zod';
 
-import { requestPreferencesSchema } from '.';
 import { authSchema } from './auth';
 
 // Base schema
@@ -142,6 +141,42 @@ export const formBirthdateSchema = z
   })
   .required();
 
+export const formPrefSchema = z.object({
+  user_id: z.number(),
+  genderPref: z.enum(['man', 'woman', 'non-binary'], {
+    invalid_type_error: 'ⓘ Please select one of the options.',
+  }),
+  languagePrefId: z
+    .string({ required_error: 'ⓘ This field is required.' })
+    .trim()
+    .regex(/^\d+$/)
+    .or(
+      z
+        .number({
+          required_error: 'This field is required.',
+        })
+        .int()
+        .nonnegative(),
+    ),
+  distance: z
+    .number({ required_error: 'This field is required.' })
+    .int()
+    .nonnegative(),
+});
+
+export const formGenderPrefSchema = formPrefSchema.pick({ genderPref: true });
+export const formLanguagePrefSchema = formPrefSchema.pick({
+  languagePrefId: true,
+});
+export const formDistancePrefSchema = formPrefSchema.pick({ distance: true });
+
+//type for the pref gender form frontend
+export type FormPrefGender = z.infer<typeof formGenderPrefSchema>;
+//type for language pref form frontend
+export type FormLanguagePref = z.infer<typeof formLanguagePrefSchema>;
+//type for distance pref form frontend
+export type FormDistancePref = z.infer<typeof formDistancePrefSchema>;
+
 // Type for the birthdate form frontend
 export type FormBirthdateBody = z.infer<typeof formBirthdateSchema>;
 
@@ -155,13 +190,12 @@ export const formProfileWithDateAndItemsSchema =
   formProfileWithDateSchema.merge(formItemsSchema);
 // Type for the birthdate form frontend
 export type FormProfileBody = z.infer<typeof formProfileWithDateAndItemsSchema>;
-
 // BACKEND VALIDATION
 
-// Schema without year, month and day with items
+// Schema without year, month and day with items and prefs
 export const formProfileWithItemsSchemaBackend = formSchema
   .merge(formItemsSchema)
-  .merge(requestPreferencesSchema);
+  .merge(formPrefSchema);
 export type FormProfileBodyBackend = z.infer<
   typeof formProfileWithItemsSchemaBackend
 >;

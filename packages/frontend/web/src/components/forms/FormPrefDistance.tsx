@@ -1,21 +1,19 @@
 import { useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 
-import { usePreference } from '@/contexts/PreferenceContext';
+import type { FormDistancePref } from '@app/shared';
 
 import FormContainer from './FormContainer';
 
 const distance = ['10', '4040'];
 
 export default function FormPrefDistance() {
-  const { register, formState } = useFormContext();
-  const { errors } = formState;
-  const { preferences } = usePreference();
+  const { register, setValue } = useFormContext<FormDistancePref>();
 
-  const [data, setData] = useState<number>(preferences?.distance ?? 10);
+  const [data, setData] = useState<number>(10);
 
   return (
-    <FormContainer title='Preferred distance'>
+    <FormContainer title='Looking for company nearby...'>
       <span className='flex justify-start pb-8'>
         {'Select your preferred distance for matches'}
       </span>
@@ -29,9 +27,9 @@ export default function FormPrefDistance() {
           min={distance[0]}
           max={distance[1]} // Length max of France
           step='10'
-          value={data}
           onChange={(event) => {
             setData(Number(event.target.value));
+            setValue('distance', Number(event.target.value));
           }}
           className='accent-primary border-divider bg-light-medium caret-primary h-2 w-full cursor-pointer appearance-none rounded-full border'
         />

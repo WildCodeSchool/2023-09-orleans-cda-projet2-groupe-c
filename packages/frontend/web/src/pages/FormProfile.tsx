@@ -23,15 +23,15 @@ import FormTechnology from '@/components/forms/FormTechnology';
 import { useAuth } from '@/contexts/AuthContext';
 
 const PAGES = [
-  { component: <FormPrefLanguage /> },
-  { component: <FormPrefGender /> },
-  { component: <FormPrefDistance /> },
   { component: <FormName /> },
   { component: <FormBirthDate /> },
   { component: <FormGender /> },
+  { component: <FormPrefGender /> },
   { component: <FormCity /> },
+  { component: <FormPrefDistance /> },
   { component: <FormLanguage /> },
   { component: <FormTechnology /> },
+  { component: <FormPrefLanguage /> },
   { component: <FormHobby /> },
   { component: <FormBio /> },
   { component: <FormGitHub /> },

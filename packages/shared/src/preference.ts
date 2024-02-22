@@ -14,7 +14,6 @@ export const requestPreferencesSchema = z.object({
     .regex(/^\d+$/)
 
     .or(z.number().int().nonnegative()),
-  user_id: z.number(),
 });
 
 export type RequestPreferencesBody = z.infer<typeof requestPreferencesSchema>;

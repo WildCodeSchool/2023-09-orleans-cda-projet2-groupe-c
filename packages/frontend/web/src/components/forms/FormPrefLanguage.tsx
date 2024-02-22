@@ -1,5 +1,7 @@
 import { useFormContext } from 'react-hook-form';
 
+import { type FormLanguagePref, formLanguagePrefSchema } from '@app/shared';
+
 import { usePreference } from '@/contexts/PreferenceContext';
 import useLanguages from '@/hooks/use-languages';
 
@@ -7,46 +9,37 @@ import FormContainer from './FormContainer';
 
 export default function FormPrefLanguage() {
   // Get user languages from languages custom hook
-  const { register, watch, setValue, formState } = useFormContext();
+  const { register, watch, formState } = useFormContext<FormLanguagePref>();
   const { languages, errorLanguages } = useLanguages();
+  const { errors } = formState;
 
   // Get user preferences from preference context
   const { preferences } = usePreference();
 
-  console.log(languages);
-
-  // Watch the value from the input language_pref_id
-  // Used to add class into the label
-  const watchLanguagePref = watch('language_pref_id');
+  const watchLanguagePref = watch('languagePrefId');
 
   return (
-    <FormContainer title='Preferred language'>
+    <FormContainer title="I'm look for people who master...">
       <span className='flex justify-start pb-5'>
         {'Choose your favorite language.'}
       </span>
       {Boolean(errorLanguages) ? (
         <p className='text-primary'>{errorLanguages}</p>
       ) : (
-        <div className='text-secondary grid grid-cols-5 gap-3 p-2 lg:grid-cols-4 xl:grid-cols-5'>
+        <div className='mt-5 grid max-h-[30vh] max-w-[26rem] grid-cols-4 gap-x-4 gap-y-4 overflow-y-auto px-5 py-3 md:px-10'>
           {languages.map((language) => (
             <div
               key={Number(language.id)}
-              className='flex flex-col items-center justify-center gap-1'
+              className='flex flex-col items-center justify-center '
             >
               <label
                 htmlFor={`language.${String(language.id)}`}
                 className={`block h-full w-full ${
-                  // Check if the language id is equal to the watch value
-                  // If is true, add a outline border class
                   Number(watchLanguagePref) === Number(language.id) ||
-                  // Or
-                  // Check if no language is selected
-                  // Then, check if language_pref_id is equal to the language.id
-                  // If is true, add a outline border class, else, remove the class
                   (!Boolean(watchLanguagePref) &&
                     String(preferences?.language_pref_id) ===
                       String(language.id))
-                    ? 'outline-primary rounded-md outline outline-offset-4 lg:rounded-sm lg:outline-offset-2'
+                    ? 'outline-primary rounded-md outline outline-offset-4 lg:outline-offset-2'
                     : ''
                 }`}
               >
@@ -57,14 +50,23 @@ export default function FormPrefLanguage() {
                 />
               </label>
               <input
-                {...register('language_pref_id', {
-                  required: false,
+                {...register('languagePrefId', {
                   valueAsNumber: true,
+                  validate: (value) => {
+                    const result =
+                      formLanguagePrefSchema.shape.languagePrefId.safeParse(
+                        value,
+                      );
+                    if (!result.success) {
+                      return 'ⓘ This field is required.';
+                    }
+                    return true;
+                  },
                 })}
                 value={Number(language.id)}
                 type='radio'
                 id={`language.${String(language.id)}`}
-                name='language_pref_id'
+                name='languagePrefId'
                 checked={
                   Boolean(watchLanguagePref)
                     ? Number(watchLanguagePref) === Number(language.id)
@@ -79,6 +81,11 @@ export default function FormPrefLanguage() {
             </div>
           ))}
         </div>
+      )}
+      {errors.languagePrefId ? (
+        <p className='text-primary mt-2'>{errors.languagePrefId.message}</p>
+      ) : (
+        ''
       )}
     </FormContainer>
   );
