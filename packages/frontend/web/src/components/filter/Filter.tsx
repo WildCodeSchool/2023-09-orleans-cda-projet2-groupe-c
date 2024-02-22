@@ -12,6 +12,7 @@ import { usePreference } from '@/contexts/PreferenceContext';
 import BulletBase from '../BulletBase';
 import Button from '../Button';
 import FilterIcon from '../icons/FilterIcon';
+import { FilterAgeForm } from './FilterAgeForm';
 import FilterDistanceForm from './FilterDistanceForm';
 import FilterGenderForm from './FilterGenderForm';
 import FilterLanguagesForm from './FilterLanguagesForm';
@@ -27,7 +28,7 @@ export default function Filter() {
   const { setIsVisibleFilter } = usePreference();
 
   // Destructuring the hook useForm
-  const { register, handleSubmit, formState, watch } =
+  const { register, handleSubmit, formState, watch, setValue } =
     useForm<RequestPreferencesBody>({
       resolver: zodResolver(requestPreferencesSchema), // Form validation
     });
@@ -68,6 +69,11 @@ export default function Filter() {
           {/* Gender Filter */}
           <FilterLine title='Show me'>
             <FilterGenderForm register={register} watch={watch} />
+          </FilterLine>
+
+          {/* Distance Filter */}
+          <FilterLine title='Age'>
+            <FilterAgeForm setValue={setValue} />
           </FilterLine>
 
           {/* Distance Filter */}

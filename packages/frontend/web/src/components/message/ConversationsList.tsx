@@ -81,7 +81,7 @@ export default function ConversationsList() {
                               ? conversation.user_2.picture_path
                               : conversation.user_1.picture_path
                           }
-                          // alt={`Picture of ${conversation.receiver[0].receiver_name}`}
+                          alt={`Picture of user`}
                         />
                       </div>
                       <div className='flex grow flex-col gap-2 overflow-hidden'>
@@ -94,7 +94,7 @@ export default function ConversationsList() {
                           <p className='truncate text-sm'>
                             {Boolean(conversation.messages)
                               ? conversation.messages.content
-                              : "Aucun message pour l'instant. Lancez-vous et envoyez le premier message !"}
+                              : 'No messages yet. Go ahead and send the first message!'}
                           </p>
                         </div>
                       </div>

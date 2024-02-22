@@ -40,10 +40,10 @@ export default function Interactions() {
           <BulletBase
             size='20'
             onClick={() => {
-              handleInteraction('next');
+              handleInteraction('like');
             }}
           >
-            <NextIcon className='w-10 fill-[#D52121]' />
+            <LikeIcon className='fill-primary w-12' />
           </BulletBase>
 
           <BulletBase
@@ -66,12 +66,12 @@ export default function Interactions() {
           </BulletBase>
 
           <BulletBase
-            size='20'
+            size='14'
             onClick={() => {
-              handleInteraction('like');
+              handleInteraction('next');
             }}
           >
-            <LikeIcon className='fill-primary w-12' />
+            <NextIcon className='w-7 fill-[#D52121]' />
           </BulletBase>
         </div>
       </div>

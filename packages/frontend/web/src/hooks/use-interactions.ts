@@ -11,6 +11,8 @@ export default function useInteractions({ ...props }) {
   const [superLikesCount, setSuperLikesCount] = useState<number>(0);
   const { fetchConversations } = useConversation();
 
+  const [interactionStatus, setInteractionStatus] = useState<string>();
+
   // Fetch users from the API
   const fetchUsers = useCallback(
     async ({ signal }: { signal: AbortSignal }) => {
@@ -99,9 +101,17 @@ export default function useInteractions({ ...props }) {
 
       // Fetch conversationList when the user interacts with someone
       fetchConversations({ signal });
+
+      setInteractionStatus(interactionType);
+
+      const timeoutId = setTimeout(() => {
+        setInteractionStatus('');
+      }, 100);
+
       // Abort all fetch requests if the component is unmounted
       return () => {
         controller.abort();
+        clearTimeout(timeoutId);
       };
     } catch (error) {
       throw new Error(`Fail to ${interactionType} a user: ${String(error)}`);
@@ -141,5 +151,7 @@ export default function useInteractions({ ...props }) {
     handleInteraction,
     handleBackInteraction,
     fetchUsers,
+    interactionStatus,
+    setInteractionStatus,
   };
 }

@@ -11,7 +11,7 @@ export default function CardSection({
 }: CardSectionProps) {
   return (
     <div
-      className={`text-secondary mx-3 py-5 ${
+      className={`text-secondary mx-3 overflow-x-hidden py-5 ${
         isBorder ? 'border-divider border-b ' : ''
       }`}
     >

@@ -14,6 +14,8 @@ export const requestPreferencesSchema = z.object({
     .regex(/^\d+$/)
     .optional()
     .or(z.number().int().nonnegative().optional()),
+  min_age: z.number().int().nonnegative().optional(),
+  max_age: z.number().int().nonnegative().optional(),
 });
 
 export type RequestPreferencesBody = z.infer<typeof requestPreferencesSchema>;
