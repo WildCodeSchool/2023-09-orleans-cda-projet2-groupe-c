@@ -7,8 +7,11 @@ import Success from './components/auth/Success';
 import ValidationToken from './components/auth/ValidationToken';
 import ErrorLayout from './components/error/ErrorLayout';
 import FormPicture from './components/forms/FormPicture';
-import HomeCard from './components/home/HomeCards';
+import HomeCards from './components/home/HomeCards';
+import ProfileLayout from './components/profile/ProfileLayout';
+import ProfileMenu from './components/profile/ProfileMenu';
 import ProfileInteractionLayout from './components/user-interaction/ProfileInteractionLayout';
+import FormProfile from './pages/FormProfile';
 import Home from './pages/Home';
 import Registration from './pages/Registration';
 
@@ -23,7 +26,17 @@ const router = createBrowserRouter([
         children: [
           {
             path: '',
-            element: <HomeCard />,
+            element: <HomeCards />,
+          },
+          {
+            path: '/profile',
+            element: <ProfileLayout />,
+            children: [
+              {
+                path: '',
+                element: <ProfileMenu />,
+              },
+            ],
           },
           {
             path: '/profile/interactions',
@@ -52,6 +65,10 @@ const router = createBrowserRouter([
       {
         path: 'validation',
         element: <ValidationToken />,
+      },
+      {
+        path: '/registration/profile',
+        element: <FormProfile />,
       },
     ],
   },

@@ -23,8 +23,12 @@ const cardVariants = {
 
 export default function ProfileInteractionLayout() {
   // Get the states and function from the context "UsersInteractionsContext"
-  const { interactionsSent, interactionsReceived, isVisible, handleClick } =
-    useUsersInteractions();
+  const {
+    interactionsSent,
+    sortedInteractionsReceived,
+    isVisible,
+    handleClick,
+  } = useUsersInteractions();
 
   return (
     <section className='h-full w-full'>
@@ -57,8 +61,8 @@ export default function ProfileInteractionLayout() {
             )
           ) : // Else display the interactions received
           // If there is at least one interaction, display the interactions received from users
-          interactionsReceived.length > 0 ? (
-            interactionsReceived.map((interaction, index) => (
+          sortedInteractionsReceived.length > 0 ? (
+            sortedInteractionsReceived.map((interaction, index) => (
               <motion.div
                 key={interaction.id}
                 variants={cardVariants}

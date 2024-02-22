@@ -12,6 +12,7 @@ import { usePreference } from '@/contexts/PreferenceContext';
 import BulletBase from '../BulletBase';
 import Button from '../Button';
 import FilterIcon from '../icons/FilterIcon';
+import { FilterAgeForm } from './FilterAgeForm';
 import FilterDistanceForm from './FilterDistanceForm';
 import FilterGenderForm from './FilterGenderForm';
 import FilterLanguagesForm from './FilterLanguagesForm';
@@ -24,8 +25,10 @@ export default function Filter() {
   // Destructuring custom hook usePreference to get the function updatePreferences
   const { updatePreferences } = usePreference();
 
+  const { setIsVisibleFilter } = usePreference();
+
   // Destructuring the hook useForm
-  const { register, handleSubmit, formState, watch } =
+  const { register, handleSubmit, formState, watch, setValue } =
     useForm<RequestPreferencesBody>({
       resolver: zodResolver(requestPreferencesSchema), // Form validation
     });
@@ -39,13 +42,17 @@ export default function Filter() {
       if (isValid) {
         updatePreferences(data);
       }
+
+      if (window.innerWidth < 1024) {
+        setIsVisibleFilter(false);
+      }
     } catch {
       setError('ⓘ An error occurred while updating preferences. Try again!');
     }
   };
 
   return (
-    <div className='mx-auto flex h-full w-full max-w-[500px] flex-col gap-4 px-3 pb-4 pt-3 lg:mx-0 lg:max-w-full'>
+    <div className='mx-auto flex h-[calc(100vh-56px)] max-h-[calc(100vh-56px)] w-full max-w-[500px] flex-col gap-4 px-3 pb-4 pt-3 lg:mx-0 lg:max-w-full'>
       <header className='flex items-center gap-2'>
         <BulletBase size='8'>
           <FilterIcon className='fill-secondary' />
@@ -62,6 +69,11 @@ export default function Filter() {
           {/* Gender Filter */}
           <FilterLine title='Show me'>
             <FilterGenderForm register={register} watch={watch} />
+          </FilterLine>
+
+          {/* Distance Filter */}
+          <FilterLine title='Age'>
+            <FilterAgeForm setValue={setValue} />
           </FilterLine>
 
           {/* Distance Filter */}

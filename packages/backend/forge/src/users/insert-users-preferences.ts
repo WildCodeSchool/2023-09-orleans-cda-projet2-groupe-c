@@ -25,16 +25,32 @@ export const insertUsersPreferences = async () => {
       return languagesId[Math.floor(Math.random() * languagesId.length)].id;
     };
 
+    // Get a random gender
     const randomGender = () => {
       const genders = Object.values(GENDER);
       return genders[Math.floor(Math.random() * genders.length)];
     };
 
+    // Generate a random age between 18 and 100
+    const randomMinAge = () => {
+      return Math.floor(Math.random() * 83) + 18;
+    };
+
+    // Generate a random age between minAge and 100
+    const randomMaxAge = (minAge: number) => {
+      return minAge + Math.floor(Math.random() * (101 - minAge));
+    };
+
     for (const user of users) {
+      const minAge = randomMinAge();
+      const maxAge = randomMaxAge(minAge);
+
       const data = {
         distance: Math.floor(Math.random() * 1000) + 1, // Generate a random distance between 1 and 4040
         language_pref_id: randomLanguageId(), // Generate a random language id
         gender_pref: randomGender(),
+        min_age: minAge,
+        max_age: maxAge,
         user_id: user.id,
       };
 

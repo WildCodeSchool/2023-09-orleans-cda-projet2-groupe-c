@@ -1,12 +1,25 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect, useState } from 'react';
 import { type SubmitHandler, useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 
-import { type ActivationCode, activationCodeSchema } from '@app/shared';
+import {
+  type ActivationTokenFormBody,
+  activationCodeFormSchema,
+} from '@app/shared';
 
 import Button from '@/components/Button';
+import FormLayout from '@/components/FormLayout';
+import FormContainer from '@/components/forms/FormContainer';
 import { useAuth } from '@/contexts/AuthContext';
+
+type CodeKey = 'code_1' | 'code_2' | 'code_3' | 'code_4' | 'code_5' | 'code_6';
+
+// Create an array of 6 elements with an unique register key
+// Used to map through the inputs
+const inputsActivationCode = Array.from({ length: 6 }, (_, index) => ({
+  register: `code_${index + 1}` as CodeKey,
+}));
 
 export default function ValidationToken() {
   // State to store the user's code
@@ -15,42 +28,52 @@ export default function ValidationToken() {
   // State to store the error message
   const [errorRegistration, setErrorRegistration] = useState<string>();
 
+  // State to store the error code
+  const [errorCode, setErrorCode] = useState<string>();
+
   // Get the navigate function from the router
   const navigate = useNavigate();
 
-  // Get states from the AuthContext
-  const { userId } = useAuth();
-
   // Get the login states from the AuthContext
-  const { setIsLoggedIn } = useAuth();
+  const { userId, setIsActivated, isLoggedIn } = useAuth();
 
   // Desctructure the useForm hook
-  const { register, handleSubmit, formState } = useForm<ActivationCode>({
-    resolver: zodResolver(activationCodeSchema),
-  });
+  const { register, handleSubmit, formState } =
+    useForm<ActivationTokenFormBody>({
+      resolver: zodResolver(activationCodeFormSchema),
+    });
 
   // Desctructure the formState object
-  const { isValid, errors } = formState;
+  const { isValid } = formState;
 
   // onSubmit function to handle form submission
-  const onSubmit: SubmitHandler<ActivationCode> = async (data) => {
+  const onSubmit: SubmitHandler<ActivationTokenFormBody> = async (data) => {
     try {
       if (isValid) {
+        const activationCode = `${data.code_1}${data.code_2}${data.code_3}${data.code_4}${data.code_5}${data.code_6}`;
+
+        if (activationCode !== code) {
+          setErrorCode('ⓘ Wrong activation code. Try Again!');
+        }
+
         // Send a POST request to the API to activate the user's account
         const res = await fetch(`/api/auth/registration/validation`, {
           method: 'POST',
           headers: { 'content-type': 'application/json' },
-          body: JSON.stringify(data),
+          body: JSON.stringify({
+            activation_code: activationCode,
+          }),
         });
 
         const resData = (await res.json()) as {
           isLoggedIn: boolean;
+          isActivated: boolean;
         };
 
         // If the user is logged in, redirect to the home page
         if (resData.isLoggedIn) {
-          setIsLoggedIn(true);
-          navigate('/');
+          setIsActivated(resData.isActivated);
+          navigate('/registration/profile');
         }
       }
     } catch {
@@ -60,7 +83,7 @@ export default function ValidationToken() {
     }
   };
 
-  // This useEffect hook will fetch the user's code from the database
+  // Fetch the user's activation code
   useEffect(() => {
     const controller = new AbortController();
     const signal = controller.signal;
@@ -86,46 +109,73 @@ export default function ValidationToken() {
     };
   }, [userId]);
 
+  // If the user is not logged in, redirect to the login page
+  if (!isLoggedIn) {
+    return <Navigate to='/login' />;
+  }
+
+  // If the account is not activated
   return (
-    <div className='p-8'>
-      <h1 className='font-title text-primary mb-5 mt-24 text-xl'>
-        {'Validate my account'}
-      </h1>
-      <div className='bg-light-light flex h-[13rem] flex-col items-center gap-2 rounded-lg px-2 shadow-md'>
-        <div className='text-start'>
-          <p className='text-secondary my-2 mb-4 align-top text-xs'>
-            {
-              'To activate your account, please enter the 6 characters you received in the confirmation email.'
-            }
+    <FormLayout>
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className='flex h-full flex-col items-center justify-between py-[15%]'
+      >
+        <FormContainer title='Activate your account'>
+          <p className='text-secondary align-top text-sm'>
+            {'To activate your account, please enter the 6 characters.'}
           </p>
-        </div>
-        <div>
-          <p className='text-secondary my-2 mb-4 align-top text-xs'>
-            {`Activation code: ${code}`} {/* Display the user's code */}
+
+          {/* Display code */}
+          <p className='text-primary font-title mx-auto my-10 align-top text-2xl tracking-widest'>
+            {code}
           </p>
-        </div>
-        <div className='mt-5 flex flex-col'>
-          <form
-            className='flex flex-col gap-3'
-            onSubmit={handleSubmit(onSubmit)}
-          >
-            <input
-              className='border-primary bg-light-light text-secondary focus:outline-secondary w-100 rounded-lg border p-2 text-center transition-all focus:outline'
-              type='text'
-              {...register(
-                'activation_code',
-              )} /* The user has to type the shown code as a captcha to complete the validation */
-            />
-            {Boolean(errorRegistration) && <p>{errorRegistration}</p>}
-            <p>{errors.activation_code?.message}</p>
-            <div className='flex flex-col items-center'>
-              <Button isOutline={false} type='submit'>
-                {'Validate'}
-              </Button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
+
+          {/* Inputs activation code */}
+          <div className='mx-auto grid h-full min-h-[40px] max-w-[300px] grid-cols-6 gap-2'>
+            {inputsActivationCode.map((input, index) => (
+              <input
+                key={input.register}
+                className='border-primary bg-light h-full w-full rounded-lg border p-2 text-center text-lg uppercase focus:outline-none lg:text-xl'
+                type='text'
+                maxLength={1}
+                {...register(input.register)}
+                onChange={(event) => {
+                  // Convert the input value to uppercase
+                  event.target.value = event.target.value.toUpperCase();
+
+                  // Check if the input value is not empty and if the next input exists
+                  if (
+                    event.target.value &&
+                    Boolean(inputsActivationCode[index + 1])
+                  ) {
+                    // Get the next input
+                    const nextInput = document.querySelector(
+                      `input[name="${
+                        inputsActivationCode[index + 1].register
+                      }"]`,
+                    ) as HTMLInputElement;
+
+                    // Focus on the next input
+                    nextInput.focus();
+                  }
+                }}
+              />
+            ))}
+          </div>
+
+          {/* Error message */}
+          {Boolean(errorRegistration) && (
+            <p className='text-primary mt-2'>{errorRegistration}</p>
+          )}
+
+          <p className='text-primary mt-2'>{errorCode}</p>
+        </FormContainer>
+
+        <Button isOutline={false} type='submit'>
+          {'Validate'}
+        </Button>
+      </form>
+    </FormLayout>
   );
 }

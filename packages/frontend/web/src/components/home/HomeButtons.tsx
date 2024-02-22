@@ -28,7 +28,7 @@ export default function HomeButtons() {
       initial='hidden'
       animate='visible'
       transition={{ duration: 0.5 }}
-      className='mb-5 flex w-full flex-col items-center gap-8'
+      className='font-base mb-5 flex w-full flex-col items-center gap-8'
     >
       <Link to='/login' className='flex w-full justify-center'>
         <Button type='button' isOutline={false}>

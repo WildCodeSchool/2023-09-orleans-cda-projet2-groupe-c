@@ -3,13 +3,14 @@ import express from 'express';
 import type { Request } from '@app/shared';
 
 import { getUserId } from '@/middlewares/auth-handlers';
+import { filteredByAge } from '@/services/filter-by-age';
 import { filteredUsersByDistance } from '@/services/filter-by-distance';
 import preferences from '@/services/preferences';
 import users from '@/services/users';
 
 const userRouter = express.Router();
 
-userRouter.get('/:userId/profile', getUserId, async (req: Request, res) => {
+userRouter.get('/profile', getUserId, async (req: Request, res) => {
   try {
     // Get the user id from JWT
     const userId = req.userId as number;
@@ -19,7 +20,9 @@ userRouter.get('/:userId/profile', getUserId, async (req: Request, res) => {
 
     res.status(200).json(user);
   } catch {
-    res.status(500).json({ error: 'An error occurred while fetching users' });
+    res
+      .status(500)
+      .json({ error: 'An error occurred while fetching user profile' });
   }
 });
 
@@ -35,10 +38,17 @@ userRouter.get('/:userId', getUserId, async (req: Request, res) => {
     // Get the users list with the users service
     const usersList = await users.getUsers({ userId, userPreferences });
 
+    // Use "filteredByAge" service to filter the users by ages
+    const filteredUserByAge = filteredByAge({
+      users: usersList,
+      minAge: userPreferences[0].min_age,
+      maxAge: userPreferences[0].max_age,
+    });
+
     // Use "filterByDistance" service to filter the users by distance
     const filteredUsers = await filteredUsersByDistance({
       userId,
-      users: usersList,
+      users: filteredUserByAge,
       range: userPreferences[0].distance,
     });
 

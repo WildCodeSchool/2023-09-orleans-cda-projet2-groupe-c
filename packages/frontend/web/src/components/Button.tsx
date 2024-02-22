@@ -33,8 +33,8 @@ export default function Button({
         duration: 0.1,
       }}
       className={`${
-        isOutline ? 'bg-transparent' : 'bg-primary'
-      } border-primary w-full max-w-[500px] shrink-0 rounded-lg border px-2 py-3 text-xl text-white`}
+        isOutline ? 'bg-transparent dark:text-white' : 'bg-primary text-white'
+      } border-primary w-full max-w-[500px] shrink-0 rounded-lg border px-2 py-3 text-xl`}
     >
       {/* Display the button text */}
       {children}
