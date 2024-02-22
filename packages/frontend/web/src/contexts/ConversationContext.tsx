@@ -7,47 +7,11 @@ import {
   useState,
 } from 'react';
 
-import type { Message } from '@app/shared';
+import type { AllConversation, Conversations } from '@app/shared';
 
 import useAllConversations from '@/hooks/use-all-conversations';
 
 import { useAuth } from './AuthContext';
-
-interface AllConversation {
-  conversation_id: number;
-  messages: {
-    id: number;
-    content: string;
-    sent_at: string;
-  };
-  user_1: {
-    id: number;
-    picture_path: string;
-    name: string;
-  };
-  user_2: {
-    id: number;
-    picture_path: string;
-    name: string;
-  };
-}
-
-interface User {
-  id: number;
-  name: string;
-  picture_path: string;
-}
-
-type Messages = Omit<Message, 'sender_id'> & {
-  sender_name: string;
-};
-
-interface Conversation {
-  conversation_id: number;
-  user_1: User;
-  user_2: User;
-  messages: Messages[];
-}
 
 type ConversationProviderProps = {
   readonly children: React.ReactNode;
@@ -62,7 +26,7 @@ type ConversationState = {
   conversationsList?: AllConversation[];
   selectedConversation: (index: number) => void;
   conversationId?: number;
-  conversation?: Conversation;
+  conversation?: Conversations;
   error?: string;
   fetchConversations: ({ signal }: { signal: AbortSignal }) => void;
 };
@@ -78,7 +42,7 @@ export default function ConversationContext({
 }: ConversationProviderProps) {
   const { userId } = useAuth();
 
-  const [conversation, setConversation] = useState<Conversation>();
+  const [conversation, setConversation] = useState<Conversations>();
 
   const [error, setError] = useState<string>();
 

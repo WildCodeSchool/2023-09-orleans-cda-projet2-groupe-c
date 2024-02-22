@@ -1,8 +1,9 @@
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 
-import type { MessageValidation } from '@app/shared';
+import { type MessageValidation, messageSchema } from '@app/shared';
 
 import { useConversation } from '@/contexts/ConversationContext';
 
@@ -13,7 +14,9 @@ import BulletConversation from './BulletConversation';
 export default function Conversation() {
   const { userId, conversation, setIsVisible, error, selectedConversation } =
     useConversation();
-  const { register, handleSubmit, reset } = useForm();
+  const { register, handleSubmit, reset } = useForm<MessageValidation>({
+    resolver: zodResolver(messageSchema),
+  });
   const messagesEndReference = useRef<HTMLDivElement | null>(null);
 
   const scrollToBottom = () => {
@@ -34,7 +37,7 @@ export default function Conversation() {
     }
   };
 
-  const formSubmit = async (data: { content?: MessageValidation }) => {
+  const formSubmit = async (data: MessageValidation) => {
     try {
       await fetch(
         `/api/users/${userId}/conversations/${conversation?.conversation_id}/message`,
