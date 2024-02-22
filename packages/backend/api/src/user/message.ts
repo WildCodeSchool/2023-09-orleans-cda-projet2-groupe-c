@@ -17,7 +17,6 @@ messageRouter.get(
 
       //Retrieves all conversations of a user
       const conversation = await db
-
         .selectFrom('conversation as c')
         .innerJoin('user as initiator', 'initiator.id', 'c.user_1')
         .innerJoin('user as receiver', 'receiver.id', 'c.user_2')
@@ -76,7 +75,7 @@ messageRouter.get(
     try {
       const conversationId = Number.parseInt(req.params.conversationId);
 
-      const { userId } = req.params;
+      const userId = Number.parseInt(req.params.userId);
       const userIniator = req.userId as number;
 
       if (Number(userId) !== userIniator) {
@@ -84,7 +83,6 @@ messageRouter.get(
       }
 
       const messages = await db
-
         .selectFrom('conversation as c')
         .innerJoin('user as initiator', 'initiator.id', 'c.user_1')
         .innerJoin('user as receiver', 'receiver.id', 'c.user_2')
@@ -120,11 +118,8 @@ messageRouter.get(
               .orderBy('m.sent_at', 'desc'),
           ).as('messages'),
         ])
-        .where((eb) =>
-          eb('user_2', '=', Number(userId)).or('user_1', '=', Number(userId)),
-        )
-        .where('c.id', '=', Number(conversationId))
-
+        .where((eb) => eb('user_2', '=', userId).or('user_1', '=', userId))
+        .where('c.id', '=', conversationId)
         .execute();
 
       return res.json(messages);
@@ -141,7 +136,7 @@ messageRouter.post(
   async (req: Request, res) => {
     try {
       const { content } = req.body as MessageValidation;
-      const { conversationId } = req.params;
+      const conversationId = Number.parseInt(req.params.conversationId);
       const senderId = req.userId as number;
 
       await db
@@ -149,7 +144,7 @@ messageRouter.post(
         .values({
           content,
           sent_at: new Date(),
-          conversation_id: Number(conversationId),
+          conversation_id: conversationId,
           sender_id: senderId,
         })
         .execute();

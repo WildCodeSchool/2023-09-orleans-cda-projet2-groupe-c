@@ -3,15 +3,18 @@ import express from 'express';
 import { jsonObjectFrom } from 'kysely/helpers/mysql';
 
 import { db } from '@app/backend-shared';
-import { type ActionBody, actionSchema, receiverSchema } from '@app/shared';
-import type { Request as ExpressRequest } from '@app/shared';
-import type { Conversation } from '@app/shared';
+import {
+  type ActionBody,
+  type Request as ExpressRequest,
+  type NewConversation,
+  actionSchema,
+  receiverSchema,
+} from '@app/shared';
 
 import { getUserId } from '@/middlewares/auth-handlers';
 import { getSuperLikeCount } from '@/middlewares/interaction-handlers';
 import { verifyInteractions } from '@/middlewares/verify-match-handlers';
 
-type NewConversation = Omit<Conversation, 'id'>;
 interface Request extends ExpressRequest {
   userId?: number;
   superLikesCount?: number;

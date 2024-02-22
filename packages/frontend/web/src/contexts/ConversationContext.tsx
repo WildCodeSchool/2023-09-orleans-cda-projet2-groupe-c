@@ -89,8 +89,6 @@ export default function ConversationContext({
   const { conversationsList, messagesCount, fetchConversations } =
     useAllConversations();
 
-  /* const navigate = useNavigate();  */
-
   //Allows to select the conversation id
   const selectedConversation = useCallback(
     (index: number) => {
@@ -138,7 +136,6 @@ export default function ConversationContext({
           `/api/users/${userId}/conversations/${conversationId}`,
           {
             signal,
-            credentials: 'include',
           },
         );
 

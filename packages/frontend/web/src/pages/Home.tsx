@@ -28,14 +28,7 @@ export default function Home() {
   const isConversation =
     location.pathname === `/users/${userId}/conversations/${conversationId}`;
   // Check if the user profile is complete
-  const hasCompleteProfile = userProfile; /*  &&
-    (Boolean(userProfile.name) ||
-      Boolean(userProfile.birthdate) ||
-      Boolean(userProfile.gender) ||
-      Boolean(userProfile.city) ||
-      userProfile.languages.length > 0 ||
-      userProfile.technologies.length > 0 ||
-      userProfile.hobbies.length > 0) */
+  const hasCompleteProfile = userProfile;
 
   const hasChampProfile =
     hasCompleteProfile &&
