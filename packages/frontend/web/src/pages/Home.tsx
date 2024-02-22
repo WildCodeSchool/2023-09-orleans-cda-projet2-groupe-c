@@ -7,6 +7,7 @@ import NavBar from '@/components/NavBar';
 import SidebarLayout from '@/components/SidebarLayout';
 import Filter from '@/components/filter/Filter';
 import RandomSentence from '@/components/home/RandomSentence';
+import MatchingCard from '@/components/matching/MatchingCard';
 import { useAuth } from '@/contexts/AuthContext';
 import { usePreference } from '@/contexts/PreferenceContext';
 
@@ -68,6 +69,7 @@ export default function Home() {
     return (
       <main className='h-auto min-h-screen'>
         <NavBar />
+        <MatchingCard />
 
         {/* Display messages only in the home page when the width is superior to 1024px */}
         <div
