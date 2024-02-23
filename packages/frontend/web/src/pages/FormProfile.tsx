@@ -7,6 +7,7 @@ import type { FormProfileBody } from '@app/shared';
 import Button from '@/components/Button';
 import FormLayout from '@/components/FormLayout';
 import ProgressBar from '@/components/ProgressBar';
+import { FormAge } from '@/components/forms/FormAge';
 import FormBio from '@/components/forms/FormBio';
 import FormBirthDate from '@/components/forms/FormBirthDate';
 import FormCity from '@/components/forms/FormCity';
@@ -22,6 +23,7 @@ import { useAuth } from '@/contexts/AuthContext';
 const PAGES = [
   { component: <FormName /> },
   { component: <FormBirthDate /> },
+  { component: <FormAge /> },
   { component: <FormGender /> },
   { component: <FormCity /> },
   { component: <FormLanguage /> },

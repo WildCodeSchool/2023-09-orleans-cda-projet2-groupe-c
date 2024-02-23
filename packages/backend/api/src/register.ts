@@ -19,6 +19,8 @@ register.post('/', getUserId, async (req: Request, res) => {
       languages,
       technologies,
       hobbies,
+      minAge,
+      maxAge,
     } = req.body as FormProfileBodyBackend;
 
     const userId = req.userId as number;
@@ -73,6 +75,17 @@ register.post('/', getUserId, async (req: Request, res) => {
             order: hobby.order,
           })),
         )
+        .execute();
+
+      await trx
+        .insertInto('preference')
+        .values({
+          distance: 100,
+          language_pref_id: 1,
+          min_age: Number(minAge),
+          max_age: Number(maxAge),
+          user_id: Number(userId),
+        })
         .execute();
     });
 

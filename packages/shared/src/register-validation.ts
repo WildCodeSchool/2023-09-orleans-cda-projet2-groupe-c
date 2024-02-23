@@ -141,6 +141,20 @@ export const formBirthdateSchema = z
   })
   .required();
 
+// Age pref Schema
+const MIN_AGE = 18;
+const MAX_AGE = 100;
+export const minAgeSchema = z.number().int().min(MIN_AGE).max(MAX_AGE);
+export const maxAgeSchema = z.number().int().min(MIN_AGE).max(MAX_AGE);
+
+// Age pref Schema FrontEnd
+export const formAgeSchema = z.object({
+  minAge: minAgeSchema,
+  maxAge: maxAgeSchema,
+});
+
+export type FormAgeBody = z.infer<typeof formAgeSchema>;
+
 // Type for the birthdate form frontend
 export type FormBirthdateBody = z.infer<typeof formBirthdateSchema>;
 
@@ -152,14 +166,22 @@ export const formProfileWithDateSchema = formSchema.merge(formBirthdateSchema);
 // merge items with the form schema to oget technologies, languages and hobbies
 export const formProfileWithDateAndItemsSchema =
   formProfileWithDateSchema.merge(formItemsSchema);
+
+export const formProfileWithMinAndMaxAgeSchema =
+  formProfileWithDateAndItemsSchema.merge(formAgeSchema);
+
 // Type for the birthdate form frontend
-export type FormProfileBody = z.infer<typeof formProfileWithDateAndItemsSchema>;
+export type FormProfileBody = z.infer<typeof formProfileWithMinAndMaxAgeSchema>;
 
 // BACKEND VALIDATION
 
 // Schema without year, month and day with items
 export const formProfileWithItemsSchemaBackend =
   formSchema.merge(formItemsSchema);
+
+export const formProfileWithMinAndMaxAgeSchemaBackend =
+  formProfileWithItemsSchemaBackend.merge(formAgeSchema);
+
 export type FormProfileBodyBackend = z.infer<
-  typeof formProfileWithItemsSchemaBackend
+  typeof formProfileWithMinAndMaxAgeSchemaBackend
 >;
