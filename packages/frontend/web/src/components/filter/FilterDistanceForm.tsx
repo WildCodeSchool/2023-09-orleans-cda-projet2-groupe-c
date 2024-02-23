@@ -18,8 +18,8 @@ export default function FilterDistanceForm({
 
   // Update the distance value when the preferences change
   useEffect(() => {
-    if (preferences && !preferences.distance) {
-      setData(preferences.distance);
+    if (preferences && !Boolean(preferences.distance)) {
+      setData(Number(preferences.distance));
     }
   }, [preferences]);
 
