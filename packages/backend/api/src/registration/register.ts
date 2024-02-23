@@ -93,7 +93,7 @@ registerRouter.post('/', getUserId, async (req: Request, res) => {
 const storage = multer.diskStorage({
   // Destination folder
   destination: (_req, _file, callback) => {
-    callback(null, 'public/images/users-pictures/');
+    callback(null, 'uploads/');
   },
   // Rename file with uuid + original name
   filename: (_req, file, callback) => {
@@ -208,7 +208,7 @@ registerRouter.post(
 
             // Data object to insert into the database
             const data = {
-              picture_path: `/images/users-pictures/${filename}`,
+              picture_path: `/uploads/${filename}`,
               user_id: userId,
               order,
             };

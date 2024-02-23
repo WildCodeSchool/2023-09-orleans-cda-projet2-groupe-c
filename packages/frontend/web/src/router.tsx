@@ -6,7 +6,6 @@ import RegistrationForm from './components/auth/RegistrationForm';
 import Success from './components/auth/Success';
 import ValidationToken from './components/auth/ValidationToken';
 import ErrorLayout from './components/error/ErrorLayout';
-import FormPicture from './components/forms/FormPicture';
 import HomeCards from './components/home/HomeCards';
 import ProfileLayout from './components/profile/ProfileLayout';
 import ProfileMenu from './components/profile/ProfileMenu';

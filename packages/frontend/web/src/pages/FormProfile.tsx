@@ -82,7 +82,9 @@ export default function FormProfile() {
 
         // Loop for each picture and append it to the formData
         for (let index = 1; index <= 6; index++) {
-          const picture = data[`picture_${index}`];
+          const picture = data[
+            `picture_${index}` as keyof FormProfileBody
+          ] as string;
 
           if (Boolean(picture) && Boolean(picture[0])) {
             formData.append(`picture_${index}`, picture[0]);
