@@ -1,18 +1,10 @@
 export default function BackgroundCircleIcon({
-    className,
+  className,
 }: {
-    readonly className: string
+  readonly className: string;
 }) {
   return (
-    <svg
-      version='1.1'
-      id='OBJECTS'
-      xmlns='http://www.w3.org/2000/svg'
-     /*  x='0px'
-      y='0px' */
-      viewBox='0 0 937.3 934.1'
-      className={className}
-    >
+    <svg viewBox='0 0 937.3 934.1' className={className}>
       <g>
         <path
           d='M468.6,934.1c-18.6,0-37.3-1.1-55.7-3.3l53.9-452.5c1.1,0.1,2.5,0.1,3.6,0l54.8,452.4C506.6,932.9,487.6,934.1,468.6,934.1

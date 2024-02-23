@@ -60,5 +60,8 @@
     "prettier": "^3.1.0",
     "prettier-plugin-tailwindcss": "^0.5.7",
     "typescript": "^5.3.2"
+  },
+  "dependencies": {
+    "react-confetti": "^6.1.0"
   }
 }
