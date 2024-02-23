@@ -7,7 +7,8 @@ import NavBar from '@/components/NavBar';
 import SidebarLayout from '@/components/SidebarLayout';
 import Filter from '@/components/filter/Filter';
 import RandomSentence from '@/components/home/RandomSentence';
-import MatchingCard from '@/components/matching/MatchingCard';
+
+/* import MatchingCard from '@/components/matching/MatchingCard'; */
 import { useAuth } from '@/contexts/AuthContext';
 import { usePreference } from '@/contexts/PreferenceContext';
 
