@@ -114,8 +114,9 @@ export default function ProfileMenu() {
           >
             <CrossIcon className='fill-white' />
           </button>
+
           <div
-            className='font-base mx-auto mt-20 flex h-full max-h-[700px] w-full max-w-[500px] flex-col justify-between gap-5 overflow-y-auto px-2 text-white'
+            className='font-base mx-auto mt-20 flex h-full max-h-[700px] w-full max-w-[500px] flex-col justify-between gap-5 overflow-y-auto overflow-x-hidden px-2 text-white'
             onClick={(event) => {
               event.stopPropagation(); // Prevent the modal card to close when clicking on it
             }}
@@ -160,6 +161,7 @@ export default function ProfileMenu() {
           ))}
         </section>
       </div>
+
       <Button type='button' isOutline={false}>
         {`Logout`}
       </Button>

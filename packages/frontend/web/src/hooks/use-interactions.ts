@@ -2,9 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 
 import type { UserBody } from '@app/shared';
 
-export default function useInteractions({ ...props }) {
-  const { userId } = props;
-
+export default function useInteractions() {
   const [selectedUser, setSelectedUser] = useState<UserBody>();
   const [superLikesCount, setSuperLikesCount] = useState<number>(0);
 
@@ -13,7 +11,7 @@ export default function useInteractions({ ...props }) {
   // Fetch users from the API
   const fetchUsers = useCallback(
     async ({ signal }: { signal: AbortSignal }) => {
-      const res = await fetch(`/api/users/${userId}`, {
+      const res = await fetch(`/api/users`, {
         signal,
       });
       const data = await res.json();
@@ -21,24 +19,21 @@ export default function useInteractions({ ...props }) {
       // Set a list of user interactions in the state "superLike"
       setSelectedUser(data[0]);
     },
-    [userId],
+    [],
   );
 
   // Fetch user's superlike from the API
   const fetchUserSuperLikeCount = useCallback(
     async ({ signal }: { signal: AbortSignal }) => {
-      const res = await fetch(
-        `/api/users/${userId}/interactions/superlike/count`,
-        {
-          signal,
-        },
-      );
+      const res = await fetch(`/api/users/interactions/superlike/count`, {
+        signal,
+      });
       const data = await res.json();
 
       // Set a list of user interactions in the state "superLike"
       setSuperLikesCount(data);
     },
-    [userId],
+    [],
   );
 
   // Fetch users and superlikes count from the user logged in
@@ -64,7 +59,7 @@ export default function useInteractions({ ...props }) {
   const handleInteraction = async (interactionType: string) => {
     try {
       // Send a request to the API to like, superlike or next a user
-      await fetch(`/api/users/${userId}/interactions/${interactionType}`, {
+      await fetch(`/api/users/interactions/${interactionType}`, {
         method: 'POST',
         headers: {
           'content-type': 'application/json',
@@ -105,7 +100,7 @@ export default function useInteractions({ ...props }) {
   const handleBackInteraction = async () => {
     try {
       // Send a request to the API to go back to the previous user
-      await fetch(`/api/users/${userId}/interactions/back`, {
+      await fetch(`/api/users/interactions/back`, {
         method: 'DELETE',
       });
 

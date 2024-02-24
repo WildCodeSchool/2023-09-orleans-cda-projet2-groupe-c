@@ -31,4 +31,4 @@ cityRouter.get('/', async (req, res) => {
   }
 });
 
-export { cityRouter };
+export default cityRouter;

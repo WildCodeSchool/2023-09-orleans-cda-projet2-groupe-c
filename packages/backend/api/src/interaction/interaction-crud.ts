@@ -149,7 +149,7 @@ interactionRouter.get(
 
 // Get superlikes count from the user between the current date and the next date
 interactionRouter.get(
-  '/:userId/interactions/superlike/count',
+  '/interactions/superlike/count',
   getUserId,
   getSuperLikeCount,
   (req: Request, res) => {
@@ -168,7 +168,7 @@ interactionRouter.get(
 
 // Send a like
 interactionRouter.post(
-  '/:userId/interactions/:action',
+  '/interactions/:action',
   getUserId,
   getSuperLikeCount,
   async (req: Request, res) => {
@@ -263,7 +263,7 @@ interactionRouter.post(
   },
 
   interactionRouter.delete(
-    '/:userId/interactions/back',
+    '/interactions/back',
     getUserId,
     async (req: Request, res) => {
       try {

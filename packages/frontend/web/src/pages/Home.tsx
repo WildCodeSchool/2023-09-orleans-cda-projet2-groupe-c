@@ -66,14 +66,12 @@ export default function Home() {
   // If the user is logged in and the account is activated with all fields filled, return the main layout
   if (Boolean(isLoggedIn && isActivated && hasCompleteProfile)) {
     return (
-      <main className='h-auto min-h-screen'>
+      <main className='h-auto min-h-screen overflow-y-auto overflow-x-hidden'>
         <NavBar />
 
         {/* Display messages only in the home page when the width is superior to 1024px */}
         <div
-          className={`font-base relative flex w-full justify-between ${
-            location.pathname === '/' ? 'h-[calc(100vh-56px)]' : 'h-full'
-          }`}
+          className={`font-base relative flex h-full w-full justify-between`}
         >
           <SidebarLayout isVisible={isVisibleFilter} isBorderLeft>
             {`Messages`}

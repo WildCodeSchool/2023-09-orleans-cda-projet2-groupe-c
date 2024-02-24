@@ -46,7 +46,7 @@ export default function FormBirthDate() {
 
       {/* Input year, month and day */}
       <div className='mx-auto flex max-w-[300px] gap-2'>
-        {inputsBirthdate.map((input) => (
+        {inputsBirthdate.map((input, index) => (
           <div key={input.register} className='h-full w-full'>
             <label htmlFor={input.register}>
               {input.register.charAt(0).toUpperCase() + input.register.slice(1)}
@@ -69,6 +69,21 @@ export default function FormBirthDate() {
                 },
               })}
               className='border-primary bg-light mt-1 w-full rounded-lg border py-3 text-center text-lg uppercase focus:outline-none lg:text-xl'
+              onChange={(event) => {
+                // Check if the input value is not empty and if the next input exists
+                if (
+                  event.target.value.length === input.maxLength &&
+                  Boolean(inputsBirthdate[index + 1])
+                ) {
+                  // Get the next input
+                  const nextInput = document.querySelector(
+                    `input[id="${inputsBirthdate[index + 1].register}"]`,
+                  ) as HTMLInputElement;
+
+                  // Focus on the next input
+                  nextInput.focus();
+                }
+              }}
             />
           </div>
         ))}

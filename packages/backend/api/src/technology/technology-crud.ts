@@ -2,13 +2,13 @@ import express from 'express';
 
 import { db } from '@app/backend-shared';
 
-const languageRouter = express.Router();
+const technologyRouter = express.Router();
 
-languageRouter.get('/', async (req, res) => {
+technologyRouter.get('/', async (req, res) => {
   try {
     const { name, order } = req.query;
 
-    let query = db.selectFrom('language').selectAll();
+    let query = db.selectFrom('technology').selectAll();
 
     // Verify if name is a string and not empty
     if (typeof name === 'string' && name.trim() !== '') {
@@ -28,14 +28,14 @@ languageRouter.get('/', async (req, res) => {
       }
     }
 
-    const languages = await query.execute();
+    const technologies = await query.execute();
 
-    res.status(200).json(languages);
+    res.status(200).json(technologies);
   } catch {
     res
       .status(500)
-      .send({ error: 'An error occurred while fetching languages' });
+      .send({ error: 'An error occurred while fetching technologies' });
   }
 });
 
-export { languageRouter };
+export default technologyRouter;

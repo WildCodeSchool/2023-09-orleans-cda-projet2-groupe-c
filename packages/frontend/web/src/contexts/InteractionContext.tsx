@@ -40,9 +40,7 @@ export default function InteractionContext({
     handleBackInteraction,
     fetchUsers,
     interactionStatus,
-  } = useInteractions({
-    userId,
-  });
+  } = useInteractions();
 
   // Get the distance between the current user and the selected user
   const { distance } = useDistance({
