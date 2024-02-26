@@ -39,7 +39,7 @@ export default function FormBirthDate() {
   const { errors } = formState;
 
   return (
-    <FormContainer title='MY BIRTHDAY'>
+    <FormContainer title='I was born...'>
       <span className='flex justify-start pb-8'>
         {'You must be of legal age to register.'}
       </span>
