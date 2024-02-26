@@ -1,3 +1,4 @@
+import { useAuth } from '@/contexts/AuthContext';
 import { useProfile } from '@/contexts/ProfileContext';
 
 import Button from '../Button';
@@ -26,6 +27,8 @@ export default function ProfileMenu() {
     isToogleModal,
     setIsToogleModal,
   } = useProfile();
+
+  const { setIsLoggedIn } = useAuth();
 
   // If fetch data about logged in user is undefined, return nothing
   if (!user) {
@@ -95,6 +98,21 @@ export default function ProfileMenu() {
     },
   ];
 
+  // Function to logout the user
+  const handleLogoutClick = () => {
+    (async () => {
+      const res = await fetch('/api/auth/logout', {
+        method: 'POST',
+      });
+
+      if (res.ok) {
+        const data = (await res.json()) as { ok: boolean; isLoggedIn: boolean };
+
+        setIsLoggedIn(data.isLoggedIn);
+      }
+    })();
+  };
+
   return (
     <div className='flex h-full w-full flex-col items-center justify-between gap-10'>
       {/* Modal card */}
@@ -160,7 +178,7 @@ export default function ProfileMenu() {
           ))}
         </section>
       </div>
-      <Button type='button' isOutline={false}>
+      <Button type='button' isOutline={false} onClick={handleLogoutClick}>
         {`Logout`}
       </Button>
     </div>

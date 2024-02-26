@@ -154,34 +154,63 @@ export const formAgeSchema = z.object({
 });
 
 export type FormAgeBody = z.infer<typeof formAgeSchema>;
+export const formPrefSchema = z.object({
+  user_id: z.number(),
+  genderPref: z.enum(['man', 'woman', 'non-binary'], {
+    invalid_type_error: 'ⓘ Please select one of the options.',
+  }),
+  languagePrefId: z
+    .string({ required_error: 'ⓘ This field is required.' })
+    .trim()
+    .regex(/^\d+$/)
+    .or(
+      z
+        .number({
+          required_error: 'This field is required.',
+        })
+        .int()
+        .nonnegative(),
+    ),
+  distance: z
+    .number({ required_error: 'This field is required.' })
+    .int()
+    .nonnegative(),
+});
 
+export const formGenderPrefSchema = formPrefSchema.pick({ genderPref: true });
+export const formLanguagePrefSchema = formPrefSchema.pick({
+  languagePrefId: true,
+});
+export const formDistancePrefSchema = formPrefSchema.pick({ distance: true });
+
+//type for the pref gender form frontend
+export type FormPrefGender = z.infer<typeof formGenderPrefSchema>;
+//type for language pref form frontend
+export type FormLanguagePref = z.infer<typeof formLanguagePrefSchema>;
+//type for distance pref form frontend
+export type FormDistancePref = z.infer<typeof formDistancePrefSchema>;
 // Type for the birthdate form frontend
 export type FormBirthdateBody = z.infer<typeof formBirthdateSchema>;
 
 // FRONTEND VALIDATION
 
 // merge dates with the form schema to get the birthdate
-export const formProfileWithDateSchema = formSchema.merge(formBirthdateSchema);
-
-// merge items with the form schema to oget technologies, languages and hobbies
-export const formProfileWithDateAndItemsSchema =
-  formProfileWithDateSchema.merge(formItemsSchema);
-
-export const formProfileWithMinAndMaxAgeSchema =
-  formProfileWithDateAndItemsSchema.merge(formAgeSchema);
+export const formProfileSchema = formSchema
+  .merge(formBirthdateSchema)
+  .merge(formItemsSchema)
+  .merge(formAgeSchema);
 
 // Type for the birthdate form frontend
-export type FormProfileBody = z.infer<typeof formProfileWithMinAndMaxAgeSchema>;
+export type FormProfileBody = z.infer<typeof formProfileSchema>;
 
 // BACKEND VALIDATION
 
-// Schema without year, month and day with items
-export const formProfileWithItemsSchemaBackend =
-  formSchema.merge(formItemsSchema);
-
-export const formProfileWithMinAndMaxAgeSchemaBackend =
-  formProfileWithItemsSchemaBackend.merge(formAgeSchema);
+// Schema without year, month and day with items and prefs
+export const formProfileWithItemsSchemaBackend = formSchema
+  .merge(formItemsSchema)
+  .merge(formPrefSchema)
+  .merge(formAgeSchema);
 
 export type FormProfileBodyBackend = z.infer<
-  typeof formProfileWithMinAndMaxAgeSchemaBackend
+  typeof formProfileWithItemsSchemaBackend
 >;

@@ -88,7 +88,7 @@ export default function FormHobby() {
   }, []);
 
   return (
-    <FormContainer title='MY HOBBIES'>
+    <FormContainer title='I love...'>
       <span className='flex justify-start pb-5 '>
         {'You can choose a maximum of 6 hobbies.'}
       </span>

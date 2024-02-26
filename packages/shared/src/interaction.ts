@@ -19,6 +19,10 @@ export const interactionBaseSchema = z.object({
   canceled_at: z.date(),
 });
 
+export const conversationSchema = z.object({
+  conversation: z.number().int().positive(),
+});
+
 export const actionSchema = interactionBaseSchema.extend({
   liked_at: z.date().optional(),
   superlike_at: z.date().optional(),

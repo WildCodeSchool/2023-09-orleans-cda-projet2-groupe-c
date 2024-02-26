@@ -17,17 +17,25 @@ import FormGitHub from '@/components/forms/FormGitHub';
 import FormHobby from '@/components/forms/FormHobby';
 import FormLanguage from '@/components/forms/FormLanguage';
 import FormName from '@/components/forms/FormName';
+import FormPrefDistance from '@/components/forms/FormPrefDistance';
+import FormPrefGender from '@/components/forms/FormPrefGender';
+import FormPrefLanguage from '@/components/forms/FormPrefLanguage';
 import FormTechnology from '@/components/forms/FormTechnology';
 import { useAuth } from '@/contexts/AuthContext';
+import { useInteraction } from '@/contexts/InteractionContext';
+import { usePreference } from '@/contexts/PreferenceContext';
 
 const PAGES = [
   { component: <FormName /> },
   { component: <FormBirthDate /> },
   { component: <FormAge /> },
   { component: <FormGender /> },
+  { component: <FormPrefGender /> },
   { component: <FormCity /> },
+  { component: <FormPrefDistance /> },
   { component: <FormLanguage /> },
   { component: <FormTechnology /> },
+  { component: <FormPrefLanguage /> },
   { component: <FormHobby /> },
   { component: <FormBio /> },
   { component: <FormGitHub /> },
@@ -43,7 +51,11 @@ export default function FormProfile() {
 
   const navigate = useNavigate();
 
-  const { setIsLoggedIn, isLoggedIn } = useAuth();
+  const { isLoggedIn } = useAuth();
+
+  const { fetchPreferences } = usePreference();
+
+  const { fetchUsers } = useInteraction();
 
   // Use the const methods to send all useForm properties to my child elements
   const methods = useForm<FormProfileBody>({
@@ -69,7 +81,7 @@ export default function FormProfile() {
         // Create a new object with the birthdate and the rest of the data
         const newData = { ...rest, birthdate };
 
-        await fetch(`/api/register`, {
+        const res = await fetch(`/api/register`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -77,8 +89,47 @@ export default function FormProfile() {
           body: JSON.stringify(newData),
         });
 
-        setIsLoggedIn(true);
-        navigate('/');
+        if (res.ok) {
+          const controller = new AbortController();
+          const signal = controller.signal;
+
+          const fetchData = async () => {
+            try {
+              const res = await fetch(`/api/auth/verify`, {
+                method: 'GET',
+                signal: controller.signal, // pass the signal in the request for aborting the request
+              });
+
+              // Convert the response to json
+              const data = (await res.json()) as {
+                ok: boolean;
+                isLoggedIn: boolean;
+                userId: number;
+                isActivated: boolean;
+              };
+
+              if (data.ok) {
+                navigate('/');
+              }
+            } catch (error) {
+              throw new Error(`Failed to verify auth: ${String(error)}`);
+            }
+          };
+
+          await fetchData();
+
+          // verify({ signal });
+
+          fetchPreferences({ signal });
+
+          await fetchUsers({ signal });
+
+          // navigate('/');
+
+          return () => {
+            controller.abort();
+          };
+        }
       } catch (error) {
         throw new Error(`${String(error)}`);
       }

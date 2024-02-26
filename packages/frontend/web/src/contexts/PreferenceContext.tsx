@@ -24,6 +24,7 @@ type PreferenceProviderState = {
   errorPreferences?: string;
   updatePreferences: (newPreferences: RequestPreferencesBody) => void;
   setIsVisibleFilter: React.Dispatch<React.SetStateAction<boolean>>;
+  fetchPreferences: ({ signal }: { signal: AbortSignal }) => void;
 };
 
 const preferenceProviderContext = createContext<
@@ -144,13 +145,14 @@ export default function PreferenceContext({
       errorPreferences,
       updatePreferences,
       setIsVisibleFilter,
+      fetchPreferences,
     };
   }, [
     isVisibleFilter,
     preferences,
     errorPreferences,
     updatePreferences,
-    setIsVisibleFilter,
+    fetchPreferences,
   ]);
 
   return (
