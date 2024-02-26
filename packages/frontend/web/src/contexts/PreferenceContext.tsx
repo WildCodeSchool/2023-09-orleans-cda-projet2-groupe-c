@@ -9,6 +9,7 @@ import {
 
 import type { RequestPreferencesBody } from '@app/shared';
 
+import { useAuth } from './AuthContext';
 import { useInteraction } from './InteractionContext';
 
 type PreferenceProviderProps = {
@@ -41,6 +42,7 @@ export default function PreferenceContext({
   // State to display the sidebar Filter
   const [isVisibleFilter, setIsVisibleFilter] = useState<boolean>(false);
 
+  const { isLoggedIn } = useAuth();
   const { fetchUsers } = useInteraction();
 
   // State to display the sidebar Filter on mobile in the navbar on click
@@ -95,7 +97,7 @@ export default function PreferenceContext({
     return () => {
       controller.abort();
     };
-  }, [fetchPreferences]);
+  }, [fetchPreferences, isLoggedIn]);
 
   // Function to update the preferences
   const updatePreferences = useCallback(

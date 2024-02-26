@@ -57,10 +57,10 @@ export default function ConversationsList() {
                     `/users/${userId}/conversations/${conversation.conversation_id}`,
                   );
                 }}
-                className='bg-light flex w-full items-stretch justify-between gap-4 p-4'
+                className='bg-light flex w-full items-stretch justify-between gap-4 px-4 py-2'
               >
-                <div className='flex w-full items-center gap-2 overflow-hidden'>
-                  <div className='h-14 w-14 shrink-0 overflow-hidden rounded-full'>
+                <div className='flex w-full items-center gap-2 overflow-hidden py-1'>
+                  <div className='h-12 w-12 shrink-0 overflow-hidden rounded-full'>
                     <img
                       src={
                         userId === conversation.user_1.id
@@ -70,32 +70,35 @@ export default function ConversationsList() {
                       alt={`Picture of user`}
                     />
                   </div>
-                  <div className='flex grow flex-col gap-2 overflow-hidden'>
+                  <div className='flex grow flex-col overflow-hidden'>
                     <p className='text-primary truncate text-lg'>
                       {userId === conversation.user_1.id
                         ? conversation.user_2.name
                         : conversation.user_1.name}
                     </p>
                     <div className='w-full'>
-                      <p className='truncate text-sm'>
+                      <p className='w-full truncate text-sm'>
                         {Boolean(conversation.messages)
                           ? conversation.messages.content
-                          : 'No messages yet. Go ahead and send the first message!'}
+                          : 'No message! Send the first message!'}
                       </p>
                     </div>
                   </div>
                 </div>
-                <div className='flex w-24 items-end justify-end '>
-                  <div className='self shrink-0 text-right text-sm'>
-                    <DateComponent
-                      date={
-                        Boolean(conversation.messages)
-                          ? conversation.messages.sent_at
-                          : ''
-                      }
-                    />
+
+                {Boolean(conversation.messages) ? (
+                  <div className='flex w-24 items-end justify-end '>
+                    <div className='self shrink-0 text-right text-sm'>
+                      <DateComponent
+                        date={
+                          Boolean(conversation.messages)
+                            ? conversation.messages.sent_at
+                            : ''
+                        }
+                      />
+                    </div>
                   </div>
-                </div>
+                ) : undefined}
               </div>
             );
           })

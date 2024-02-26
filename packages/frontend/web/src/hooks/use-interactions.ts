@@ -2,16 +2,19 @@ import { useCallback, useEffect, useState } from 'react';
 
 import type { UserBody } from '@app/shared';
 
+import { useAuth } from '@/contexts/AuthContext';
+
 import { useConversation } from '../contexts/ConversationContext';
 
 export default function useInteractions() {
   const [selectedUser, setSelectedUser] = useState<UserBody>();
   const [superLikesCount, setSuperLikesCount] = useState<number>(0);
 
-  const { fetchConversations } = useConversation();
-
   const [interactionStatus, setInteractionStatus] = useState<string>();
   const [errorInteraction, setErrorInteraction] = useState<string>();
+
+  const { fetchConversations } = useConversation();
+  const { isLoggedIn } = useAuth();
 
   // Fetch users from the API
   const fetchUsers = useCallback(
@@ -58,7 +61,7 @@ export default function useInteractions() {
     return () => {
       controller.abort();
     };
-  }, [fetchUserSuperLikeCount, fetchUsers]);
+  }, [fetchUserSuperLikeCount, fetchUsers, isLoggedIn]);
 
   // Handle the interactions
   const handleInteraction = async (interactionType: string) => {
