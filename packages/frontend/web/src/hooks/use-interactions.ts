@@ -2,13 +2,17 @@ import { useCallback, useEffect, useState } from 'react';
 
 import type { UserBody } from '@app/shared';
 
+import { useConversation } from '@/contexts/ConversationContext';
+
 export default function useInteractions({ ...props }) {
   const { userId } = props;
 
   const [selectedUser, setSelectedUser] = useState<UserBody>();
   const [superLikesCount, setSuperLikesCount] = useState<number>(0);
+  const { fetchConversations } = useConversation();
 
   const [interactionStatus, setInteractionStatus] = useState<string>();
+  const [errorInteraction, setErrorInteraction] = useState<string>();
 
   // Fetch users from the API
   const fetchUsers = useCallback(
@@ -78,13 +82,26 @@ export default function useInteractions({ ...props }) {
       const controller = new AbortController();
       const signal = controller.signal;
 
-      fetchUsers({ signal }).catch((error) => {
+      await fetchUsers({ signal }).catch((error) => {
         throw new Error(`Fail to fetch users: ${String(error)}`);
       });
 
-      fetchUserSuperLikeCount({ signal }).catch((error) => {
+      await fetchUserSuperLikeCount({ signal }).catch((error) => {
         throw new Error(`Fail to fetch user's superlike: ${String(error)}`);
       });
+
+      const fetchInteractionsVerify = async () => {
+        await fetch(`/api/users/interactions/verify`, {
+          signal,
+        });
+      };
+
+      await fetchInteractionsVerify().catch(() => {
+        setErrorInteraction(`Fail to fetch interactions verify`);
+      });
+
+      // Fetch conversationList when the user interacts with someone
+      fetchConversations({ signal });
 
       setInteractionStatus(interactionType);
 
@@ -137,5 +154,6 @@ export default function useInteractions({ ...props }) {
     fetchUsers,
     interactionStatus,
     setInteractionStatus,
+    errorInteraction,
   };
 }
