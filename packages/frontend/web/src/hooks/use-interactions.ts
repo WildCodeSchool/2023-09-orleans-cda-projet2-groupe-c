@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from 'react';
 import type { UserBody } from '@app/shared';
 
 import { useConversation } from '@/contexts/ConversationContext';
+import { useMatching } from '@/contexts/MatchingContext';
 
 export default function useInteractions({ ...props }) {
   const { userId } = props;
@@ -10,6 +11,7 @@ export default function useInteractions({ ...props }) {
   const [selectedUser, setSelectedUser] = useState<UserBody>();
   const [superLikesCount, setSuperLikesCount] = useState<number>(0);
   const { fetchConversations } = useConversation();
+  const { fecthMatching } = useMatching();
 
   const [interactionStatus, setInteractionStatus] = useState<string>();
   const [errorInteraction, setErrorInteraction] = useState<string>();
@@ -94,6 +96,8 @@ export default function useInteractions({ ...props }) {
         await fetch(`/api/users/interactions/verify`, {
           signal,
         });
+
+        fecthMatching();
       };
 
       await fetchInteractionsVerify().catch(() => {
