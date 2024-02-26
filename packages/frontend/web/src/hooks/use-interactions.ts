@@ -154,5 +154,6 @@ export default function useInteractions({ ...props }) {
     fetchUsers,
     interactionStatus,
     setInteractionStatus,
+    errorInteraction,
   };
 }

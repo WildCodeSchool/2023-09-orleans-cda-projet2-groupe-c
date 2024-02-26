@@ -61,5 +61,10 @@ export default function useAllConversations() {
     }
   }, [conversationsList]);
 
-  return { conversationsList, messagesCount, fetchConversations };
+  return {
+    conversationsList,
+    messagesCount,
+    fetchConversations,
+    errorConversation,
+  };
 }
