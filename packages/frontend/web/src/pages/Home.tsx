@@ -7,7 +7,6 @@ import NavBar from '@/components/NavBar';
 import SidebarLayout from '@/components/SidebarLayout';
 import Filter from '@/components/filter/Filter';
 import RandomSentence from '@/components/home/RandomSentence';
-import MatchingCard from '@/components/matching/MatchingCard';
 
 /* import MatchingCard from '@/components/matching/MatchingCard'; */
 import { useAuth } from '@/contexts/AuthContext';
@@ -72,7 +71,7 @@ export default function Home() {
       <main className='h-auto min-h-screen'>
         <NavBar />
         {/*   wait PR chat interaction for activate Matching card */}
-        <MatchingCard />
+        {/*  <MatchingCard /> */}
 
         {/* Display messages only in the home page when the width is superior to 1024px */}
         <div
