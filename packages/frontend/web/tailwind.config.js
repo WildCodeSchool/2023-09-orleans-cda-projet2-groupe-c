@@ -45,6 +45,15 @@ export default {
       height: {
         'clamp-image': 'clamp(200px, 120vw, 70vh)',
       },
+      animation: {
+        'spin-infinite': 'spin 8s linear infinite',
+      },
+      keyframes: {
+        spin: {
+          '0%': { transform: 'rotate(0deg)' },
+          '100%': { transform: 'rotate(360deg)' },
+        },
+      },
     },
   },
   plugins: [],

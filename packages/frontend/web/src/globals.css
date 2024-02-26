@@ -58,4 +58,12 @@
     stroke-linecap: round;
     stroke-linejoin: round;
   }
+
+  .bg-gradient {
+    background: radial-gradient(
+      circle,
+      rgba(235, 5, 115, 1) 0%,
+      rgba(164, 0, 79, 1) 85%
+    );
+  }
 }
