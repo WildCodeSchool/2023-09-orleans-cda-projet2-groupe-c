@@ -44,7 +44,7 @@ export default function MatchingCard() {
         <div className='relative z-30 mx-auto flex h-full w-full max-w-[500px] flex-col justify-between px-3 pb-14 pt-28'>
           <div className='flex w-full flex-col items-center'>
             <motion.img
-              src='../../public/images/users-pictures/man-1.webp'
+              src='/images/users-pictures/man-1.webp'
               alt=''
               className='h-48 w-48 rounded-full shadow-md'
               variants={moveVariant}
