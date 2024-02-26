@@ -1,5 +1,6 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 
+import { useConversation } from '@/contexts/ConversationContext';
 import { usePreference } from '@/contexts/PreferenceContext';
 
 import BulletBase from './BulletBase';
@@ -12,6 +13,7 @@ import UserIcon from './icons/UserIcon';
 
 export default function NavBar() {
   const { handleClick } = usePreference();
+  const { handleConversationClick } = useConversation();
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -36,6 +38,7 @@ export default function NavBar() {
       id: 'message',
       icon: <MessageIcon className='fill-secondary h-5 w-5' />,
       lgHidden: true,
+      onClick: handleConversationClick,
     },
     {
       id: 'filter',
