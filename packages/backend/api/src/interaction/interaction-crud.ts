@@ -3,15 +3,24 @@ import express from 'express';
 import { jsonObjectFrom } from 'kysely/helpers/mysql';
 
 import { db } from '@app/backend-shared';
-import { type ActionBody, actionSchema, receiverSchema } from '@app/shared';
-import type { Request as ExpressRequest } from '@app/shared';
+import {
+  type ActionBody,
+  type Request as ExpressRequest,
+  type NewConversation,
+  actionSchema,
+  receiverSchema,
+} from '@app/shared';
 
 import { getUserId } from '@/middlewares/auth-handlers';
 import { getSuperLikeCount } from '@/middlewares/interaction-handlers';
+import { verifyInteractions } from '@/middlewares/verify-match-handlers';
 
 interface Request extends ExpressRequest {
   userId?: number;
   superLikesCount?: number;
+  isMatching?: boolean;
+  user2?: number[];
+  receiversIds?: number[];
 }
 
 const interactionRouter = express.Router();
@@ -310,6 +319,71 @@ interactionRouter.post(
       }
     },
   ),
+);
+
+//Create a new conversation
+interactionRouter.get(
+  '/interactions/verify',
+  getUserId,
+  verifyInteractions,
+  async (req: Request, res) => {
+    try {
+      const isMatching = req.isMatching;
+      const userId = req.userId as number;
+      const receiversIds = req.receiversIds as number[];
+
+      //if isMatching = true
+      if (Boolean(isMatching)) {
+        const conversations: NewConversation[] = [];
+
+        // I loop over the ids of my receivers and place the smallest id
+        // in user 1 and the largest in user 2 to avoid putting the id anywhere
+        for (const receiverId of receiversIds) {
+          const conversationData = {
+            user_1: Math.min(userId, receiverId),
+            user_2: Math.max(userId, receiverId),
+            created_at: new Date(),
+          };
+
+          //recupèrer les convs de chaque receivers
+          const conversation = await db
+            .selectFrom('conversation')
+            .selectAll()
+            .where((eb) =>
+              eb.or([
+                eb.and({
+                  user_1: conversationData.user_1,
+                  user_2: conversationData.user_2,
+                }),
+                eb.and({
+                  user_1: conversationData.user_2,
+                  user_2: conversationData.user_1,
+                }),
+              ]),
+            )
+            .execute();
+
+          if (conversation.length === 0) {
+            conversations.push(conversationData);
+          } else {
+            res.status(403).json({
+              success: false,
+              message: 'Conversation is already exist !',
+            });
+          }
+        }
+        await db.insertInto('conversation').values(conversations).execute();
+        return res.status(200).json({ success: true, isMatching });
+      }
+
+      return res.status(403).json({ success: false });
+    } catch {
+      return res.status(500).json({
+        success: false,
+        error: 'Internal Server Error !',
+      });
+    }
+  },
 );
 
 export default interactionRouter;

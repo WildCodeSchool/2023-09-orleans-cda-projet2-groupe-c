@@ -8,6 +8,7 @@ import interactionRouter from './interaction/interaction-crud';
 import languageRouter from './language/language-crud';
 import { register } from './register';
 import technologyRouter from './technology/technology-crud';
+import messageRouter from './user/message';
 import userRouter from './user/user-crud';
 import filterRouter from './user/user-filter-crud';
 
@@ -30,6 +31,8 @@ router.use('/hobbies', hobbyRouter);
 router.use('/users', userRouter);
 
 router.use('/users', interactionRouter);
+
+router.use('/users', messageRouter);
 
 router.use('/users', filterRouter);
 

@@ -59,7 +59,7 @@ export interface CityTable {
 
 export interface MessageTable {
   id: Generated<number>;
-  content?: string;
+  content: string;
   sent_at: Date;
   conversation_id: number;
   sender_id: number;
@@ -91,6 +91,13 @@ export interface UserActionTable {
   superlike_at?: Date;
   next_at?: Date;
   canceled_at?: Date;
+}
+
+export interface Conversation {
+  id: Generated<number>;
+  user_1: number;
+  user_2: number;
+  created_at: Date;
 }
 
 export interface PreferenceTable {
@@ -151,6 +158,10 @@ export type UserAction = Selectable<UserActionTable>;
 export type NewUserAction = Insertable<UserActionTable>;
 export type UserActionUpdate = Updateable<UserActionTable>;
 
+export type ConversationAction = Selectable<Conversation>;
+export type NewConversationAction = Insertable<Conversation>;
+export type ConversationActionUpdate = Updateable<Conversation>;
+
 export type Preference = Selectable<PreferenceTable>;
 export type NewPreference = Insertable<PreferenceTable>;
 export type PreferenceUpdate = Updateable<PreferenceTable>;
@@ -168,5 +179,6 @@ export interface Database {
   language_user: LanguageUserTable;
   hobby_user: HobbyUserTable;
   user_action: UserActionTable;
+  conversation: Conversation;
   preference: PreferenceTable;
 }

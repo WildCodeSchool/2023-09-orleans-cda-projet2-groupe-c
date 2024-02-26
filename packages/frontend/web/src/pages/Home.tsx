@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Navigate, Outlet } from 'react-router-dom';
+import { Navigate, Outlet, useLocation } from 'react-router-dom';
 
 import type { UserBody } from '@app/shared';
 
@@ -7,7 +7,11 @@ import NavBar from '@/components/NavBar';
 import SidebarLayout from '@/components/SidebarLayout';
 import Filter from '@/components/filter/Filter';
 import RandomSentence from '@/components/home/RandomSentence';
+
+/* import MatchingCard from '@/components/matching/MatchingCard'; */
+import ConversationsList from '@/components/message/ConversationsList';
 import { useAuth } from '@/contexts/AuthContext';
+import { useConversation } from '@/contexts/ConversationContext';
 import { usePreference } from '@/contexts/PreferenceContext';
 
 import Logo from '../components/icons/LogoHomeIcon';
@@ -19,10 +23,18 @@ export default function Home() {
   const { isLoggedIn, isActivated, isLoading, userId } = useAuth();
 
   const { isVisibleFilter } = usePreference();
+  const { isVisibleConversation, conversationId } = useConversation();
+
+  const location = useLocation();
+  const isHome = location.pathname === '/';
+  const isConversation =
+    location.pathname === `/users/${userId}/conversations/${conversationId}`;
 
   // Check if the user profile is complete
-  const hasCompleteProfile =
-    userProfile &&
+  const hasCompleteProfile = userProfile;
+
+  const hasChampProfile =
+    hasCompleteProfile &&
     (Boolean(userProfile.name) ||
       Boolean(userProfile.birthdate) ||
       Boolean(userProfile.gender) ||
@@ -54,34 +66,52 @@ export default function Home() {
   }, [userId]);
 
   // If the user is logged in and the account is not actived, redirect to the validation page
-  if (!isLoading && isLoggedIn && !isActivated) {
+  if (!isLoading && isLoggedIn && !Boolean(isActivated)) {
     return <Navigate to='/registration/validation' />;
   }
 
   // If the user is logged in and the account is actived but the user profile is not filled, redirect to the profile page
-  if (isLoggedIn && isActivated && !Boolean(hasCompleteProfile)) {
+  if (
+    isLoggedIn &&
+    Boolean(isActivated) &&
+    Boolean(hasCompleteProfile) &&
+    !Boolean(hasChampProfile)
+  ) {
     return <Navigate to='/registration/profile' />;
   }
 
   // If the user is logged in and the account is activated with all fields filled, return the main layout
-  if (Boolean(isLoggedIn && isActivated && hasCompleteProfile)) {
+  if (
+    Boolean(
+      isLoggedIn &&
+        Boolean(isActivated) &&
+        hasCompleteProfile &&
+        hasChampProfile,
+    )
+  ) {
     return (
       <main className='h-auto min-h-screen overflow-y-auto overflow-x-hidden'>
         <NavBar />
+        {/*   wait PR chat interaction for activate Matching card */}
+        {/*  <MatchingCard /> */}
 
         {/* Display messages only in the home page when the width is superior to 1024px */}
         <div
           className={`font-base relative flex h-full w-full justify-between`}
         >
-          <SidebarLayout isVisible={isVisibleFilter} isBorderLeft>
-            {`Messages`}
-          </SidebarLayout>
+          {isHome || isConversation ? (
+            <SidebarLayout isVisible={isVisibleConversation} isBorderLeft>
+              <ConversationsList />
+            </SidebarLayout>
+          ) : undefined}
 
           <Outlet />
 
-          <SidebarLayout isVisible={isVisibleFilter} isBorderRight>
-            <Filter />
-          </SidebarLayout>
+          {isHome ? (
+            <SidebarLayout isVisible={isVisibleFilter} isBorderRight>
+              <Filter />
+            </SidebarLayout>
+          ) : undefined}
         </div>
       </main>
     );

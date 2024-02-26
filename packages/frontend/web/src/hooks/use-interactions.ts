@@ -2,11 +2,16 @@ import { useCallback, useEffect, useState } from 'react';
 
 import type { UserBody } from '@app/shared';
 
+import { useConversation } from '../contexts/ConversationContext';
+
 export default function useInteractions() {
   const [selectedUser, setSelectedUser] = useState<UserBody>();
   const [superLikesCount, setSuperLikesCount] = useState<number>(0);
 
+  const { fetchConversations } = useConversation();
+
   const [interactionStatus, setInteractionStatus] = useState<string>();
+  const [errorInteraction, setErrorInteraction] = useState<string>();
 
   // Fetch users from the API
   const fetchUsers = useCallback(
@@ -59,29 +64,48 @@ export default function useInteractions() {
   const handleInteraction = async (interactionType: string) => {
     try {
       // Send a request to the API to like, superlike or next a user
-      await fetch(`/api/users/interactions/${interactionType}`, {
-        method: 'POST',
-        headers: {
-          'content-type': 'application/json',
-        },
-        body: JSON.stringify({
-          receiver_id: selectedUser?.id, // Send in the body the id of the selected user
-        }),
-      });
+      const sendInteraction = async () => {
+        const res = await fetch(`/api/users/interactions/${interactionType}`, {
+          method: 'POST',
+          headers: {
+            'content-type': 'application/json',
+          },
+          body: JSON.stringify({
+            receiver_id: selectedUser?.id, // Send in the body the id of the selected user
+          }),
+        });
+
+        if (res.ok) {
+          setInteractionStatus(interactionType);
+        }
+      };
+
+      await sendInteraction();
 
       // Fetch selected user and superlikes count from the user logged in to display the next user and the remaining superlikes count
       const controller = new AbortController();
       const signal = controller.signal;
 
-      fetchUsers({ signal }).catch((error) => {
+      await fetchUsers({ signal }).catch((error) => {
         throw new Error(`Fail to fetch users: ${String(error)}`);
       });
 
-      fetchUserSuperLikeCount({ signal }).catch((error) => {
+      await fetchUserSuperLikeCount({ signal }).catch((error) => {
         throw new Error(`Fail to fetch user's superlike: ${String(error)}`);
       });
 
-      setInteractionStatus(interactionType);
+      const fetchInteractionsVerify = async () => {
+        await fetch(`/api/users/interactions/verify`, {
+          signal,
+        });
+      };
+
+      await fetchInteractionsVerify().catch(() => {
+        setErrorInteraction(`Fail to fetch interactions verify`);
+      });
+
+      // Fetch conversationList when the user interacts with someone
+      fetchConversations({ signal });
 
       const timeoutId = setTimeout(() => {
         setInteractionStatus('');
@@ -132,5 +156,6 @@ export default function useInteractions() {
     fetchUsers,
     interactionStatus,
     setInteractionStatus,
+    errorInteraction,
   };
 }

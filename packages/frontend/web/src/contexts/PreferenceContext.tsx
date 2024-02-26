@@ -17,7 +17,7 @@ type PreferenceProviderProps = {
 
 type PreferenceProviderState = {
   isVisibleFilter: boolean;
-  handleClick: () => void;
+  handleClickFilter: () => void;
   preferences?: RequestPreferencesBody;
   errorPreferences?: string;
   updatePreferences: (newPreferences: RequestPreferencesBody) => void;
@@ -44,9 +44,9 @@ export default function PreferenceContext({
   const { fetchUsers } = useInteraction();
 
   // State to display the sidebar Filter on mobile in the navbar on click
-  const handleClick = () => {
+  const handleClickFilter = useCallback(() => {
     setIsVisibleFilter((prev) => !prev);
-  };
+  }, []);
 
   // Function to fetch all user preferences
   const fetchPreferences = useCallback(
@@ -134,7 +134,7 @@ export default function PreferenceContext({
   const value = useMemo(() => {
     return {
       isVisibleFilter,
-      handleClick,
+      handleClickFilter,
       preferences,
       errorPreferences,
       updatePreferences,
@@ -142,6 +142,7 @@ export default function PreferenceContext({
     };
   }, [
     isVisibleFilter,
+    handleClickFilter,
     preferences,
     errorPreferences,
     updatePreferences,

@@ -1,5 +1,6 @@
 import { useLocation, useNavigate } from 'react-router-dom';
 
+import { useConversation } from '@/contexts/ConversationContext';
 import { usePreference } from '@/contexts/PreferenceContext';
 
 import BulletBase from './BulletBase';
@@ -11,7 +12,9 @@ import MessageIcon from './icons/MessageIcon';
 import UserIcon from './icons/UserIcon';
 
 export default function NavBar() {
-  const { handleClick, setIsVisibleFilter } = usePreference();
+  const { handleClickFilter, setIsVisibleFilter } = usePreference();
+  const { handleConversationClick, setIsVisibleConversation } =
+    useConversation();
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -24,6 +27,7 @@ export default function NavBar() {
       onClick: () => {
         if (window.innerWidth < 1024) {
           setIsVisibleFilter(false);
+          setIsVisibleConversation(false);
         }
 
         navigate(`/profile`);
@@ -35,6 +39,7 @@ export default function NavBar() {
       onClick: () => {
         if (window.innerWidth < 1024) {
           setIsVisibleFilter(false);
+          setIsVisibleConversation(false);
         }
 
         navigate(`/profile/interactions`);
@@ -44,12 +49,27 @@ export default function NavBar() {
       id: 'message',
       icon: <MessageIcon className='fill-secondary h-5 w-5' />,
       lgHidden: true,
+      onClick: () => {
+        if (location.pathname !== '/') {
+          navigate('/');
+        }
+
+        setIsVisibleFilter(false);
+        handleConversationClick();
+      },
     },
     {
       id: 'filter',
       icon: <FilterIcon className='fill-secondary h-4 w-4' />,
       lgHidden: true,
-      onClick: handleClick,
+      onClick: () => {
+        if (location.pathname !== '/') {
+          navigate('/');
+        }
+
+        setIsVisibleConversation(false);
+        handleClickFilter();
+      },
     },
     {
       id: 'theme',
@@ -60,6 +80,7 @@ export default function NavBar() {
   const handleHomeClick = () => {
     if (window.innerWidth < 1024) {
       setIsVisibleFilter(false);
+      setIsVisibleConversation(false);
     }
 
     navigate('/');
