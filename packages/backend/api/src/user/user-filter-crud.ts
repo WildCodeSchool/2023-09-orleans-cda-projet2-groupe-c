@@ -70,11 +70,6 @@ filterRouter.put('/preferences', getUserId, async (req: Request, res) => {
       success: true,
       message: 'Your preferences have been updated.',
     });
-
-    res.status(404).json({
-      success: false,
-      error: 'User preferences not found!',
-    });
   } catch (error) {
     res.status(500).json({
       success: false,
