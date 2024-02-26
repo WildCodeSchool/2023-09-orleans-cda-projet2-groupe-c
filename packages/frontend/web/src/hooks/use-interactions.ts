@@ -12,6 +12,7 @@ export default function useInteractions({ ...props }) {
   const { fetchConversations } = useConversation();
 
   const [interactionStatus, setInteractionStatus] = useState<string>();
+  const [errorInteraction, setErrorInteraction] = useState<string>();
 
   // Fetch users from the API
   const fetchUsers = useCallback(
@@ -95,8 +96,8 @@ export default function useInteractions({ ...props }) {
         });
       };
 
-      await fetchInteractionsVerify().catch((error) => {
-        throw new Error(`Fail to fetch interactions verify: ${String(error)}`);
+      await fetchInteractionsVerify().catch(() => {
+        setErrorInteraction(`Fail to fetch interactions verify`);
       });
 
       // Fetch conversationList when the user interacts with someone

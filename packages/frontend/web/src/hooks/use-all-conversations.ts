@@ -24,6 +24,7 @@ interface Conversation {
 export default function useAllConversations() {
   const [conversationsList, setConversationsList] = useState<Conversation[]>();
   const [messagesCount, setMessagesCount] = useState<number>(0);
+  const [errorConversation, setErrorConversation] = useState<string>();
   const { userId } = useAuth();
 
   const fetchConversations = useCallback(
@@ -44,8 +45,8 @@ export default function useAllConversations() {
     const controller = new AbortController();
     const signal = controller.signal;
 
-    fetchConversations({ signal }).catch((error) => {
-      throw new Error(`Failed to fetch messages: ${String(error)}`);
+    fetchConversations({ signal }).catch(() => {
+      setErrorConversation(`Failed to fetch messages`);
     });
 
     return () => {
