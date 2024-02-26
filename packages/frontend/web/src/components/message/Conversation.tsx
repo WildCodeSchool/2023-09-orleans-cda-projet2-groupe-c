@@ -87,11 +87,9 @@ export default function Conversation() {
                 : conversation?.user_1.name}
             </p>
           </div>
-          <div>
-            <button type='button' onClick={handleCloseConversation}>
-              <CrossIcon className='h-5 cursor-pointer fill-white' />
-            </button>
-          </div>
+          <button type='button' onClick={handleCloseConversation}>
+            <CrossIcon className='h-5 cursor-pointer fill-white' />
+          </button>
         </div>
         <div className='flex h-[calc(100%-3.5rem)] w-full flex-col gap-5'>
           <div className='h-full w-full overflow-auto'>
