@@ -4,7 +4,7 @@ type FieldName = 'languages';
 
 const props = {
   apiUrl: 'languages',
-  formTitle: 'MY LANGUAGES',
+  formTitle: 'I master...',
   subtitle: 'You must select at least one language.',
   fieldName: 'languages' as FieldName,
 };

@@ -17,6 +17,9 @@ import FormHobby from '@/components/forms/FormHobby';
 import FormLanguage from '@/components/forms/FormLanguage';
 import FormName from '@/components/forms/FormName';
 import FormPicture from '@/components/forms/FormPicture';
+import FormPrefDistance from '@/components/forms/FormPrefDistance';
+import FormPrefGender from '@/components/forms/FormPrefGender';
+import FormPrefLanguage from '@/components/forms/FormPrefLanguage';
 import FormTechnology from '@/components/forms/FormTechnology';
 import { useAuth } from '@/contexts/AuthContext';
 
@@ -24,9 +27,12 @@ const PAGES = [
   { component: <FormName /> },
   { component: <FormBirthDate /> },
   { component: <FormGender /> },
+  { component: <FormPrefGender /> },
   { component: <FormCity /> },
+  { component: <FormPrefDistance /> },
   { component: <FormLanguage /> },
   { component: <FormTechnology /> },
+  { component: <FormPrefLanguage /> },
   { component: <FormHobby /> },
   { component: <FormBio /> },
   { component: <FormGitHub /> },
@@ -54,6 +60,8 @@ export default function FormProfile() {
 
   // Function to submit the form data
   const formSubmit = async (data: FormProfileBody) => {
+    console.log(data);
+
     // If the current page is less than 10, move to the next page
     if (page < PAGES.length - 1) {
       setPage(page + 1);

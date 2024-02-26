@@ -299,4 +299,12 @@ authRouter.post('/login', async (req, res) => {
   }
 });
 
+// Route to logout a user
+authRouter.post('/logout', (req, res) => {
+  // Clear the JWT cookie
+  res.clearCookie('token');
+
+  return res.json({ ok: true, isLoggedIn: false });
+});
+
 export default authRouter;
