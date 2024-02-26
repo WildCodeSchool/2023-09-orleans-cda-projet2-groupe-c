@@ -57,6 +57,7 @@ export default function FormProfile() {
   });
 
   const { handleSubmit } = methods;
+
   // Function to submit the form data
   const formSubmit = async (data: FormProfileBody) => {
     // If the current page is less than 10, move to the next page

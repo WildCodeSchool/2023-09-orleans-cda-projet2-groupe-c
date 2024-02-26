@@ -28,7 +28,7 @@ filterRouter.get(
 
       const userPreferences = await preferences.getUserPreferences(userId);
 
-      return res.json(userPreferences);
+      res.json(userPreferences);
     } catch (error) {
       res.status(500).json({
         success: false,
@@ -73,9 +73,14 @@ filterRouter.put(
         .where('preference.user_id', '=', userId)
         .execute();
 
-      return res.status(200).json({
+      res.status(200).json({
         success: true,
         message: 'Your preferences have been updated.',
+      });
+
+      res.status(404).json({
+        success: false,
+        error: 'User preferences not found!',
       });
     } catch (error) {
       res.status(500).json({
