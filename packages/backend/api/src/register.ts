@@ -19,6 +19,9 @@ register.post('/', getUserId, async (req: Request, res) => {
       languages,
       technologies,
       hobbies,
+      distance,
+      languagePrefId,
+      genderPref,
     } = req.body as FormProfileBodyBackend;
 
     const userId = req.userId as number;
@@ -73,6 +76,16 @@ register.post('/', getUserId, async (req: Request, res) => {
             order: hobby.order,
           })),
         )
+        .execute();
+
+      await trx
+        .insertInto('preference')
+        .values({
+          distance,
+          language_pref_id: Number(languagePrefId),
+          gender_pref: genderPref,
+          user_id: Number(userId),
+        })
         .execute();
     });
 
