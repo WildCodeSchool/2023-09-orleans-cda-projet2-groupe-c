@@ -345,7 +345,7 @@ interactionRouter.get(
             created_at: new Date(),
           };
 
-          //recupèrer les convs de chaque receivers
+          // Get the conversation between the two users
           const conversation = await db
             .selectFrom('conversation')
             .selectAll()
@@ -365,14 +365,11 @@ interactionRouter.get(
 
           if (conversation.length === 0) {
             conversations.push(conversationData);
-          } else {
-            res.status(403).json({
-              success: false,
-              message: 'Conversation is already exist !',
-            });
           }
         }
+
         await db.insertInto('conversation').values(conversations).execute();
+
         return res.status(200).json({ success: true, isMatching });
       }
 
