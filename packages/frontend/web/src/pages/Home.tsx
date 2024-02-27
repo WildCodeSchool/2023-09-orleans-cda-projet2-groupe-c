@@ -23,16 +23,14 @@ export default function Home() {
   const { isLoggedIn, isActivated, isLoading, userId } = useAuth();
 
   const { isVisibleFilter } = usePreference();
-  const { isVisible, conversationId } = useConversation();
+  const { isVisibleConversation, conversationId } = useConversation();
   const { isMatching } = useMatching();
-  console.log('isMatching', isMatching);
-
-  /*  console.log('conv', conversationsList?.length); */
 
   const location = useLocation();
   const isHome = location.pathname === '/';
   const isConversation =
     location.pathname === `/users/${userId}/conversations/${conversationId}`;
+
   // Check if the user profile is complete
   const hasCompleteProfile = userProfile;
 
@@ -93,24 +91,23 @@ export default function Home() {
     )
   ) {
     return (
-      <main className='h-auto min-h-screen'>
+      <main className='h-auto min-h-screen overflow-y-auto overflow-x-hidden'>
         <NavBar />
         {/*   wait PR chat interaction for activate Matching card */}
-        {isMatching ? <MatchingCard /> : undefined}
-
+        {/* {isMatching ? <MatchingCard /> : undefined}
+ */}
         {/* Display messages only in the home page when the width is superior to 1024px */}
         <div
-          className={`font-base relative flex w-full justify-between ${
-            location.pathname === '/' ? 'h-[calc(100vh-56px)]' : 'h-full'
-          }`}
+          className={`font-base relative flex h-full w-full justify-between`}
         >
           {isHome || isConversation ? (
-            <SidebarLayout isVisible={isVisible} isBorderLeft>
+            <SidebarLayout isVisible={isVisibleConversation} isBorderLeft>
               <ConversationsList />
             </SidebarLayout>
           ) : undefined}
 
           <Outlet />
+
           {isHome ? (
             <SidebarLayout isVisible={isVisibleFilter} isBorderRight>
               <Filter />

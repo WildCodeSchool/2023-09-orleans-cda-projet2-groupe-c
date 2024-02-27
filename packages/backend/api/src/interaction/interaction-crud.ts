@@ -158,7 +158,7 @@ interactionRouter.get(
 
 // Get superlikes count from the user between the current date and the next date
 interactionRouter.get(
-  '/:userId/interactions/superlike/count',
+  '/interactions/superlike/count',
   getUserId,
   getSuperLikeCount,
   (req: Request, res) => {
@@ -177,7 +177,7 @@ interactionRouter.get(
 
 // Send a like
 interactionRouter.post(
-  '/:userId/interactions/:action',
+  '/interactions/:action',
   getUserId,
   getSuperLikeCount,
   async (req: Request, res) => {
@@ -272,7 +272,7 @@ interactionRouter.post(
   },
 
   interactionRouter.delete(
-    '/:userId/interactions/back',
+    '/interactions/back',
     getUserId,
     async (req: Request, res) => {
       try {
@@ -345,7 +345,7 @@ interactionRouter.get(
             created_at: new Date(),
           };
 
-          //recupèrer les convs de chaque receivers
+          // Get the conversation between the two users
           const conversation = await db
             .selectFrom('conversation')
             .selectAll()
@@ -367,7 +367,9 @@ interactionRouter.get(
             conversations.push(conversationData);
           }
         }
+
         await db.insertInto('conversation').values(conversations).execute();
+
         return res.status(200).json({ success: true, isMatching });
       }
 

@@ -27,7 +27,7 @@ userRouter.get('/profile', getUserId, async (req: Request, res) => {
 });
 
 // Fetch a list of users without the user logged in
-userRouter.get('/:userId', getUserId, async (req: Request, res) => {
+userRouter.get('/', getUserId, async (req: Request, res) => {
   try {
     // Get the user id from JWT
     const userId = req.userId as number;
