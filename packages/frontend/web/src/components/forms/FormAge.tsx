@@ -16,30 +16,6 @@ export function FormAge() {
 
   const { setValue, register } = useFormContext<FormAgeBody>();
 
-  // Validation for the min age
-  register('minAge', {
-    valueAsNumber: true,
-    validate: (value) => {
-      const result = minAgeSchema.safeParse(value);
-      if (!result.success) {
-        return result.error.errors[0].message;
-      }
-      return true;
-    },
-  });
-
-  // Validation for the max age
-  register('maxAge', {
-    valueAsNumber: true,
-    validate: (value) => {
-      const result = maxAgeSchema.safeParse(value);
-      if (!result.success) {
-        return result.error.errors[0].message;
-      }
-      return true;
-    },
-  });
-
   // Set the min and max age to the form
   useEffect(() => {
     setValue('minAge', minAge);
@@ -78,8 +54,6 @@ export function FormAge() {
           onChange={(value) => {
             setMinAge(value[0]);
             setMaxAge(value[1]);
-            setValue('minAge', value[0]);
-            setValue('maxAge', value[1]);
           }}
           ariaLabel={['Lower thumb', 'Upper thumb']}
           // Custom thumb
@@ -130,6 +104,33 @@ export function FormAge() {
               </span>
             );
           }}
+        />
+
+        <input
+          type='hidden'
+          {...register('minAge', {
+            validate: (value) => {
+              const result = minAgeSchema.safeParse(value);
+              if (!result.success) {
+                return result.error.errors[0].message;
+              }
+              return true;
+            },
+          })}
+          value={minAge}
+        />
+        <input
+          type='hidden'
+          {...register('maxAge', {
+            validate: (value) => {
+              const result = maxAgeSchema.safeParse(value);
+              if (!result.success) {
+                return result.error.errors[0].message;
+              }
+              return true;
+            },
+          })}
+          value={maxAge}
         />
       </div>
     </FormContainer>

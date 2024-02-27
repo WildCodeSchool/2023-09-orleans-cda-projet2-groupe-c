@@ -93,7 +93,7 @@ export default function FormProfile() {
           const controller = new AbortController();
           const signal = controller.signal;
 
-          fetchPreferences({ signal });
+          await fetchPreferences({ signal });
           await fetchUsers({ signal });
 
           navigate('/');
