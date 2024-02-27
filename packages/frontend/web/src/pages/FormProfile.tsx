@@ -93,32 +93,10 @@ export default function FormProfile() {
           const controller = new AbortController();
           const signal = controller.signal;
 
-          const fetchData = async () => {
-            try {
-              const res = await fetch(`/api/auth/verify`, {
-                method: 'GET',
-                signal: controller.signal, // pass the signal in the request for aborting the request
-              });
-
-              // Convert the response to json
-              const data = (await res.json()) as {
-                ok: boolean;
-                isLoggedIn: boolean;
-                userId: number;
-                isActivated: boolean;
-              };
-
-              if (data.ok) {
-                navigate('/');
-              }
-            } catch (error) {
-              throw new Error(`Failed to verify auth: ${String(error)}`);
-            }
-          };
-
-          await fetchData();
           fetchPreferences({ signal });
           await fetchUsers({ signal });
+
+          navigate('/');
 
           return () => {
             controller.abort();
