@@ -2,7 +2,7 @@ import DotLoader from 'react-spinners/DotLoader';
 
 export default function Loading() {
   return (
-    <div className='flex h-screen w-screen items-center justify-center'>
+    <div className='flex h-full w-full items-center justify-center'>
       <div className='-translate-y-1/2'>
         <div className='flex flex-col items-center justify-center gap-4'>
           <DotLoader size={50} color='#3f436a' speedMultiplier={1.7} />

@@ -78,7 +78,7 @@ export default function FormCity() {
   return (
     <FormContainer title='I LIVE IN...'>
       <span className='flex justify-start pb-8'>
-        {'Choose your city or geolocate yourself.'}
+        {'Write and choose your city.'}
       </span>
       <div className='text-secondary relative mt-2'>
         <input

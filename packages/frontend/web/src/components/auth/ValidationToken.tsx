@@ -89,7 +89,7 @@ export default function ValidationToken() {
     const signal = controller.signal;
 
     const fetchCode = async () => {
-      const res = await fetch(`/api/auth/registration/users/${userId}/code`, {
+      const res = await fetch(`/api/auth/registration/users/code`, {
         signal,
         headers: { 'content-type': 'application/json' },
       });

@@ -9,8 +9,7 @@ import {
 
 import type { RequestPreferencesBody } from '@app/shared';
 
-import { useAuth } from '@/contexts/AuthContext';
-
+import { useAuth } from './AuthContext';
 import { useInteraction } from './InteractionContext';
 
 type PreferenceProviderProps = {
@@ -19,7 +18,7 @@ type PreferenceProviderProps = {
 
 type PreferenceProviderState = {
   isVisibleFilter: boolean;
-  handleClick: () => void;
+  handleClickFilter: () => void;
   preferences?: RequestPreferencesBody;
   errorPreferences?: string;
   updatePreferences: (newPreferences: RequestPreferencesBody) => void;
@@ -44,20 +43,18 @@ export default function PreferenceContext({
   // State to display the sidebar Filter
   const [isVisibleFilter, setIsVisibleFilter] = useState<boolean>(false);
 
-  // Get user id from auth context
-  const { userId } = useAuth();
-
+  const { isLoggedIn } = useAuth();
   const { fetchUsers } = useInteraction();
 
   // State to display the sidebar Filter on mobile in the navbar on click
-  const handleClick = () => {
+  const handleClickFilter = useCallback(() => {
     setIsVisibleFilter((prev) => !prev);
-  };
+  }, []);
 
   // Function to fetch all user preferences
   const fetchPreferences = useCallback(
     async ({ signal }: { signal: AbortSignal }) => {
-      const res = await fetch(`/api/users/${userId}/preferences`, {
+      const res = await fetch(`/api/users/preferences`, {
         signal,
       });
 
@@ -65,7 +62,7 @@ export default function PreferenceContext({
 
       setPreferences(data[0]);
     },
-    [userId],
+    [],
   );
 
   // Set the visibility of the sidebar on resize
@@ -101,13 +98,13 @@ export default function PreferenceContext({
     return () => {
       controller.abort();
     };
-  }, [fetchPreferences]);
+  }, [fetchPreferences, isLoggedIn]);
 
   // Function to update the preferences
   const updatePreferences = useCallback(
     async (newPreferences: RequestPreferencesBody) => {
       // Update the preferences in the database
-      await fetch(`/api/users/${userId}/preferences`, {
+      await fetch(`/api/users/preferences`, {
         method: 'PUT',
         headers: {
           'content-type': 'application/json',
@@ -134,13 +131,13 @@ export default function PreferenceContext({
         controller.abort();
       };
     },
-    [userId, fetchPreferences, fetchUsers],
+    [fetchPreferences, fetchUsers],
   );
 
   const value = useMemo(() => {
     return {
       isVisibleFilter,
-      handleClick,
+      handleClickFilter,
       preferences,
       errorPreferences,
       updatePreferences,
@@ -149,6 +146,7 @@ export default function PreferenceContext({
     };
   }, [
     isVisibleFilter,
+    handleClickFilter,
     preferences,
     errorPreferences,
     updatePreferences,

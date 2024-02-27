@@ -12,8 +12,13 @@ import SendIcon from '../icons/SendIcon';
 import BulletConversation from './BulletConversation';
 
 export default function Conversation() {
-  const { userId, conversation, setIsVisible, error, selectedConversation } =
-    useConversation();
+  const {
+    userId,
+    conversation,
+    setIsVisibleConversation,
+    error,
+    selectedConversation,
+  } = useConversation();
   const { register, handleSubmit, reset } = useForm<MessageValidation>({
     resolver: zodResolver(messageSchema),
   });
@@ -31,7 +36,7 @@ export default function Conversation() {
 
   const handleCloseConversation = () => {
     if (window.innerWidth < 1024) {
-      setIsVisible(true);
+      setIsVisibleConversation(true);
     } else {
       navigate('/');
     }
@@ -82,11 +87,9 @@ export default function Conversation() {
                 : conversation?.user_1.name}
             </p>
           </div>
-          <div>
-            <button type='button' onClick={handleCloseConversation}>
-              <CrossIcon className='h-5 cursor-pointer fill-white' />
-            </button>
-          </div>
+          <button type='button' onClick={handleCloseConversation}>
+            <CrossIcon className='h-5 cursor-pointer fill-white' />
+          </button>
         </div>
         <div className='flex h-[calc(100%-3.5rem)] w-full flex-col gap-5'>
           <div className='h-full w-full overflow-auto'>
@@ -127,7 +130,7 @@ export default function Conversation() {
           >
             <input
               type='text'
-              className='text-secondary bg-light flex h-full w-full resize-none items-center rounded-l-full pl-4 pt-2 shadow-md outline-none'
+              className='text-secondary bg-light flex h-full w-full resize-none items-center rounded-l-full pl-4 pt-1 shadow-md outline-none'
               placeholder='Aa'
               {...register('content')}
             />
