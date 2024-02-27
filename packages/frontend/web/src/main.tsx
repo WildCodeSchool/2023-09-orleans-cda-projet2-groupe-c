@@ -19,13 +19,15 @@ if (rootElement) {
       <AuthContext>
         <ThemeContext>
           <ConversationContext>
-            <InteractionContext>
-              <PreferenceContext>
-                <UsersInteractionsContext>
-                  <RouterProvider router={router} />
-                </UsersInteractionsContext>
-              </PreferenceContext>
-            </InteractionContext>
+            
+              <InteractionContext>
+                <PreferenceContext>
+                  <UsersInteractionsContext>
+                    <RouterProvider router={router} />
+                  </UsersInteractionsContext>
+                </PreferenceContext>
+              </InteractionContext>
+            
           </ConversationContext>
         </ThemeContext>
       </AuthContext>

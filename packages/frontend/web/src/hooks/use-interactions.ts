@@ -3,15 +3,15 @@ import { useCallback, useEffect, useState } from 'react';
 import type { UserBody } from '@app/shared';
 
 import { useAuth } from '@/contexts/AuthContext';
-
-import { useConversation } from '../contexts/ConversationContext';
+import { useConversation } from '@/contexts/ConversationContext';
 
 export default function useInteractions() {
   const [selectedUser, setSelectedUser] = useState<UserBody>();
   const [superLikesCount, setSuperLikesCount] = useState<number>(0);
 
   const [interactionStatus, setInteractionStatus] = useState<string>();
-  const [errorInteraction, setErrorInteraction] = useState<string>();
+  const [isMatching, setIsMatching] = useState<boolean>(false);
+  const [errorMatching, setErrorMatching] = useState<string>();
 
   const { fetchConversations } = useConversation();
   const { isLoggedIn } = useAuth();
@@ -97,15 +97,27 @@ export default function useInteractions() {
         throw new Error(`Fail to fetch user's superlike: ${String(error)}`);
       });
 
-      const fetchInteractionsVerify = async () => {
-        await fetch(`/api/users/interactions/verify`, {
-          signal,
-        });
+      const fetchMatching = async () => {
+       
+          const response = await fetch('/api/users/interactions/verify', {
+            signal,
+          });
+    
+          const data = (await response.json()) as { isMatching: boolean, success: boolean };
+          console.log('coucou');
+          if(data.success){
+            console.log('if ?');
+            
+            setIsMatching(data.isMatching);
+          }
+          
+          console.log(data);
+          console.log('test',isMatching);
+          
+       
       };
 
-      await fetchInteractionsVerify().catch(() => {
-        setErrorInteraction(`Fail to fetch interactions verify`);
-      });
+      await fetchMatching()
 
       // Fetch conversationList when the user interacts with someone
       fetchConversations({ signal });
@@ -159,6 +171,7 @@ export default function useInteractions() {
     fetchUsers,
     interactionStatus,
     setInteractionStatus,
-    errorInteraction,
+    isMatching,
+    errorMatching,
   };
 }
