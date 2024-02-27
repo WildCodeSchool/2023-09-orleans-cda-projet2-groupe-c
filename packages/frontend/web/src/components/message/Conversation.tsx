@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 
@@ -16,8 +16,11 @@ export default function Conversation() {
     userId,
     conversation,
     setIsVisibleConversation,
-    error,
     selectedConversation,
+    fetchMessage,
+    conversationId,
+    conversationsList,
+    fetchConversations,
   } = useConversation();
   const { register, handleSubmit, reset } = useForm<MessageValidation>({
     resolver: zodResolver(messageSchema),
@@ -27,6 +30,7 @@ export default function Conversation() {
   const scrollToBottom = () => {
     messagesEndReference.current?.scrollIntoView({ behavior: 'instant' });
   };
+  const [error, setError] = useState<string>();
 
   useEffect(() => {
     setTimeout(scrollToBottom, 50);
@@ -44,7 +48,7 @@ export default function Conversation() {
 
   const formSubmit = async (data: MessageValidation) => {
     try {
-      await fetch(
+      const res = await fetch(
         `/api/users/${userId}/conversations/${conversation?.conversation_id}/message`,
         {
           method: 'POST',
@@ -55,12 +59,39 @@ export default function Conversation() {
         },
       );
 
-      setTimeout(scrollToBottom, 1000);
+      if (res.ok) {
+        const controller = new AbortController();
+        const signal = controller.signal;
+        fetchConversations({ signal });
+        setTimeout(scrollToBottom, 1000);
+
+        return () => {
+          controller.abort();
+        };
+      }
     } catch (error) {
       throw new Error(`${String(error)}`);
+    } finally {
+      reset();
     }
-    reset();
   };
+
+  useEffect(() => {
+    if (conversationsList && Boolean(conversationId)) {
+      const controller = new AbortController();
+      const { signal } = controller;
+      const interval = setInterval(() => {
+        fetchMessage({ signal }).catch(() => {
+          setError('coucou');
+        });
+      }, 1100);
+
+      return () => {
+        controller.abort();
+        clearInterval(interval);
+      };
+    }
+  }, [conversationId, conversationsList, fetchMessage]);
 
   const currentUser =
     conversation?.user_1.id === userId

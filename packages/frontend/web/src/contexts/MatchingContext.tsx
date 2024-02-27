@@ -1,4 +1,4 @@
-import { createContext, useContext, useMemo, useState } from 'react';
+import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 
 type MatchingProviderProps = {
   readonly children: React.ReactNode;
@@ -6,7 +6,7 @@ type MatchingProviderProps = {
 
 type MatchingState = {
   isMatching: boolean;
-  fetchMatching: () => void;
+  fetchMatching: ({ signal }: { signal: AbortSignal }) => Promise<void>;
   errorMatching?: string;
   setIsMatching: React.Dispatch<React.SetStateAction<boolean>>;
 };
@@ -22,23 +22,31 @@ export default function MatchingContext({
   const [isMatching, setIsMatching] = useState<boolean>(false);
   const [errorMatching, setErrorMatching] = useState<string>();
 
-  const fetchMatching = async () => {
-    const controller = new AbortController();
+  const fetchMatching = async ({ signal }: { signal: AbortSignal }) => {
     try {
       const response = await fetch('/api/users/interactions/verify', {
-        signal: controller.signal,
+        signal,
       });
 
       const data = (await response.json()) as { isMatching: boolean };
       setIsMatching(data.isMatching);
-
-      return () => {
-        controller.abort();
-      };
     } catch {
       setErrorMatching('ⓘ An error occurred while fetching Matching verify.');
     }
   };
+
+  useEffect(() => {
+    const controller = new AbortController();
+    const signal = controller.signal;
+
+    fetchMatching({ signal }).catch(() => {
+      setErrorMatching('coucou');
+    });
+
+    return () => {
+      controller.abort();
+    };
+  }, []);
   const value = useMemo(() => {
     return {
       isMatching,

@@ -1,8 +1,9 @@
 import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import Confetti from 'react-confetti';
+import { useNavigate } from 'react-router-dom';
 
-import type { Conversations } from '@app/shared';
+import type { AllConversation, Conversations } from '@app/shared';
 
 import { useConversation } from '@/contexts/ConversationContext';
 import { useMatching } from '@/contexts/MatchingContext';
@@ -32,39 +33,31 @@ const moveVariant = {
 };
 
 export default function MatchingCard() {
-  const { conversationsList } = useConversation();
+  const { conversationsList, selectedConversation, userId } = useConversation();
   const { setIsMatching } = useMatching();
-  /*   const [conversation, setConversation] = useState<Conversations>();
-  const [error, setError] = useState<string>(); */
+  const [selectedLastConversation, setSelectedLastConversation] =
+    useState<AllConversation>();
+  const navigate = useNavigate();
+  console.log(selectedLastConversation);
+  console.log(conversationsList);
 
-  /*  useEffect(() => {
-    const controller = new AbortController();
-    const signal = controller.signal;
-    const fetchUserMatching = async () => {
-      const response = await fetch(`/api/users/${userId}/conversation`, {
-        signal,
-      });
+  /*  const [error, setError] = useState<string>();  */
 
-      const data = await response.json();
-      setConversation(data[0]);
-    };
-    fetchUserMatching().catch(() => {
-      setError('An occurred while fetching the message.');
-    });
-
-    return () => {
-      controller.abort();
-    };
-  }, []); */
-
-  console.log('conv', conversationsList);
+  useEffect(() => {
+    if (conversationsList) {
+      setSelectedLastConversation(conversationsList.at(-1));
+      console.log(selectedLastConversation, 'las');
+    }
+  }, [conversationsList]);
 
   return (
-    <div className={`absolute z-50 h-[calc(100vh-56px)] w-full`}>
+    <div
+      className={`absolute z-50 h-[calc(100vh-56px)] w-full overflow-hidden`}
+    >
       <div className='absolute z-40'>
         <Confetti />
       </div>
-      <div className='bg-gradient relative h-full w-full overflow-hidden'>
+      <div className='bg-gradient relative h-full w-full'>
         <button
           type='button'
           onClick={() => {
@@ -80,7 +73,11 @@ export default function MatchingCard() {
         <div className='relative z-30 mx-auto flex h-full w-full max-w-[500px] flex-col justify-between px-3 pb-14 pt-28'>
           <div className='flex w-full flex-col items-center'>
             <motion.img
-              src='/images/users-pictures/man-1.webp'
+              src={
+                userId === selectedLastConversation?.user_1.id
+                  ? selectedLastConversation?.user_2.picture_path
+                  : selectedLastConversation?.user_1.picture_path
+              }
               alt=''
               className='h-48 w-48 rounded-full shadow-md'
               variants={moveVariant}
@@ -107,12 +104,31 @@ export default function MatchingCard() {
                 custom='1.6'
               >
                 <h2 className='text-secondary'>{'You have a matching with'}</h2>
-                <h2 className='text-secondary text-3xl'>{'Maria'}</h2>
+                <h2 className='text-secondary text-3xl'>
+                  {userId === selectedLastConversation?.user_1.id
+                    ? selectedLastConversation?.user_2.name
+                    : selectedLastConversation?.user_1.name}
+                </h2>
               </motion.div>
             </div>
           </div>
+
           <div className='relative z-40 flex w-full justify-center'>
-            <Button type='submit' isOutline={false}>{`Send a message`}</Button>
+            <Button
+              type='submit'
+              isOutline={false}
+              onClick={() => {
+                selectedConversation(
+                  Number(selectedLastConversation?.conversation_id),
+                );
+                setIsMatching(false);
+                navigate(
+                  `/users/${userId}/conversations/${selectedLastConversation?.conversation_id}`,
+                );
+              }}
+            >
+              {`Send a message`}
+            </Button>
           </div>
         </div>
       </div>

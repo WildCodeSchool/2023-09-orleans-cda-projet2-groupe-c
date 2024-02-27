@@ -5,6 +5,7 @@ import { RouterProvider } from 'react-router-dom';
 import AuthContext from './contexts/AuthContext.tsx';
 import ConversationContext from './contexts/ConversationContext.tsx';
 import InteractionContext from './contexts/InteractionContext.tsx';
+import MatchingContext from './contexts/MatchingContext.tsx';
 import PreferenceContext from './contexts/PreferenceContext.tsx';
 import { ThemeContext } from './contexts/ThemeContext.tsx';
 import UsersInteractionsContext from './contexts/UsersInteractionsContext.tsx';
@@ -19,7 +20,7 @@ if (rootElement) {
       <AuthContext>
         <ThemeContext>
           <ConversationContext>
-            
+            <MatchingContext>
               <InteractionContext>
                 <PreferenceContext>
                   <UsersInteractionsContext>
@@ -27,7 +28,7 @@ if (rootElement) {
                   </UsersInteractionsContext>
                 </PreferenceContext>
               </InteractionContext>
-            
+            </MatchingContext>
           </ConversationContext>
         </ThemeContext>
       </AuthContext>

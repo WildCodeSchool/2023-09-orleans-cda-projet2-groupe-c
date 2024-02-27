@@ -7,16 +7,14 @@ import NavBar from '@/components/NavBar';
 import SidebarLayout from '@/components/SidebarLayout';
 import Filter from '@/components/filter/Filter';
 import RandomSentence from '@/components/home/RandomSentence';
-
-
+import MatchingCard from '@/components/matching/MatchingCard';
 import ConversationsList from '@/components/message/ConversationsList';
 import { useAuth } from '@/contexts/AuthContext';
 import { useConversation } from '@/contexts/ConversationContext';
+import { useMatching } from '@/contexts/MatchingContext';
 import { usePreference } from '@/contexts/PreferenceContext';
 
 import Logo from '../components/icons/LogoHomeIcon';
-import MatchingCard from '@/components/matching/MatchingCard';
-import useInteractions from '@/hooks/use-interactions';
 
 export default function Home() {
   // State to store user profile
@@ -26,9 +24,8 @@ export default function Home() {
 
   const { isVisibleFilter } = usePreference();
   const { isVisibleConversation, conversationId } = useConversation();
-  const {isMatching} = useInteractions()
+  const { isMatching } = useMatching();
   console.log('isMatching', isMatching);
-  
 
   const location = useLocation();
   const isHome = location.pathname === '/';
