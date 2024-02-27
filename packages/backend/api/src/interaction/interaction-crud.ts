@@ -365,18 +365,13 @@ interactionRouter.get(
 
           if (conversation.length === 0) {
             conversations.push(conversationData);
-          } else {
-            res.status(403).json({
-              success: false,
-              message: 'Conversation is already exist !',
-            });
           }
         }
         await db.insertInto('conversation').values(conversations).execute();
-       return res.status(200).json({ success: true, isMatching });
+        return res.status(200).json({ success: true, isMatching });
       }
 
-      return res.status(403).json({ success: false });
+      return res.status(403).json({ success: false, isMatching: false });
     } catch {
       return res.status(500).json({
         success: false,

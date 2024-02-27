@@ -11,6 +11,7 @@ import MatchingCard from '@/components/matching/MatchingCard';
 import ConversationsList from '@/components/message/ConversationsList';
 import { useAuth } from '@/contexts/AuthContext';
 import { useConversation } from '@/contexts/ConversationContext';
+import { useMatching } from '@/contexts/MatchingContext';
 import { usePreference } from '@/contexts/PreferenceContext';
 
 import Logo from '../components/icons/LogoHomeIcon';
@@ -23,8 +24,10 @@ export default function Home() {
 
   const { isVisibleFilter } = usePreference();
   const { isVisible, conversationId } = useConversation();
-  
- /*  console.log('conv', conversationsList?.length); */
+  const { isMatching } = useMatching();
+  console.log('isMatching', isMatching);
+
+  /*  console.log('conv', conversationsList?.length); */
 
   const location = useLocation();
   const isHome = location.pathname === '/';
@@ -93,7 +96,7 @@ export default function Home() {
       <main className='h-auto min-h-screen'>
         <NavBar />
         {/*   wait PR chat interaction for activate Matching card */}
-      {/*  <MatchingCard />  */}
+        {isMatching ? <MatchingCard /> : undefined}
 
         {/* Display messages only in the home page when the width is superior to 1024px */}
         <div

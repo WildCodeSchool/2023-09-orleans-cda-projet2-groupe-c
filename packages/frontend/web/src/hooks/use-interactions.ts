@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from 'react';
 import type { UserBody } from '@app/shared';
 
 import { useConversation } from '@/contexts/ConversationContext';
+import { useMatching } from '@/contexts/MatchingContext';
 
 export default function useInteractions({ ...props }) {
   const { userId } = props;
@@ -12,7 +13,8 @@ export default function useInteractions({ ...props }) {
   const { fetchConversations } = useConversation();
 
   const [interactionStatus, setInteractionStatus] = useState<string>();
-  const [errorInteraction, setErrorInteraction] = useState<string>();
+
+  const { fecthMatching } = useMatching();
 
   // Fetch users from the API
   const fetchUsers = useCallback(
@@ -90,15 +92,7 @@ export default function useInteractions({ ...props }) {
         throw new Error(`Fail to fetch user's superlike: ${String(error)}`);
       });
 
-      const fetchInteractionsVerify = async () => {
-        await fetch(`/api/users/interactions/verify`, {
-          signal,
-        });
-      };
-
-      await fetchInteractionsVerify().catch(() => {
-        setErrorInteraction(`Fail to fetch interactions verify`);
-      });
+      fecthMatching();
 
       // Fetch conversationList when the user interacts with someone
       fetchConversations({ signal });
@@ -154,6 +148,5 @@ export default function useInteractions({ ...props }) {
     fetchUsers,
     interactionStatus,
     setInteractionStatus,
-    errorInteraction,
   };
 }

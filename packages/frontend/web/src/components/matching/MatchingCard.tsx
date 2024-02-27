@@ -1,5 +1,11 @@
 import { motion } from 'framer-motion';
+import { useEffect, useState } from 'react';
 import Confetti from 'react-confetti';
+
+import type { Conversations } from '@app/shared';
+
+import { useConversation } from '@/contexts/ConversationContext';
+import { useMatching } from '@/contexts/MatchingContext';
 
 import Button from '../Button';
 import BackgroundCircleIcon from '../icons/BackgroundCircleIcon';
@@ -26,6 +32,33 @@ const moveVariant = {
 };
 
 export default function MatchingCard() {
+  const { conversationsList } = useConversation();
+  const { setIsMatching } = useMatching();
+  /*   const [conversation, setConversation] = useState<Conversations>();
+  const [error, setError] = useState<string>(); */
+
+  /*  useEffect(() => {
+    const controller = new AbortController();
+    const signal = controller.signal;
+    const fetchUserMatching = async () => {
+      const response = await fetch(`/api/users/${userId}/conversation`, {
+        signal,
+      });
+
+      const data = await response.json();
+      setConversation(data[0]);
+    };
+    fetchUserMatching().catch(() => {
+      setError('An occurred while fetching the message.');
+    });
+
+    return () => {
+      controller.abort();
+    };
+  }, []); */
+
+  console.log('conv', conversationsList);
+
   return (
     <div className={`absolute z-50 h-[calc(100vh-56px)] w-full`}>
       <div className='absolute z-40'>
@@ -34,6 +67,9 @@ export default function MatchingCard() {
       <div className='bg-gradient relative h-full w-full overflow-hidden'>
         <button
           type='button'
+          onClick={() => {
+            setIsMatching(false);
+          }}
           className='absolute right-5 top-5 z-50 cursor-pointer'
         >
           <CrossIcon className='w-8' />

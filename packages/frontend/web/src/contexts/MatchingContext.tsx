@@ -6,6 +6,9 @@ type MatchingProviderProps = {
 
 type MatchingState = {
   isMatching: boolean;
+  fecthMatching: () => void;
+  errorMatching?: string;
+  setIsMatching: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const matchingProviderContext = createContext<MatchingState | undefined>(
@@ -17,6 +20,7 @@ export default function MatchingContext({
   ...props
 }: MatchingProviderProps) {
   const [isMatching, setIsMatching] = useState<boolean>(false);
+  const [errorMatching, setErrorMatching] = useState<string>();
 
   const fecthMatching = async () => {
     const controller = new AbortController();
@@ -28,24 +32,21 @@ export default function MatchingContext({
       const data = (await response.json()) as { isMatching: boolean };
       setIsMatching(data.isMatching);
 
-      if (isMatching) {
-        console.log('coucou');
-      } else {
-        console.log('brahhhh');
-      }
-
       return () => {
         controller.abort();
       };
     } catch {
-      //
+      setErrorMatching('ⓘ An error occurred while fetching Matching verify.');
     }
   };
   const value = useMemo(() => {
     return {
       isMatching,
+      errorMatching,
+      fecthMatching,
+      setIsMatching,
     };
-  }, [isMatching]);
+  }, [errorMatching, isMatching]);
 
   return (
     <matchingProviderContext.Provider {...props} value={value}>
