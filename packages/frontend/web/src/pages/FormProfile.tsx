@@ -117,14 +117,8 @@ export default function FormProfile() {
           };
 
           await fetchData();
-
-          // verify({ signal });
-
           fetchPreferences({ signal });
-
           await fetchUsers({ signal });
-
-          // navigate('/');
 
           return () => {
             controller.abort();
