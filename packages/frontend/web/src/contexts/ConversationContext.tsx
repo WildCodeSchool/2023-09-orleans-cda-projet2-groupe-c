@@ -19,8 +19,8 @@ type ConversationProviderProps = {
 
 type ConversationState = {
   userId?: number;
-  isVisible: boolean;
-  setIsVisible: React.Dispatch<React.SetStateAction<boolean>>;
+  isVisibleConversation: boolean;
+  setIsVisibleConversation: React.Dispatch<React.SetStateAction<boolean>>;
   handleConversationClick: () => void;
   messagesCount: number;
   conversationsList?: AllConversation[];
@@ -48,7 +48,8 @@ export default function ConversationContext({
 
   const [conversationId, setConversationId] = useState<number>();
 
-  const [isVisible, setIsVisible] = useState<boolean>(false);
+  const [isVisibleConversation, setIsVisibleConversation] =
+    useState<boolean>(false);
 
   const { conversationsList, messagesCount, fetchConversations } =
     useAllConversations();
@@ -61,22 +62,22 @@ export default function ConversationContext({
       }
 
       if (window.innerWidth < 1024) {
-        setIsVisible(false);
+        setIsVisibleConversation(false);
       }
     },
     [conversationsList],
   );
 
   const handleConversationClick = () => {
-    setIsVisible((prev) => !prev);
+    setIsVisibleConversation((prev) => !prev);
   };
 
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth >= 1024) {
-        setIsVisible(true);
+        setIsVisibleConversation(true);
       } else {
-        setIsVisible(false);
+        setIsVisibleConversation(false);
       }
     };
 
@@ -87,7 +88,7 @@ export default function ConversationContext({
     return () => {
       window.removeEventListener('resize', handleResize);
     };
-  }, [setIsVisible]);
+  }, [setIsVisibleConversation]);
 
   //Fetches the conversation
   useEffect(() => {
@@ -125,8 +126,8 @@ export default function ConversationContext({
   const value = useMemo(() => {
     return {
       userId,
-      isVisible,
-      setIsVisible,
+      isVisibleConversation,
+      setIsVisibleConversation,
       handleConversationClick,
       messagesCount,
       conversationsList,
@@ -138,8 +139,8 @@ export default function ConversationContext({
     };
   }, [
     userId,
-    isVisible,
-    setIsVisible,
+    isVisibleConversation,
+    setIsVisibleConversation,
     messagesCount,
     conversationsList,
     selectedConversation,

@@ -1,4 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
+import { motion } from 'framer-motion';
 import { useState } from 'react';
 import { type SubmitHandler, useForm } from 'react-hook-form';
 
@@ -17,6 +18,22 @@ import FilterDistanceForm from './FilterDistanceForm';
 import FilterGenderForm from './FilterGenderForm';
 import FilterLanguagesForm from './FilterLanguagesForm';
 import FilterLine from './FilterLine';
+
+const modalVariant = {
+  hidden: {
+    opacity: 0,
+    x: '100%',
+  },
+  visible: {
+    opacity: 1,
+    x: 0,
+    transition: {
+      type: 'spring',
+      damping: 20,
+      stiffness: 150,
+    },
+  },
+};
 
 export default function Filter() {
   // State to store the error message
@@ -52,7 +69,12 @@ export default function Filter() {
   };
 
   return (
-    <div className='mx-auto flex h-[calc(100vh-56px)] max-h-[calc(100vh-56px)] w-full max-w-[500px] flex-col gap-4 px-3 pb-4 pt-3 lg:mx-0 lg:max-w-full'>
+    <motion.div
+      variants={modalVariant}
+      initial='hidden'
+      animate='visible'
+      className='mx-auto flex h-[calc(100vh-56px)] max-h-[calc(100vh-56px)] w-full max-w-[500px] flex-col gap-4 px-3 pb-4 pt-3 lg:mx-0 lg:max-w-full'
+    >
       <header className='flex items-center gap-2'>
         <BulletBase size='8'>
           <FilterIcon className='fill-secondary' />
@@ -88,6 +110,6 @@ export default function Filter() {
         </div>
         <Button type='submit' isOutline={false}>{`Apply`}</Button>
       </form>
-    </div>
+    </motion.div>
   );
 }
