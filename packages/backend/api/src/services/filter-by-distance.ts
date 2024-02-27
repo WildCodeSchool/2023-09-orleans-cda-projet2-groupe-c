@@ -57,7 +57,8 @@ export const filteredUsersByDistance = async ({
     const filter = await filteredByDistance(userId, users, range);
 
     return filter;
-  } catch {
+  } catch (error) {
+    console.error(error);
     throw new Error('An error occurred while filtering users by distance.');
   }
 };
