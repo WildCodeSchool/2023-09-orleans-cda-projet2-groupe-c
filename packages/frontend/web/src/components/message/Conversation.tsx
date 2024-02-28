@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 
@@ -21,68 +21,74 @@ export default function Conversation() {
     conversationId,
     conversationsList,
     fetchConversations,
+    scrollToBottom,
+    messagesEndReference,
   } = useConversation();
   const { register, handleSubmit, reset } = useForm<MessageValidation>({
     resolver: zodResolver(messageSchema),
   });
-  const messagesEndReference = useRef<HTMLDivElement | null>(null);
-
-  const scrollToBottom = () => {
-    messagesEndReference.current?.scrollIntoView({ behavior: 'instant' });
-  };
   const [error, setError] = useState<string>();
 
   useEffect(() => {
     setTimeout(scrollToBottom, 50);
-  }, [selectedConversation]);
+  }, [scrollToBottom, selectedConversation]);
 
   const navigate = useNavigate();
 
   const handleCloseConversation = () => {
     if (window.innerWidth < 1024) {
       setIsVisibleConversation(true);
+      navigate('/');
     } else {
       navigate('/');
     }
   };
 
-  const formSubmit = async (data: MessageValidation) => {
-    try {
-      const res = await fetch(
-        `/api/users/${userId}/conversations/${conversation?.conversation_id}/message`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
+  const formSubmit = useCallback(
+    async (data: MessageValidation) => {
+      try {
+        await fetch(
+          `/api/users/${userId}/conversations/${conversation?.conversation_id}/message`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
           },
-          body: JSON.stringify(data),
-        },
-      );
-
-      if (res.ok) {
-        const controller = new AbortController();
-        const signal = controller.signal;
-        fetchConversations({ signal });
-        setTimeout(scrollToBottom, 1000);
-
-        return () => {
-          controller.abort();
-        };
+        );
+      } catch {
+        setError('An error occurent when you send messages');
+      } finally {
+        reset();
       }
-    } catch {
-      setError('An error occurent when you send messages');
-    } finally {
-      reset();
-    }
-  };
+    },
+    [conversation?.conversation_id, reset, userId],
+  );
+
+  useEffect(() => {
+    const controller = new AbortController();
+    const signal = controller.signal;
+
+    fetchConversations({ signal });
+
+    /* setTimeout(scrollToBottom, 1000); */
+
+    return () => {
+      controller.abort();
+    };
+  }, [fetchConversations, scrollToBottom, formSubmit]);
 
   useEffect(() => {
     const controller = new AbortController();
     const { signal } = controller;
+
     fetchMessage({ signal }).catch((error) => {
-     setError(error.message)
+      throw new Error(`${String(error)}`);
     });
-    const interval = setInterval(fetchMessage, 1100);
+
+    const interval = setInterval(fetchMessage, 2000);
+
     return () => {
       controller.abort();
       clearInterval(interval);

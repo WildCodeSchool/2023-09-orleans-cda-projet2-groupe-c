@@ -4,6 +4,7 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from 'react';
 
@@ -29,6 +30,8 @@ type ConversationState = {
   conversation?: Conversations;
   fetchConversations: ({ signal }: { signal: AbortSignal }) => void;
   fetchMessage: ({ signal }: { signal: AbortSignal }) => Promise<void>;
+  scrollToBottom: () => void;
+  messagesEndReference: React.MutableRefObject<HTMLDivElement | null>;
 };
 
 // Create context
@@ -44,7 +47,13 @@ export default function ConversationContext({
 
   const [conversation, setConversation] = useState<Conversations>();
 
-  /*  const [error, setError] = useState<string>(); */
+  const messagesEndReference = useRef<HTMLDivElement | null>(null);
+
+  const scrollToBottom = () => {
+    messagesEndReference.current?.scrollIntoView({ behavior: 'instant' });
+  };
+
+  const [error, setError] = useState<string>();
 
   const [conversationId, setConversationId] = useState<number>();
 
@@ -91,6 +100,37 @@ export default function ConversationContext({
   }, [setIsVisibleConversation]);
 
   //Fetches the conversation
+  /* useEffect(() => {
+    if (Boolean(conversationId) && conversationsList !== undefined) {
+      const controller = new AbortController();
+
+      const signal = controller.signal;
+      const fetchMessage = async () => {
+        const response = await fetch(
+          `/api/users/${userId}/conversations/${conversationId}`,
+          {
+            signal,
+          },
+        );
+
+        const data = await response.json();
+
+        setConversation(data[0]);
+      };
+
+      fetchMessage().catch(() => {
+        setError('An occurred while fetching the message.');
+      });
+
+      //Fetches the messages to update the conversation with new messages
+      const intervalId = setInterval(fetchMessage, 1100);
+
+      return () => {
+        clearInterval(intervalId);
+        controller.abort();
+      };
+    }
+  }, [conversationId, conversationsList, userId]); */
 
   const fetchMessage = useCallback(
     async ({ signal }: { signal: AbortSignal }) => {
@@ -121,11 +161,12 @@ export default function ConversationContext({
       conversation,
       fetchConversations,
       fetchMessage,
+      scrollToBottom,
+      messagesEndReference,
     };
   }, [
     userId,
     isVisibleConversation,
-    setIsVisibleConversation,
     messagesCount,
     conversationsList,
     selectedConversation,
