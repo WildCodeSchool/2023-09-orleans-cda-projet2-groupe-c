@@ -47,12 +47,12 @@ export default function useAllConversations() {
     const signal = controller.signal;
 
     fetchConversations({ signal }).catch(() => {
-      setErrorConversation(`Failed to fetch messages`);
+      setErrorConversation(`Failed to fetch conversations`);
     });
 
     const interval = setInterval(() => {
-      fetchConversations({ signal }).catch((error) => {
-        throw new Error(`${String(error)}`);
+      fetchConversations({ signal }).catch(() => {
+        setErrorConversation('Failed to fetch conversations');
       });
     }, 2600);
 
