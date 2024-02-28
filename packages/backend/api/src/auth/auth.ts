@@ -139,7 +139,7 @@ authRouter.post(
 
 // Route to get the user's activation code from the database
 authRouter.get(
-  '/registration/users/:userId/code',
+  '/registration/users/code',
   getUserId,
   async (req: Request, res) => {
     try {

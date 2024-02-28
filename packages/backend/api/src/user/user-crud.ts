@@ -27,7 +27,7 @@ userRouter.get('/profile', getUserId, async (req: Request, res) => {
 });
 
 // Fetch a list of users without the user logged in
-userRouter.get('/:userId', getUserId, async (req: Request, res) => {
+userRouter.get('/', getUserId, async (req: Request, res) => {
   try {
     // Get the user id from JWT
     const userId = req.userId as number;
@@ -53,8 +53,12 @@ userRouter.get('/:userId', getUserId, async (req: Request, res) => {
     });
 
     res.status(200).json(filteredUsers);
-  } catch {
-    res.status(500).json({ error: 'An error occurred while fetching users' });
+  } catch (error) {
+    // console.error(error);
+    res.status(500).json({
+      message: 'An error occurred while fetching users',
+      error,
+    });
   }
 });
 

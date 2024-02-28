@@ -1,3 +1,4 @@
+/* eslint-disable unicorn/no-nested-ternary */
 import { useEffect, useState } from 'react';
 import { useController, useFormContext } from 'react-hook-form';
 
@@ -140,59 +141,68 @@ export default function LanguageAndTechnology({
                 : 'max-h-[35vh] md:max-h-[42vh]'
             }`}
           >
-            {items.map((item) => (
-              <div
-                className='flex flex-col items-center text-center duration-200 hover:scale-105'
-                key={item.id}
-              >
-                <label
-                  htmlFor={item.name}
-                  className={`hover:outline-primary cursor-pointer text-[12px] hover:rounded-md hover:outline hover:outline-offset-2 lg:h-16 lg:w-16 ${
-                    value.some((selectedItem) => selectedItem.id === item.id)
-                      ? 'outline-primary rounded-md outline outline-offset-2'
-                      : undefined
-                  }`}
-                >
-                  <div className='relative flex justify-center'>
-                    {value.some(
-                      (selectedItem) => selectedItem.id === item.id,
-                    ) ? (
-                      <div className='bg-primary absolute right-0 top-0 flex h-5 w-5 translate-x-2 translate-y-[-8px] items-center justify-center rounded-full'>
-                        <p className='text-white'>
-                          {value.findIndex(
-                            (selectedItem) => selectedItem.id === item.id,
-                          ) + 1}
-                        </p>
-                      </div>
-                    ) : undefined}
-                    <div className='h-full w-full'>
-                      <img
-                        className='h-full w-full object-cover object-center'
-                        src={item.logo_path}
-                      />
-                    </div>
-                  </div>
-                </label>
+            {items.map((item) => {
+              const itemName =
+                item.name === 'javascript'
+                  ? 'JS'
+                  : item.name === 'typescript'
+                    ? 'TS'
+                    : item.name === 'sublim-text'
+                      ? 'SublimT'
+                      : item.name.charAt(0).toUpperCase() + item.name.slice(1);
 
-                <p className='mt-1'>
-                  {item.name.charAt(0).toUpperCase() + item.name.slice(1)}
-                </p>
-                <input
-                  id={item.name}
-                  type='checkbox'
-                  hidden
-                  {...field}
-                  onChange={handleCheckboxChange}
+              return (
+                <div
+                  className='flex flex-col items-center text-center duration-200 hover:scale-105'
                   key={item.id}
-                  checked={value.some((val) => val.id === item.id)}
-                  value={item.id}
-                  disabled={
-                    value.length >= 6 &&
-                    !value.some((selectedItem) => selectedItem.id === item.id)
-                  }
-                />
-              </div>
-            ))}
+                >
+                  <label
+                    htmlFor={item.name}
+                    className={`hover:outline-primary cursor-pointer text-[12px] hover:rounded-md hover:outline hover:outline-offset-2 lg:h-16 lg:w-16 ${
+                      value.some((selectedItem) => selectedItem.id === item.id)
+                        ? 'outline-primary rounded-md outline outline-offset-2'
+                        : undefined
+                    }`}
+                  >
+                    <div className='relative flex justify-center'>
+                      {value.some(
+                        (selectedItem) => selectedItem.id === item.id,
+                      ) ? (
+                        <div className='bg-primary absolute right-0 top-0 flex h-5 w-5 translate-x-2 translate-y-[-8px] items-center justify-center rounded-full'>
+                          <p className='text-white'>
+                            {value.findIndex(
+                              (selectedItem) => selectedItem.id === item.id,
+                            ) + 1}
+                          </p>
+                        </div>
+                      ) : undefined}
+                      <div className='h-full w-full'>
+                        <img
+                          className='h-full w-full object-cover object-center'
+                          src={item.logo_path}
+                        />
+                      </div>
+                    </div>
+                  </label>
+
+                  <p className='mt-1'>{itemName}</p>
+                  <input
+                    id={item.name}
+                    type='checkbox'
+                    hidden
+                    {...field}
+                    onChange={handleCheckboxChange}
+                    key={item.id}
+                    checked={value.some((val) => val.id === item.id)}
+                    value={item.id}
+                    disabled={
+                      value.length >= 6 &&
+                      !value.some((selectedItem) => selectedItem.id === item.id)
+                    }
+                  />
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>
