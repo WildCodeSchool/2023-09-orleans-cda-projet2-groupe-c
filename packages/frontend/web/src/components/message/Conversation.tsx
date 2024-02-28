@@ -6,7 +6,6 @@ import { useNavigate } from 'react-router-dom';
 import { type MessageValidation, messageSchema } from '@app/shared';
 
 import { useConversation } from '@/contexts/ConversationContext';
-import useAllConversations from '@/hooks/use-all-conversations';
 
 import CrossIcon from '../icons/CrossIcon';
 import SendIcon from '../icons/SendIcon';
