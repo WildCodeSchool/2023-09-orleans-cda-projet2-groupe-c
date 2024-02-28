@@ -18,20 +18,16 @@ export default function Conversation() {
     setIsVisibleConversation,
     selectedConversation,
     fetchMessage,
-    conversationId,
-    conversationsList,
-    fetchConversations,
     scrollToBottom,
     messagesEndReference,
   } = useConversation();
+
   const { register, handleSubmit, reset } = useForm<MessageValidation>({
     resolver: zodResolver(messageSchema),
   });
-  const [error, setError] = useState<string>();
 
-  useEffect(() => {
-    setTimeout(scrollToBottom, 50);
-  }, [scrollToBottom, selectedConversation]);
+  // const [isMessageSent, setIsMessageSent] = useState<boolean>(false);
+  const [error, setError] = useState<string>();
 
   const navigate = useNavigate();
 
@@ -66,35 +62,30 @@ export default function Conversation() {
     [conversation?.conversation_id, reset, userId],
   );
 
+  // Fetch all messages from a conversation with a interval
   useEffect(() => {
     const controller = new AbortController();
     const signal = controller.signal;
 
-    fetchConversations({ signal });
+    void fetchMessage({ signal });
 
-    /* setTimeout(scrollToBottom, 1000); */
-
-    return () => {
-      controller.abort();
-    };
-  }, [fetchConversations, scrollToBottom, formSubmit]);
-
-  useEffect(() => {
-    const controller = new AbortController();
-    const { signal } = controller;
-
-    fetchMessage({ signal }).catch((error) => {
-      throw new Error(`${String(error)}`);
-    });
-
-    const interval = setInterval(fetchMessage, 2000);
+    const interval = setInterval(() => {
+      fetchMessage({ signal }).catch((error) => {
+        throw new Error(`${String(error)}`);
+      });
+    }, 2000);
 
     return () => {
       controller.abort();
       clearInterval(interval);
     };
-  }, [conversationId, conversationsList, fetchMessage]);
+  }, [fetchMessage]);
 
+  useEffect(() => {
+    setTimeout(scrollToBottom, 50);
+  }, [scrollToBottom, selectedConversation]);
+
+  // Get the current user
   const currentUser =
     conversation?.user_1.id === userId
       ? conversation?.user_1

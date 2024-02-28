@@ -28,7 +28,6 @@ type ConversationState = {
   selectedConversation: (index: number) => void;
   conversationId?: number;
   conversation?: Conversations;
-  fetchConversations: ({ signal }: { signal: AbortSignal }) => void;
   fetchMessage: ({ signal }: { signal: AbortSignal }) => Promise<void>;
   scrollToBottom: () => void;
   messagesEndReference: React.MutableRefObject<HTMLDivElement | null>;
@@ -53,15 +52,12 @@ export default function ConversationContext({
     messagesEndReference.current?.scrollIntoView({ behavior: 'instant' });
   };
 
-  const [error, setError] = useState<string>();
-
   const [conversationId, setConversationId] = useState<number>();
 
   const [isVisibleConversation, setIsVisibleConversation] =
     useState<boolean>(false);
 
-  const { conversationsList, messagesCount, fetchConversations } =
-    useAllConversations();
+  const { conversationsList, messagesCount } = useAllConversations();
 
   //Allows to select the conversation id
   const selectedConversation = useCallback(
@@ -99,39 +95,6 @@ export default function ConversationContext({
     };
   }, [setIsVisibleConversation]);
 
-  //Fetches the conversation
-  /* useEffect(() => {
-    if (Boolean(conversationId) && conversationsList !== undefined) {
-      const controller = new AbortController();
-
-      const signal = controller.signal;
-      const fetchMessage = async () => {
-        const response = await fetch(
-          `/api/users/${userId}/conversations/${conversationId}`,
-          {
-            signal,
-          },
-        );
-
-        const data = await response.json();
-
-        setConversation(data[0]);
-      };
-
-      fetchMessage().catch(() => {
-        setError('An occurred while fetching the message.');
-      });
-
-      //Fetches the messages to update the conversation with new messages
-      const intervalId = setInterval(fetchMessage, 1100);
-
-      return () => {
-        clearInterval(intervalId);
-        controller.abort();
-      };
-    }
-  }, [conversationId, conversationsList, userId]); */
-
   const fetchMessage = useCallback(
     async ({ signal }: { signal: AbortSignal }) => {
       const response = await fetch(
@@ -159,7 +122,6 @@ export default function ConversationContext({
       selectedConversation,
       conversationId,
       conversation,
-      fetchConversations,
       fetchMessage,
       scrollToBottom,
       messagesEndReference,
@@ -172,7 +134,6 @@ export default function ConversationContext({
     selectedConversation,
     conversationId,
     conversation,
-    fetchConversations,
     fetchMessage,
   ]);
 

@@ -25,7 +25,6 @@ export default function Home() {
   const { isVisibleFilter } = usePreference();
   const { isVisibleConversation, conversationId } = useConversation();
   const { isMatching } = useMatching();
-  console.log('isMatching', isMatching);
 
   const location = useLocation();
   const isHome = location.pathname === '/';
