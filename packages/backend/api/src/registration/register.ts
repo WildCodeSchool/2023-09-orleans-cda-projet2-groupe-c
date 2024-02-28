@@ -135,7 +135,32 @@ const upload = multer({
       callback(new Error('Only .jpeg, .jpg, .png and .webp format allowed!'));
     }
   },
-});
+}).fields([
+  {
+    name: 'picture_1',
+    maxCount: 1,
+  },
+  {
+    name: 'picture_2',
+    maxCount: 1,
+  },
+  {
+    name: 'picture_3',
+    maxCount: 1,
+  },
+  {
+    name: 'picture_4',
+    maxCount: 1,
+  },
+  {
+    name: 'picture_5',
+    maxCount: 1,
+  },
+  {
+    name: 'picture_6',
+    maxCount: 1,
+  },
+]);
 
 // Upload route
 registerRouter.post(
@@ -143,32 +168,7 @@ registerRouter.post(
   getUserId,
   // Middleware multer used to upload file and handle errors
   (req, res, next) => {
-    upload.fields([
-      {
-        name: 'picture_1',
-        maxCount: 1,
-      },
-      {
-        name: 'picture_2',
-        maxCount: 1,
-      },
-      {
-        name: 'picture_3',
-        maxCount: 1,
-      },
-      {
-        name: 'picture_4',
-        maxCount: 1,
-      },
-      {
-        name: 'picture_5',
-        maxCount: 1,
-      },
-      {
-        name: 'picture_6',
-        maxCount: 1,
-      },
-    ])(req, res, (err) => {
+    upload(req, res, (err) => {
       // Check if the error is an instance of multer error
       if (err instanceof multer.MulterError) {
         // Check if the code error is LIMIT_FILE_SIZE to send a custom message
