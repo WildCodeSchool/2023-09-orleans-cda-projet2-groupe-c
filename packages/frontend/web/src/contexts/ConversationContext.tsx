@@ -4,6 +4,7 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from 'react';
 
@@ -27,7 +28,9 @@ type ConversationState = {
   selectedConversation: (index: number) => void;
   conversationId?: number;
   conversation?: Conversations;
-  error?: string;
+  fetchMessage: ({ signal }: { signal: AbortSignal }) => Promise<void>;
+  scrollToBottom: () => void;
+  messagesEndReference: React.MutableRefObject<HTMLDivElement | null>;
   fetchConversations: ({ signal }: { signal: AbortSignal }) => void;
 };
 
@@ -44,7 +47,11 @@ export default function ConversationContext({
 
   const [conversation, setConversation] = useState<Conversations>();
 
-  const [error, setError] = useState<string>();
+  const messagesEndReference = useRef<HTMLDivElement | null>(null);
+
+  const scrollToBottom = () => {
+    messagesEndReference.current?.scrollIntoView({ behavior: 'instant' });
+  };
 
   const [conversationId, setConversationId] = useState<number>();
 
@@ -90,38 +97,21 @@ export default function ConversationContext({
     };
   }, [setIsVisibleConversation]);
 
-  //Fetches the conversation
-  useEffect(() => {
-    if (Boolean(conversationId) && conversationsList !== undefined) {
-      const controller = new AbortController();
+  const fetchMessage = useCallback(
+    async ({ signal }: { signal: AbortSignal }) => {
+      const response = await fetch(
+        `/api/users/${userId}/conversations/${conversationId}`,
+        {
+          signal,
+        },
+      );
 
-      const signal = controller.signal;
-      const fetchMessage = async () => {
-        const response = await fetch(
-          `/api/users/${userId}/conversations/${conversationId}`,
-          {
-            signal,
-          },
-        );
+      const data = await response.json();
 
-        const data = await response.json();
-
-        setConversation(data[0]);
-      };
-
-      fetchMessage().catch(() => {
-        setError('An occurred while fetching the message.');
-      });
-
-      //Fetches the messages to update the conversation with new messages
-      const intervalId = setInterval(fetchMessage, 1100);
-
-      return () => {
-        clearInterval(intervalId);
-        controller.abort();
-      };
-    }
-  }, [conversationId, conversationsList, userId]);
+      setConversation(data[0]);
+    },
+    [conversationId, userId],
+  );
 
   const value = useMemo(() => {
     return {
@@ -134,19 +124,20 @@ export default function ConversationContext({
       selectedConversation,
       conversationId,
       conversation,
-      error,
+      fetchMessage,
+      scrollToBottom,
+      messagesEndReference,
       fetchConversations,
     };
   }, [
     userId,
     isVisibleConversation,
-    setIsVisibleConversation,
     messagesCount,
     conversationsList,
     selectedConversation,
     conversationId,
     conversation,
-    error,
+    fetchMessage,
     fetchConversations,
   ]);
 

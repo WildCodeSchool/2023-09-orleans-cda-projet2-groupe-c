@@ -373,7 +373,7 @@ interactionRouter.get(
         return res.status(200).json({ success: true, isMatching });
       }
 
-      return res.status(403).json({ success: false });
+      return res.status(403).json({ success: false, isMatching: false });
     } catch {
       return res.status(500).json({
         success: false,
