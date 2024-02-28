@@ -31,6 +31,7 @@ type ConversationState = {
   fetchMessage: ({ signal }: { signal: AbortSignal }) => Promise<void>;
   scrollToBottom: () => void;
   messagesEndReference: React.MutableRefObject<HTMLDivElement | null>;
+  fetchConversations: ({ signal }: { signal: AbortSignal }) => void;
 };
 
 // Create context
@@ -57,7 +58,8 @@ export default function ConversationContext({
   const [isVisibleConversation, setIsVisibleConversation] =
     useState<boolean>(false);
 
-  const { conversationsList, messagesCount } = useAllConversations();
+  const { conversationsList, messagesCount, fetchConversations } =
+    useAllConversations();
 
   //Allows to select the conversation id
   const selectedConversation = useCallback(
@@ -125,6 +127,7 @@ export default function ConversationContext({
       fetchMessage,
       scrollToBottom,
       messagesEndReference,
+      fetchConversations,
     };
   }, [
     userId,
@@ -135,6 +138,7 @@ export default function ConversationContext({
     conversationId,
     conversation,
     fetchMessage,
+    fetchConversations,
   ]);
 
   return (

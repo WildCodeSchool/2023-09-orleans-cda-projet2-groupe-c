@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import { useAuth } from '@/contexts/AuthContext';
 
@@ -27,12 +27,8 @@ export default function useAllConversations() {
   const [errorConversation, setErrorConversation] = useState<string>();
   const { isLoggedIn } = useAuth();
 
-  // Fetch conversations between the user logged in and other users
-  useEffect(() => {
-    const controller = new AbortController();
-    const signal = controller.signal;
-
-    const fetchConversations = async () => {
+  const fetchConversations = useCallback(
+    async ({ signal }: { signal: AbortSignal }) => {
       const res = await fetch(`/api/users/conversations`, {
         signal,
       });
@@ -41,16 +37,23 @@ export default function useAllConversations() {
         const data = await res.json();
         setConversationsList(data.conversation);
       }
-    };
+    },
+    [],
+  );
 
-    fetchConversations().catch(() => {
+  // Fetch conversations between the user logged in and other users
+  useEffect(() => {
+    const controller = new AbortController();
+    const signal = controller.signal;
+
+    fetchConversations({ signal }).catch(() => {
       setErrorConversation(`Failed to fetch messages`);
     });
 
     return () => {
       controller.abort();
     };
-  }, [isLoggedIn]);
+  }, [fetchConversations, isLoggedIn]);
 
   // Set the number of messages
   useEffect(() => {
@@ -63,5 +66,6 @@ export default function useAllConversations() {
     conversationsList,
     messagesCount,
     errorConversation,
+    fetchConversations,
   };
 }
