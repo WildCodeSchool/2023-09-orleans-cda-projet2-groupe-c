@@ -23,8 +23,6 @@ export default function Conversation() {
     messagesEndReference,
   } = useConversation();
 
-  const { fetchConversations } = useAllConversations();
-
   const { register, handleSubmit, reset } = useForm<MessageValidation>({
     resolver: zodResolver(messageSchema),
   });
@@ -75,7 +73,7 @@ export default function Conversation() {
       fetchMessage({ signal }).catch((error) => {
         throw new Error(`${String(error)}`);
       });
-    }, 2000);
+    }, 1100);
 
     return () => {
       controller.abort();

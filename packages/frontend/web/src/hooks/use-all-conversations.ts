@@ -54,7 +54,7 @@ export default function useAllConversations() {
       fetchConversations({ signal }).catch((error) => {
         throw new Error(`${String(error)}`);
       });
-    }, 2500);
+    }, 2600);
 
     return () => {
       controller.abort();
