@@ -26,7 +26,6 @@ export default function Conversation() {
     resolver: zodResolver(messageSchema),
   });
 
-  // const [isMessageSent, setIsMessageSent] = useState<boolean>(false);
   const [error, setError] = useState<string>();
 
   const navigate = useNavigate();

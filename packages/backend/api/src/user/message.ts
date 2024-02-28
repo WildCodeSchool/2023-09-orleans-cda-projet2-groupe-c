@@ -153,6 +153,4 @@ messageRouter.post(
     }
   },
 );
-
-//todo get route for matching card
 export default messageRouter;
