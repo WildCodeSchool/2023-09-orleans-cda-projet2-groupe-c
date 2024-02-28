@@ -69,28 +69,24 @@ export default function Conversation() {
           controller.abort();
         };
       }
-    } catch (error) {
-      throw new Error(`${String(error)}`);
+    } catch {
+      setError('An error occurent when you send messages');
     } finally {
       reset();
     }
   };
 
   useEffect(() => {
-    if (conversationsList && Boolean(conversationId)) {
-      const controller = new AbortController();
-      const { signal } = controller;
-      const interval = setInterval(() => {
-        fetchMessage({ signal }).catch(() => {
-          setError('coucou');
-        });
-      }, 1100);
-
-      return () => {
-        controller.abort();
-        clearInterval(interval);
-      };
-    }
+    const controller = new AbortController();
+    const { signal } = controller;
+    fetchMessage({ signal }).catch((error) => {
+     setError(error.message)
+    });
+    const interval = setInterval(fetchMessage, 1100);
+    return () => {
+      controller.abort();
+      clearInterval(interval);
+    };
   }, [conversationId, conversationsList, fetchMessage]);
 
   const currentUser =

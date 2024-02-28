@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import Confetti from 'react-confetti';
 import { useNavigate } from 'react-router-dom';
 
-import type { AllConversation, Conversations } from '@app/shared';
+import type { AllConversation } from '@app/shared';
 
 import { useConversation } from '@/contexts/ConversationContext';
 import { useMatching } from '@/contexts/MatchingContext';
@@ -38,17 +38,12 @@ export default function MatchingCard() {
   const [selectedLastConversation, setSelectedLastConversation] =
     useState<AllConversation>();
   const navigate = useNavigate();
-  console.log(selectedLastConversation);
-  console.log(conversationsList);
-
-  /*  const [error, setError] = useState<string>();  */
 
   useEffect(() => {
     if (conversationsList) {
       setSelectedLastConversation(conversationsList.at(-1));
-      console.log(selectedLastConversation, 'las');
     }
-  }, [conversationsList]);
+  }, [conversationsList, selectedLastConversation]);
 
   return (
     <div
