@@ -141,6 +141,44 @@ export const formBirthdateSchema = z
   })
   .required();
 
+// Schema upload picture
+export type PictureBody =
+  | 'picture_1'
+  | 'picture_2'
+  | 'picture_3'
+  | 'picture_4'
+  | 'picture_5'
+  | 'picture_6';
+
+const MAX_FILE_SIZE = 1 * 1024 * 1024; // 1mb
+const ACCEPTED_IMAGE_TYPES = new Set([
+  'image/jpeg',
+  'image/jpg',
+  'image/png',
+  'image/webp',
+]);
+
+const pictureSchema = z
+  .any()
+  .refine((files) => files?.length == 1, 'ⓘ Profile picture is required.')
+  .refine(
+    (files) => files?.[0]?.size <= MAX_FILE_SIZE,
+    `ⓘ Max file size is 1MB.`,
+  )
+  .refine(
+    (files) => ACCEPTED_IMAGE_TYPES.has(files?.[0]?.type),
+    'ⓘ .jpg, .jpeg, .png and .webp files are accepted.',
+  );
+
+export const pictureBodySchema = z.object({
+  picture_1: pictureSchema,
+  picture_2: pictureSchema.optional(),
+  picture_3: pictureSchema.optional(),
+  picture_4: pictureSchema.optional(),
+  picture_5: pictureSchema.optional(),
+  picture_6: pictureSchema.optional(),
+});
+
 // Age pref Schema
 const MIN_AGE = 18;
 const MAX_AGE = 100;
@@ -193,12 +231,21 @@ export type FormDistancePref = z.infer<typeof formDistancePrefSchema>;
 export type FormBirthdateBody = z.infer<typeof formBirthdateSchema>;
 
 // FRONTEND VALIDATION
+const pictureSchemaFrontend = z.object({
+  picture_1: z.string(),
+  picture_2: z.string().optional(),
+  picture_3: z.string().optional(),
+  picture_4: z.string().optional(),
+  picture_5: z.string().optional(),
+  picture_6: z.string().optional(),
+});
 
 // merge dates with the form schema to get the birthdate
 export const formProfileSchema = formSchema
   .merge(formBirthdateSchema)
   .merge(formItemsSchema)
-  .merge(formAgeSchema);
+  .merge(formAgeSchema)
+  .merge(pictureSchemaFrontend);
 
 // Type for the birthdate form frontend
 export type FormProfileBody = z.infer<typeof formProfileSchema>;

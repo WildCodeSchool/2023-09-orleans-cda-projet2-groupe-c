@@ -12,7 +12,8 @@ services:
     env_file:
       - ./common.env
       - ./api.env
-    networks:
+    volumes:
+      - uploads:/app/uploads
       - db
       - backend
 
@@ -71,6 +72,7 @@ services:
 
 volumes:
   web-client-build:
+  uploads:
 
 networks:
   backend:

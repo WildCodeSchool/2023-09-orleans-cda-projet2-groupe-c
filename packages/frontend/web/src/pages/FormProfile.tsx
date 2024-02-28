@@ -17,6 +17,7 @@ import FormGitHub from '@/components/forms/FormGitHub';
 import FormHobby from '@/components/forms/FormHobby';
 import FormLanguage from '@/components/forms/FormLanguage';
 import FormName from '@/components/forms/FormName';
+import FormPicture from '@/components/forms/FormPicture';
 import FormPrefDistance from '@/components/forms/FormPrefDistance';
 import FormPrefGender from '@/components/forms/FormPrefGender';
 import FormPrefLanguage from '@/components/forms/FormPrefLanguage';
@@ -39,6 +40,7 @@ const PAGES = [
   { component: <FormHobby /> },
   { component: <FormBio /> },
   { component: <FormGitHub /> },
+  { component: <FormPicture /> },
   { component: <FormEnd /> },
 ];
 
@@ -81,7 +83,8 @@ export default function FormProfile() {
         // Create a new object with the birthdate and the rest of the data
         const newData = { ...rest, birthdate };
 
-        const res = await fetch(`/api/register`, {
+        // Insert user data into the database
+        await fetch(`/api/registration`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -89,29 +92,48 @@ export default function FormProfile() {
           body: JSON.stringify(newData),
         });
 
-        if (res.ok) {
-          const controller = new AbortController();
-          const signal = controller.signal;
+        // Create a new FormData object
+        const formData = new FormData();
 
-          await fetchPreferences({ signal });
-          await fetchUsers({ signal });
+        // Loop for each picture and append it to the formData
+        for (let index = 1; index <= 6; index++) {
+          const picture = data[
+            `picture_${index}` as keyof FormProfileBody
+          ] as string;
 
-          navigate('/');
-
-          return () => {
-            controller.abort();
-          };
+          if (Boolean(picture) && Boolean(picture[0])) {
+            formData.append(`picture_${index}`, picture[0]);
+          }
         }
+
+        // Insert pictures user into the database
+        await fetch(`/api/registration/upload`, {
+          method: 'POST',
+          body: formData,
+        });
+
+        // Fetch the preferences and the users
+        const controller = new AbortController();
+        const signal = controller.signal;
+
+        await fetchPreferences({ signal });
+        await fetchUsers({ signal });
+
+        navigate('/');
+
+        return () => {
+          controller.abort();
+        };
       } catch (error) {
         throw new Error(`${String(error)}`);
       }
     }
-  };
 
-  // If the user is not logged in, redirect to the login page
-  if (!isLoggedIn) {
-    return <Navigate to='/login' />;
-  }
+    // If the user is not logged in, redirect to the login page
+    if (!isLoggedIn) {
+      return <Navigate to='/login' />;
+    }
+  };
 
   return (
     <FormLayout>
@@ -125,6 +147,7 @@ export default function FormProfile() {
         <form
           onSubmit={handleSubmit(formSubmit)}
           className='flex h-full flex-col items-center justify-between py-[10%]'
+          encType='multipart/form-data'
         >
           <div className='flex h-full w-full max-w-[500px] flex-col justify-between'>
             {/* Use react.Fragment because only <></> not work with key */}
