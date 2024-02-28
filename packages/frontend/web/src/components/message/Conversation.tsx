@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { type MessageValidation, messageSchema } from '@app/shared';
 
 import { useConversation } from '@/contexts/ConversationContext';
+import useAllConversations from '@/hooks/use-all-conversations';
 
 import CrossIcon from '../icons/CrossIcon';
 import SendIcon from '../icons/SendIcon';
@@ -21,6 +22,8 @@ export default function Conversation() {
     scrollToBottom,
     messagesEndReference,
   } = useConversation();
+
+  const { fetchConversations } = useAllConversations();
 
   const { register, handleSubmit, reset } = useForm<MessageValidation>({
     resolver: zodResolver(messageSchema),

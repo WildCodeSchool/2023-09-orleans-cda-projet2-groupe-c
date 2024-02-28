@@ -50,8 +50,15 @@ export default function useAllConversations() {
       setErrorConversation(`Failed to fetch messages`);
     });
 
+    const interval = setInterval(() => {
+      fetchConversations({ signal }).catch((error) => {
+        throw new Error(`${String(error)}`);
+      });
+    }, 2500);
+
     return () => {
       controller.abort();
+      clearInterval(interval);
     };
   }, [fetchConversations, isLoggedIn]);
 
