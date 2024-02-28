@@ -1,4 +1,4 @@
-import getDistance from 'geolib/es/getDistance';
+import { getDistance } from 'geolib';
 import { useEffect, useState } from 'react';
 
 import type { UserBody } from '@app/shared';
