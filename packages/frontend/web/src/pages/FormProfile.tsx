@@ -7,6 +7,7 @@ import type { FormProfileBody } from '@app/shared';
 import Button from '@/components/Button';
 import FormLayout from '@/components/FormLayout';
 import ProgressBar from '@/components/ProgressBar';
+import { FormAge } from '@/components/forms/FormAge';
 import FormBio from '@/components/forms/FormBio';
 import FormBirthDate from '@/components/forms/FormBirthDate';
 import FormCity from '@/components/forms/FormCity';
@@ -21,10 +22,13 @@ import FormPrefGender from '@/components/forms/FormPrefGender';
 import FormPrefLanguage from '@/components/forms/FormPrefLanguage';
 import FormTechnology from '@/components/forms/FormTechnology';
 import { useAuth } from '@/contexts/AuthContext';
+import { useInteraction } from '@/contexts/InteractionContext';
+import { usePreference } from '@/contexts/PreferenceContext';
 
 const PAGES = [
   { component: <FormName /> },
   { component: <FormBirthDate /> },
+  { component: <FormAge /> },
   { component: <FormGender /> },
   { component: <FormPrefGender /> },
   { component: <FormCity /> },
@@ -47,7 +51,11 @@ export default function FormProfile() {
 
   const navigate = useNavigate();
 
-  const { setIsLoggedIn, isLoggedIn } = useAuth();
+  const { isLoggedIn } = useAuth();
+
+  const { fetchPreferences } = usePreference();
+
+  const { fetchUsers } = useInteraction();
 
   // Use the const methods to send all useForm properties to my child elements
   const methods = useForm<FormProfileBody>({
@@ -73,7 +81,7 @@ export default function FormProfile() {
         // Create a new object with the birthdate and the rest of the data
         const newData = { ...rest, birthdate };
 
-        await fetch(`/api/register`, {
+        const res = await fetch(`/api/register`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -81,8 +89,19 @@ export default function FormProfile() {
           body: JSON.stringify(newData),
         });
 
-        setIsLoggedIn(true);
-        navigate('/');
+        if (res.ok) {
+          const controller = new AbortController();
+          const signal = controller.signal;
+
+          await fetchPreferences({ signal });
+          await fetchUsers({ signal });
+
+          navigate('/');
+
+          return () => {
+            controller.abort();
+          };
+        }
       } catch (error) {
         throw new Error(`${String(error)}`);
       }

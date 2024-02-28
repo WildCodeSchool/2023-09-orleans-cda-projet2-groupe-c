@@ -1,4 +1,4 @@
-import getDistance from 'geolib/es/getDistance';
+import { getDistance } from 'geolib';
 
 import { db } from '@app/backend-shared';
 

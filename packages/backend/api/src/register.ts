@@ -19,6 +19,8 @@ register.post('/', getUserId, async (req: Request, res) => {
       languages,
       technologies,
       hobbies,
+      minAge,
+      maxAge,
       distance,
       languagePrefId,
       genderPref,
@@ -85,6 +87,8 @@ register.post('/', getUserId, async (req: Request, res) => {
           language_pref_id: Number(languagePrefId),
           gender_pref: genderPref,
           user_id: Number(userId),
+          min_age: Number(minAge),
+          max_age: Number(maxAge),
         })
         .execute();
     });

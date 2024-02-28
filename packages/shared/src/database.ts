@@ -103,8 +103,8 @@ export interface Conversation {
 export interface PreferenceTable {
   id: Generated<number>;
   distance: number;
-  language_pref_id: number;
-  gender_pref: Gender;
+  language_pref_id?: number;
+  gender_pref?: Gender;
   min_age: number;
   max_age: number;
   user_id: number;

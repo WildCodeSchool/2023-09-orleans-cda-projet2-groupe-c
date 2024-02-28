@@ -53,8 +53,12 @@ userRouter.get('/', getUserId, async (req: Request, res) => {
     });
 
     res.status(200).json(filteredUsers);
-  } catch {
-    res.status(500).json({ error: 'An error occurred while fetching users' });
+  } catch (error) {
+    // console.error(error);
+    res.status(500).json({
+      message: 'An error occurred while fetching users',
+      error,
+    });
   }
 });
 
