@@ -1,16 +1,16 @@
 /* eslint-disable unicorn/no-null */
 import express from 'express';
 import multer from 'multer';
+
 /* import { v4 as uuidv4 } from 'uuid'; */
 import crypto from 'node:crypto';
-
 
 import { db } from '@app/backend-shared';
 import type { FormProfileBodyBackend, Request } from '@app/shared';
 
 import { getUserId } from '../middlewares/auth-handlers';
 
-const LIMIT_FILE_SIZE = 1 * 1024 * 1024; // 1MB
+const LIMIT_FILE_SIZE = 10 * 1024 * 1024; // 1MB
 
 const registerRouter = express.Router();
 
@@ -118,7 +118,7 @@ const MIME_TYPES: Record<string, string> = {
 const storage = multer.diskStorage({
   // Destination folder
   destination: (_req, _file, callback) => {
-    callback(null, 'uploads/');
+    callback(null, 'uploads');
   },
   // Rename file with uuid + original name
   filename: (_req, file, callback) => {
@@ -139,12 +139,11 @@ const upload = multer({
     if (
       file.mimetype === 'image/jpeg' ||
       file.mimetype === 'image/jpg' ||
-      file.mimetype === 'image/png' ||
-      file.mimetype === 'image/webp'
+      file.mimetype === 'image/png'
     ) {
       callback(null, true);
     } else {
-      callback(new Error('Only .jpeg, .jpg, .png and .webp format allowed!'));
+      callback(new Error('Only .jpeg, .jpg, .png and format allowed!'));
     }
   },
 }).fields([

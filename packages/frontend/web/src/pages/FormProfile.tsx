@@ -25,6 +25,7 @@ import FormTechnology from '@/components/forms/FormTechnology';
 import { useAuth } from '@/contexts/AuthContext';
 import { useInteraction } from '@/contexts/InteractionContext';
 import { usePreference } from '@/contexts/PreferenceContext';
+import { useProfile } from '@/contexts/ProfileContext';
 
 const PAGES = [
   { component: <FormName /> },
@@ -58,6 +59,8 @@ export default function FormProfile() {
   const { fetchPreferences } = usePreference();
 
   const { fetchUsers } = useInteraction();
+
+  const { fetchUserProfile } = useProfile();
 
   // Use the const methods to send all useForm properties to my child elements
   const methods = useForm<FormProfileBody>({
@@ -118,6 +121,7 @@ export default function FormProfile() {
 
         await fetchPreferences({ signal });
         await fetchUsers({ signal });
+        await fetchUserProfile({ signal });
 
         navigate('/');
 
