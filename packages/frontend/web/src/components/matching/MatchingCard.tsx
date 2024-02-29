@@ -60,7 +60,7 @@ export default function MatchingCard() {
           }}
           className='absolute right-5 top-5 z-50 cursor-pointer'
         >
-          <CrossIcon className='w-8' />
+          <CrossIcon className='w-8 fill-white' />
         </button>
         <div className='absolute left-1/2 top-[28rem] h-[2500px] w-[2500px] origin-center -translate-x-1/2 -translate-y-[60%]'>
           <BackgroundCircleIcon className='animate-spin-infinite z-30 h-full  w-full fill-slate-50 opacity-10' />
