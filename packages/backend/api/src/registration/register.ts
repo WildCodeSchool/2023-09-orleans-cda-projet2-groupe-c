@@ -1,8 +1,6 @@
 /* eslint-disable unicorn/no-null */
 import express from 'express';
 import multer from 'multer';
-
-/* import { v4 as uuidv4 } from 'uuid'; */
 import crypto from 'node:crypto';
 
 import { db } from '@app/backend-shared';
@@ -10,7 +8,7 @@ import type { FormProfileBodyBackend, Request } from '@app/shared';
 
 import { getUserId } from '../middlewares/auth-handlers';
 
-const LIMIT_FILE_SIZE = 2 * 1024 * 1024; // 1MB
+const LIMIT_FILE_SIZE = 2 * 1024 * 1024; // 2MB
 
 const registerRouter = express.Router();
 
