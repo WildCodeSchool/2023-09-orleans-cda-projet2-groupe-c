@@ -1,4 +1,11 @@
-import { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 
 import type { UserBody } from '@app/shared';
 
@@ -20,6 +27,7 @@ type ProfileProviderState = {
   error: string | undefined;
   isToogleModal: boolean;
   setIsToogleModal: React.Dispatch<React.SetStateAction<boolean>>;
+  fetchUserProfile: (props: { signal: AbortSignal }) => Promise<void>;
 };
 
 const profileProviderContext = createContext<ProfileProviderState | undefined>(
@@ -42,32 +50,36 @@ export default function ProfileContext({
   // State to toogle the modal
   const [isToogleModal, setIsToogleModal] = useState<boolean>(false);
 
+  const fetchUserProfile = useCallback(
+    async ({ signal }: { signal: AbortSignal }) => {
+      const res = await fetch(`/api/users/profile`, {
+        signal,
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+
+        setUser(data[0]);
+      }
+    },
+    [],
+  );
+
   // Fetch information about the user logged in
   useEffect(() => {
     if (Boolean(userId)) {
       const controller = new AbortController();
       const signal = controller.signal;
 
-      const fetchUser = async () => {
-        const res = await fetch(`/api/users/profile`, {
-          signal,
-        });
-
-        if (res.ok) {
-          const data = await res.json();
-          setUser(data[0]);
-        }
-      };
-
-      fetchUser().catch(() => {
-        setError('Failed to fetch user');
+      fetchUserProfile({ signal }).catch(() => {
+        setError('Failed to fetch user profile');
       });
 
       return () => {
         controller.abort();
       };
     }
-  }, [userId]);
+  }, [fetchUserProfile, userId]);
 
   // Format the birthdate using the custom hook "useDateFormatted"
   const birthdateFormatted = useDateFormatted({ dateString: user?.birthdate });
@@ -87,6 +99,7 @@ export default function ProfileContext({
       error,
       isToogleModal,
       setIsToogleModal,
+      fetchUserProfile,
     };
   }, [
     age,
@@ -96,6 +109,7 @@ export default function ProfileContext({
     error,
     isToogleModal,
     setIsToogleModal,
+    fetchUserProfile,
   ]);
 
   return (

@@ -12,6 +12,8 @@ services:
     env_file:
       - ./common.env
       - ./api.env
+    volumes:
+      - uploads:/app/uploads
     networks:
       - db
       - backend
@@ -37,6 +39,7 @@ services:
     volumes:
       - ./nginx.prod.conf:/etc/nginx/nginx.conf
       - web-client-build:/web-client-build
+      - uploads:/uploads
     networks:
       - backend
       - frontend
@@ -71,6 +74,7 @@ services:
 
 volumes:
   web-client-build:
+  uploads:
 
 networks:
   backend:

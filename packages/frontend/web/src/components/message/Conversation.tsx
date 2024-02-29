@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 
@@ -16,52 +16,75 @@ export default function Conversation() {
     userId,
     conversation,
     setIsVisibleConversation,
-    error,
     selectedConversation,
+    fetchMessage,
+    scrollToBottom,
+    messagesEndReference,
   } = useConversation();
+
   const { register, handleSubmit, reset } = useForm<MessageValidation>({
     resolver: zodResolver(messageSchema),
   });
-  const messagesEndReference = useRef<HTMLDivElement | null>(null);
 
-  const scrollToBottom = () => {
-    messagesEndReference.current?.scrollIntoView({ behavior: 'instant' });
-  };
-
-  useEffect(() => {
-    setTimeout(scrollToBottom, 50);
-  }, [selectedConversation]);
+  const [error, setError] = useState<string>();
 
   const navigate = useNavigate();
 
   const handleCloseConversation = () => {
     if (window.innerWidth < 1024) {
       setIsVisibleConversation(true);
+      navigate('/');
     } else {
       navigate('/');
     }
   };
 
-  const formSubmit = async (data: MessageValidation) => {
-    try {
-      await fetch(
-        `/api/users/${userId}/conversations/${conversation?.conversation_id}/message`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
+  const formSubmit = useCallback(
+    async (data: MessageValidation) => {
+      try {
+        await fetch(
+          `/api/users/${userId}/conversations/${conversation?.conversation_id}/message`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
           },
-          body: JSON.stringify(data),
-        },
-      );
+        );
+      } catch {
+        setError('An error occurent when you send messages');
+      } finally {
+        reset();
+      }
+    },
+    [conversation?.conversation_id, reset, userId],
+  );
 
-      setTimeout(scrollToBottom, 1000);
-    } catch (error) {
-      throw new Error(`${String(error)}`);
-    }
-    reset();
-  };
+  // Fetch all messages from a conversation with a interval
+  useEffect(() => {
+    const controller = new AbortController();
+    const signal = controller.signal;
 
+    void fetchMessage({ signal });
+
+    const interval = setInterval(() => {
+      fetchMessage({ signal }).catch((error) => {
+        throw new Error(`${String(error)}`);
+      });
+    }, 1100);
+
+    return () => {
+      controller.abort();
+      clearInterval(interval);
+    };
+  }, [fetchMessage]);
+
+  useEffect(() => {
+    setTimeout(scrollToBottom, 50);
+  }, [scrollToBottom, selectedConversation]);
+
+  // Get the current user
   const currentUser =
     conversation?.user_1.id === userId
       ? conversation?.user_1

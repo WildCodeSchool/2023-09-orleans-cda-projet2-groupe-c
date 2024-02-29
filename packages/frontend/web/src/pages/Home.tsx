@@ -7,11 +7,11 @@ import NavBar from '@/components/NavBar';
 import SidebarLayout from '@/components/SidebarLayout';
 import Filter from '@/components/filter/Filter';
 import RandomSentence from '@/components/home/RandomSentence';
-
-/* import MatchingCard from '@/components/matching/MatchingCard'; */
+import MatchingCard from '@/components/matching/MatchingCard';
 import ConversationsList from '@/components/message/ConversationsList';
 import { useAuth } from '@/contexts/AuthContext';
 import { useConversation } from '@/contexts/ConversationContext';
+import { useMatching } from '@/contexts/MatchingContext';
 import { usePreference } from '@/contexts/PreferenceContext';
 
 import Logo from '../components/icons/LogoHomeIcon';
@@ -24,6 +24,7 @@ export default function Home() {
 
   const { isVisibleFilter } = usePreference();
   const { isVisibleConversation, conversationId } = useConversation();
+  const { isMatching } = useMatching();
 
   const location = useLocation();
   const isHome = location.pathname === '/';
@@ -92,6 +93,8 @@ export default function Home() {
     return (
       <main className='h-auto min-h-screen overflow-y-auto overflow-x-hidden'>
         <NavBar />
+
+        {isMatching ? <MatchingCard /> : undefined}
 
         {/* Display messages only in the home page when the width is superior to 1024px */}
         <div

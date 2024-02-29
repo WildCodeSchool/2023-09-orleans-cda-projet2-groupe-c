@@ -6,7 +6,7 @@ import cityRouter from './cities/city-crud';
 import hobbyRouter from './hobby/hobby-crud';
 import interactionRouter from './interaction/interaction-crud';
 import languageRouter from './language/language-crud';
-import { register } from './register';
+import registerRouter from './registration/register';
 import technologyRouter from './technology/technology-crud';
 import messageRouter from './user/message';
 import userRouter from './user/user-crud';
@@ -18,7 +18,7 @@ router.use('/auth', authRouter);
 
 router.use('/categories', categoriesRouter);
 
-router.use('/register', register);
+router.use('/registration', registerRouter);
 
 router.use('/cities', cityRouter);
 

@@ -25,19 +25,20 @@ export default function useAllConversations() {
   const [conversationsList, setConversationsList] = useState<Conversation[]>();
   const [messagesCount, setMessagesCount] = useState<number>(0);
   const [errorConversation, setErrorConversation] = useState<string>();
-  const { userId } = useAuth();
+  const { isLoggedIn } = useAuth();
 
   const fetchConversations = useCallback(
     async ({ signal }: { signal: AbortSignal }) => {
-      const res = await fetch(`/api/users/${userId}/conversations`, {
+      const res = await fetch(`/api/users/conversations`, {
         signal,
       });
 
-      const data = await res.json();
-
-      setConversationsList(data.conversation);
+      if (res.ok) {
+        const data = await res.json();
+        setConversationsList(data.conversation);
+      }
     },
-    [userId],
+    [],
   );
 
   // Fetch conversations between the user logged in and other users
@@ -46,13 +47,20 @@ export default function useAllConversations() {
     const signal = controller.signal;
 
     fetchConversations({ signal }).catch(() => {
-      setErrorConversation(`Failed to fetch messages`);
+      setErrorConversation(`Failed to fetch conversations`);
     });
+
+    const interval = setInterval(() => {
+      fetchConversations({ signal }).catch(() => {
+        setErrorConversation('Failed to fetch conversations');
+      });
+    }, 2600);
 
     return () => {
       controller.abort();
+      clearInterval(interval);
     };
-  }, [fetchConversations]);
+  }, [fetchConversations, isLoggedIn]);
 
   // Set the number of messages
   useEffect(() => {
@@ -64,7 +72,7 @@ export default function useAllConversations() {
   return {
     conversationsList,
     messagesCount,
-    fetchConversations,
     errorConversation,
+    fetchConversations,
   };
 }

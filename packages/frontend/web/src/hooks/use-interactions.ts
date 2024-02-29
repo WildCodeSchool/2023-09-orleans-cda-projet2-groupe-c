@@ -3,15 +3,16 @@ import { useCallback, useEffect, useState } from 'react';
 import type { UserBody } from '@app/shared';
 
 import { useAuth } from '@/contexts/AuthContext';
-
-import { useConversation } from '../contexts/ConversationContext';
+import { useConversation } from '@/contexts/ConversationContext';
+import { useMatching } from '@/contexts/MatchingContext';
 
 export default function useInteractions() {
   const [selectedUser, setSelectedUser] = useState<UserBody>();
   const [superLikesCount, setSuperLikesCount] = useState<number>(0);
 
   const [interactionStatus, setInteractionStatus] = useState<string>();
-  const [errorInteraction, setErrorInteraction] = useState<string>();
+
+  const { fetchMatching } = useMatching();
 
   const { fetchConversations } = useConversation();
   const { isLoggedIn } = useAuth();
@@ -97,15 +98,7 @@ export default function useInteractions() {
         throw new Error(`Fail to fetch user's superlike: ${String(error)}`);
       });
 
-      const fetchInteractionsVerify = async () => {
-        await fetch(`/api/users/interactions/verify`, {
-          signal,
-        });
-      };
-
-      await fetchInteractionsVerify().catch(() => {
-        setErrorInteraction(`Fail to fetch interactions verify`);
-      });
+      await fetchMatching({ signal });
 
       // Fetch conversationList when the user interacts with someone
       fetchConversations({ signal });
@@ -159,6 +152,5 @@ export default function useInteractions() {
     fetchUsers,
     interactionStatus,
     setInteractionStatus,
-    errorInteraction,
   };
 }

@@ -1,3 +1,5 @@
+import { useNavigate } from 'react-router-dom';
+
 import { useAuth } from '@/contexts/AuthContext';
 import { useProfile } from '@/contexts/ProfileContext';
 
@@ -29,6 +31,8 @@ export default function ProfileMenu() {
   } = useProfile();
 
   const { setIsLoggedIn } = useAuth();
+
+  const navigate = useNavigate();
 
   // If fetch data about logged in user is undefined, return nothing
   if (!user) {
@@ -109,6 +113,7 @@ export default function ProfileMenu() {
         const data = (await res.json()) as { ok: boolean; isLoggedIn: boolean };
 
         setIsLoggedIn(data.isLoggedIn);
+        navigate('/');
       }
     })();
   };

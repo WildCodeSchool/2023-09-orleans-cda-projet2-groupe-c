@@ -48,7 +48,7 @@ export default function ProfileCard({
           </div>
         ) : isSuperLiked ? (
           <div className='flex gap-1'>
-            <LocationIcon />
+            <LocationIcon className='fill-primary w-4' />
             <p className='truncate text-sm'>
               {interaction.initiator.city.name}
             </p>

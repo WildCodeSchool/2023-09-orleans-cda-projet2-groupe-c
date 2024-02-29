@@ -5,6 +5,8 @@ import type { RequestPreferencesBody } from '@app/shared';
 
 import { usePreference } from '@/contexts/PreferenceContext';
 
+const distance = ['10', '4040'];
+
 export default function FilterDistanceForm({
   register,
 }: {
@@ -40,6 +42,16 @@ export default function FilterDistanceForm({
         }}
         className='accent-primary border-divider bg-light-medium caret-primary h-2 w-full cursor-pointer appearance-none rounded-full border'
       />
+      <div className='flex justify-between'>
+        {distance.map((value) => (
+          <div
+            key={value}
+            className='bg-primary text-light flex h-7 w-[4rem] items-center justify-center rounded-lg text-xs'
+          >
+            <p>{`${value} km`}</p>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
