@@ -93,7 +93,7 @@ export default function Home() {
     return (
       <main className='h-auto min-h-screen overflow-y-auto overflow-x-hidden'>
         <NavBar />
-        {/*   wait PR chat interaction for activate Matching card */}
+
         {isMatching ? <MatchingCard /> : undefined}
 
         {/* Display messages only in the home page when the width is superior to 1024px */}
