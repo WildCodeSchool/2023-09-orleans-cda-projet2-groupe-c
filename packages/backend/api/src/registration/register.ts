@@ -10,7 +10,7 @@ import type { FormProfileBodyBackend, Request } from '@app/shared';
 
 import { getUserId } from '../middlewares/auth-handlers';
 
-const LIMIT_FILE_SIZE = 10 * 1024 * 1024; // 1MB
+const LIMIT_FILE_SIZE = 2 * 1024 * 1024; // 1MB
 
 const registerRouter = express.Router();
 
