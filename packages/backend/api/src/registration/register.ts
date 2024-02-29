@@ -27,6 +27,8 @@ registerRouter.post('/', getUserId, async (req: Request, res) => {
       distance,
       languagePrefId,
       genderPref,
+      minAge,
+      maxAge,
     } = req.body as FormProfileBodyBackend;
 
     const userId = req.userId as number;
@@ -91,8 +93,8 @@ registerRouter.post('/', getUserId, async (req: Request, res) => {
           gender_pref: genderPref,
           user_id: Number(userId),
           // TODO : change this value with dynamic value
-          min_age: 18,
-          max_age: 100,
+          min_age: minAge,
+          max_age: maxAge,
         })
         .execute();
     });
