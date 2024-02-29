@@ -1,7 +1,9 @@
 /* eslint-disable unicorn/no-null */
 import express from 'express';
 import multer from 'multer';
-import { v4 as uuidv4 } from 'uuid';
+/* import { v4 as uuidv4 } from 'uuid'; */
+import crypto from 'node:crypto';
+
 
 import { db } from '@app/backend-shared';
 import type { FormProfileBodyBackend, Request } from '@app/shared';
@@ -105,6 +107,13 @@ registerRouter.post('/', getUserId, async (req: Request, res) => {
   }
 });
 
+const MIME_TYPES: Record<string, string> = {
+  'image/jpg': 'jpg',
+  'image/jpeg': 'jpg',
+  'image/png': 'png',
+  'image/webp': 'webp',
+};
+
 // Multer config
 const storage = multer.diskStorage({
   // Destination folder
@@ -113,7 +122,10 @@ const storage = multer.diskStorage({
   },
   // Rename file with uuid + original name
   filename: (_req, file, callback) => {
-    callback(null, `${uuidv4()}-${file.originalname}`);
+    const extension = MIME_TYPES[file.mimetype];
+    const uniqueSuffix = crypto.randomUUID();
+    const uniqueName = `${uniqueSuffix}.${extension}`;
+    callback(null, uniqueName);
   },
 });
 
