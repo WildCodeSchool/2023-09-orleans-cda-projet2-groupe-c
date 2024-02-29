@@ -87,7 +87,7 @@ export default function ConversationsList() {
                 </div>
 
                 {Boolean(conversation.messages) ? (
-                  <div className='flex w-24 items-end justify-end '>
+                  <div className='mb-1 flex w-24 items-end justify-end'>
                     <div className='self shrink-0 text-right text-sm'>
                       <DateComponent
                         date={
