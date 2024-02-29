@@ -1,0 +1,16 @@
+{
+  "name": "@app/shared",
+  "main": "src/index.ts",
+  "type": "module",
+  "devDependencies": {
+    "kysely": "^0.26.3",
+    "bun-types": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "@hookform/resolvers": "^3.3.2",
+    "zod": "^3.22.4"
+  }
+}

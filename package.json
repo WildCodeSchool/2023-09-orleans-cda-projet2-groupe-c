@@ -2,7 +2,7 @@
   "name": "2023-09-orleans-cda-projet2-template",
   "type": "module",
   "workspaces": [
-    "packages/types",
+    "packages/shared",
     "packages/backend/api",
     "packages/backend/migrations",
     "packages/backend/shared",
@@ -21,8 +21,8 @@
     "migrations:latest": "cd ./packages/backend/migrations && bun run migrations:latest",
     "migrations:down": "cd ./packages/backend/migrations && bun run migrations:down",
     "migrations:generate": "cd ./packages/backend/migrations && bun run migrations:generate",
-    "compose:up": "docker compose -f ./deployment/docker-compose.yml up -d",
-    "compose:down": "docker compose -f ./deployment/docker-compose.yml down",
+    "compose:up": "docker compose -f ./deployment/docker-compose.dev.yml up -d",
+    "compose:down": "docker compose -f ./deployment/docker-compose.dev.yml down",
     "dev:backend:api": "cd ./packages/backend/api && bun run dev",
     "dev:frontend:web": "cd ./packages/frontend/web && bun run dev",
     "dev:frontend:mobile": "cd ./packages/frontend/mobile && bun run start",
@@ -39,7 +39,9 @@
     "pre:commit:lint": "bun run lint:check",
     "pre:commit:format": "bun run format:check",
     "postinstall": "bun husky install && bun ./.tools/auto-detect-ip",
-    "debug": "bun ./.tools/debug"
+    "debug": "bun ./.tools/debug",
+    "database:up": "cd ./packages/backend/forge && bun run database:up",
+    "database:down": "cd ./packages/backend/forge && bun run database:down"
   },
   "devDependencies": {
     "@trivago/prettier-plugin-sort-imports": "^4.3.0",

@@ -2,7 +2,7 @@
 
 This is an ExpressJS backend application.
 
-It is set up to use the `@app/backend-shared` (`/packages/backend/shared`) and `@app/types` (`/packages/types`) packages from this monorepo.
+It is set up to use the `@app/backend-shared` (`/packages/backend/shared`) and `@app/shared` (`/packages/types`) packages from this monorepo.
 
 A simple router is also set up to serve two endpoints at `/api`.
 

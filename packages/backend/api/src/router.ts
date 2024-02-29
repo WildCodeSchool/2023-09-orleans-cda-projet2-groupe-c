@@ -1,27 +1,39 @@
 import express from 'express';
-import { sql } from 'kysely';
 
-import { db } from '@app/backend-shared';
-import type { SomeInterface } from '@app/types';
+import authRouter from './auth/auth';
+import categoriesRouter from './category/category-crud';
+import cityRouter from './cities/city-crud';
+import hobbyRouter from './hobby/hobby-crud';
+import interactionRouter from './interaction/interaction-crud';
+import languageRouter from './language/language-crud';
+import { register } from './register';
+import technologyRouter from './technology/technology-crud';
+import messageRouter from './user/message';
+import userRouter from './user/user-crud';
+import filterRouter from './user/user-filter-crud';
 
 const router = express.Router();
 
-router.get('/', async (_request, response) => {
-  // you can remove this; it's just for the demo
-  const result = await sql<{
-    coucou: number;
-  }>`SELECT 1 as coucou`.execute(db);
-  const [row] = result.rows;
+router.use('/auth', authRouter);
 
-  return response.send(`Hello World! ${row.coucou}`);
-});
+router.use('/categories', categoriesRouter);
 
-router.get('/some-route', (_request, response) => {
-  const value: SomeInterface = {
-    someProperty: 'someValueFromApi',
-  };
+router.use('/register', register);
 
-  return response.json(value);
-});
+router.use('/cities', cityRouter);
+
+router.use('/languages', languageRouter);
+
+router.use('/technologies', technologyRouter);
+
+router.use('/hobbies', hobbyRouter);
+
+router.use('/users', userRouter);
+
+router.use('/users', interactionRouter);
+
+router.use('/users', messageRouter);
+
+router.use('/users', filterRouter);
 
 export default router;

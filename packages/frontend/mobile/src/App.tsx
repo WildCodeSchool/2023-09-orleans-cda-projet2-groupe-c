@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { Button, StyleSheet, Text, View } from 'react-native';
 
 import { useDisclosure } from '@app/frontend-shared';
-import type { SomeInterface, User } from '@app/types';
+import type { SomeInterface, User } from '@app/shared';
 
 export default function App() {
   const [someData, setSomeData] = useState<SomeInterface>({
