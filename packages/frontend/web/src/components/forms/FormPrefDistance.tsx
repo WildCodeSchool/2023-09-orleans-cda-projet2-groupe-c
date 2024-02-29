@@ -33,13 +33,14 @@ export default function FormPrefDistance() {
           }}
           className='accent-primary border-divider bg-light-medium caret-primary h-2 w-full cursor-pointer appearance-none rounded-full border'
         />
+
         <div className='flex justify-between'>
           {distance.map((value) => (
             <div
               key={value}
-              className='bg-primary flex h-7  items-center justify-center rounded-lg px-4'
+              className='bg-primary text-light flex h-7 w-[4rem] items-center justify-center rounded-lg text-xs'
             >
-              <p>{value}</p>
+              <p>{`${value} km`}</p>
             </div>
           ))}
         </div>
